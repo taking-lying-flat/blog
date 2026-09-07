@@ -56,8 +56,6 @@ def __add_grad_to_ipg_bucket(self, param):
     # 最终执行 reduce-scatter。
 ```
 
-在这条路径里：
-
 - `backward CUDA kernel` 是 `param.grad` 的 `producer`
 - `reduce_and_partition_stream` 是 `gradient buffer` 的 `consumer`
 - `consumer` 必须在 `producer` 完成写入后才能执行 `bucket copy` 和 `reduce-scatter`
