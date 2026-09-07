@@ -1125,7 +1125,7 @@ position_ids = torch.concat(
 
 ### 6. `post_encode` 与 embedding scatter
 
-`Qwen2_5OmniTemplate._post_encode()` 会在模板侧提前计算多模态 embedding。Qwen3-Omni 明确覆盖了该实现：
+`Qwen2_5OmniTemplate._post_encode()` 会在模板侧提前计算多模态 embedding。Qwen3-Omni 明确覆盖该实现：
 
 ```python
 class Qwen3OmniTemplate(Qwen2_5OmniTemplate):

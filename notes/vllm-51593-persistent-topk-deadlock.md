@@ -10,7 +10,7 @@
 | 实际故障点 | `persistent_topk` 的 `multi-CTA radix barrier` |
 
 > [!CAUTION]
-> **根因**：`MTP + FULL CUDA Graph padding` 产生了负的 `per-token context length`。`persistent_topk` 将 `int32 -1` 作为 `uint32_t` 读取后得到 `UINT_MAX`，导致同一 `CTA group` 的 `leader` 和 `peer` 对是否进入 `multi-CTA radix path` 作出相反判断。`peer` 提前退出，`leader` 永久等待 `inter-CTA barrier`，最终表现为 `shm_broadcast timeout` 和 `EngineDeadError`
+> **根因**：`MTP + FULL CUDA Graph padding` 产生负的 `per-token context length`。`persistent_topk` 将 `int32 -1` 作为 `uint32_t` 读取后得到 `UINT_MAX`，导致同一 `CTA group` 的 `leader` 和 `peer` 对是否进入 `multi-CTA radix path` 作出相反判断。`peer` 提前退出，`leader` 永久等待 `inter-CTA barrier`，最终表现为 `shm_broadcast timeout` 和 `EngineDeadError`
 
 ## 目录
 

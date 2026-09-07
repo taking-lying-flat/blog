@@ -215,7 +215,7 @@ shifted target   A1 A2 -1 | B1 -1
 
 ## 3. Boundary：`position_ids` 如何编译成 `cu_seqlens`
 
-padding-free flatten 删除了原来的 batch dimension，因此下游不能再从 tensor shape 判断每条 sample 的起止位置；ms-swift 在拼接时保留 sample-local `position_ids`：每条文本 sample 分别从 0 开始计数，reset point 由此成为可编译的 boundary signal
+padding-free flatten 删除原来的 batch dimension，因此下游不能再从 tensor shape 判断每条 sample 的起止位置；ms-swift 在拼接时保留 sample-local `position_ids`：每条文本 sample 分别从 0 开始计数，reset point 由此成为可编译的 boundary signal
 
 > [!IMPORTANT]
 > `position_ids` reset 只是边界的上游表示，真正交给 varlen attention 的执行元数据是累计边界 `cu_seqlens`
@@ -260,7 +260,7 @@ def get_packed_seq_params(position_ids):
     }
 ```
 
-普通文本模型也可以把 reset 后的 `position_ids` 交给 Transformers 通用路径，由它在 `position_ids.min()` 的位置恢复边界。使用共同最小值而不是硬编码 0，是为了兼容合法起点不是 0 的位置编码
+普通文本模型也可以把 reset 后的 `position_ids` 交给 Transformers 通用路径，由它在 `position_ids.min()` 的位置恢复边界。使用共同最小值而不是硬编码 0，是为兼容合法起点不是 0 的位置编码
 
 ```python
 position_ids = position_ids.reshape(-1)
@@ -289,7 +289,7 @@ max_length_q = cu_seq_lens_q.diff().max()
 
 ## 4. Transformers：如何进入 Varlen
 
-Transformers 的公共 FlashAttention bridge 会根据输入 metadata 在三条互斥路径中选择；真正重要的不是配置里写了 `flash_attn`，而是 padding-free 输入最终必须命中 `flash_varlen_fn`
+Transformers 的公共 FlashAttention bridge 会根据输入 metadata 在三条互斥路径中选择；真正重要的不是配置里写 `flash_attn`，而是 padding-free 输入最终必须命中 `flash_varlen_fn`
 
 > [!IMPORTANT]
 > 选择 FlashAttention 只确定 kernel family，进入 varlen branch 才真正恢复 logical batch 并隔离 sample
@@ -626,7 +626,7 @@ inputs_embeds = inputs_embeds.masked_scatter(
 > [!IMPORTANT]
 > mRoPE 表示多模态几何位置，独立的 text position plane 表示 sample boundary
 
-视觉位置展开后，每条样本仍需独立计算 mRoPE。Qwen 模板覆盖了 `packing_row()`，先对 pack 中的每条 sample 调用模型的 `get_rope_index()`，然后才交给父类沿 sequence 维拼接：
+视觉位置展开后，每条样本仍需独立计算 mRoPE。Qwen 模板覆盖 `packing_row()`，先对 pack 中的每条 sample 调用模型的 `get_rope_index()`，然后才交给父类沿 sequence 维拼接：
 
 ```python
 def packing_row(self, row):

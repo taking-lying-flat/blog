@@ -8,7 +8,6 @@
 - [Kernel Backend](#kernel-backend)
   - [Linear backend](#linear-backend)
   - [MoE backend](#moe-backend)
-  - [Attention backend](#attention-backend)
   - [NVFP4 backend 选择](#nvfp4-backend-选择)
 - [原因总结](#原因总结)
 
@@ -602,7 +601,7 @@ Prefill 与 decode 使用不同的状态更新方式。Prefill 需要并行处�
 
 ## Kernel Backend
 
-量化格式规定 `weight`、`activation` 和 `scale` 如何编码；`backend` 决定由哪套实现消费这些数据；具体 `kernel` 才是在 GPU 上执行的函数。vLLM 将三类计算分别配置：`--linear-backend` 选择普通量化 Linear 的 GEMM backend，`--moe-backend` 选择带 expert 维度的 MoE kernel，`--attention-config` 中的 `backend` 选择 Q/K/V 完成投影后的 Attention 实现
+量化格式规定 `weight`、`activation` 和 `scale` 如何编码；`backend` 决定由哪套实现消费这些数据；具体 `kernel` 才是在 GPU 上执行的函数。vLLM 分别配置普通量化 Linear 与 MoE：`--linear-backend` 选择普通量化 Linear 的 GEMM backend，`--moe-backend` 选择带 expert 维度的 MoE kernel
 
 ```text
 模型 checkpoint
@@ -617,14 +616,6 @@ Prefill 与 decode 使用不同的状态更新方式。Prefill 需要并行处�
   │          └── --linear-backend
   │                    ▼
   │              Linear GEMM kernel
-  │
-  ├── Attention
-  │     Q/K/V + attention metadata + KV Cache
-  │                    │
-  │                    └── --attention-config.backend
-  │                              ▼
-  │                    FlashAttention / FlashInfer
-  │                    Triton / FlexAttention / ...
   │
   └── Fused MoE experts
         router 产生 top-k expert 与 routing weight
@@ -650,13 +641,12 @@ Prefill 与 decode 使用不同的状态更新方式。Prefill 需要并行处�
   </thead>
   <tbody>
     <tr><td align="center"><code>--linear-backend</code></td><td>普通 quantized Linear GEMM</td><td><code>qkv_proj</code>、<code>o_proj</code>、Dense FFN、GDN projection</td><td>不选择 Attention softmax kernel，也不选择 MoE expert Grouped GEMM</td></tr>
-    <tr><td align="center"><code>--attention-config.backend</code></td><td>Attention dataflow</td><td>Q/K/V、KV Cache、mask、prefill/decode Attention</td><td>不执行 QKV/<code>o_proj</code> Linear，也不选择 MoE expert GEMM</td></tr>
     <tr><td align="center"><code>--moe-backend</code></td><td>MoE expert computation</td><td><code>w13</code>、<code>w2</code> 以及 expert token dataflow</td><td>不控制普通二维 Linear，也不改变 checkpoint 的量化算法</td></tr>
   </tbody>
 </table>
 </div>
 
-vLLM 在 `vllm/config/kernel.py` 中以两个 `Literal` 定义 Linear 与 MoE 的用户级 backend。下面是这两类的完整枚举；Attention 使用后文单独介绍的 `AttentionBackendEnum`。枚举表示 CLI 可以接受的名称集合，不表示某个 backend 能处理全部 quantization scheme、GPU 架构、shape 和 parallel configuration
+vLLM 在 `vllm/config/kernel.py` 中以两个 `Literal` 定义 Linear 与 MoE 的用户级 backend。下面是这两类的完整枚举。枚举表示 CLI 可以接受的名称集合，不表示某个 backend 能处理全部 quantization scheme、GPU 架构、shape 和 parallel configuration
 
 ```python
 MoEBackend = Literal[
@@ -924,161 +914,6 @@ raise NotImplementedError("No backend supports this deployment configuration")
 ```
 
 与 Linear 当前按 layer 容错回退的行为不同，显式指定一个不支持当前 MoE configuration 的 backend 通常会在 selector 中抛错。`auto` 才会继续尝试下一候选项。即使启动时已经选择 primary backend，部分实现仍可能针对特殊 shape 在 runtime 使用其内部 fallback，因此日志中应同时核对 backend 名称、具体 expert class 和最终 kernel 路径
-
-### Attention backend
-
-`Attention backend` 位于 QKV projection 之后。`qkv_proj` 与 `o_proj` 仍由普通 Linear 路径执行；Attention backend 接收已经形成的 Q、K、V，以及 sequence length、block table、mask、KV Cache layout 等 metadata，负责 prefill/decode 阶段的注意力计算和 KV Cache 访问。因此 `--linear-backend cutlass` 与 `--attention-config '{"backend":"FLASH_ATTN"}'` 可以同时生效，二者控制的不是同一组 kernel
-
-当前源码在 `vllm/v1/attention/backends/registry.py` 中通过 `AttentionBackendEnum` 注册实现。下面保留与 NVIDIA GPU 常规 Attention、`SDPA`、`FlexAttention` 以及 MLA 直接相关的主要条目：
-
-```python
-class AttentionBackendEnum(Enum):
-    FLASH_ATTN = (
-        "vllm.v1.attention.backends.flash_attn.FlashAttentionBackend"
-    )
-    TRITON_ATTN = (
-        "vllm.v1.attention.backends.triton_attn.TritonAttentionBackend"
-    )
-    FLASHINFER = (
-        "vllm.v1.attention.backends.flashinfer.FlashInferBackend"
-    )
-    FLEX_ATTENTION = (
-        "vllm.v1.attention.backends.flex_attention.FlexAttentionBackend"
-    )
-    TORCH_SDPA = ""  # this tag is only used for ViT
-
-    FLASHINFER_MLA = (
-        "vllm.v1.attention.backends.mla.flashinfer_mla.FlashInferMLABackend"
-    )
-    TRITON_MLA = (
-        "vllm.v1.attention.backends.mla.triton_mla.TritonMLABackend"
-    )
-    FLASH_ATTN_MLA = (
-        "vllm.v1.attention.backends.mla.flashattn_mla.FlashAttnMLABackend"
-    )
-    FLASHMLA = (
-        "vllm.v1.attention.backends.mla.flashmla.FlashMLABackend"
-    )
-```
-
-<div align="center">
-<table>
-  <thead>
-    <tr>
-      <th align="center">Backend</th>
-      <th align="center">主要执行方式</th>
-      <th align="center">在 vLLM 中的定位</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td><code>FLASH_ATTN</code></td><td>FlashAttention FA2/FA3/FA4 kernel</td><td>常规 decoder、encoder、cross-attention 与 sliding-window 的主要 NVIDIA 路径；支持 paged KV Cache，具体能力受 FA 版本约束</td></tr>
-    <tr><td><code>FLASHINFER</code></td><td>FlashInfer prefill/decode kernel</td><td>另一套 NVIDIA paged-attention 实现；在部分 GPU 架构、batch shape 或 KV Cache format 下优先</td></tr>
-    <tr><td><code>TRITON_ATTN</code></td><td>Triton Attention kernel</td><td>实现灵活，常作为 FlashAttention/FlashInfer 之外的候选或特定功能路径</td></tr>
-    <tr><td><code>FLEX_ATTENTION</code></td><td><code>torch.compile(torch.nn.attention.flex_attention)</code></td><td>通过 <code>score_mod</code> 与 <code>BlockMask</code> 表达复杂 mask；当前支持 decoder 和 encoder-only，KV Cache layout 与 dtype 有明确约束</td></tr>
-    <tr><td><code>TORCH_SDPA</code></td><td><code>torch.nn.functional.scaled_dot_product_attention</code></td><td>当前注册表明确标注仅用于 ViT / multimodal encoder；它不是普通 paged decoder 的候选 backend</td></tr>
-    <tr><td><code>*_MLA</code></td><td>FlashInfer、FlashAttention、FlashMLA、Triton 等 MLA kernel</td><td>面向 Multi-head Latent Attention；与普通 MHA/GQA 使用不同候选集</td></tr>
-  </tbody>
-</table>
-</div>
-
-对非 MLA 的 NVIDIA decoder，`auto` 不是简单调用 PyTorch `SDPA`。`vllm/platforms/cuda.py` 中的常规候选优先级如下：SM100 的 causal Attention 优先 FlashInfer；其他 CUDA 情况通常优先 FlashAttention。每个 class 随后通过 `validate_configuration()` 检查 compute capability、head size、dtype、KV Cache dtype、block size、sliding window、attention type 与并行配置
-
-```python
-def _get_backend_priorities(
-    use_mla,
-    device_capability,
-    num_heads=None,
-    kv_cache_dtype=None,
-    use_non_causal=False,
-):
-    if not use_mla:
-        if device_capability.major == 10 and not use_non_causal:
-            return [
-                AttentionBackendEnum.FLASHINFER,
-                AttentionBackendEnum.FLASH_ATTN,
-                AttentionBackendEnum.TRITON_ATTN,
-                AttentionBackendEnum.FLEX_ATTENTION,
-                AttentionBackendEnum.TURBOQUANT,
-            ]
-        return [
-            AttentionBackendEnum.FLASH_ATTN,
-            AttentionBackendEnum.FLASHINFER,
-            AttentionBackendEnum.TRITON_ATTN,
-            AttentionBackendEnum.FLEX_ATTENTION,
-            AttentionBackendEnum.TURBOQUANT,
-        ]
-```
-
-显式指定 backend 时，vLLM 只验证该实现；配置不兼容会在启动时抛错。未指定时，selector 收集所有通过验证的候选并选择优先级最高者，而不是对它们执行在线 benchmark：
-
-```python
-if selected_backend is not None:
-    backend_class = _get_attn_backend_class(selected_backend)
-    invalid_reasons = backend_class.validate_configuration(
-        device_capability=device_capability,
-        **attn_selector_config._asdict(),
-    )
-    if invalid_reasons:
-        raise ValueError(
-            f"Selected backend {selected_backend} is not valid for "
-            f"this configuration. Reason: {invalid_reasons}"
-        )
-    return _backend_cls_path(backend_class)
-
-valid_backends, invalid_reasons = cls.get_valid_backends(...)
-selected_candidate = min(
-    valid_backends,
-    key=lambda candidate: candidate.priority,
-)
-return _backend_cls_path(selected_candidate.backend_class)
-```
-
-三个容易混淆的执行入口如下。FlashAttention 直接消费 paged KV Cache、block table 与 variable-length metadata；FlexAttention 通过编译后的 `flex_attention` 消费 `BlockMask` 和 `score_mod`；ViT 的 Torch SDPA wrapper 则把 Q/K/V 调整为 `[B,H,T,D]` 后调用 PyTorch SDPA
-
-```python
-# FlashAttention decoder path
-flash_attn_varlen_func(
-    q=query[:num_actual_tokens],
-    k=key_cache,
-    v=value_cache,
-    out=output[:num_actual_tokens],
-    cu_seqlens_q=cu_seqlens_q,
-    seqused_k=seqused_k,
-    block_table=block_table,
-    causal=causal,
-    window_size=sliding_window_size,
-    softmax_scale=self.scale,
-    fa_version=self.vllm_flash_attn_version,
-)
-
-# FlexAttention decoder / encoder-only path
-out = flex_attention_compiled(
-    query,
-    key_tensor,
-    value_tensor,
-    attn_metadata.transformed_score_mod,
-    attn_metadata.block_mask,
-    self.scale,
-    enable_gqa=enable_gqa,
-    kernel_options=kernel_options,
-)
-
-# TORCH_SDPA: ViT / multimodal encoder path
-q, k, v = (
-    einops.rearrange(x, "b s h d -> b h s d")
-    for x in (q, k, v)
-)
-output = F.scaled_dot_product_attention(
-    q,
-    k,
-    v,
-    dropout_p=0.0,
-    scale=scale,
-    enable_gqa=enable_gqa,
-)
-```
-
-常规 decoder 可通过 `--attention-config '{"backend":"FLASH_ATTN"}'` 或 `--attention-config '{"backend":"FLEX_ATTENTION"}'` 显式选择；`auto` 对应不设置 `backend`。多模态视觉 encoder 使用独立的 `--mm-encoder-attn-backend TORCH_SDPA`。当前配置还支持 `backend_per_kind`，可让 full attention、sliding-window 或 MLA 等不同 KV Cache group 使用不同实现。Attention backend 只影响 Attention dataflow，不改变本案例的 NVFP4 Linear/MoE activation scale，因此不能修复缺失 `input_scale` 的 W4A4 expert GEMM
 
 ### NVFP4 backend 选择
 
@@ -1372,7 +1207,7 @@ NVFP4 W4A4 GEMM
 
 CUTLASS MoE 的第一次量化把 `a1_gscale` 传给 `scaled_fp4_experts_quant()`，生成 `rep_a_fp4` 与 `rep_a_blockscale`，随后执行 `w13` GEMM。SiLU/mul 后，第二次量化再使用 `a2_gscale`，由 `silu_and_mul_scaled_fp4_experts_quant()` 生成 `int_fp4` 与 `int_blockscale`，随后执行 `w2` GEMM。错误的 global scale 因而会先破坏 activation 的 block-scale 计算和 E2M1 编码，再沿两次 expert GEMM 传播到 hidden state、后续 layer、LM head 与最终 token
 
-这也解释了 `--moe-backend marlin` 正常而 `--moe-backend cutlass` 失败。CUTLASS 的 NVFP4 MoE 路径执行 W4A4，activation 同样量化为 FP4，所以实际消费 `w13_input_scale` 与 `w2_input_scale`。Marlin 走 weight-only W4A16，activation 保持 BF16/FP16；`format conversion` 直接将 `a13_scale` 和 `a2_scale` 置为 `None`，因此不会读取这些缺失的 activation scale
+这也解释 `--moe-backend marlin` 正常而 `--moe-backend cutlass` 失败。CUTLASS 的 NVFP4 MoE 路径执行 W4A4，activation 同样量化为 FP4，所以实际消费 `w13_input_scale` 与 `w2_input_scale`。Marlin 走 weight-only W4A16，activation 保持 BF16/FP16；`format conversion` 直接将 `a13_scale` 和 `a2_scale` 置为 `None`，因此不会读取这些缺失的 activation scale
 
 ```text
 ModelOpt calibration 未覆盖所有 MoE expert
