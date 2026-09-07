@@ -254,7 +254,7 @@ vLLM 的 MoE format conversion 在进入该内核前分别对 `w13_input_scale` 
 | MoE FFN | 每个 expert 分别融合 gate/up | `w13 [E,2I,H]`、`w2 [E,H,I]` |
 | Gated DeltaNet | Q/K/V/Z 与 B/A 分成两组投影 | 输出分别切为 `[Q,K,V,Z]` 与 `[B,A]` |
 
-**QKV projection** Q、K、V 共享 hidden state，因此三个 GEMM 可以合并为一个。GQA 的 K/V head 数少于 Q，输出必须按实际宽度切分：
+**QKV projection：** Q、K、V 共享 hidden state，因此三个 GEMM 可以合并为一个。GQA 的 K/V head 数少于 Q，输出必须按实际宽度切分：
 
 ```python
 qkv, _ = self.qkv_proj(hidden_states)
@@ -263,7 +263,7 @@ q, k, v = qkv.split([self.q_size, self.kv_size, self.kv_size], dim=-1)
 
 融合只合并输入投影；后续 normalization、RoPE、attention 和 `o_proj` 仍有各自的计算语义。
 
-**Gated FFN** Gate 与 up 共享输入，融合为 `gate_up_proj` / `w13`。Down projection 依赖 activation/mul 的结果，仍需第二次 GEMM。`Gemma4MLP` 的主干只需三步：
+**Gated FFN：** Gate 与 up 共享输入，融合为 `gate_up_proj` / `w13`。Down projection 依赖 activation/mul 的结果，仍需第二次 GEMM。`Gemma4MLP` 的主干只需三步：
 
 ```python
 gate_up, _ = self.gate_up_proj(x)  # GEMM 1：同时生成 gate 和 up
@@ -271,7 +271,7 @@ x = self.act_fn(gate_up)           # activation(gate) × up
 x, _ = self.down_proj(x)           # GEMM 2：down projection
 ```
 
-**MoE FFN** 每个 expert 使用同样的 `w13/w2` 结构，但接收的 token 行数 `M_e` 不同。Backend 根据 routing 结果重排输入，把不同 expert 的矩阵乘组成 Grouped GEMM，减少逐 expert launch 的开销。
+**MoE FFN：** 每个 expert 使用同样的 `w13/w2` 结构，但接收的 token 行数 `M_e` 不同。Backend 根据 routing 结果重排输入，把不同 expert 的矩阵乘组成 Grouped GEMM，减少逐 expert launch 的开销。
 
 CUTLASS NVFP4 在两次 GEMM 前分别量化 activation：`w13_input_scale` 对应 gate/up 的输入，`w2_input_scale` 对应 SiLU/mul 后的中间结果；取倒数后分别得到 `a1_gscale`、`a2_gscale`。
 
@@ -290,7 +290,7 @@ token 重排 → a1_gscale 量化 → Grouped w13 GEMM
 | Grouped scheduling | 把不同 expert 的变长 GEMM 一起提交 |
 | Operator fusion | 把 SiLU、multiply、第二次量化合进同一个 kernel |
 
-**Gated DeltaNet 的投影融合** Qwen3.5 MoE 中，GDN 负责序列混合，MoE 负责 FFN。vLLM 将 checkpoint 的 `in_proj_qkv` 与 `in_proj_z` 合为 `in_proj_qkvz`，将 `in_proj_b` 与 `in_proj_a` 合为 `in_proj_ba`，运行时执行两个输入投影 GEMM：
+**Gated DeltaNet 的投影融合：** Qwen3.5 MoE 中，GDN 负责序列混合，MoE 负责 FFN。vLLM 将 checkpoint 的 `in_proj_qkv` 与 `in_proj_z` 合为 `in_proj_qkvz`，将 `in_proj_b` 与 `in_proj_a` 合为 `in_proj_ba`，运行时执行两个输入投影 GEMM：
 
 ```python
 mixed_qkvz, _ = self.in_proj_qkvz(hidden_states)
