@@ -190,7 +190,7 @@ for (const post of posts) {
     for (const section of ropeSections) {
       const index = tokens.findIndex((token, i) => section.fence
         ? token.type === 'fence' && token.info === section.fence
-        : token.type === 'paragraph_open' && tokens[i + 1]?.content.startsWith(section.prefix));
+        : token.type === 'paragraph_open' && inlineText(tokens[i + 1]).startsWith(section.prefix));
       if (index < 0) throw new Error(`Missing section: ${section.id}`);
       tokens[index].attrSet('id', section.id);
     }

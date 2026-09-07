@@ -1,6 +1,6 @@
-# RoFormer: Enhanced Transformer with Rotary Position Embedding
+# `RoFormer`: `Enhanced Transformer with Rotary Position Embedding`
 
-RoPE（Rotary Position Embedding）通过旋转 Q/K 特征，使 attention 内积包含相对位置信息。设旋转维度为偶数 $`d_r`$，频率底数为 $`\beta`$，位置为 $`p`$；第 $`i`$ 个二维子空间的角频率与旋转角为
+`RoPE`（`Rotary Position Embedding`）通过旋转 `Q/K` 特征，使 `attention` 内积包含相对位置信息。设旋转维度为偶数 $`d_r`$，频率底数为 $`\beta`$，位置为 $`p`$；第 $`i`$ 个二维子空间的角频率与旋转角为
 
 ```math
 \omega_i=\beta^{-2i/d_r},\qquad
@@ -32,7 +32,7 @@ i=0,\ldots,\frac{d_r}{2}-1.
 }
 ```
 
-源码采用 `[B,H,T,d_h]` 布局：`B` 为 batch size，`T` 为当前输入长度，Q/K 的 head 数分别为 `24/4`；`head_dim` 为 $`d_h=256`$，旋转比例 $`r=0.25`$，故 $`d_r=\lfloor d_h r\rfloor=64`$
+源码采用 `[B,H,T,d_h]` 布局：`B` 为 `batch size`，`T` 为当前输入长度，`Q/K` 的 `head` 数分别为 `24/4`；`head_dim` 为 $`d_h=256`$，旋转比例 $`r=0.25`$，故 $`d_r=\lfloor d_h r\rfloor=64`$
 
 ```text
 Q / K            [B, 24, T, 256] / [B, 4, T, 256]
@@ -56,9 +56,9 @@ return inv_freq.to(device), attention_factor
 ```
 
 - `arange(0,64,2)/64` 生成指数 $`[0,1/32,\ldots,31/32]`$，得到 `inv_freq` 为 $`[1,10^{-7/32},\ldots,10^{-217/32}]`$
-- 频率按旋转维度 `64` 直接计算，而非从全维 RoPE 中截取
+- 频率按旋转维度 `64` 直接计算，而非从全维 `RoPE` 中截取
 
-RoFormer §3.2.1 式（13）先给出二维形式。只写 Q 分支，以 $`\mathbf q_m`$ 表示旋转前的 Q、$`\widetilde{\mathbf q}_m`$ 表示旋转后的 Q：
+`RoFormer` §3.2.1 式（13）先给出二维形式。只写 `Q` 分支，以 $`\mathbf q_m`$ 表示旋转前的 `Q`、$`\widetilde{\mathbf q}_m`$ 表示旋转后的 `Q`：
 
 ```math
 \begin{aligned}
@@ -80,7 +80,7 @@ W_q^{(21)}&W_q^{(22)}
 
 - 从右向左计算：输入 $`\mathbf x_m`$ 先经 $`W_q`$ 投影得到 $`\mathbf q_m`$，再乘旋转矩阵得到 $`\widetilde{\mathbf q}_m`$。角频率统一记为 $`\omega`$，对应前文某一通道对的 $`\omega_i`$；$`m\omega`$ 是位置乘频率
 
-- 对应到 Qwen3.5，取一个 token、一个 head 传入 RoPE 的 Q 向量 `q`（已完成投影和 Q norm）。设位置 $`p=1`$，`q[0]=1`、`q[32]=2`；这对通道的频率 $`\omega_0=1`$，因此：
+- 对应到 `Qwen3.5`，取一个 `token`、一个 `head` 传入 `RoPE` 的 `Q` 向量 `q`（已完成投影和 `Q norm`）。设位置 $`p=1`$，`q[0]=1`、`q[32]=2`；这对通道的频率 $`\omega_0=1`$，因此：
 
 ```math
 \begin{bmatrix}\widetilde q_0\\\widetilde q_{32}\end{bmatrix}
@@ -91,9 +91,9 @@ W_q^{(21)}&W_q^{(22)}
 \begin{bmatrix}-1.142640\\1.922076\end{bmatrix}.
 ```
 
-- 结果已经是旋转后 Q 的第 0、32 维。其余 31 对同样计算，再接回未旋转的后 192 维，得到完整的 $`\widetilde{\mathbf q}_p=\widehat R_p\mathbf q_p\in\mathbb R^{256}`$；$`\widehat R_p`$ 的完整矩阵见下文。K 同理，随后用旋转后的 Q/K 计算 attention 内积。同一 token 的各 head 复用 cos/sin，分别旋转各自的 Q/K 数值
+- 结果已经是旋转后 `Q` 的第 0、32 维。其余 31 对同样计算，再接回未旋转的后 192 维，得到完整的 $`\widetilde{\mathbf q}_p=\widehat R_p\mathbf q_p\in\mathbb R^{256}`$；$`\widehat R_p`$ 的完整矩阵见下文。`K` 同理，随后用旋转后的 `Q/K` 计算 `attention` 内积。同一 `token` 的各 `head` 复用 `cos/sin`，分别旋转各自的 `Q/K` 数值
 
-RoFormer 式（15）对全部 $`d`$ 维旋转。令 $`F=d/2`$、$`\phi_i=p\beta^{-2i/d}`$，以从 0 开始的索引写为：
+`RoFormer` 式（15）对全部 $`d`$ 维旋转。令 $`F=d/2`$、$`\phi_i=p\beta^{-2i/d}`$，以从 0 开始的索引写为：
 
 ```math
 R_p^{(d)}=
@@ -109,7 +109,7 @@ R_p^{(d)}=
 \in\mathbb R^{d\times d}.
 ```
 
-- 每个 $`2\times2`$ 块作用于 Q 的相邻分量 $`(q_{2i},q_{2i+1})`$，K 同理；整体为 $`\operatorname{diag}(R(\phi_0),\ldots,R(\phi_{F-1}))`$。式（14）定义 $`\widetilde{\mathbf q}_m=R_m^{(d)}W_q\mathbf x_m`$、$`\widetilde{\mathbf k}_n=R_n^{(d)}W_k\mathbf x_n`$；记投影结果为 $`\mathbf q_m,\mathbf k_n`$，由 $`R_m^\top R_n=R_{n-m}`$ 得到相对位置内积：
+- 每个 $`2\times2`$ 块作用于 `Q` 的相邻分量 $`(q_{2i},q_{2i+1})`$，`K` 同理；整体为 $`\operatorname{diag}(R(\phi_0),\ldots,R(\phi_{F-1}))`$。式（14）定义 $`\widetilde{\mathbf q}_m=R_m^{(d)}W_q\mathbf x_m`$、$`\widetilde{\mathbf k}_n=R_n^{(d)}W_k\mathbf x_n`$；记投影结果为 $`\mathbf q_m,\mathbf k_n`$，由 $`R_m^\top R_n=R_{n-m}`$ 得到相对位置内积：
 
 ```math
 \begin{aligned}
@@ -120,7 +120,7 @@ R_p^{(d)}=
 \end{aligned}
 ```
 
-Qwen3.5 的 partial RoPE 是分块正交变换：前 64 维参与旋转，后 192 维由单位映射保留。令 $`D_c(p)=\operatorname{diag}(\cos\phi_{p,0},\ldots,\cos\phi_{p,31})`$、$`D_s(p)=\operatorname{diag}(\sin\phi_{p,0},\ldots,\sin\phi_{p,31})`$，其中 $`\phi_{p,i}=p\beta^{-2i/64}`$，则
+`Qwen3.5` 的 `partial RoPE` 是分块正交变换：前 64 维参与旋转，后 192 维由单位映射保留。令 $`D_c(p)=\operatorname{diag}(\cos\phi_{p,0},\ldots,\cos\phi_{p,31})`$、$`D_s(p)=\operatorname{diag}(\sin\phi_{p,0},\ldots,\sin\phi_{p,31})`$，其中 $`\phi_{p,i}=p\beta^{-2i/64}`$，则
 
 ```math
 \begin{gathered}
@@ -138,9 +138,9 @@ D_s(p)& D_c(p)&0\\\hline
 \end{gathered}
 ```
 
-- 左上角的 $`64\times64`$ 旋转块记为 $`\mathcal R_p`$，通过固定的通道置换与论文的块对角矩阵对应。旋转在 attention 内积之前分别作用于 Q 和 K，只在各自的成对通道内作线性组合，保持向量范数，不含平移项；旋转通道与保留通道之间没有交叉混合。
+- 左上角的 $`64\times64`$ 旋转块记为 $`\mathcal R_p`$，通过固定的通道置换与论文的块对角矩阵对应。旋转在 `attention` 内积之前分别作用于 `Q` 和 `K`，只在各自的成对通道内作线性组合，保持向量范数，不含平移项；旋转通道与保留通道之间没有交叉混合。
 
-- 完整 head 在添加 mask 前的 attention score 因而分解为：
+- 完整 `head` 在添加 `mask` 前的 `attention score` 因而分解为：
 
 ```math
 s_{mn}=\frac{
@@ -149,9 +149,9 @@ s_{mn}=\frac{
 }{\sqrt{d_h}}.
 ```
 
-- 第一项通过 $`\mathcal R_{n-m}`$ 引入相对位置，第二项是保留通道的普通内积；两项共同构成 attention score，缩放分母仍为 $`\sqrt{d_h}=\sqrt{256}`$。完整的 256 维 K 均写入 cache
+- 第一项通过 $`\mathcal R_{n-m}`$ 引入相对位置，第二项是保留通道的普通内积；两项共同构成 `attention score`，缩放分母仍为 $`\sqrt{d_h}=\sqrt{256}`$。完整的 256 维 `K` 均写入 `cache`
 
-对普通 RoPE，位置张量为 $`P\in\mathbb Z^{B\times T}`$，其中 $`P_{b,t}`$ 保存第 $`b`$ 个样本中第 $`t`$ 个 token 的位置编号。每个位置与 32 个频率分别相乘，得到该 token 的 32 个旋转角：
+对普通 `RoPE`，位置张量为 $`P\in\mathbb Z^{B\times T}`$，其中 $`P_{b,t}`$ 保存第 $`b`$ 个样本中第 $`t`$ 个 `token` 的位置编号。每个位置与 32 个频率分别相乘，得到该 `token` 的 32 个旋转角：
 
 ```math
 \begin{gathered}
@@ -161,9 +161,9 @@ C=[\cos\Phi,\cos\Phi],\quad S=[\sin\Phi,\sin\Phi].
 \end{gathered}
 ```
 
-- $`\Phi`$ 保存旋转角，本例形状为 `[B,T,32]`；$`C`$、$`S`$ 保存对应的 cos/sin 系数。方括号表示沿最后一维拼接，使 $`C/S`$ 的形状成为 `[B,T,64]`：第 $`i`$、$`i+32`$ 个通道属于同一旋转对，因而需要相同的系数。`unsqueeze(1)` 再将系数变为 `[B,1,T,64]`，供同一 token 的所有 Q/K head 复用。
+- $`\Phi`$ 保存旋转角，本例形状为 `[B,T,32]`；$`C`$、$`S`$ 保存对应的 `cos/sin` 系数。方括号表示沿最后一维拼接，使 $`C/S`$ 的形状成为 `[B,T,64]`：第 $`i`$、$`i+32`$ 个通道属于同一旋转对，因而需要相同的系数。`unsqueeze(1)` 再将系数变为 `[B,1,T,64]`，供同一 `token` 的所有 `Q/K head` 复用。
 
-- 固定一个 token 和一个 head，记 $`p=P_{b,t}`$。源码将二维旋转矩阵的乘法展开为逐元素乘加，第 $`i`$、$`i+32`$ 个通道的输出为：
+- 固定一个 `token` 和一个 `head`，记 $`p=P_{b,t}`$。源码将二维旋转矩阵的乘法展开为逐元素乘加，第 $`i`$、$`i+32`$ 个通道的输出为：
 
 ```math
 \begin{aligned}
@@ -173,7 +173,7 @@ C=[\cos\Phi,\cos\Phi],\quad S=[\sin\Phi,\sin\Phi].
 \end{aligned}
 ```
 
-- `rotate_half(q_rot)` 在这两个位置分别提供 $`-q_{i+32}`$ 和 $`q_i`$；乘以 sin 后，再加上 `q_rot * cos`，就得到上式。这里代码中的 `cos`、`sin` 对应广播后的 $`C`$、$`S`$，K 的计算相同
+- `rotate_half(q_rot)` 在这两个位置分别提供 $`-q_{i+32}`$ 和 $`q_i`$；乘以 `sin` 后，再加上 `q_rot * cos`，就得到上式。这里代码中的 `cos`、`sin` 对应广播后的 $`C`$、$`S`$，`K` 的计算相同
 
 ```python
 def rotate_half(x):

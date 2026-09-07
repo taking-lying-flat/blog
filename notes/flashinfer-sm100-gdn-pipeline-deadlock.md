@@ -1,22 +1,22 @@
-# CUDA 同步故障：ZeRO-3 梯度竞态与 GDN Pipeline 死锁
+# `CUDA` 同步故障：`ZeRO-3` 梯度竞态与 `GDN Pipeline` 死锁
 
 > 两个表面症状完全不同、但本质都属于同步协议被破坏的 `GPU` 并发故障
 
 | 案例 | 上游修复 | 影响范围 | 表面症状 | 故障类型 |
 | --- | --- | --- | --- | --- |
-| `DeepSpeed ZeRO-3` | [DeepSpeed#7898](https://github.com/deepspeedai/DeepSpeed/pull/7898) | `DeepSpeed 0.18.7` 及更早版本 | 第一次 `optimizer.step()` 后部分权重变成 `NaN` | 跨 `CUDA stream` 的 `RAW race` |
-| `FlashInfer GDN` | [flashinfer#3581](https://github.com/flashinfer-ai/flashinfer/pull/3581) | `FlashInfer 0.6.12 / 0.6.13`、`SM100` | `prefill` 随机永久卡住 | `CUTLASS pipeline ownership violation` |
+| `DeepSpeed ZeRO-3` | [`DeepSpeed`#7898](https://github.com/deepspeedai/DeepSpeed/pull/7898) | `DeepSpeed 0.18.7` 及更早版本 | 第一次 `optimizer.step()` 后部分权重变成 `NaN` | 跨 `CUDA stream` 的 `RAW race` |
+| `FlashInfer GDN` | [`flashinfer`#3581](https://github.com/flashinfer-ai/flashinfer/pull/3581) | `FlashInfer 0.6.12 / 0.6.13`、`SM100` | `prefill` 随机永久卡住 | `CUTLASS pipeline ownership violation` |
 
 > [!IMPORTANT]
 > 两个问题都不是普通的数值精度故障。`DeepSpeed` 等错梯度的生产 `stream`；`FlashInfer` 则让非 `owner` 参与 `pipeline` 的终止同步。前者破坏数据的 `happens-before` 关系，后者破坏 `mbarrier` 的 `phase/lifetime` 状态
 
 ## 目录
 
-- [案例一：DeepSpeed ZeRO-3 梯度归约竞态](#案例一deepspeed-zero-3-梯度归约竞态)
-- [案例二：FlashInfer GDN Pipeline 死锁](#案例二flashinfer-gdn-pipeline-死锁)
+- [案例一：`DeepSpeed ZeRO-3` 梯度归约竞态](#案例一deepspeed-zero-3-梯度归约竞态)
+- [案例二：`FlashInfer GDN Pipeline` 死锁](#案例二flashinfer-gdn-pipeline-死锁)
 - [两个案例的共同模式](#两个案例的共同模式)
 
-## 案例一：DeepSpeed ZeRO-3 梯度归约竞态
+## 案例一：`DeepSpeed ZeRO-3` 梯度归约竞态
 
 > [!CAUTION]
 > **TL;DR**：`DeepSpeed` 固定等待 `default_stream()`，但 `param.grad` 可能由 `non-default current_stream()` 上的 `backward kernel` 产生。因此 `reduce_and_partition_stream` 可能在梯度写完前就读取它，形成 `read-after-write race`，并把污染后的 `gradient shard` 带入第一次 `optimizer update`
@@ -41,7 +41,7 @@
 
 污染位置并不固定，可能出现在不同 `rank`、不同 `layer`，尤其容易影响 `attention projection`、`MLP weight` 等参数的 `gradient shard`。这种随机性正是 `CUDA kernel` 调度时序参与故障的信号
 
-**ZeRO-3 的梯度生产与消费**：当 `overlap_comm=True` 时，`ZeRO-3` 使用独立的 `reduce_and_partition_stream`，让 `backward` 计算与梯度通信重叠。某个参数的梯度完成后，`gradient hook` 会进入 `stage3.py` 的 `__add_grad_to_ipg_bucket()`：
+**`ZeRO-3` 的梯度生产与消费**：当 `overlap_comm=True` 时，`ZeRO-3` 使用独立的 `reduce_and_partition_stream`，让 `backward` 计算与梯度通信重叠。某个参数的梯度完成后，`gradient hook` 会进入 `stage3.py` 的 `__add_grad_to_ipg_bucket()`：
 
 ```python
 @torch.no_grad()
@@ -126,7 +126,7 @@ S1 / backward_stream                   reduce_and_partition_stream
 > [!TIP]
 > 并发语义可以概括为：不要猜 `producer` 位于哪个 `stream`，而应等待实际 `producer`。修复恢复 `backward_stream -> reduce_stream` 的 `happens-before` 边
 
-## 案例二：FlashInfer GDN Pipeline 死锁
+## 案例二：`FlashInfer GDN Pipeline` 死锁
 
 > [!CAUTION]
 > **TL;DR**：`SM100 GDN prefill kernel` 中，`o_store pipeline` 的合法 `producer` 是 `CG1`，但 `CG0` 也错误调用 `o_store_producer.tail()`。`CG0` 没有执行配套的 `acquire/commit`，其本地 `PipelineState` 与真实 `mbarrier phase` 不一致，最终等待一个不会再出现的 `barrier transition`
