@@ -456,29 +456,35 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
   **交错 MRoPE 将 token 的三轴位置映射为作用于查询与键向量的旋转算子。**对于第 `l` 个 token，`position_ids[:,b,l]` 给出其 `T/H/W` 坐标；每个二维特征子空间按固定交错规则选取一个轴坐标，与对应频率相乘得到旋转角，再由各子空间的旋转共同构成该 token 的位置变换。`position_ids` 保存位置坐标，`cos/sin` 保存由这些坐标生成的旋转系数；实现通过逐元素乘加将这一变换分别作用于 `Q` 和 `K`，使注意力计算包含多维位置信息。
 
-- **应用二维旋转：将位置系数作用于 Q/K 的成对通道**。沿最后一维复制选轴后的系数，得到 $`C=[\widehat C,\widehat C]`$、$`S=[\widehat S,\widehat S]`$，形状均为 `[B,L,64]`。复制使前后半区中的配对通道共享旋转角：
+- **应用二维旋转：32 个角度作用于 64 个通道**。取 `I12` 的一个注意力头，通道从 `0` 编号；`Q/K` 的 64 维旋转部分按 `(0,32)、(1,33)、…、(31,63)` 组成 32 对，每对使用一个旋转角。`I12` 的位置因子按 `2、3、4、2、3、4、…` 交错排列，分别乘对应频率，得到 $`2\omega_0,\,3\omega_1,\,4\omega_2,\,2\omega_3,\ldots`$ 这 32 个角度。`cos/sin` 各生成 32 个系数，再复制为 64 个，使配对通道共用同一角度。
+
+  具体取 `(1,33)`、`(2,34)`、`(3,35)`：它们分别读取高度坐标 `3`、宽度坐标 `4`、时间坐标 `2`，旋转角依次为 $`3\omega_1`$、$`4\omega_2`$、$`2\omega_3`$。`Qwen3_5Attention.forward()` 将投影、归一化后的 `Q/K` 交给 `apply_rotary_pos_emb()`；`rotate_half()` 将前后两半 $`[x_1,x_2]`$ 变为 $`[-x_2,x_1]`$，从而完成配对通道的乘加。以 $`q_j`$ 表示 `Q` 的第 `j` 个通道，这三对通道的输出为：
 
   ```math
   \begin{aligned}
-  C_{b,l,i}=C_{b,l,i+32}&=\cos\varphi_{b,l,i},\\
-  S_{b,l,i}=S_{b,l,i+32}&=\sin\varphi_{b,l,i}.
+  \widetilde q_1&=q_1\cos(3\omega_1)-q_{33}\sin(3\omega_1),\\
+  \widetilde q_{33}&=q_1\sin(3\omega_1)+q_{33}\cos(3\omega_1),\\[4pt]
+  \widetilde q_2&=q_2\cos(4\omega_2)-q_{34}\sin(4\omega_2),\\
+  \widetilde q_{34}&=q_2\sin(4\omega_2)+q_{34}\cos(4\omega_2),\\[4pt]
+  \widetilde q_3&=q_3\cos(2\omega_3)-q_{35}\sin(2\omega_3),\\
+  \widetilde q_{35}&=q_3\sin(2\omega_3)+q_{35}\cos(2\omega_3).
   \end{aligned}
   ```
 
-  `Qwen3_5Attention.forward()` 将投影、归一化后的 `Q/K` 交给 `apply_rotary_pos_emb()`。`Q` 的形状为 `[B,24,L,256]`，`K` 为 `[B,4,L,256]`；`cos/sin` 经 `unsqueeze(1)` 变为 `[B,1,L,64]`，在注意力头维度广播。同一 token 的所有头共享位置系数，各头分别旋转自身的特征向量。
-
-  固定批次 `b`、token 位置 `l` 及一个注意力头，记 $`\varphi_i=\varphi_{b,l,i}`$，并在 `q/k` 中省略这些固定下标。`rotate_half()` 将前后半区组成的向量 $`[x_1,x_2]`$ 变为 $`[-x_2,x_1]`$；源码的逐元素乘加实现以下二维旋转：
+  `K` 使用相同的角度和配对规则，作用于自身的通道值：
 
   ```math
   \begin{aligned}
-  \widetilde q_i&=q_i\cos\varphi_i-q_{i+32}\sin\varphi_i,\\
-  \widetilde q_{i+32}&=q_i\sin\varphi_i+q_{i+32}\cos\varphi_i,\\
-  \widetilde k_i&=k_i\cos\varphi_i-k_{i+32}\sin\varphi_i,\\
-  \widetilde k_{i+32}&=k_i\sin\varphi_i+k_{i+32}\cos\varphi_i.
+  \widetilde k_1&=k_1\cos(3\omega_1)-k_{33}\sin(3\omega_1),\\
+  \widetilde k_{33}&=k_1\sin(3\omega_1)+k_{33}\cos(3\omega_1),\\[4pt]
+  \widetilde k_2&=k_2\cos(4\omega_2)-k_{34}\sin(4\omega_2),\\
+  \widetilde k_{34}&=k_2\sin(4\omega_2)+k_{34}\cos(4\omega_2),\\[4pt]
+  \widetilde k_3&=k_3\cos(2\omega_3)-k_{35}\sin(2\omega_3),\\
+  \widetilde k_{35}&=k_3\sin(2\omega_3)+k_{35}\cos(2\omega_3).
   \end{aligned}
   ```
 
-  `I12` 的通道对 `(2,34)` 代入 $`\varphi_2=4\omega_2`$，其余通道对分别代入各自的轴坐标与频率。`Q/K` 的前 `64` 维完成旋转，后 `192` 维原样接回，`V` 不参与旋转；注意力内积使用旋转后的 `Q/K`。文本 token 的三轴坐标相同，例如 `t1` 为 `[6,6,6]`，则所有子空间的相位为 $`6\omega_i`$，与一维 RoPE 一致。
+  其余 29 对通道分别代入各自的旋转角，完成整个 64 维部分的旋转；后 `192` 维原样接回，`V` 不参与旋转。各注意力头共享这些位置系数，分别处理自身的 `Q/K`，旋转结果参与注意力内积。文本 token 的三轴坐标相同，例如 `t1` 为 `[6,6,6]`，则各子空间的旋转角为 $`6\omega_i`$，与一维 RoPE 一致。
 
 - **交错的是坐标轴分配，配对方式仍是前后半区**：选轴后剩下 `[B,L,32]`；`cat()` 将这组系数复制成 `[B,L,64]`，让通道 `i` 和 `i+32` 使用同一个角度，通过 `rotate_half()` 完成二维旋转。每个 token 都使用同一套坐标轴分配规则。文本的 `T/H/W` 坐标相同，得到普通一维 RoPE；图片和视频的坐标不同，各通道对分别编码时间、行、列位置。
 
