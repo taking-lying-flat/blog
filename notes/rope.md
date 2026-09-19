@@ -436,7 +436,18 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   \end{aligned}
   ```
 
-  选择后的 $`\widehat C/\widehat S`$ 均为 `[B,L,32]`。轴选择作用于频率维：每个二维子空间只采用一个轴的坐标，所有 token 共享同一轴分配规则。源码先计算三轴 `cos/sin`，再按上述映射选取系数。对 `I12`，选中的相位序列为：
+  对 `I12`，位置列为 `P[:,0,7]=[2,3,4]`。第 `i` 个子空间先由 `i % 3` 确定坐标轴，再从这一列读取该轴的坐标，与 `inv_freq[i]` 相乘。例如 `i=1` 选择高度坐标 `3`，`i=2` 选择宽度坐标 `4`，`i=3` 又回到时间坐标 `2`。频率和坐标的对应关系为：
+
+  | 子空间 `i` | 选中的轴与坐标 | 频率 $`\omega_i`$ | 旋转角 $`\varphi_{0,7,i}`$ | `Q/K` 通道对 |
+  | --- | --- | --- | --- | --- |
+  | `0` | `T=2` | $`1`$ | $`2`$ | `(0,32)` |
+  | `1` | `H=3` | $`10^{-7/32}`$ | $`3\omega_1`$ | `(1,33)` |
+  | `2` | `W=4` | $`10^{-14/32}`$ | $`4\omega_2`$ | `(2,34)` |
+  | `3` | `T=2` | $`10^{-21/32}`$ | $`2\omega_3`$ | `(3,35)` |
+  | `30` | `T=2` | $`10^{-210/32}`$ | $`2\omega_{30}`$ | `(30,62)` |
+  | `31` | `H=3` | $`10^{-217/32}`$ | $`3\omega_{31}`$ | `(31,63)` |
+
+  每个 token 都按相同的频率下标选轴；坐标数值取自各自在位置表中的列。`I12` 的 32 个旋转角因此按以下顺序排列：
 
   ```math
   \begin{aligned}
@@ -445,9 +456,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   \end{aligned}
   ```
 
-  例如频率下标 `i=2` 读取宽度坐标 `4`，因此通道对 `(2,34)` 使用 $`\cos(4\omega_2)`$ 和 $`\sin(4\omega_2)`$。**交错结构由频率索引到坐标轴的映射确定。**
-
-- **每对通道从三个轴中选一个**：选轴前的 `cos/sin` 均为 `[3,B,L,32]`，每个 token 的每对旋转通道都有三个候选系数。`recomposition_frequencies()` 先取时间轴，再以步长 `3` 替换高度、宽度轴的系数，形成 `T,H,W,T,H,W,…` 的交错分配。`mrope_section=[11,11,10]` 表示三个轴分别负责 `11/11/10` 对通道：
+  源码在已经计算的三轴 `cos/sin` 上执行选轴：`freq[0]` 提供全部时间轴系数，再用高度轴覆盖下标 `1,4,7,…,31`，用宽度轴覆盖下标 `2,5,8,…,29`。覆盖完成时，`freqs_thw` 为 `[B,L,32]`，保存每个 token 的 32 个选定系数；函数分别处理 `cos` 和 `sin`，最后通过 `cat()` 复制：
 
   ```python
   def recomposition_frequencies(self, freq):
@@ -459,37 +468,46 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
       return torch.cat((freqs_thw, freqs_thw), dim=-1)
   ```
 
-  | 读取的坐标轴 | 频率下标 `i` | 对应的旋转通道对 `(i,i+32)` |
-  | --- | --- | --- |
-  | `T` | `0,3,6,…,30` | `(0,32)、(3,35)、…、(30,62)` |
-  | `H` | `1,4,7,…,31` | `(1,33)、(4,36)、…、(31,63)` |
-  | `W` | `2,5,8,…,29` | `(2,34)、(5,37)、…、(29,61)` |
-
-- **应用二维旋转：将位置系数作用于 Q/K 的成对通道**。沿最后一维复制选轴后的系数，得到 $`C=[\widehat C,\widehat C]`$、$`S=[\widehat S,\widehat S]`$，形状均为 `[B,L,64]`。复制使前后半区中的配对通道共享旋转角：
+- **将 32 组系数对应到 64 个旋转通道**：固定 `I12`，记 $`c_i=\cos\varphi_{0,7,i}`$、$`s_i=\sin\varphi_{0,7,i}`$。`cat()` 将系数沿最后一维复制，使通道 `i` 和 `i+32` 使用同一组 $`c_i/s_i`$：
 
   ```math
   \begin{aligned}
-  C_{b,l,i}=C_{b,l,i+32}&=\cos\varphi_{b,l,i},\\
-  S_{b,l,i}=S_{b,l,i+32}&=\sin\varphi_{b,l,i}.
+  C_{0,7,:}&=[c_0,\ldots,c_{31},\ c_0,\ldots,c_{31}],\\
+  S_{0,7,:}&=[s_0,\ldots,s_{31},\ s_0,\ldots,s_{31}].
   \end{aligned}
   ```
 
-  `Qwen3_5Attention.forward()` 将投影、归一化后的 `Q/K` 交给 `apply_rotary_pos_emb()`。`Q` 的形状为 `[B,24,L,256]`，`K` 为 `[B,4,L,256]`；`cos/sin` 经 `unsqueeze(1)` 变为 `[B,1,L,64]`，在注意力头维度广播。同一 token 的所有头共享位置系数，各头分别旋转自身的特征向量。
+  例如表中 `i=2` 选出宽度坐标 `4`，所以 `cos[0,7,2]` 和 `cos[0,7,34]` 都为 $`\cos(4\omega_2)`$，对应的两个 `sin` 元素都为 $`\sin(4\omega_2)`$。复制后的 `cos/sin` 为 `[B,L,64]`；`unsqueeze(1)` 将其扩展为 `[B,1,L,64]`，供同一 token 的所有注意力头共享。
 
-  固定批次 `b`、token 位置 `l` 及一个注意力头，记 $`\varphi_i=\varphi_{b,l,i}`$，并在 `q/k` 中省略这些固定下标。`rotate_half()` 将前后半区组成的向量 $`[x_1,x_2]`$ 变为 $`[-x_2,x_1]`$；源码的逐元素乘加实现以下二维旋转：
+- **用选定系数旋转 Q/K**：`Qwen3_5Attention.forward()` 先投影并归一化得到 `Q: [B,24,L,256]`、`K: [B,4,L,256]`，再交给 `apply_rotary_pos_emb()`。函数取前 `64` 维参与旋转；`rotate_half()` 将这部分的前后两半 $`[x_1,x_2]`$ 变为 $`[-x_2,x_1]`$，与广播后的 `cos/sin` 逐元素乘加。核心语句为：
+
+  ```python
+  cos = cos.unsqueeze(unsqueeze_dim)
+  sin = sin.unsqueeze(unsqueeze_dim)
+  rotary_dim = cos.shape[-1]
+  q_rot, q_pass = q[..., :rotary_dim], q[..., rotary_dim:]
+  k_rot, k_pass = k[..., :rotary_dim], k[..., rotary_dim:]
+
+  q_embed = (q_rot * cos) + (rotate_half(q_rot) * sin)
+  k_embed = (k_rot * cos) + (rotate_half(k_rot) * sin)
+
+  q_embed = torch.cat([q_embed, q_pass], dim=-1)
+  k_embed = torch.cat([k_embed, k_pass], dim=-1)
+  return q_embed, k_embed
+  ```
+
+  对 `I12` 的通道对 `(2,34)`，固定一个头，只保留通道下标。表中选出的角度是 $`4\omega_2`$，其中 $`\omega_2=10^{-14/32}`$；`rotate_half()` 在通道 `2` 提供 $`-q_{34}`$，在通道 `34` 提供 $`q_2`$，因此实际计算为：
 
   ```math
   \begin{aligned}
-  \widetilde q_i&=q_i\cos\varphi_i-q_{i+32}\sin\varphi_i,\\
-  \widetilde q_{i+32}&=q_i\sin\varphi_i+q_{i+32}\cos\varphi_i,\\
-  \widetilde k_i&=k_i\cos\varphi_i-k_{i+32}\sin\varphi_i,\\
-  \widetilde k_{i+32}&=k_i\sin\varphi_i+k_{i+32}\cos\varphi_i.
+  \widetilde q_2&=q_2\cos(4\omega_2)-q_{34}\sin(4\omega_2),\\
+  \widetilde q_{34}&=q_2\sin(4\omega_2)+q_{34}\cos(4\omega_2),\\
+  \widetilde k_2&=k_2\cos(4\omega_2)-k_{34}\sin(4\omega_2),\\
+  \widetilde k_{34}&=k_2\sin(4\omega_2)+k_{34}\cos(4\omega_2).
   \end{aligned}
   ```
 
-  `I12` 的通道对 `(2,34)` 代入 $`\varphi_2=4\omega_2`$，其余通道对分别代入各自的轴坐标与频率。`Q/K` 的前 `64` 维完成旋转，后 `192` 维原样接回，`V` 不参与旋转；注意力内积使用旋转后的 `Q/K`。文本 token 的三轴坐标相同，例如 `t1` 为 `[6,6,6]`，则所有子空间的相位为 $`6\omega_i`$，与一维 RoPE 一致。
-
-- **交错的是坐标轴分配，配对方式仍是前后半区**：选轴后剩下 `[B,L,32]`；`cat()` 将这组系数复制成 `[B,L,64]`，让通道 `i` 和 `i+32` 使用同一个角度，通过 `rotate_half()` 完成二维旋转。每个 token 都使用表中的分配规则。文本的 `T/H/W` 坐标相同，得到普通一维 RoPE；图片和视频的坐标不同，各通道对分别编码时间、行、列位置。
+  其余通道对执行相同的乘加：`(0,32)` 使用时间坐标 `2` 对应的角度 $`2\omega_0`$，`(1,33)` 使用高度坐标 `3` 对应的角度 $`3\omega_1`$，依此完成 32 对通道的旋转。后 `192` 维原样接回，`V` 不旋转；注意力内积使用旋转后的 `Q/K`。文本 token 的三轴坐标相同，例如 `t1` 为 `[6,6,6]`，各子空间均使用 $`6\omega_i`$，与一维 RoPE 一致。
 
 ### 条件生成模型：输入与视觉特征填充
 
