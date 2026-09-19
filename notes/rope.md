@@ -1,4 +1,4 @@
-# `RoFormer`: `Enhanced Transformer with Rotary Position Embedding`
+# Interleaved Positional Encoding
 
 ## `RoPE`：旋转位置编码
 
