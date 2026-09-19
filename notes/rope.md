@@ -1,5 +1,7 @@
 # `RoFormer`: `Enhanced Transformer with Rotary Position Embedding`
 
+## `RoPE`：旋转位置编码
+
 `RoPE`（`Rotary Position Embedding`）通过旋转 `Q/K` 特征，使 `attention` 内积包含相对位置信息。设旋转维度为偶数 $`d_r`$，频率底数为 $`\beta`$，位置为 $`p`$；第 $`i`$ 个二维子空间的角频率与旋转角为
 
 ```math
@@ -218,9 +220,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 文本
 ```
 
-这里的 `mm tokens` 指媒体占位 `token`。模型输入中没有独立的 `mm_tokens` 参数：占位 `token` 保存在 `input_ids`，每个位置的媒体类型保存在 `mm_token_type_ids`，媒体内容则保存在像素张量中。
-
-设批大小为 `B`，补齐后的序列长度为 `L`，文本隐藏维度为 `D`：
+这里的 `mm tokens` 指媒体占位 `token`。模型输入中没有独立的 `mm_tokens` 参数：占位 `token` 保存在 `input_ids`，每个位置的媒体类型保存在 `mm_token_type_ids`，媒体内容则保存在像素张量中。设批大小为 `B`，补齐后的序列长度为 `L`，文本隐藏维度为 `D`：
 
 | 字段 | 结构 | 用途 |
 | --- | --- | --- |
@@ -233,9 +233,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 | `pixel_values_videos` | `[ΣP_video,patch_dim]` | 视频的展平时空 `patch` 数据 |
 | `inputs_embeds` | `[B,L,D]` | 文本 `embedding` 与视觉编码器输出合并后的语言模型输入 |
 
-`N_image/N_video` 是整个批次中的媒体数量；网格行的顺序与各样本中媒体出现的顺序一致。`T_g/H_g/W_g` 是 `patch embedding` 后、空间合并前的网格大小。语言模型使用的高度、宽度还要分别除以 `spatial_merge_size`；时间维已经反映 `temporal_patch_size` 的切块结果。
-
-`Qwen3VLProcessor.replace_image_token()` 按合并后的视觉特征数量扩展图片占位：
+`N_image/N_video` 是整个批次中的媒体数量；网格行的顺序与各样本中媒体出现的顺序一致。`T_g/H_g/W_g` 是 `patch embedding` 后、空间合并前的网格大小。语言模型使用的高度、宽度还要分别除以 `spatial_merge_size`；时间维已经反映 `temporal_patch_size` 的切块结果。`Qwen3VLProcessor.replace_image_token()` 按合并后的视觉特征数量扩展图片占位：
 
 ```python
 merge_length = self.image_processor.merge_size**2
@@ -252,11 +250,7 @@ frame_seqlen = video_inputs["video_grid_thw"][video_idx][1:].prod() // merge_len
 metadata = video_inputs["video_metadata"][video_idx]
 video_placeholder = ""
 
-curr_timestamp = self._calculate_timestamps(
-    metadata.frames_indices,
-    metadata.fps,
-    self.video_processor.temporal_patch_size,
-)
+curr_timestamp = self._calculate_timestamps(metadata.frames_indices, metadata.fps, self.video_processor.temporal_patch_size)
 
 for frame_idx in range(num_frames):
     curr_time = curr_timestamp[frame_idx]
@@ -264,9 +258,7 @@ for frame_idx in range(num_frames):
     video_placeholder += self.vision_start_token + self.video_token * frame_seqlen + self.vision_end_token
 ```
 
-`num_frames` 在这里对应视觉时间网格的长度，一个时间片可以包含多个原始视频帧。时间戳作为普通字符串交给 `tokenizer`，占多少文本 `token` 由实际编码决定。
-
-`mm_token_type_ids` 在文本编码后生成。`create_mm_token_type_ids()` 的主体按词表编号识别媒体占位：
+`num_frames` 在这里对应视觉时间网格的长度，一个时间片可以包含多个原始视频帧。时间戳作为普通字符串交给 `tokenizer`，占多少文本 `token` 由实际编码决定。`mm_token_type_ids` 在文本编码后生成。`create_mm_token_type_ids()` 的主体按词表编号识别媒体占位：
 
 ```python
 tokenizer_input = np.array(tokenizer_input)
@@ -286,14 +278,10 @@ mm_token_type_ids.append(mm_token_types.tolist())
 ```python
 inputs_embeds = self.get_input_embeddings()(input_ids)
 
-image_outputs = self.get_image_features(
-    pixel_values, image_grid_thw, return_dict=True, **kwargs
-)
+image_outputs = self.get_image_features(pixel_values, image_grid_thw, return_dict=True, **kwargs)
 image_embeds = image_outputs.pooler_output
 image_embeds = torch.cat(image_embeds, dim=0).to(inputs_embeds.device, inputs_embeds.dtype)
-image_mask, _ = self.get_placeholder_mask(
-    input_ids, inputs_embeds=inputs_embeds, image_features=image_embeds
-)
+image_mask, _ = self.get_placeholder_mask(input_ids, inputs_embeds=inputs_embeds, image_features=image_embeds)
 inputs_embeds = inputs_embeds.masked_scatter(image_mask, image_embeds)
 ```
 
@@ -324,13 +312,7 @@ if video_grid_thw is not None:
 spatial_merge_size = self.config.vision_config.spatial_merge_size
 
 mrope_position_deltas = []
-position_ids = torch.zeros(
-    3,
-    input_ids.shape[0],
-    input_ids.shape[1],
-    dtype=input_ids.dtype,
-    device=input_ids.device,
-)
+position_ids = torch.zeros(3, input_ids.shape[0], input_ids.shape[1], dtype=input_ids.dtype, device=input_ids.device)
 grid_iters = {
     1: iter(image_grid_thw) if image_grid_thw is not None else None,
     2: iter(video_grid_thw) if video_grid_thw is not None else None,
@@ -364,9 +346,7 @@ llm_pos_ids_list = []
 for modality_type, start_idx, end_idx in input_type_group:
     if modality_type == 0:
         text_len = end_idx - start_idx
-        llm_pos_ids_list.append(
-            torch.arange(text_len, device=input_ids.device).view(1, -1).expand(3, -1) + current_pos
-        )
+        llm_pos_ids_list.append(torch.arange(text_len, device=input_ids.device).view(1, -1).expand(3, -1) + current_pos)
         current_pos += text_len
     else:
         grid_thw = next(grid_iters[modality_type])
@@ -412,9 +392,7 @@ height        c,   c,   ..., c              c+1, c+1, ..., c+1          ...
 width         c, c+1, ..., c+W_llm-1        c, c+1, ..., c+W_llm-1       ...
 ```
 
-视频的每个时间片分别取得自己的 `c`。两片之间的文本时间戳和起止标记也会推进 `current_pos`，因此 `temporal` 行保存的是这条编号规则产生的位置；视频实际时间则由前面的时间戳文本表达。
-
-各区段的 `[3,区段长度]` 张量沿序列维连接，再填回原批次的有效槽位：
+视频的每个时间片分别取得自己的 `c`。两片之间的文本时间戳和起止标记也会推进 `current_pos`，因此 `temporal` 行保存的是这条编号规则产生的位置；视频实际时间则由前面的时间戳文本表达。各区段的 `[3,区段长度]` 张量沿序列维连接，再填回原批次的有效槽位：
 
 ```python
 llm_positions = torch.cat(llm_pos_ids_list, dim=1).reshape(3, -1)
@@ -432,9 +410,7 @@ mrope_position_deltas = torch.tensor(mrope_position_deltas, device=input_ids.dev
 return position_ids, mrope_position_deltas
 ```
 
-最终 `position_ids[axis,b,l]` 表示第 `b` 个样本、第 `l` 个槽位在指定轴上的位置。它的三行分别是 `temporal/height/width`，并非三个 `token`；补齐槽位保留初始化值，由 `attention_mask` 排除。函数内部的 `mrope_position_deltas` 在调用处解包为 `rope_deltas`。
-
-正常 `forward()` 未显式传入 `position_ids` 时，`Qwen3_5Model` 会调用 `compute_3d_position_ids()`。它在具有 `input_ids`、`mm_token_type_ids` 和视觉网格，且需要重新构造位置时，执行下面的分支：
+最终 `position_ids[axis,b,l]` 表示第 `b` 个样本、第 `l` 个槽位在指定轴上的位置。它的三行分别是 `temporal/height/width`，并非三个 `token`；补齐槽位保留初始化值，由 `attention_mask` 排除。函数内部的 `mrope_position_deltas` 在调用处解包为 `rope_deltas`。正常 `forward()` 未显式传入 `position_ids` 时，`Qwen3_5Model` 会调用 `compute_3d_position_ids()`。它在具有 `input_ids`、`mm_token_type_ids` 和视觉网格，且需要重新构造位置时，执行下面的分支：
 
 ```python
 if can_compute_mrope and (self.rope_deltas is None or past_key_values_length == 0):
@@ -570,9 +546,7 @@ for i, decoder_layer in enumerate(self.layers[: self.config.num_hidden_layers]):
 input_shape = hidden_states.shape[:-1]
 hidden_shape = (*input_shape, -1, self.head_dim)
 
-query_states, gate = torch.chunk(
-    self.q_proj(hidden_states).view(*input_shape, -1, self.head_dim * 2), 2, dim=-1
-)
+query_states, gate = torch.chunk(self.q_proj(hidden_states).view(*input_shape, -1, self.head_dim * 2), 2, dim=-1)
 gate = gate.reshape(*input_shape, -1)
 
 query_states = self.q_norm(query_states.view(hidden_shape)).transpose(1, 2)
@@ -615,9 +589,7 @@ k_embed = torch.cat([k_embed, k_pass], dim=-1)
 if past_key_values is not None:
     key_states, value_states = past_key_values.update(key_states, value_states, self.layer_idx)
 
-attention_interface = ALL_ATTENTION_FUNCTIONS.get_interface(
-    self.config._attn_implementation, eager_attention_forward
-)
+attention_interface = ALL_ATTENTION_FUNCTIONS.get_interface(self.config._attn_implementation, eager_attention_forward)
 
 attn_output, attn_weights = attention_interface(
     self,
@@ -635,9 +607,7 @@ attn_output, attn_weights = attention_interface(
 
 ### 6. `text_position_ids` 与 `rope_deltas` 分别负责什么
 
-三轴位置描述文本和视觉网格的位置关系，遮罩还需要处理整条序列的先后关系。`text_position_ids` 是 `[B,L]` 的一维序列位置，**包含文本、图片占位、视频占位和起止标记的全部槽位**；名字中的 `text` 不表示只给普通文字编号。
-
-`generate()` 首先调用 `_prepare_position_ids_for_generation()`。普通位置由 `GenerationMixin` 根据 `attention_mask` 生成：
+三轴位置描述文本和视觉网格的位置关系，遮罩还需要处理整条序列的先后关系。`text_position_ids` 是 `[B,L]` 的一维序列位置，**包含文本、图片占位、视频占位和起止标记的全部槽位**；名字中的 `text` 不表示只给普通文字编号。`generate()` 首先调用 `_prepare_position_ids_for_generation()`。普通位置由 `GenerationMixin` 根据 `attention_mask` 生成：
 
 ```python
 position_ids = attention_mask.long().cumsum(-1) - 1
@@ -719,9 +689,7 @@ packed_sequence_mask = (position_diff != 1).cumsum(-1)
 mrope_position_deltas.append(llm_positions.max() + 1 - len(current_input_ids))
 ```
 
-`llm_positions.max()+1` 是已分配三轴位置之后的起点，`len(current_input_ids)` 是去除补齐后的有效序列长度。两者之差以 `[B,1]` 保存，每个样本一个，自动构造位置的分支将它存入 `self.rope_deltas`。
-
-`compute_3d_position_ids()` 在需要利用已保存差值构造后续文本位置时，先形成一维位置，再扩展成三轴并加上差值：
+`llm_positions.max()+1` 是已分配三轴位置之后的起点，`len(current_input_ids)` 是去除补齐后的有效序列长度。两者之差以 `[B,1]` 保存，每个样本一个，自动构造位置的分支将它存入 `self.rope_deltas`。`compute_3d_position_ids()` 在需要利用已保存差值构造后续文本位置时，先形成一维位置，再扩展成三轴并加上差值：
 
 ```python
 if attention_mask is not None:

@@ -52,6 +52,7 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .post-meta > * + *::before { content: "·"; margin: 0 9px; }
 .prose { font-family: var(--reading); font-size: 17px; font-weight: 500; line-height: 1.85; }
 .prose a { color: var(--accent); }
+.prose :is(h1, h2, h3, h4, h5, h6) { text-align: center; }
 .prose h2, .prose h3, .prose h4 { font-weight: 700; letter-spacing: normal; text-wrap: wrap; }
 .prose h2 { margin: 32px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); font-size: 24px; }
 .prose h3 { margin: 26px 0 10px; font-size: 20px; }
