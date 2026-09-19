@@ -314,7 +314,11 @@ const fonts = path.join(root, 'node_modules/@fontsource-variable/jetbrains-mono'
 await cp(path.join(fonts, 'files'), path.join(output, 'assets/fonts/files'), { recursive: true });
 await copyFile(path.join(fonts, 'index.css'), path.join(output, 'assets/fonts/index.css'));
 await copyFile(path.join(fonts, 'LICENSE'), path.join(output, 'assets/fonts/LICENSE'));
+const readingFonts = path.join(root, 'node_modules/@fontsource-variable/noto-sans-sc');
+await cp(path.join(readingFonts, 'files'), path.join(output, 'assets/fonts/files'), { recursive: true });
+await copyFile(path.join(readingFonts, 'wght.css'), path.join(output, 'assets/fonts/noto-sans-sc.css'));
 await mkdir(path.join(output, 'assets/licenses'), { recursive: true });
+await copyFile(path.join(readingFonts, 'LICENSE'), path.join(output, 'assets/licenses/NotoSansSC.txt'));
 await copyFile(path.join(primer, 'LICENSE'), path.join(output, 'assets/licenses/Primer.txt'));
 await copyFile(path.join(root, 'node_modules/@mathjax/src/LICENSE'), path.join(output, 'assets/licenses/MathJax.txt'));
 const mathFont = JSON.parse(await readFile(path.join(root, 'node_modules/@mathjax/mathjax-newcm-font/package.json'), 'utf8'));
