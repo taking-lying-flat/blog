@@ -210,81 +210,10 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
 ## 交错多模态旋转位置编码（Interleaved MRoPE）流程
 
-1. **对齐内容与位置：建立内容张量与三维坐标的对应关系**。设混合序列的内容张量为 $`X\in\mathbb R^{B\times L\times D}`$，对应 `inputs_embeds`；位置张量为 $`P\in\mathbb Z^{3\times B\times L}`$，对应 `position_ids`。`X[b,l,:]` 保存第 `b` 个样本、第 `l` 个 token 的内容向量，`P[:,b,l]` 保存同一 token 的时间、高度、宽度坐标。视觉特征填入媒体槽位后，序列长度与槽位顺序保持不变；`get_rope_index()` 根据模态类型和视觉网格，为这些槽位分配坐标。内容张量用于生成 `Q/K`，位置张量用于生成旋转系数。
-
-   取 `bs=1`、`L=10`，单张图片的网格为 `[1,4,6]`，`spatial_merge_size=2`，空间合并后为 `[1,2,3]`，对应六个图片槽位。`t0/t1` 各表示一个文本 token，`S/E` 表示媒体起止标记，`Ihw` 表示图片第 `h` 行、第 `w` 列的槽位。三轴位置表为：
-
-   | 槽位 `l` | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
-   | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-   | token | `t0` | `S` | `I00` | `I01` | `I02` | `I10` | `I11` | `I12` | `E` | `t1` |
-   | `T = P[0,0,l]` | 0 | 1 | 2 | 2 | 2 | 2 | 2 | 2 | 5 | 6 |
-   | `H = P[1,0,l]` | 0 | 1 | 2 | 2 | 2 | 3 | 3 | 3 | 5 | 6 |
-   | `W = P[2,0,l]` | 0 | 1 | 2 | 3 | 4 | 2 | 3 | 4 | 5 | 6 |
-
-   图片区段的起点为 `2`。单张图片的时间坐标恒为 `2`，高度、宽度坐标分别为区段起点加行号、列号，按宽度优先的顺序展平。区段结束后，旋转位置按最大网格边长 `3` 推进，因此 `E/t1` 的坐标为 `5/6`。六个图片槽位的词表编号均为 `<|image_pad|>`，各自对应不同的视觉特征和网格坐标。对 `I12`，内容向量为 `X[0,7,:]`，位置列为 `P[:,0,7]=[2,3,4]`。**位置表中的坐标直接作为相位计算的位置因子。**
-
-2. **计算三轴候选角度：位置坐标与频率向量的外积**。`Qwen3.5-27B` 的旋转维度为 $`d_r=64`$，对应 $`F=d_r/2=32`$ 个二维旋转子空间；频率底数为 $`\beta=10^7`$。轴下标 $`a=0,1,2`$ 分别表示 `T/H/W`，频率下标 $`i=0,\ldots,31`$ 对应通道对 $`(i,i+32)`$，`inv_freq[i]` 记为 $`\omega_i`$。每个轴的每个位置与全部频率相乘，构造候选相位张量：
-
-   ```math
-   \begin{aligned}
-   \omega_i&=\beta^{-2i/d_r}=10^{-7i/32},\\
-   \Phi_{a,b,l,i}&=P_{a,b,l}\omega_i,\qquad
-   \Phi\in\mathbb R^{3\times B\times L\times32},\\
-   C^{\mathrm{axis}}_{a,b,l,i}&=\cos\Phi_{a,b,l,i},\\
-   S^{\mathrm{axis}}_{a,b,l,i}&=\sin\Phi_{a,b,l,i}.
-   \end{aligned}
-   ```
-
-   `Qwen3_5TextRotaryEmbedding.forward()` 将频率扩展为 `[3,B,32,1]`、位置扩展为 `[3,B,1,L]`；矩阵乘法得到 `[3,B,32,L]`，交换最后两维后得到 `freqs: [3,B,L,32]`。三个轴共享同一组 `inv_freq`。默认配置的 `attention_scaling=1`，求 `cos/sin` 后保留相同形状。
-
-   在单样本输入中，候选相位和系数均为 `[3,1,10,32]`。`I12` 的三轴坐标为 `[2,3,4]`，因此第 `i` 个旋转子空间具有三个候选角度 $`2\omega_i`$、$`3\omega_i`$、$`4\omega_i`$；每个候选角度分别生成一组余弦、正弦系数。
-
-3. **按通道对交错选轴：将三轴候选系数映射到旋转子空间**。`mrope_section=[11,11,10]` 表示时间、高度、宽度轴分别分配 `11/11/10` 个旋转子空间。`recomposition_frequencies()` 在频率下标 `0,3,6,…,30` 取时间轴，`1,4,7,…,31` 取高度轴，`2,5,8,…,29` 取宽度轴。对这组配置，定义轴选择映射 $`\sigma(i)=i\bmod3`$，则每个通道对实际使用的相位与系数为：
-
-   ```math
-   \begin{aligned}
-   \varphi_{b,l,i}&=P_{\sigma(i),b,l}\omega_i,\\
-   \widehat C_{b,l,i}&=C^{\mathrm{axis}}_{\sigma(i),b,l,i}
-   =\cos\varphi_{b,l,i},\\
-   \widehat S_{b,l,i}&=S^{\mathrm{axis}}_{\sigma(i),b,l,i}
-   =\sin\varphi_{b,l,i}.
-   \end{aligned}
-   ```
-
-   选择后的 $`\widehat C/\widehat S`$ 均为 `[B,L,32]`。轴选择作用于频率维：每个二维子空间只采用一个轴的坐标，所有 token 共享同一轴分配规则。源码先计算三轴 `cos/sin`，再按上述映射选取系数。对 `I12`，选中的相位序列为：
-
-   ```math
-   \begin{aligned}
-   \varphi_{0,7,:}=[&2\omega_0,\ 3\omega_1,\ 4\omega_2,\\
-   &2\omega_3,\ldots,\ 2\omega_{30},\ 3\omega_{31}].
-   \end{aligned}
-   ```
-
-   例如频率下标 `i=2` 读取宽度坐标 `4`，因此通道对 `(2,34)` 使用 $`\cos(4\omega_2)`$ 和 $`\sin(4\omega_2)`$。**交错结构由频率索引到坐标轴的映射确定。**
-
-4. **应用二维旋转：将位置系数作用于 Q/K 的成对通道**。沿最后一维复制选轴后的系数，得到 $`C=[\widehat C,\widehat C]`$、$`S=[\widehat S,\widehat S]`$，形状均为 `[B,L,64]`。复制使前后半区中的配对通道共享旋转角：
-
-   ```math
-   \begin{aligned}
-   C_{b,l,i}=C_{b,l,i+32}&=\cos\varphi_{b,l,i},\\
-   S_{b,l,i}=S_{b,l,i+32}&=\sin\varphi_{b,l,i}.
-   \end{aligned}
-   ```
-
-   `Qwen3_5Attention.forward()` 将投影、归一化后的 `Q/K` 交给 `apply_rotary_pos_emb()`。`Q` 的形状为 `[B,24,L,256]`，`K` 为 `[B,4,L,256]`；`cos/sin` 经 `unsqueeze(1)` 变为 `[B,1,L,64]`，在注意力头维度广播。同一 token 的所有头共享位置系数，各头分别旋转自身的特征向量。
-
-   固定批次 `b`、token 位置 `l` 及一个注意力头，记 $`\varphi_i=\varphi_{b,l,i}`$，并在 `q/k` 中省略这些固定下标。`rotate_half()` 将前后半区组成的向量 $`[x_1,x_2]`$ 变为 $`[-x_2,x_1]`$；源码的逐元素乘加实现以下二维旋转：
-
-   ```math
-   \begin{aligned}
-   \widetilde q_i&=q_i\cos\varphi_i-q_{i+32}\sin\varphi_i,\\
-   \widetilde q_{i+32}&=q_i\sin\varphi_i+q_{i+32}\cos\varphi_i,\\
-   \widetilde k_i&=k_i\cos\varphi_i-k_{i+32}\sin\varphi_i,\\
-   \widetilde k_{i+32}&=k_i\sin\varphi_i+k_{i+32}\cos\varphi_i.
-   \end{aligned}
-   ```
-
-   `I12` 的通道对 `(2,34)` 代入 $`\varphi_2=4\omega_2`$，其余通道对分别代入各自的轴坐标与频率。`Q/K` 的前 `64` 维完成旋转，后 `192` 维原样接回，`V` 不参与旋转；注意力内积使用旋转后的 `Q/K`。文本 token 的三轴坐标相同，例如 `t1` 为 `[6,6,6]`，则所有子空间的相位为 $`6\omega_i`$，与一维 RoPE 一致。
+1. **对齐内容与位置**：将视觉特征填入媒体槽位，用 `get_rope_index()` 为同一条序列生成三轴坐标。
+2. **计算三轴相位**：三轴坐标分别乘共享频率，求 `cos/sin`，得到候选旋转系数。
+3. **按通道对交错选轴**：按 `T/H/W` 交错规则，为每对旋转通道选择一组系数。
+4. **旋转 Q/K**：复制并广播系数，对 `Q/K` 的配对通道执行二维旋转。
 
 ### `mm_tokens`：混合序列与模态类型
 
@@ -444,7 +373,38 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   return position_ids, mrope_position_deltas
   ```
 
+### 三维位置表：单批次示例
+
+- **对齐内容与位置：建立内容张量与三维坐标的对应关系**。设混合序列的内容张量为 $`X\in\mathbb R^{B\times L\times D}`$，对应 `inputs_embeds`；位置张量为 $`P\in\mathbb Z^{3\times B\times L}`$，对应 `position_ids`。`X[b,l,:]` 保存第 `b` 个样本、第 `l` 个 token 的内容向量，`P[:,b,l]` 保存同一 token 的时间、高度、宽度坐标。视觉特征填入媒体槽位后，序列长度与槽位顺序保持不变；`get_rope_index()` 根据模态类型和视觉网格，为这些槽位分配坐标。内容张量用于生成 `Q/K`，位置张量用于生成旋转系数。
+
+  取 `bs=1`、`L=10`，单张图片的网格为 `[1,4,6]`，`spatial_merge_size=2`，空间合并后为 `[1,2,3]`，对应六个图片槽位。`t0/t1` 各表示一个文本 token，`S/E` 表示媒体起止标记，`Ihw` 表示图片第 `h` 行、第 `w` 列的槽位。三轴位置表为：
+
+  | 槽位 `l` | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+  | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+  | token | `t0` | `S` | `I00` | `I01` | `I02` | `I10` | `I11` | `I12` | `E` | `t1` |
+  | `T = P[0,0,l]` | 0 | 1 | 2 | 2 | 2 | 2 | 2 | 2 | 5 | 6 |
+  | `H = P[1,0,l]` | 0 | 1 | 2 | 2 | 2 | 3 | 3 | 3 | 5 | 6 |
+  | `W = P[2,0,l]` | 0 | 1 | 2 | 3 | 4 | 2 | 3 | 4 | 5 | 6 |
+
+  图片区段的起点为 `2`。单张图片的时间坐标恒为 `2`，高度、宽度坐标分别为区段起点加行号、列号，按宽度优先的顺序展平。区段结束后，旋转位置按最大网格边长 `3` 推进，因此 `E/t1` 的坐标为 `5/6`。六个图片槽位的词表编号均为 `<|image_pad|>`，各自对应不同的视觉特征和网格坐标。对 `I12`，内容向量为 `X[0,7,:]`，位置列为 `P[:,0,7]=[2,3,4]`。**位置表中的坐标直接作为相位计算的位置因子。**
+
 ### 交错 `MRoPE`：按通道对选择 `T/H/W` 坐标
+
+- **计算三轴候选角度：位置坐标与频率向量的外积**。`Qwen3.5-27B` 的旋转维度为 $`d_r=64`$，对应 $`F=d_r/2=32`$ 个二维旋转子空间；频率底数为 $`\beta=10^7`$。轴下标 $`a=0,1,2`$ 分别表示 `T/H/W`，频率下标 $`i=0,\ldots,31`$ 对应通道对 $`(i,i+32)`$，`inv_freq[i]` 记为 $`\omega_i`$。每个轴的每个位置与全部频率相乘，构造候选相位张量：
+
+  ```math
+  \begin{aligned}
+  \omega_i&=\beta^{-2i/d_r}=10^{-7i/32},\\
+  \Phi_{a,b,l,i}&=P_{a,b,l}\omega_i,\qquad
+  \Phi\in\mathbb R^{3\times B\times L\times32},\\
+  C^{\mathrm{axis}}_{a,b,l,i}&=\cos\Phi_{a,b,l,i},\\
+  S^{\mathrm{axis}}_{a,b,l,i}&=\sin\Phi_{a,b,l,i}.
+  \end{aligned}
+  ```
+
+  `Qwen3_5TextRotaryEmbedding.forward()` 将频率扩展为 `[3,B,32,1]`、位置扩展为 `[3,B,1,L]`；矩阵乘法得到 `[3,B,32,L]`，交换最后两维后得到 `freqs: [3,B,L,32]`。三个轴共享同一组 `inv_freq`。默认配置的 `attention_scaling=1`，求 `cos/sin` 后保留相同形状。
+
+  在单样本输入中，候选相位和系数均为 `[3,1,10,32]`。`I12` 的三轴坐标为 `[2,3,4]`，因此第 `i` 个旋转子空间具有三个候选角度 $`2\omega_i`$、$`3\omega_i`$、$`4\omega_i`$；每个候选角度分别生成一组余弦、正弦系数。
 
 - **位置表提供旋转坐标**：`position_ids` 是普通 RoPE 中“位置 × 频率”的位置输入；`rope_theta` 决定频率底数。`Qwen3.5` 为每个 token 保存 `T/H/W` 三个坐标，用同一组 `inv_freq` 分别计算三个轴的角度。`Qwen3_5TextRotaryEmbedding.forward()` 中，相位与三角函数的核心语句为：
 
@@ -464,6 +424,29 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   cos = self.recomposition_frequencies(cos)
   ```
 
+- **按通道对交错选轴：将三轴候选系数映射到旋转子空间**。`mrope_section=[11,11,10]` 表示时间、高度、宽度轴分别分配 `11/11/10` 个旋转子空间。`recomposition_frequencies()` 在频率下标 `0,3,6,…,30` 取时间轴，`1,4,7,…,31` 取高度轴，`2,5,8,…,29` 取宽度轴。对这组配置，定义轴选择映射 $`\sigma(i)=i\bmod3`$，则每个通道对实际使用的相位与系数为：
+
+  ```math
+  \begin{aligned}
+  \varphi_{b,l,i}&=P_{\sigma(i),b,l}\omega_i,\\
+  \widehat C_{b,l,i}&=C^{\mathrm{axis}}_{\sigma(i),b,l,i}
+  =\cos\varphi_{b,l,i},\\
+  \widehat S_{b,l,i}&=S^{\mathrm{axis}}_{\sigma(i),b,l,i}
+  =\sin\varphi_{b,l,i}.
+  \end{aligned}
+  ```
+
+  选择后的 $`\widehat C/\widehat S`$ 均为 `[B,L,32]`。轴选择作用于频率维：每个二维子空间只采用一个轴的坐标，所有 token 共享同一轴分配规则。源码先计算三轴 `cos/sin`，再按上述映射选取系数。对 `I12`，选中的相位序列为：
+
+  ```math
+  \begin{aligned}
+  \varphi_{0,7,:}=[&2\omega_0,\ 3\omega_1,\ 4\omega_2,\\
+  &2\omega_3,\ldots,\ 2\omega_{30},\ 3\omega_{31}].
+  \end{aligned}
+  ```
+
+  例如频率下标 `i=2` 读取宽度坐标 `4`，因此通道对 `(2,34)` 使用 $`\cos(4\omega_2)`$ 和 $`\sin(4\omega_2)`$。**交错结构由频率索引到坐标轴的映射确定。**
+
 - **每对通道从三个轴中选一个**：选轴前的 `cos/sin` 均为 `[3,B,L,32]`，每个 token 的每对旋转通道都有三个候选系数。`recomposition_frequencies()` 先取时间轴，再以步长 `3` 替换高度、宽度轴的系数，形成 `T,H,W,T,H,W,…` 的交错分配。`mrope_section=[11,11,10]` 表示三个轴分别负责 `11/11/10` 对通道：
 
   ```python
@@ -481,6 +464,30 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   | `T` | `0,3,6,…,30` | `(0,32)、(3,35)、…、(30,62)` |
   | `H` | `1,4,7,…,31` | `(1,33)、(4,36)、…、(31,63)` |
   | `W` | `2,5,8,…,29` | `(2,34)、(5,37)、…、(29,61)` |
+
+- **应用二维旋转：将位置系数作用于 Q/K 的成对通道**。沿最后一维复制选轴后的系数，得到 $`C=[\widehat C,\widehat C]`$、$`S=[\widehat S,\widehat S]`$，形状均为 `[B,L,64]`。复制使前后半区中的配对通道共享旋转角：
+
+  ```math
+  \begin{aligned}
+  C_{b,l,i}=C_{b,l,i+32}&=\cos\varphi_{b,l,i},\\
+  S_{b,l,i}=S_{b,l,i+32}&=\sin\varphi_{b,l,i}.
+  \end{aligned}
+  ```
+
+  `Qwen3_5Attention.forward()` 将投影、归一化后的 `Q/K` 交给 `apply_rotary_pos_emb()`。`Q` 的形状为 `[B,24,L,256]`，`K` 为 `[B,4,L,256]`；`cos/sin` 经 `unsqueeze(1)` 变为 `[B,1,L,64]`，在注意力头维度广播。同一 token 的所有头共享位置系数，各头分别旋转自身的特征向量。
+
+  固定批次 `b`、token 位置 `l` 及一个注意力头，记 $`\varphi_i=\varphi_{b,l,i}`$，并在 `q/k` 中省略这些固定下标。`rotate_half()` 将前后半区组成的向量 $`[x_1,x_2]`$ 变为 $`[-x_2,x_1]`$；源码的逐元素乘加实现以下二维旋转：
+
+  ```math
+  \begin{aligned}
+  \widetilde q_i&=q_i\cos\varphi_i-q_{i+32}\sin\varphi_i,\\
+  \widetilde q_{i+32}&=q_i\sin\varphi_i+q_{i+32}\cos\varphi_i,\\
+  \widetilde k_i&=k_i\cos\varphi_i-k_{i+32}\sin\varphi_i,\\
+  \widetilde k_{i+32}&=k_i\sin\varphi_i+k_{i+32}\cos\varphi_i.
+  \end{aligned}
+  ```
+
+  `I12` 的通道对 `(2,34)` 代入 $`\varphi_2=4\omega_2`$，其余通道对分别代入各自的轴坐标与频率。`Q/K` 的前 `64` 维完成旋转，后 `192` 维原样接回，`V` 不参与旋转；注意力内积使用旋转后的 `Q/K`。文本 token 的三轴坐标相同，例如 `t1` 为 `[6,6,6]`，则所有子空间的相位为 $`6\omega_i`$，与一维 RoPE 一致。
 
 - **交错的是坐标轴分配，配对方式仍是前后半区**：选轴后剩下 `[B,L,32]`；`cat()` 将这组系数复制成 `[B,L,64]`，让通道 `i` 和 `i+32` 使用同一个角度，通过 `rotate_half()` 完成二维旋转。每个 token 都使用表中的分配规则。文本的 `T/H/W` 坐标相同，得到普通一维 RoPE；图片和视频的坐标不同，各通道对分别编码时间、行、列位置。
 
