@@ -454,19 +454,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   ```
 
   > [!IMPORTANT]
-  > **交错 MRoPE 将三轴坐标映射为分块旋转，使注意力的位置项由三维相对位移决定**。第 `i` 对通道 `(i,i+32)` 读取轴 $`\sigma(i)`$ 的坐标，以 $`\omega_i`$ 为角频率；32 个二维旋转共同组成该 token 在 64 维旋转空间中的位置变换。`position_ids` 参数化这一变换，`cos/sin` 是其逐通道计算所需的系数。记 $`q_l^{(i)}`$、$`k_m^{(i)}`$ 为两个 token 的第 `i` 对通道，$`R(\theta)`$ 为二维旋转矩阵，则：
-  >
-  > ```math
-  > \begin{aligned}
-  > \Delta\varphi_i
-  > &=\varphi_{m,i}-\varphi_{l,i}
-  > =\omega_i\bigl(P_{\sigma(i),m}-P_{\sigma(i),l}\bigr),\\
-  > (\widetilde q_l^{(i)})^\top\widetilde k_m^{(i)}
-  > &=(q_l^{(i)})^\top R(\Delta\varphi_i)k_m^{(i)}.
-  > \end{aligned}
-  > ```
-  >
-  > $`P_{a,l}`$ 表示第 `l` 个 token 在轴 `a` 上的坐标。旋转后的内积由两 token 在所选轴上的坐标差调制；各子空间的贡献相加，将时间、行、列方向的相对位移纳入注意力。**交错规则确定坐标轴与频率的对应关系，使三个轴的旋转子空间沿频率序列交替分布**。
+  > **交错 MRoPE 的核心：同一 token 的 T/H/W 坐标沿频率下标交替作为位置因子**。对于 `I12`，三轴坐标为 `[2,3,4]`，32 个子空间的位置因子依次为 `2、3、4、2、3、4、…`；分别乘各自的频率，得到 $`2\omega_0,\,3\omega_1,\,4\omega_2,\,2\omega_3,\ldots`$ 这 32 个旋转角。每个角度生成一组 `cos/sin`，作用于 `Q/K` 的一对通道 `(i,i+32)`，32 对共同完成 64 维特征的旋转。
   >
   > **文本 token 的三个轴共享同一位置因子**。对于第 `l` 个文本 token，$`T_l=H_l=W_l=p_l`$，因此任意子空间选轴后的旋转角均为 $`\varphi_{l,i}=p_l\omega_i`$。在相同频率与通道配对下，$`R_{\mathrm{MRoPE}}(p_l,p_l,p_l)=R_{\mathrm{RoPE}}(p_l)`$，与一维 RoPE 等价。$`p_l`$ 随 token 的序列位置变化，$`\omega_i`$ 随子空间变化。
 
@@ -490,30 +478,6 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 - **交错的是坐标轴分配，配对方式仍是前后半区**：选轴后剩下 `[B,L,32]`；`cat()` 将这组系数复制成 `[B,L,64]`，让通道 `i` 和 `i+32` 使用同一个角度，通过 `rotate_half()` 完成二维旋转。每个 token 都使用同一套坐标轴分配规则。文本的 `T/H/W` 坐标相同，得到普通一维 RoPE；图片和视频的坐标不同，各通道对分别编码时间、行、列位置。
 
 ### Qwen3.5：MRoPE 的接口调用
-
-- **位置入口：`Qwen3_5Model.forward()`**。媒体特征填充后，`inputs_embeds: [B,L,D]` 与位置表按槽位对应。未显式传入 `position_ids` 时，`compute_3d_position_ids()` 在首次多模态前向中调用 `get_rope_index()`，生成 `[3,B,L]` 并保存 `rope_deltas`；已有位置表则直接传入文本模型。位置构造与传递的调用为：
-
-  ```python
-  if position_ids is None:
-      position_ids = self.compute_3d_position_ids(
-          input_ids=input_ids,
-          image_grid_thw=image_grid_thw,
-          video_grid_thw=video_grid_thw,
-          inputs_embeds=inputs_embeds,
-          attention_mask=attention_mask,
-          past_key_values=past_key_values,
-          mm_token_type_ids=mm_token_type_ids,
-      )
-
-  outputs = self.language_model(
-      input_ids=None,
-      position_ids=position_ids,
-      attention_mask=attention_mask,
-      past_key_values=past_key_values,
-      inputs_embeds=inputs_embeds,
-      **kwargs,
-  )
-  ```
 
 - **系数接口：`Qwen3_5TextModel.forward()` → `Qwen3_5TextRotaryEmbedding.forward()`**。文本模型接收三轴位置，通过 `self.rotary_emb(hidden_states, position_ids)` 返回 `position_embeddings=(cos,sin)`，两者均为 `[B,L,64]`，一次计算后传给各层。旋转模块用 `hidden_states` 确定设备类型与输出 `dtype`，用 `position_ids` 和 `inv_freq` 计算角度。`generate()` 首次准备位置时，将覆盖全部槽位的一维序列位置与三轴位置拼成 `[4,B,L]`；文本模型将首行拆为 `text_position_ids`，用于注意力掩码构造，其余三行用于旋转系数计算。直接传入 `[3,B,L]` 时，三行均用于旋转，`text_position_ids=None`。核心传递语句为：
 
@@ -550,7 +514,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
 ### 条件生成模型：输入与视觉特征填充
 
-- **条件生成模型的入口**：`Qwen3_5ForConditionalGeneration.forward()` 将混合输入和位置参数传给 `self.model`，即 `Qwen3_5Model`。位置表沿 `position_ids` 参数传递，视觉数据和类型标记各有独立参数；该层的实际调用为：
+- **条件生成模型的入口**：`Qwen3_5ForConditionalGeneration.forward()` 将混合输入和位置参数传给 `self.model`，即 `Qwen3_5Model`。该模型由 `self.visual` 视觉编码器与 `self.language_model` 文本模型组成，`self.rope_deltas` 初始化为 `None`，用于保存各样本的旋转位置差值。一次前向依次完成视觉编码、媒体槽位填充、位置构造与文本模型计算。入口调用为：
 
   ```python
   outputs = self.model(
@@ -568,17 +532,40 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   )
   ```
 
-- **`special_*_mask` 只定位视觉特征的填充位置**：`Qwen3_5Model.get_placeholder_mask()` 在 `input_ids` 路径中比较特殊 token 编号，先得到 `[B,L]` 布尔表，再扩展为 `[B,L,1]`。最后一维广播到隐藏维度 `D`，使一个媒体槽位的整条向量被替换。返回的两个掩码分别由调用方接收为 `image_mask` 和 `video_mask`，定位与扩展的关键语句为：
+- **视觉编码：得到与媒体槽位等长的特征**。`get_image_features()` 将像素张量转换为视觉编码器的 `dtype`，连同 `grid_thw` 送入 `self.visual`，取 `pooler_output` 作为合并后的视觉特征。每张图片对应的特征数为 `T×H×W / spatial_merge_size²`，据此将特征拆成逐图片的张量。`get_video_features()` 直接复用这一实现，传入视频像素与视频网格：
+
+  ```python
+  pixel_values = pixel_values.type(self.visual.dtype)
+  vision_output = self.visual(
+      pixel_values, grid_thw=image_grid_thw, return_dict=True, **kwargs
+  )
+  image_embeds = vision_output.pooler_output
+  split_sizes = (
+      image_grid_thw.prod(-1) // self.visual.spatial_merge_size**2
+  ).tolist()
+  image_embeds = torch.split(image_embeds, split_sizes)
+  vision_output.pooler_output = image_embeds
+  return vision_output
+  ```
+
+- **`special_*_mask` 定位媒体槽位并校验特征数量**：`get_placeholder_mask()` 在 `input_ids` 路径中比较特殊 token 编号，先得到 `[B,L]` 布尔表，再扩展为 `[B,L,1]`，沿隐藏维广播。仅提供 `inputs_embeds` 时，则逐位置比较整条嵌入向量是否等于对应占位 token 的词嵌入。返回的两个掩码由调用方接收为 `image_mask/video_mask`；填充前还会检查“占位数 × 隐藏维度”是否等于特征元素总数，不匹配即报错。图片分支的核心语句为：
 
   ```python
   special_image_mask = input_ids == self.config.image_token_id
   special_video_mask = input_ids == self.config.video_token_id
+  n_image_tokens = special_image_mask.sum()
   special_image_mask = special_image_mask.unsqueeze(-1).to(inputs_embeds.device)
   special_video_mask = special_video_mask.unsqueeze(-1).to(inputs_embeds.device)
-  return special_image_mask, special_video_mask
+
+  if image_features is not None:
+      torch_compilable_check(
+          n_image_tokens * inputs_embeds.shape[-1] == image_features.numel(),
+          f"Image features and image tokens do not match, "
+          f"tokens: {n_image_tokens}, features: {image_features.shape[0]}",
+      )
   ```
 
-- **填入内容，保留槽位顺序**：`Qwen3_5Model.forward()` 先计算 `inputs_embeds`，再处理视觉分支。图片分支如下，视频分支以同样方式填充 `video_mask` 指定的槽位。`masked_scatter()` 只替换内容，`L` 和 token 顺序不变；随后生成的位置表仍与这些槽位逐列对应：
+- **填入内容，保留槽位顺序**：`forward()` 要求 `input_ids` 与 `inputs_embeds` 恰好提供一个；传入 `input_ids` 时先查词嵌入，再处理视觉分支。图片特征按原顺序拼接，并转换到 `inputs_embeds` 的设备与 `dtype`，随后由 `masked_scatter()` 填入 `image_mask` 对应的槽位。视频分支同样填充 `video_mask`；替换后 `L` 和 token 顺序不变，位置表仍与内容逐列对应：
 
   ```python
   if inputs_embeds is None:
@@ -596,4 +583,46 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
           input_ids, inputs_embeds=inputs_embeds, image_features=image_embeds
       )
       inputs_embeds = inputs_embeds.masked_scatter(image_mask, image_embeds)
+  ```
+
+- **位置构造：`compute_3d_position_ids()`**。视觉特征填入后，未显式传入 `position_ids` 才进入位置构造；已有位置表则直接使用。传入 `input_ids` 与视觉网格时，必须同时提供 `mm_token_type_ids`，否则抛出异常。调用为：
+
+  ```python
+  if position_ids is None:
+      position_ids = self.compute_3d_position_ids(
+          input_ids=input_ids,
+          image_grid_thw=image_grid_thw,
+          video_grid_thw=video_grid_thw,
+          inputs_embeds=inputs_embeds,
+          attention_mask=attention_mask,
+          past_key_values=past_key_values,
+          mm_token_type_ids=mm_token_type_ids,
+      )
+  ```
+
+  方法读取 `past_key_values.get_seq_length()`，按以下条件选择位置来源：
+
+  | 条件 | 位置处理 |
+  | --- | --- |
+  | `input_ids`、`mm_token_type_ids`、视觉网格齐全，且缓存长度为 `0` 或 `rope_deltas` 尚未保存 | 调用 `get_rope_index()` 生成 `[3,B,L]`，将返回的差值保存到 `self.rope_deltas` |
+  | 已保存 `rope_deltas`，且缓存长度大于 `0` 或未提供 `input_ids` | 从序列编号恢复三轴位置，再加各样本的差值 |
+  | 其余情况 | 返回 `None`，由文本模型生成一维序列位置并扩展到三轴 |
+
+  恢复位置时，有 `attention_mask` 就用 `cumsum(-1)-1` 计算有效序列编号，并将补齐位置置 `0`；否则从缓存长度开始构造 `arange`。序列编号扩展为三行后，加上按批次对齐的 `rope_deltas`，三轴继续使用相同的文本位置因子。显式传入位置表的调用会跳过这一方法，也不会在该路径中更新 `rope_deltas`。
+
+- **传入文本模型并返回状态**：`self.language_model` 同时接收 `[B,L,D]` 内容张量与位置表。内容用于本层的特征投影，位置用于生成旋转系数；输出保留文本模型返回的隐藏状态与缓存，并附带 `rope_deltas`：
+
+  ```python
+  outputs = self.language_model(
+      input_ids=None,
+      position_ids=position_ids,
+      attention_mask=attention_mask,
+      past_key_values=past_key_values,
+      inputs_embeds=inputs_embeds,
+      **kwargs,
+  )
+  return Qwen3_5ModelOutputWithPast(
+      **outputs,
+      rope_deltas=self.rope_deltas,
+  )
   ```
