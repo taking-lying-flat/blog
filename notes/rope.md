@@ -402,9 +402,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   \end{aligned}
   ```
 
-  `Qwen3_5TextRotaryEmbedding.forward()` 将频率扩展为 `[3,B,32,1]`、位置扩展为 `[3,B,1,L]`；矩阵乘法得到 `[3,B,32,L]`，交换最后两维后得到 `freqs: [3,B,L,32]`。三个轴共享同一组 `inv_freq`。默认配置的 `attention_scaling=1`，求 `cos/sin` 后保留相同形状。
-
-  在单样本输入中，候选相位和系数均为 `[3,1,10,32]`。`I12` 的三轴坐标为 `[2,3,4]`，因此第 `i` 个旋转子空间具有三个候选角度 $`2\omega_i`$、$`3\omega_i`$、$`4\omega_i`$；每个候选角度分别生成一组余弦、正弦系数。
+  `Qwen3_5TextRotaryEmbedding.forward()` 将三轴共享的 `inv_freq` 扩展为 `[3,B,32,1]`，位置扩展为 `[3,B,1,L]`；相乘得到 `[3,B,32,L]`，交换最后两维得到 `freqs: [3,B,L,32]`，再求同形状的 `cos/sin`（默认 `attention_scaling=1`）。单样本示例中的相位与系数均为 `[3,1,10,32]`；`I12` 的坐标 `[2,3,4]` 对应第 `i` 个子空间的三个候选角度 $`2\omega_i`$、$`3\omega_i`$、$`4\omega_i`$，分别生成一组余弦、正弦系数。
 
 - **位置表提供旋转坐标**：`position_ids` 是普通 RoPE 中“位置 × 频率”的位置输入；`rope_theta` 决定频率底数。`Qwen3.5` 为每个 token 保存 `T/H/W` 三个坐标，用同一组 `inv_freq` 分别计算三个轴的角度。`Qwen3_5TextRotaryEmbedding.forward()` 中，相位与三角函数的核心语句为：
 
