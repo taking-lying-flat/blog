@@ -211,9 +211,9 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 ## `Qwen3.5`：文本、图片与视频的 `MRoPE` 流程
 
 1. **对齐内容与位置**：视觉特征填入混合序列的媒体槽位，得到 `inputs_embeds: [B,L,D]`；`get_rope_index()` 为同一条序列生成 `position_ids: [3,B,L]`，同一列对应同一个 token。
-2. **将三轴坐标变成旋转系数**：`Qwen3_5TextModel.forward()` 把位置表传入 `Qwen3_5TextRotaryEmbedding.forward()`，三个轴分别乘频率并求 `cos/sin`。
-3. **为每对通道确定坐标轴**：`recomposition_frequencies()` 按 `mrope_section` 从 `T/H/W` 中选取系数，将 `[3,B,L,32]` 合成为 `[B,L,64]`。
-4. **旋转实际的查询和键**：系数通过 `position_embeddings` 传到每个 `full_attention` 层；`Qwen3_5Attention.forward()` 投影并归一化 `Q/K` 后，调用 `apply_rotary_pos_emb()` 完成旋转。
+2. **计算三轴的候选角度**：`position_ids` 的三行分别乘同一组 `inv_freq`，再求 `cos/sin`，得到 `[3,B,L,32]` 的三轴系数。
+3. **按通道对交错选轴**：`recomposition_frequencies()` 按 `T,H,W,T,H,W,…` 为每对通道选择坐标轴，得到 `[B,L,32]` 的系数。
+4. **应用前文的二维旋转**：将系数复制为 `[B,L,64]`，使前后半区的通道对 `(i,i+32)` 使用同一个角度，旋转 `Q/K`。
 
 ### 输入序列：视觉特征与位置表逐列对应
 
@@ -391,7 +391,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   mrope_position_deltas.append(llm_positions.max() + 1 - len(current_input_ids))
   ```
 
-- **返回位置与差值**：批次循环结束后，差值转成 `[B,1]`，与 `[3,B,L]` 的位置表一起返回。调用方将 `mrope_position_deltas` 接收为 `rope_deltas`：
+- **返回位置与差值**：`position_ids: [3,B,L]` 提供每个 token 的三轴旋转坐标；`rope_deltas: [B,1]` 保存“下一个旋转位置 − 有效序列长度”，用于后续生成时将序列编号对齐到 RoPE 位置，不是 `KV cache` 的存储索引。每条样本各保存一个差值：
 
   ```python
   mrope_position_deltas = torch.tensor(
@@ -400,59 +400,9 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   return position_ids, mrope_position_deltas
   ```
 
-### 消费三维位置表：`position_ids` → `cos/sin`
+### 交错 `MRoPE`：按通道对选择 `T/H/W` 坐标
 
-- **`Qwen3_5Model.forward()` 把内容和坐标一起传入文本模型**：视觉特征填充完成后，若没有显式传入 `position_ids`，就调用 `compute_3d_position_ids()`；首次处理多模态输入时，该方法调用前面的 `get_rope_index()` 并保存 `rope_deltas`。随后，`self.language_model`，即 `Qwen3_5TextModel`，同时收到 `[B,L,D]` 的内容和 `[3,B,L]` 的坐标：
-
-  ```python
-  if position_ids is None:
-      position_ids = self.compute_3d_position_ids(
-          input_ids=input_ids,
-          image_grid_thw=image_grid_thw,
-          video_grid_thw=video_grid_thw,
-          inputs_embeds=inputs_embeds,
-          attention_mask=attention_mask,
-          past_key_values=past_key_values,
-          mm_token_type_ids=mm_token_type_ids,
-      )
-
-  outputs = self.language_model(
-      input_ids=None,
-      position_ids=position_ids,
-      attention_mask=attention_mask,
-      past_key_values=past_key_values,
-      inputs_embeds=inputs_embeds,
-      **kwargs,
-  )
-  ```
-
-- **`Qwen3_5TextModel.forward()` 消费三维表，向各层传递系数**：普通多模态 `forward()` 可以直接接收 `[3,B,L]`。`generate()` 首次准备位置时，还会把 `[B,L]` 的一维序列编号放在最前面，组成 `[4,B,L]`；文本模型先拆出 `text_position_ids`，剩余三行仍是 `T/H/W`。一维编号覆盖文本和媒体的全部槽位。下面摘出该方法的位置处理和逐层传递语句：
-
-  ```python
-  if position_ids.ndim == 3 and position_ids.shape[0] == 4:
-      text_position_ids = position_ids[0]
-      position_ids = position_ids[1:]
-  else:
-      text_position_ids = None
-
-  hidden_states = inputs_embeds
-  position_embeddings = self.rotary_emb(hidden_states, position_ids)
-
-  for i, decoder_layer in enumerate(self.layers[: self.config.num_hidden_layers]):
-      hidden_states = decoder_layer(
-          hidden_states,
-          position_embeddings=position_embeddings,
-          attention_mask=causal_mask_mapping[self.config.layer_types[i]],
-          position_ids=text_position_ids,
-          past_key_values=past_key_values,
-          use_cache=use_cache,
-          **kwargs,
-      )
-  ```
-
-- **两个参数承担不同作用**：传给 `rotary_emb` 的 `position_ids` 是三轴坐标；返回的 `position_embeddings` 是 `(cos,sin)`，供各层旋转 `Q/K`。传给 `decoder_layer` 的同名参数 `position_ids` 则已经换成一维的 `text_position_ids`，用于序列相关处理和注意力掩码。三维位置信息沿 `position_embeddings` 继续向下传递，不能只追踪后面的 `position_ids` 参数。直接传三行时，`text_position_ids=None`，三行全部参与旋转系数计算。
-
-- **`Qwen3_5TextRotaryEmbedding.forward()` 为三个轴分别计算角度**：`position_ids[axis,b,l]` 是第 `b` 个样本、第 `l` 个 token 在某个轴上的坐标。每个坐标与同一组 `inv_freq[i]` 相乘，得到 `freqs[axis,b,l,i]`。沿用前文配置，32 个频率对应 32 对旋转通道；源码通过扩展维度和矩阵乘法完成组合，在关闭自动混合精度的上下文中计算三角函数：
+- **位置表提供旋转坐标**：`position_ids` 是普通 RoPE 中“位置 × 频率”的位置输入；`rope_theta` 决定频率底数。`Qwen3.5` 为每个 token 保存 `T/H/W` 三个坐标，用同一组 `inv_freq` 分别计算三个轴的角度。`Qwen3_5TextRotaryEmbedding.forward()` 中，相位与三角函数的核心语句为：
 
   ```python
   inv_freq_expanded = (
@@ -461,32 +411,16 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
       .expand(3, position_ids.shape[1], -1, 1)
   )
   position_ids_expanded = position_ids[:, :, None, :].float()
-  device_type = (
-      x.device.type
-      if isinstance(x.device.type, str) and x.device.type != "mps"
-      else "cpu"
-  )
-  with maybe_autocast(device_type=device_type, enabled=False):
-      freqs = (
-          inv_freq_expanded.float() @ position_ids_expanded.float()
-      ).transpose(2, 3)
-      cos = freqs.cos() * self.attention_scaling
-      sin = freqs.sin() * self.attention_scaling
-
+  freqs = (
+      inv_freq_expanded.float() @ position_ids_expanded.float()
+  ).transpose(2, 3)
+  cos = freqs.cos() * self.attention_scaling
+  sin = freqs.sin() * self.attention_scaling
   sin = self.recomposition_frequencies(sin)
   cos = self.recomposition_frequencies(cos)
-  return cos.to(dtype=x.dtype), sin.to(dtype=x.dtype)
   ```
 
-  | 阶段 | 张量结构 | 各维含义 |
-  | --- | --- | --- |
-  | 三轴位置 | `[3,B,L]` | 轴、样本、token 槽位 |
-  | 扩展频率与位置 | `[3,B,32,1]`、`[3,B,1,L]` | 为每个轴的每个位置组合全部频率 |
-  | 相乘并转置 | `[3,B,L,32]` | 每个 token、每对通道都有三个候选角度 |
-  | 分别求 `cos/sin` | `[3,B,L,32]` | 保留三个轴的候选系数 |
-  | 按通道对选择坐标轴并复制 | `[B,L,64]` | 每对通道只使用一个轴的角度，前后半区共享系数 |
-
-- **`recomposition_frequencies()` 将三个候选合成一套系数**：先用 `freq[0]` 取时间轴，再把指定频率下标替换为高度轴或宽度轴的系数。选的是最后一维的通道对，不是序列中的 token；每个 token 都采用同一套通道分配：
+- **每对通道从三个轴中选一个**：选轴前的 `cos/sin` 均为 `[3,B,L,32]`，每个 token 的每对旋转通道都有三个候选系数。`recomposition_frequencies()` 先取时间轴，再以步长 `3` 替换高度、宽度轴的系数，形成 `T,H,W,T,H,W,…` 的交错分配。`mrope_section=[11,11,10]` 表示三个轴分别负责 `11/11/10` 对通道：
 
   ```python
   def recomposition_frequencies(self, freq):
@@ -498,91 +432,10 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
       return torch.cat((freqs_thw, freqs_thw), dim=-1)
   ```
 
-  | 读取的坐标轴 | `mrope_section=[11,11,10]` 对应的频率下标 | 源码操作 |
+  | 读取的坐标轴 | 频率下标 `i` | 对应的旋转通道对 `(i,i+32)` |
   | --- | --- | --- |
-  | `T` | `0,3,6,…,30` | 保留 `freq[0]` 中未替换的位置 |
-  | `H` | `1,4,7,…,31` | 用 `freq[1]` 替换 `slice(1,33,3)` |
-  | `W` | `2,5,8,…,29` | 用 `freq[2]` 替换 `slice(2,30,3)` |
+  | `T` | `0,3,6,…,30` | `(0,32)、(3,35)、…、(30,62)` |
+  | `H` | `1,4,7,…,31` | `(1,33)、(4,36)、…、(31,63)` |
+  | `W` | `2,5,8,…,29` | `(2,34)、(5,37)、…、(29,61)` |
 
-- **一个坐标轴决定一对通道的旋转**：第 `i` 对通道先确定使用 `T/H/W` 中哪一个坐标，再用该坐标对应的 `cos/sin` 旋转。末尾的 `cat()` 把 32 个系数复制为 64 个，使前后半区配对的通道 `(i,i+32)` 取得同一组系数。文本 token 的三个坐标相同，因此所有通道对仍采用普通一维 RoPE 的角度；视觉 token 的坐标不同，各通道对分别携带时间、行或列信息。
-
-### 完成旋转：`position_embeddings` → `Q/K`
-
-- **`Qwen3_5DecoderLayer.forward()` 把系数交给注意力层**：文本模型每次前向只计算一份 `position_embeddings`，各层复用。`full_attention` 分支的 `self.self_attn` 是 `Qwen3_5Attention`，它接收的就是前面生成的 `(cos,sin)`；`linear_attention` 分支使用 `GatedDeltaNet`，不走这组 `Q/K` 旋转。`full_attention` 分支的调用为：
-
-  ```python
-  hidden_states, _ = self.self_attn(
-      hidden_states=hidden_states,
-      attention_mask=attention_mask,
-      position_ids=position_ids,
-      past_key_values=past_key_values,
-      position_embeddings=position_embeddings,
-      **kwargs,
-  )
-  ```
-
-- **`Qwen3_5Attention.forward()` 先产生本层的 `Q/K`，再旋转**：每层使用自己的投影和归一化参数；位置系数共用，参与旋转的特征向量不同。`q_proj` 同时输出查询与门控，分离后对 `Q/K` 做归一化，再转成 `[B,H,L,head_dim]`。源码紧接着解包 `position_embeddings` 并调用旋转函数：
-
-  ```python
-  input_shape = hidden_states.shape[:-1]
-  hidden_shape = (*input_shape, -1, self.head_dim)
-  query_states, gate = torch.chunk(
-      self.q_proj(hidden_states).view(*input_shape, -1, self.head_dim * 2),
-      2, dim=-1,
-  )
-  query_states = self.q_norm(query_states.view(hidden_shape)).transpose(1, 2)
-  key_states = self.k_norm(
-      self.k_proj(hidden_states).view(hidden_shape)
-  ).transpose(1, 2)
-  value_states = self.v_proj(hidden_states).view(hidden_shape).transpose(1, 2)
-
-  cos, sin = position_embeddings
-  query_states, key_states = apply_rotary_pos_emb(
-      query_states, key_states, cos, sin
-  )
-  ```
-
-- **`apply_rotary_pos_emb()` 将角度作用到通道对**：`cos/sin` 从 `[B,L,64]` 扩展为 `[B,1,L,64]`，广播到所有查询头和键头。`Q/K` 的前 64 维进入旋转区，其余维度保留。`rotate_half([x1,x2])=[-x2,x1]`，因此逐元素相乘与相加恰好完成前文的二维旋转；`V` 不参与：
-
-  ```python
-  cos = cos.unsqueeze(unsqueeze_dim)
-  sin = sin.unsqueeze(unsqueeze_dim)
-  rotary_dim = cos.shape[-1]
-  q_rot, q_pass = q[..., :rotary_dim], q[..., rotary_dim:]
-  k_rot, k_pass = k[..., :rotary_dim], k[..., rotary_dim:]
-
-  q_embed = (q_rot * cos) + (rotate_half(q_rot) * sin)
-  k_embed = (k_rot * cos) + (rotate_half(k_rot) * sin)
-
-  q_embed = torch.cat([q_embed, q_pass], dim=-1)
-  k_embed = torch.cat([k_embed, k_pass], dim=-1)
-  return q_embed, k_embed
-  ```
-
-- **旋转结果进入注意力计算**：返回值覆盖 `query_states/key_states`。有缓存时，`Qwen3_5Attention.forward()` 随后执行下面的更新，再将 `query_states`、更新后的 `key_states/value_states` 交给注意力实现；三轴位置对注意力的影响已体现在旋转后的 `Q/K` 中：
-
-  ```python
-  if past_key_values is not None:
-      key_states, value_states = past_key_values.update(
-          key_states, value_states, self.layer_idx
-      )
-  ```
-
-- **`rope_deltas` 保持后续文本的位置连续**：视觉位置按网格最大边长推进，缓存长度按实际 token 数量增长，所以 `get_rope_index()` 保存 `三轴位置最大值+1-有效序列长度`，每个样本一个差值。`compute_3d_position_ids()` 需要从序列位置恢复旋转位置时，将一维编号扩展到三轴再加上差值；未传二维 `attention_mask` 的分支为：
-
-  ```python
-  position_ids = torch.arange(
-      past_key_values_length, past_key_values_length + seq_length
-  )
-  position_ids = (
-      position_ids.view(1, 1, -1)
-      .expand(3, batch_size, -1)
-      .to(inputs_embeds.device)
-  )
-  delta = self.rope_deltas.repeat_interleave(
-      batch_size // self.rope_deltas.shape[0], dim=0
-  )
-  position_ids = position_ids + delta.to(device=inputs_embeds.device)
-  ```
-
-- **继续生成仍经过相同的旋转流程**：新文本的三个坐标相同，生成对应 `cos/sin` 后，只旋转新增的 `Q/K`；缓存中的历史 `K` 已经旋转过。同一次 `generate()` 已持有位置表时直接递增最后的位置，不再重复加 `rope_deltas`。
+- **交错的是坐标轴分配，配对方式仍是前后半区**：选轴后剩下 `[B,L,32]`；`cat()` 将这组系数复制成 `[B,L,64]`，让通道 `i` 和 `i+32` 使用同一个角度，按前文的 `rotate_half()` 完成二维旋转。每个 token 都使用表中的分配规则。文本的 `T/H/W` 坐标相同，得到普通一维 RoPE；图片和视频的坐标不同，各通道对分别编码时间、行、列位置。
