@@ -434,16 +434,13 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   \end{aligned}
   ```
 
-  选择后的 $`\widehat C/\widehat S`$ 均为 `[B,L,32]`。轴选择作用于频率维：每个二维子空间只采用一个轴的坐标，所有 token 共享同一轴分配规则。源码先计算三轴 `cos/sin`，再按上述映射选取系数。对 `I12`，选中的相位序列为：
+  选择后的 $`\widehat C/\widehat S`$ 均为 `[B,L,32]`。轴选择作用于频率维：每个二维子空间只采用一个轴的坐标，所有 token 共享同一轴分配规则。源码先计算三轴 `cos/sin`，再按上述映射选取系数。对 `I12`，选轴后最终采用的 32 个旋转角为：
 
   ```math
-  \begin{aligned}
-  \varphi_{0,7,:}=[&2\omega_0,\ 3\omega_1,\ 4\omega_2,\\
-  &2\omega_3,\ldots,\ 2\omega_{30},\ 3\omega_{31}].
-  \end{aligned}
+  \varphi_{0,7,:}=[2\omega_0,\ 3\omega_1,\ 4\omega_2,\ 2\omega_3,\ldots,\ 2\omega_{30},\ 3\omega_{31}].
   ```
 
-  例如频率下标 `i=2` 读取宽度坐标 `4`，因此通道对 `(2,34)` 使用 $`\cos(4\omega_2)`$ 和 $`\sin(4\omega_2)`$。**交错结构由频率索引到坐标轴的映射确定。**
+  `2、3、4` 是 `I12` 的三轴位置坐标。在第 `i` 个二维子空间，选中的坐标充当一维 RoPE 中的位置因子 $`p_i`$，与该子空间的频率 $`\omega_i`$ 相乘，得到实际旋转角 $`\varphi_{0,7,i}=p_i\omega_i`$。例如频率下标 `i=2` 读取宽度坐标 `4`，因此通道对 `(2,34)` 使用 $`\cos(4\omega_2)`$ 和 $`\sin(4\omega_2)`$。**交错结构由频率索引到坐标轴的映射确定。**
 
 - **每对通道从三个轴中选一个**：选轴前的 `cos/sin` 均为 `[3,B,L,32]`，每个 token 的每对旋转通道都有三个候选系数。`recomposition_frequencies()` 先取时间轴，再以步长 `3` 替换高度、宽度轴的系数，形成 `T,H,W,T,H,W,…` 的交错分配。`mrope_section=[11,11,10]` 表示三个轴分别负责 `11/11/10` 对通道：
 
