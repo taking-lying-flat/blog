@@ -210,10 +210,11 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
 ## 交错多模态旋转位置编码（Interleaved MRoPE）流程
 
-1. **对齐内容与位置**：将视觉特征填入混合序列的媒体槽位；`get_rope_index()` 根据模态类型和视觉网格生成三轴坐标，使内容向量与位置逐 token 对齐。
-2. **计算三轴相位**：`T/H/W` 坐标分别乘同一组 `inv_freq`，得到各频率下的旋转角，再求 `cos/sin`，为每个 token 的通道对生成三组候选系数。
-3. **按通道对交错选轴**：按 `mrope_section` 分配三轴各自负责的通道对数量，再以 `T/H/W` 交错顺序选取对应轴的系数；所有 token 共享同一选轴规则。
-4. **旋转 Q/K**：复制所选系数，使前后半区配对的通道共用旋转角，再广播到各注意力头，对投影和归一化后的 `Q/K` 执行二维旋转，供注意力计算使用。
+1. **准备混合序列与 `mm_tokens`**：处理器展开媒体占位，`input_ids` 记录各槽位的词表编号，`mm_token_type_ids` 标记模态；对应的媒体特征随后填入占位，与文本嵌入组成内容序列。
+2. **生成三轴位置**：`get_rope_index()` 根据模态类型、视觉网格和有效槽位生成 `T/H/W` 坐标；位置表的每一列与同一 token 的内容向量对应，提供其旋转所需的位置因子。
+3. **计算三轴候选系数**：三轴坐标分别乘共享频率 `inv_freq`，将位置因子转换为旋转角，再求 `cos/sin`，为每对通道准备来自三个轴的候选系数。
+4. **按通道对交错选轴**：按 `mrope_section` 规定的数量，沿频率下标将通道对交错分配给 `T/H/W`；每对只保留对应轴的系数，最终得到 32 组确定的旋转系数。
+5. **旋转 Q/K 的成对通道**：将 32 组系数复制到 64 个旋转通道，使 `(i,i+32)` 共用一个角度；各注意力头据此旋转投影、归一化后的 `Q/K`，结果用于注意力内积。
 
 ### `mm_tokens`：混合序列与模态类型
 
@@ -468,19 +469,6 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   \widetilde q_{34}&=q_2\sin(4\omega_2)+q_{34}\cos(4\omega_2),\\[4pt]
   \widetilde q_3&=q_3\cos(2\omega_3)-q_{35}\sin(2\omega_3),\\
   \widetilde q_{35}&=q_3\sin(2\omega_3)+q_{35}\cos(2\omega_3).
-  \end{aligned}
-  ```
-
-  `K` 使用相同的角度和配对规则，作用于自身的通道值：
-
-  ```math
-  \begin{aligned}
-  \widetilde k_1&=k_1\cos(3\omega_1)-k_{33}\sin(3\omega_1),\\
-  \widetilde k_{33}&=k_1\sin(3\omega_1)+k_{33}\cos(3\omega_1),\\[4pt]
-  \widetilde k_2&=k_2\cos(4\omega_2)-k_{34}\sin(4\omega_2),\\
-  \widetilde k_{34}&=k_2\sin(4\omega_2)+k_{34}\cos(4\omega_2),\\[4pt]
-  \widetilde k_3&=k_3\cos(2\omega_3)-k_{35}\sin(2\omega_3),\\
-  \widetilde k_{35}&=k_3\sin(2\omega_3)+k_{35}\cos(2\omega_3).
   \end{aligned}
   ```
 
