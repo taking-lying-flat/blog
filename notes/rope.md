@@ -210,14 +210,30 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
 ## `Qwen3.5`：文本、图片与视频的 `MRoPE` 流程
 
-1. **对齐内容与位置**：视觉特征填入混合序列的媒体槽位，得到 `inputs_embeds: [B,L,D]`；`get_rope_index()` 为同一条序列生成 `position_ids: [3,B,L]`，同一列对应同一个 token。
-2. **计算三轴的候选角度**：`position_ids` 的三行分别乘同一组 `inv_freq`，再求 `cos/sin`，得到 `[3,B,L,32]` 的三轴系数。
-3. **按通道对交错选轴**：`recomposition_frequencies()` 按 `T,H,W,T,H,W,…` 为每对通道选择坐标轴，得到 `[B,L,32]` 的系数。
-4. **应用二维旋转**：将系数复制为 `[B,L,64]`，使前后半区的通道对 `(i,i+32)` 使用同一个角度，旋转 `Q/K`。
+### `mm_tokens`：混合序列与模态类型
 
-### 输入序列：视觉特征与位置表逐列对应
+- **媒体槽位与类型编号**：`mm_tokens` 指混合序列中的媒体占位 token。用 `Qwen3-Omni` 的文本、图片、视频、音频四种输入模态举例，可以按 `0/1/2/3` 标记每个槽位：
 
-- **处理器准备槽位与类型**：`processor.apply_chat_template(messages, tokenize=True, return_dict=True, return_tensors="pt")` 按消息中的 `type` 渲染媒体标记，再由 `Qwen3VLProcessor` 按视觉特征数量展开占位。图片对应连续的 `<|image_pad|>`；视频按时间片展开，每片带文本时间戳和连续的 `<|video_pad|>`。`mm tokens` 就是这些媒体占位 token；模型参数使用 `input_ids` 和 `mm_token_type_ids`，没有单独的 `mm_tokens`。`B/L/D` 分别表示批大小、补齐后的序列长度和隐藏维度。
+  | 类型编号 | 槽位内容 | 填入语言模型的向量 |
+  | --- | --- | --- |
+  | `0` | 文本、消息标记、媒体起止标记 | token 的文本嵌入 |
+  | `1` | 图片占位 | 图片编码器输出的特征 |
+  | `2` | 视频占位 | 视频帧的视觉特征 |
+  | `3` | 音频占位 | 音频编码器输出的特征 |
+
+  `input_ids` 保存词表编号；类型编号只标记这个槽位属于哪种模态。例如一段文本后接图片区段，再接文本、视频和音频，类型可以写成 `0,0,1,1,1,1,0,2,2,0,3,3,3,0`；连续的多个 `1` 表示同一图片区段中的多个特征槽位。`Qwen3.5` 使用文本、图片、视频三类，类型为 `0/1/2`，由 `mm_token_type_ids: [B,L]` 逐槽位传给 `get_rope_index()`。
+
+- **类型按占位编号生成**：`create_mm_token_type_ids()` 先把整条序列设为 `0`，再按图片、视频、音频占位的词表编号赋值：
+
+  ```python
+  tokenizer_input = np.array(tokenizer_input)
+  mm_token_types = np.zeros_like(tokenizer_input)
+  mm_token_types[np.isin(tokenizer_input, self.image_token_ids)] = 1
+  mm_token_types[np.isin(tokenizer_input, self.video_token_ids)] = 2
+  mm_token_types[np.isin(tokenizer_input, self.audio_token_ids)] = 3
+  ```
+
+- **处理器准备槽位与类型**：`processor.apply_chat_template(messages, tokenize=True, return_dict=True, return_tensors="pt")` 按消息中的 `type` 渲染媒体标记，再由 `Qwen3VLProcessor` 按视觉特征数量展开占位。图片对应连续的 `<|image_pad|>`；视频按时间片展开，每片带文本时间戳和连续的 `<|video_pad|>`。`B/L/D` 分别表示批大小、补齐后的序列长度和隐藏维度。
 
   | 字段 | 结构 | 与位置表的关系 |
   | --- | --- | --- |
@@ -230,53 +246,58 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
 - **区分媒体占位和补齐**：`<|image_pad|>`、`<|video_pad|>` 是有效媒体槽位，不是 padding 或 EOS token，`attention_mask` 为 `1`。`Qwen3.5-27B` 的 padding token 是 `<|endoftext|>`，tokenizer 的 EOS 是 `<|im_end|>`；生成配置把两者都列为停止 token。时间戳、消息标记和 `<|vision_start|>/<|vision_end|>` 的媒体类型均为 `0`，按文本位置规则处理。
 
-- **条件生成模型的入口**：`Qwen3_5ForConditionalGeneration.forward()` 将混合输入和位置参数传给 `self.model`，即 `Qwen3_5Model`。位置表沿 `position_ids` 参数传递，视觉数据和类型标记各有独立参数；该层的实际调用为：
+### 从位置表到 `Q/K`：四个步骤
 
-  ```python
-  outputs = self.model(
-      input_ids=input_ids,
-      pixel_values=pixel_values,
-      pixel_values_videos=pixel_values_videos,
-      image_grid_thw=image_grid_thw,
-      video_grid_thw=video_grid_thw,
-      position_ids=position_ids,
-      attention_mask=attention_mask,
-      past_key_values=past_key_values,
-      inputs_embeds=inputs_embeds,
-      mm_token_type_ids=mm_token_type_ids,
-      **kwargs,
-  )
-  ```
+1. **对齐内容与位置**：`inputs_embeds[b,l,:]` 是一个 token 的内容向量，`position_ids[:,b,l]` 是同一 token 的 `T/H/W` 三个旋转坐标。取 `bs=1`，单张图片的网格为 `[1,4,6]`，`spatial_merge_size=2`，空间合并后为 `[1,2,3]`，对应六个图片槽位。`t0/t1` 各表示一个文本 token，`S/E` 表示媒体起止标记，`Ihw` 表示图片第 `h` 行、第 `w` 列的槽位：
 
-- **`special_*_mask` 只定位视觉特征的填充位置**：`Qwen3_5Model.get_placeholder_mask()` 在 `input_ids` 路径中比较特殊 token 编号，先得到 `[B,L]` 布尔表，再扩展为 `[B,L,1]`。最后一维广播到隐藏维度 `D`，使一个媒体槽位的整条向量被替换。返回的两个掩码分别由调用方接收为 `image_mask` 和 `video_mask`，定位与扩展的关键语句为：
+   | 槽位 `l` | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+   | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+   | token | `t0` | `S` | `I00` | `I01` | `I02` | `I10` | `I11` | `I12` | `E` | `t1` |
+   | `T` | 0 | 1 | 2 | 2 | 2 | 2 | 2 | 2 | 5 | 6 |
+   | `H` | 0 | 1 | 2 | 2 | 2 | 3 | 3 | 3 | 5 | 6 |
+   | `W` | 0 | 1 | 2 | 3 | 4 | 2 | 3 | 4 | 5 | 6 |
 
-  ```python
-  special_image_mask = input_ids == self.config.image_token_id
-  special_video_mask = input_ids == self.config.video_token_id
-  special_image_mask = special_image_mask.unsqueeze(-1).to(inputs_embeds.device)
-  special_video_mask = special_video_mask.unsqueeze(-1).to(inputs_embeds.device)
-  return special_image_mask, special_video_mask
-  ```
+   图片从旋转位置 `2` 开始，`T` 不变，`H/W` 分别加行号、列号；结束后按最大边长 `3` 推进，所以下一个位置是 `5`。六个 `Ihw` 都是 `<|image_pad|>`，各自填入不同的视觉特征。位置表为 `[3,1,10]`，内容为 `[1,10,D]`；例如第 `7` 列的 `I12`，内容取 `inputs_embeds[0,7,:]`，旋转坐标取 `[2,3,4]`。**三轴位置表提供旋转角公式中的位置因子。**
 
-- **填入内容，保留槽位顺序**：`Qwen3_5Model.forward()` 先计算 `inputs_embeds`，再处理视觉分支。图片分支如下，视频分支以同样方式填充 `video_mask` 指定的槽位。`masked_scatter()` 只替换内容，`L` 和 token 顺序不变；随后生成的位置表仍与这些槽位逐列对应：
+2. **计算三轴的候选角度**：固定批次下标 `0`，记 $`P_{a,l}=\text{position\_ids}[a,0,l]`$，轴 $`a=0,1,2`$ 对应 `T/H/W`。`32` 个频率分别对应 `32` 对旋转通道；三个轴使用同一组频率，只改变相乘的坐标：
 
-  ```python
-  if inputs_embeds is None:
-      inputs_embeds = self.get_input_embeddings()(input_ids)
+   ```math
+   \begin{aligned}
+   \omega_i&=\text{inv\_freq}[i]=10^{-7i/32},\qquad i=0,\ldots,31,\\
+   \Phi_{a,l,i}&=P_{a,l}\omega_i,\\
+   C^{\mathrm{axis}}_{a,l,i}&=\cos\Phi_{a,l,i},\qquad
+   S^{\mathrm{axis}}_{a,l,i}=\sin\Phi_{a,l,i}.
+   \end{aligned}
+   ```
 
-  if pixel_values is not None:
-      image_outputs = self.get_image_features(
-          pixel_values, image_grid_thw, return_dict=True, **kwargs
-      )
-      image_embeds = image_outputs.pooler_output
-      image_embeds = torch.cat(image_embeds, dim=0).to(
-          inputs_embeds.device, inputs_embeds.dtype
-      )
-      image_mask, _ = self.get_placeholder_mask(
-          input_ids, inputs_embeds=inputs_embeds, image_features=image_embeds
-      )
-      inputs_embeds = inputs_embeds.masked_scatter(image_mask, image_embeds)
-  ```
+   `freqs` 和三轴 `cos/sin` 都是 `[3,1,10,32]`。对 `I12` 的第 `i` 对通道，三个候选角度为 $`2\omega_i`$、$`3\omega_i`$、$`4\omega_i`$，分别来自 `T/H/W`。因此每个 token、每对通道都有三个候选系数，随后选一个。
+
+3. **按通道对交错选轴**：`mrope_section=[11,11,10]` 将 `32` 对通道分给 `T/H/W`。`recomposition_frequencies()` 在频率下标 `0,3,6,…` 取 `T`，`1,4,7,…` 取 `H`，`2,5,8,…` 取 `W`；每个 token 都采用同一分配。对这组配置，选轴规则和选中的角度为：
+
+   ```math
+   \begin{aligned}
+   a(i)&=i\bmod 3,\qquad \varphi_{l,i}=P_{a(i),l}\omega_i,\\
+   \varphi_{7,:}&=[2\omega_0,\ 3\omega_1,\ 4\omega_2,\ 2\omega_3,
+   \ldots,\ 2\omega_{30},\ 3\omega_{31}].
+   \end{aligned}
+   ```
+
+   代码选择已经算好的 `cos/sin`，结果各为 `[1,10,32]`。例如 `I12` 的第 `2` 对通道读取宽度坐标 `4`，得到 $`\cos(4\omega_2)`$ 和 $`\sin(4\omega_2)`$。**交错的是同一个 token 内各通道对读取的坐标轴。**
+
+4. **应用二维旋转**：选轴后的 `32` 个系数复制成 `64` 个，使通道 `i` 和 `i+32` 共用同一角度：$`C_{l,i}=C_{l,i+32}=\cos\varphi_{l,i}`$，$`S_{l,i}=S_{l,i+32}=\sin\varphi_{l,i}`$。`cos/sin` 从 `[1,10,64]` 扩展成 `[1,1,10,64]`，广播到全部 `Q/K` 头。
+
+   固定一个 token 和一个头，省略这些下标；`rotate_half()` 在通道 `i` 和 `i+32` 上分别提供 `-q[i+32]` 和 `q[i]`。与 `cos/sin` 逐元素乘加后，`Q/K` 的每对通道完成二维旋转：
+
+   ```math
+   \begin{aligned}
+   \widetilde q_i&=q_i\cos\varphi_{l,i}-q_{i+32}\sin\varphi_{l,i},\\
+   \widetilde q_{i+32}&=q_i\sin\varphi_{l,i}+q_{i+32}\cos\varphi_{l,i},\\
+   \widetilde k_i&=k_i\cos\varphi_{l,i}-k_{i+32}\sin\varphi_{l,i},\\
+   \widetilde k_{i+32}&=k_i\sin\varphi_{l,i}+k_{i+32}\cos\varphi_{l,i}.
+   \end{aligned}
+   ```
+
+   `I12` 的通道对 `(2,34)` 代入 $`\varphi_{7,2}=4\omega_2`$；其他通道对代入各自选中的坐标与频率。`Q/K` 的前 `64` 维旋转，后 `192` 维原样接回，`V` 不旋转。文本的三轴坐标相同，例如 `t1` 为 `[6,6,6]`，所有通道对的角度都为 $`6\omega_i`$，得到普通一维 RoPE。
 
 ### `get_rope_index()`：生成三维位置表
 
@@ -439,3 +460,53 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   | `W` | `2,5,8,…,29` | `(2,34)、(5,37)、…、(29,61)` |
 
 - **交错的是坐标轴分配，配对方式仍是前后半区**：选轴后剩下 `[B,L,32]`；`cat()` 将这组系数复制成 `[B,L,64]`，让通道 `i` 和 `i+32` 使用同一个角度，通过 `rotate_half()` 完成二维旋转。每个 token 都使用表中的分配规则。文本的 `T/H/W` 坐标相同，得到普通一维 RoPE；图片和视频的坐标不同，各通道对分别编码时间、行、列位置。
+
+### 条件生成模型：输入与视觉特征填充
+
+- **条件生成模型的入口**：`Qwen3_5ForConditionalGeneration.forward()` 将混合输入和位置参数传给 `self.model`，即 `Qwen3_5Model`。位置表沿 `position_ids` 参数传递，视觉数据和类型标记各有独立参数；该层的实际调用为：
+
+  ```python
+  outputs = self.model(
+      input_ids=input_ids,
+      pixel_values=pixel_values,
+      pixel_values_videos=pixel_values_videos,
+      image_grid_thw=image_grid_thw,
+      video_grid_thw=video_grid_thw,
+      position_ids=position_ids,
+      attention_mask=attention_mask,
+      past_key_values=past_key_values,
+      inputs_embeds=inputs_embeds,
+      mm_token_type_ids=mm_token_type_ids,
+      **kwargs,
+  )
+  ```
+
+- **`special_*_mask` 只定位视觉特征的填充位置**：`Qwen3_5Model.get_placeholder_mask()` 在 `input_ids` 路径中比较特殊 token 编号，先得到 `[B,L]` 布尔表，再扩展为 `[B,L,1]`。最后一维广播到隐藏维度 `D`，使一个媒体槽位的整条向量被替换。返回的两个掩码分别由调用方接收为 `image_mask` 和 `video_mask`，定位与扩展的关键语句为：
+
+  ```python
+  special_image_mask = input_ids == self.config.image_token_id
+  special_video_mask = input_ids == self.config.video_token_id
+  special_image_mask = special_image_mask.unsqueeze(-1).to(inputs_embeds.device)
+  special_video_mask = special_video_mask.unsqueeze(-1).to(inputs_embeds.device)
+  return special_image_mask, special_video_mask
+  ```
+
+- **填入内容，保留槽位顺序**：`Qwen3_5Model.forward()` 先计算 `inputs_embeds`，再处理视觉分支。图片分支如下，视频分支以同样方式填充 `video_mask` 指定的槽位。`masked_scatter()` 只替换内容，`L` 和 token 顺序不变；随后生成的位置表仍与这些槽位逐列对应：
+
+  ```python
+  if inputs_embeds is None:
+      inputs_embeds = self.get_input_embeddings()(input_ids)
+
+  if pixel_values is not None:
+      image_outputs = self.get_image_features(
+          pixel_values, image_grid_thw, return_dict=True, **kwargs
+      )
+      image_embeds = image_outputs.pooler_output
+      image_embeds = torch.cat(image_embeds, dim=0).to(
+          inputs_embeds.device, inputs_embeds.dtype
+      )
+      image_mask, _ = self.get_placeholder_mask(
+          input_ids, inputs_embeds=inputs_embeds, image_features=image_embeds
+      )
+      inputs_embeds = inputs_embeds.masked_scatter(image_mask, image_embeds)
+  ```
