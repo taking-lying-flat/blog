@@ -454,7 +454,19 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   ```
 
   > [!IMPORTANT]
-  > **交错 MRoPE 将 token 的三轴位置映射为作用于查询与键向量的旋转算子**。对于第 `l` 个 token，`position_ids[:,b,l]` 给出其 `T/H/W` 坐标；每个二维特征子空间按固定交错规则选取一个轴坐标，与对应频率相乘得到旋转角，再由各子空间的旋转共同构成该 token 的位置变换。`position_ids` 保存位置坐标，`cos/sin` 保存由这些坐标生成的旋转系数；实现通过逐元素乘加将这一变换分别作用于 `Q` 和 `K`，使注意力计算包含多维位置信息。
+  > **交错 MRoPE 将三轴坐标映射为分块旋转，使注意力的位置项由三维相对位移决定**。第 `i` 对通道 `(i,i+32)` 读取轴 $`\sigma(i)`$ 的坐标，以 $`\omega_i`$ 为角频率；32 个二维旋转共同组成该 token 在 64 维旋转空间中的位置变换。`position_ids` 参数化这一变换，`cos/sin` 是其逐通道计算所需的系数。记 $`q_l^{(i)}`$、$`k_m^{(i)}`$ 为两个 token 的第 `i` 对通道，$`R(\theta)`$ 为二维旋转矩阵，则：
+  >
+  > ```math
+  > \begin{aligned}
+  > \Delta\varphi_i
+  > &=\varphi_{m,i}-\varphi_{l,i}
+  > =\omega_i\bigl(P_{\sigma(i),m}-P_{\sigma(i),l}\bigr),\\
+  > (\widetilde q_l^{(i)})^\top\widetilde k_m^{(i)}
+  > &=(q_l^{(i)})^\top R(\Delta\varphi_i)k_m^{(i)}.
+  > \end{aligned}
+  > ```
+  >
+  > $`P_{a,l}`$ 表示第 `l` 个 token 在轴 `a` 上的坐标。旋转后的内积由两 token 在所选轴上的坐标差调制；各子空间的贡献相加，将时间、行、列方向的相对位移纳入注意力。**交错规则确定坐标轴与频率的对应关系，使三个轴的旋转子空间沿频率序列交替分布**。
   >
   > **文本 token 的三个轴共享同一位置因子**。对于第 `l` 个文本 token，$`T_l=H_l=W_l=p_l`$，因此任意子空间选轴后的旋转角均为 $`\varphi_{l,i}=p_l\omega_i`$。在相同频率与通道配对下，$`R_{\mathrm{MRoPE}}(p_l,p_l,p_l)=R_{\mathrm{RoPE}}(p_l)`$，与一维 RoPE 等价。$`p_l`$ 随 token 的序列位置变化，$`\omega_i`$ 随子空间变化。
 
@@ -476,6 +488,65 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   其余 29 对通道分别代入各自的旋转角，完成整个 64 维部分的旋转；后 `192` 维原样接回，`V` 不参与旋转。各注意力头共享这些位置系数，分别处理自身的 `Q/K`，旋转结果参与注意力内积。文本 token 的三轴坐标相同，例如 `t1` 为 `[6,6,6]`，则各子空间的旋转角为 $`6\omega_i`$，与一维 RoPE 一致。
 
 - **交错的是坐标轴分配，配对方式仍是前后半区**：选轴后剩下 `[B,L,32]`；`cat()` 将这组系数复制成 `[B,L,64]`，让通道 `i` 和 `i+32` 使用同一个角度，通过 `rotate_half()` 完成二维旋转。每个 token 都使用同一套坐标轴分配规则。文本的 `T/H/W` 坐标相同，得到普通一维 RoPE；图片和视频的坐标不同，各通道对分别编码时间、行、列位置。
+
+### Qwen3.5：MRoPE 的接口调用
+
+- **位置入口：`Qwen3_5Model.forward()`**。媒体特征填充后，`inputs_embeds: [B,L,D]` 与位置表按槽位对应。未显式传入 `position_ids` 时，`compute_3d_position_ids()` 在首次多模态前向中调用 `get_rope_index()`，生成 `[3,B,L]` 并保存 `rope_deltas`；已有位置表则直接传入文本模型。位置构造与传递的调用为：
+
+  ```python
+  if position_ids is None:
+      position_ids = self.compute_3d_position_ids(
+          input_ids=input_ids,
+          image_grid_thw=image_grid_thw,
+          video_grid_thw=video_grid_thw,
+          inputs_embeds=inputs_embeds,
+          attention_mask=attention_mask,
+          past_key_values=past_key_values,
+          mm_token_type_ids=mm_token_type_ids,
+      )
+
+  outputs = self.language_model(
+      input_ids=None,
+      position_ids=position_ids,
+      attention_mask=attention_mask,
+      past_key_values=past_key_values,
+      inputs_embeds=inputs_embeds,
+      **kwargs,
+  )
+  ```
+
+- **系数接口：`Qwen3_5TextModel.forward()` → `Qwen3_5TextRotaryEmbedding.forward()`**。文本模型接收三轴位置，通过 `self.rotary_emb(hidden_states, position_ids)` 返回 `position_embeddings=(cos,sin)`，两者均为 `[B,L,64]`，一次计算后传给各层。旋转模块用 `hidden_states` 确定设备类型与输出 `dtype`，用 `position_ids` 和 `inv_freq` 计算角度。`generate()` 首次准备位置时，将覆盖全部槽位的一维序列位置与三轴位置拼成 `[4,B,L]`；文本模型将首行拆为 `text_position_ids`，用于注意力掩码构造，其余三行用于旋转系数计算。直接传入 `[3,B,L]` 时，三行均用于旋转，`text_position_ids=None`。核心传递语句为：
+
+  ```python
+  if position_ids.ndim == 3 and position_ids.shape[0] == 4:
+      text_position_ids = position_ids[0]
+      position_ids = position_ids[1:]
+  else:
+      text_position_ids = None
+
+  hidden_states = inputs_embeds
+  position_embeddings = self.rotary_emb(hidden_states, position_ids)
+
+  for i, decoder_layer in enumerate(self.layers[: self.config.num_hidden_layers]):
+      hidden_states = decoder_layer(
+          hidden_states,
+          position_embeddings=position_embeddings,
+          attention_mask=causal_mask_mapping[self.config.layer_types[i]],
+          position_ids=text_position_ids,
+          past_key_values=past_key_values,
+          use_cache=use_cache,
+          **kwargs,
+      )
+  ```
+
+- **旋转接口：`Qwen3_5Attention.forward()` → `apply_rotary_pos_emb()`**。`Qwen3_5DecoderLayer` 的 `full_attention` 分支将 `position_embeddings` 传给 `self.self_attn`。注意力层先投影、归一化得到本层的 `Q/K`，再解包系数并执行旋转；`cos/sin` 从 `[B,L,64]` 扩展为 `[B,1,L,64]`，广播到各个注意力头，旋转后的 `Q/K` 用于注意力计算。`linear_attention` 分支使用 Gated DeltaNet，不调用这组旋转接口。实际调用为：
+
+  ```python
+  cos, sin = position_embeddings
+  query_states, key_states = apply_rotary_pos_emb(
+      query_states, key_states, cos, sin
+  )
+  ```
 
 ### 条件生成模型：输入与视觉特征填充
 
