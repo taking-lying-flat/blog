@@ -443,8 +443,6 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
   `2、3、4` 是 `I12` 的三轴位置坐标。在第 `i` 个二维子空间，选中的坐标充当一维 RoPE 中的位置因子 $`p_i`$，与该子空间的频率 $`\omega_i`$ 相乘，得到实际旋转角 $`\varphi_{0,7,i}=p_i\omega_i`$。例如频率下标 `i=2` 读取宽度坐标 `4`，因此通道对 `(2,34)` 使用 $`\cos(4\omega_2)`$ 和 $`\sin(4\omega_2)`$。**交错结构由频率索引到坐标轴的映射确定。**
 
-- **每对通道从三个轴中选一个**：选轴前的 `cos/sin` 均为 `[3,B,L,32]`，每个 token 的每对旋转通道都有三个候选系数。`recomposition_frequencies()` 先取时间轴，再以步长 `3` 替换高度、宽度轴的系数，形成 `T,H,W,T,H,W,…` 的交错分配。`mrope_section=[11,11,10]` 表示三个轴分别负责 `11/11/10` 对通道：
-
   ```python
   def recomposition_frequencies(self, freq):
       freqs_thw = freq[0]
@@ -455,7 +453,10 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
       return torch.cat((freqs_thw, freqs_thw), dim=-1)
   ```
 
-  **交错 MRoPE 将 token 的三轴位置映射为作用于查询与键向量的旋转算子。**对于第 `l` 个 token，`position_ids[:,b,l]` 给出其 `T/H/W` 坐标；每个二维特征子空间按固定交错规则选取一个轴坐标，与对应频率相乘得到旋转角，再由各子空间的旋转共同构成该 token 的位置变换。`position_ids` 保存位置坐标，`cos/sin` 保存由这些坐标生成的旋转系数；实现通过逐元素乘加将这一变换分别作用于 `Q` 和 `K`，使注意力计算包含多维位置信息。
+  > [!IMPORTANT]
+  > **交错 MRoPE 将 token 的三轴位置映射为作用于查询与键向量的旋转算子**。对于第 `l` 个 token，`position_ids[:,b,l]` 给出其 `T/H/W` 坐标；每个二维特征子空间按固定交错规则选取一个轴坐标，与对应频率相乘得到旋转角，再由各子空间的旋转共同构成该 token 的位置变换。`position_ids` 保存位置坐标，`cos/sin` 保存由这些坐标生成的旋转系数；实现通过逐元素乘加将这一变换分别作用于 `Q` 和 `K`，使注意力计算包含多维位置信息。
+  >
+  > **文本 token 的三个轴共享同一位置因子**。对于第 `l` 个文本 token，$`T_l=H_l=W_l=p_l`$，因此任意子空间选轴后的旋转角均为 $`\varphi_{l,i}=p_l\omega_i`$。在相同频率与通道配对下，$`R_{\mathrm{MRoPE}}(p_l,p_l,p_l)=R_{\mathrm{RoPE}}(p_l)`$，与一维 RoPE 等价。$`p_l`$ 随 token 的序列位置变化，$`\omega_i`$ 随子空间变化。
 
 - **应用二维旋转：32 个角度作用于 64 个通道**。取 `I12` 的一个注意力头，通道从 `0` 编号；`Q/K` 的 64 维旋转部分按 `(0,32)、(1,33)、…、(31,63)` 组成 32 对，每对使用一个旋转角。`I12` 的位置因子按 `2、3、4、2、3、4、…` 交错排列，分别乘对应频率，得到 $`2\omega_0,\,3\omega_1,\,4\omega_2,\,2\omega_3,\ldots`$ 这 32 个角度。`cos/sin` 各生成 32 个系数，再复制为 64 个，使配对通道共用同一角度。
 
