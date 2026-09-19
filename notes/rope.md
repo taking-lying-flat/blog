@@ -177,7 +177,7 @@ C=[\cos\Phi,\cos\Phi],\quad S=[\sin\Phi,\sin\Phi].
 \end{aligned}
 ```
 
-- `rotate_half(q_rot)` 在这两个位置分别提供 $`-q_{i+32}`$ 和 $`q_i`$；乘以 `sin` 后，再加上 `q_rot * cos`，就得到上式。这里代码中的 `cos`、`sin` 对应广播后的 $`C`$、$`S`$，`K` 的计算相同
+- `rotate_half(q_rot)` 在这两个位置分别提供 $`-q_{i+32}`$ 和 $`q_i`$；乘以 `sin` 后，再加上 `q_rot * cos`，就得到上式。`cos`、`sin` 对应广播后的 $`C`$、$`S`$，`K` 的计算相同
 
 ```python
 def rotate_half(x):
@@ -207,9 +207,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
 ## `Qwen3.5`：文本、图片与视频的 `MRoPE` 流程
 
-### 1. 混合序列与媒体字段
-
-文本、图片和视频进入语言模型时共用一条序列。图片对应一段连续的 `<|image_pad|>`；视频按时间片展开，每个时间片前有文本时间戳，内部是一段连续的 `<|video_pad|>`：
+**1. 混合序列与媒体字段**：文本、图片和视频进入语言模型时共用一条序列。图片对应一段连续的 `<|image_pad|>`；视频按时间片展开，每个时间片前有文本时间戳，内部是一段连续的 `<|video_pad|>`：
 
 ```text
 文本
@@ -220,7 +218,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 文本
 ```
 
-这里的 `mm tokens` 指媒体占位 `token`。模型输入中没有独立的 `mm_tokens` 参数：占位 `token` 保存在 `input_ids`，每个位置的媒体类型保存在 `mm_token_type_ids`，媒体内容则保存在像素张量中。设批大小为 `B`，补齐后的序列长度为 `L`，文本隐藏维度为 `D`：
+`mm tokens` 指媒体占位 `token`。模型输入中没有独立的 `mm_tokens` 参数：占位 `token` 保存在 `input_ids`，每个位置的媒体类型保存在 `mm_token_type_ids`，媒体内容则保存在像素张量中。设批大小为 `B`，补齐后的序列长度为 `L`，文本隐藏维度为 `D`：
 
 | 字段 | 结构 | 用途 |
 | --- | --- | --- |
@@ -258,7 +256,7 @@ for frame_idx in range(num_frames):
     video_placeholder += self.vision_start_token + self.video_token * frame_seqlen + self.vision_end_token
 ```
 
-`num_frames` 在这里对应视觉时间网格的长度，一个时间片可以包含多个原始视频帧。时间戳作为普通字符串交给 `tokenizer`，占多少文本 `token` 由实际编码决定。`mm_token_type_ids` 在文本编码后生成。`create_mm_token_type_ids()` 的主体按词表编号识别媒体占位：
+`num_frames` 对应视觉时间网格的长度，一个时间片可以包含多个原始视频帧。时间戳作为普通字符串交给 `tokenizer`，占多少文本 `token` 由实际编码决定。`mm_token_type_ids` 在文本编码后生成。`create_mm_token_type_ids()` 的主体按词表编号识别媒体占位：
 
 ```python
 tokenizer_input = np.array(tokenizer_input)
@@ -446,7 +444,7 @@ hidden_states = inputs_embeds
 position_embeddings = self.rotary_emb(hidden_states, position_ids)
 ```
 
-这里 `hidden_states` 提供设备和输出精度，旋转角由 `position_ids` 与 `inv_freq` 决定。沿用前文的配置，旋转区有 32 对通道，`inv_freq` 保存 32 个频率。`Qwen3_5TextRotaryEmbedding.forward()` 的计算为：
+`hidden_states` 提供设备和输出精度，旋转角由 `position_ids` 与 `inv_freq` 决定。沿用前文的配置，旋转区有 32 对通道，`inv_freq` 保存 32 个频率。`Qwen3_5TextRotaryEmbedding.forward()` 的计算为：
 
 ```python
 inv_freq_expanded = self.inv_freq[None, None, :, None].float().expand(3, position_ids.shape[1], -1, 1)
@@ -581,7 +579,7 @@ k_embed = torch.cat([k_embed, k_pass], dim=-1)
 后半输出 = 后半输入 × cos + 前半输入 × sin
 ```
 
-这就是前文的二维旋转。三维位置表没有直接加到 `embedding` 上，而是通过“位置乘频率 → 三角函数 → 按频率选轴 → 广播到各头”决定这里的系数。旋转区以外的 `q_pass/k_pass` 原样接回；`V` 不经过这一步。
+这就是前文的二维旋转。三维位置表没有直接加到 `embedding` 上，而是通过“位置乘频率 → 三角函数 → 按频率选轴 → 广播到各头”生成旋转系数。旋转区以外的 `q_pass/k_pass` 原样接回；`V` 不经过这一步。
 
 旋转后的键才进入缓存，然后与查询一起交给注意力实现：
 
@@ -603,7 +601,7 @@ attn_output, attn_weights = attention_interface(
 )
 ```
 
-缓存中的历史 `K` 已在写入时完成旋转，后续解码只旋转当前新增的 `Q/K`。`Qwen3.5` 的 `linear_attention` 层由 `GatedDeltaNet` 处理，不执行这一组 `Q/K` 旋转；这里描述的是文本骨干的 `full_attention` 路径。
+缓存中的历史 `K` 已在写入时完成旋转，后续解码只旋转当前新增的 `Q/K`。这组旋转用于 `Qwen3.5` 文本骨干的 `full_attention` 层；`linear_attention` 层由 `GatedDeltaNet` 处理，不执行这一组 `Q/K` 旋转。
 
 ### 6. `text_position_ids` 与 `rope_deltas` 分别负责什么
 
@@ -628,7 +626,7 @@ text_positions = text_positions[None, ...]
 position_ids = torch.cat([text_positions, vision_positions], dim=0)
 ```
 
-这里的 `[4,B,L]` 是一个传参结构：第 0 行用于序列位置，后 3 行用于旋转。`Qwen3_5TextModel.forward()` 在入口将它拆开：
+`[4,B,L]` 是一个传参结构：第 0 行用于序列位置，后 3 行用于旋转。`Qwen3_5TextModel.forward()` 在入口将它拆开：
 
 ```python
 if position_ids is None:

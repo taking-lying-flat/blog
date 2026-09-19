@@ -84,7 +84,7 @@ CUDA Graph padding slot
 
 - `native MTP path` 需要把 `request-level` `seq_lens` 转成每个 `speculative position` 对应的 `context length`。对于一个正常长度为 `L` 的 `request`，一次处理两个连续位置时，第一个位置能够看到 `L-1` 个 `KV`，第二个位置能够看到 `L` 个 `KV`，因此代码使用 `seq_lens.unsqueeze(1) - max_decode_len + 1 + offsets` 来生成 `[L-1, L]`。对于正常 `request` 这个计算没有问题
 
-- `padding request` 的 `seq_len=0` 仍然被按照固定 `max_decode_len=2` 展开，于是变成 `0 - 2 + 1 + [0,1] = [-1,0]`。也就是说，这里第一次产生真正非法的数据：`context length` 语义上表示`当前 query 可以访问多少 KV token`，它不可能小于 0，`padding request` 正确结果应该是 `[0,0]`
+- `padding request` 的 `seq_len=0` 仍然被按照固定 `max_decode_len=2` 展开，于是变成 `0 - 2 + 1 + [0,1] = [-1,0]`。展开结果首次产生非法数据：`context length` 语义上表示`当前 query 可以访问多少 KV token`，它不可能小于 0，`padding request` 正确结果应该是 `[0,0]`
 
     ```python
     if use_native and next_n > 1:
@@ -117,7 +117,7 @@ CUDA Graph padding slot
 
 ### 4. `Leader` 与 `peer` 的判断发生分裂
 
-- `SM120` 上的 `sparse indexer` 不会走 `cooperative_topk`，这一架构被 `cooperative path` 明确排除，最终调用的是 `persistent_topk`。这里真正危险的不是单纯“收到一个 `-1`”，而是 `kernel` 内部有两套决定是否进入 `multi-CTA radix` 的判断来源。`non-leader CTA` 在 `kernel` 很早的位置只检查 `host` 已经传进来的 `params.max_seq_len`；当前值是 16384，小于 `RADIX_THRESHOLD=32768`，因此 `non-leader CTA` 会认为所有 `row` 都是 `short/medium row`，没有必要参与 `multi-CTA radix`
+- `SM120` 上的 `sparse indexer` 不会走 `cooperative_topk`，这一架构被 `cooperative path` 明确排除，最终调用的是 `persistent_topk`。风险来自 `kernel` 内部两套决定是否进入 `multi-CTA radix` 的判断来源。`non-leader CTA` 在 `kernel` 很早的位置只检查 `host` 已经传进来的 `params.max_seq_len`；当前值是 16384，小于 `RADIX_THRESHOLD=32768`，因此 `non-leader CTA` 会认为所有 `row` 都是 `short/medium row`，没有必要参与 `multi-CTA radix`
 
     ```text
     FULL CUDA Graph  需要固定 8-token shape

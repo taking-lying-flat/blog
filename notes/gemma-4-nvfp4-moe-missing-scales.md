@@ -244,7 +244,7 @@ token 重排 → a1_gscale 量化 → Grouped w13 GEMM
          → 恢复 token 顺序并按 routing weight 汇总
 ```
 
-这里的几种融合发生在不同层次：
+几种融合发生在不同层次：
 
 | 层次 | 本案例中的变化 |
 | --- | --- |

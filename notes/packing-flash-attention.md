@@ -230,7 +230,7 @@ sequence lengths      5  3  4
 max_seqlen             5
 ```
 
-这里发生的是一次 `metadata compilation`，而不是 `attention` 计算；`reset index` 给出每条 `sample` 的物理起点，末尾追加 `total token count` 后，相邻累计值之差才得到各条 `sample` 的实际长度。`ms-swift` 的显式转换函数把 `position_id == 0` 当作 `boundary sentinel`，主要供需要单独 `boundary carrier` 的模板使用
+`position_ids` 到 `cu_seqlens` 的转换属于 `metadata compilation`，不执行 `attention` 计算；`reset index` 给出每条 `sample` 的物理起点，末尾追加 `total token count` 后，相邻累计值之差才得到各条 `sample` 的实际长度。`ms-swift` 的显式转换函数把 `position_id == 0` 当作 `boundary sentinel`，主要供需要单独 `boundary carrier` 的模板使用
 
 ```python
 def get_packed_seq_params(position_ids):
@@ -621,7 +621,7 @@ inputs_embeds = inputs_embeds.masked_scatter(
 )
 ```
 
-这里的 `scatter` 只替换向量，不改变 `token` 数量和顺序。也就是说，多模态“先展开”准确地说是：先展开视觉特征在 `LLM` 序列中的位置，再按这个最终 `LLM` 长度 `packing`；实际视觉特征可以稍后生成，但其数量必须与预留的视觉 `token` 槽位严格一致
+`scatter` 只替换向量，不改变 `token` 数量和顺序。也就是说，多模态“先展开”准确地说是：先展开视觉特征在 `LLM` 序列中的位置，再按这个最终 `LLM` 长度 `packing`；实际视觉特征可以稍后生成，但其数量必须与预留的视觉 `token` 槽位严格一致
 
 > [!IMPORTANT]
 > `mRoPE` 表示多模态几何位置，独立的 `text position plane` 表示 `sample boundary`

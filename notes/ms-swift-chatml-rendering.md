@@ -81,7 +81,7 @@ class Template(ProcessorMixin):
         ...
 ```
 
-这里的 `template_meta` 没有默认值，它是构造模板时必须提供的协议对象。对于 `Qwen3.5`，该对象就是前面 `register_template()` 注册的 `QwenTemplateMeta`；其 `is_thinking=True`、`thinking_prefix` 和 `non_thinking_prefix` 均来自注册代码。构造函数随后复制这份模板元数据，并把尚未解析的 `enable_thinking=None` 转换成实际布尔值：
+`template_meta` 没有默认值，它是构造模板时必须提供的协议对象。对于 `Qwen3.5`，该对象就是前面 `register_template()` 注册的 `QwenTemplateMeta`；其 `is_thinking=True`、`thinking_prefix` 和 `non_thinking_prefix` 均来自注册代码。构造函数随后复制这份模板元数据，并把尚未解析的 `enable_thinking=None` 转换成实际布尔值：
 
 ```python
 template_meta = deepcopy(template_meta)
@@ -188,7 +188,7 @@ Qwen3_5Template._swift_prepare_inputs()
 Template._swift_encode()
 ```
 
-`Qwen3_5Template` 先规范消息内容，真正拼接 `ChatML` 的公共控制流位于基础类 `Template._swift_encode()`；`thinking/non-thinking` 的前缀也在这里进入 `prompt`。推理请求的最后一轮没有现成的 `assistant` 回答。在 `_swift_encode()` 中，只需关注最后一轮的两个分支：
+`Qwen3_5Template` 先规范消息内容，真正拼接 `ChatML` 的公共控制流位于基础类 `Template._swift_encode()`；`thinking/non-thinking` 的前缀在该方法中写入 `prompt`。推理请求的最后一轮没有现成的 `assistant` 回答。在 `_swift_encode()` 中，只需关注最后一轮的两个分支：
 
 ```python
 response_prefix = self._get_response_prefix(inputs)
@@ -199,7 +199,7 @@ elif response_prefix:
     context_list.append(response_prefix)
 ```
 
-`SFT` 样本已经提供 `assistant` 标签，进入 `{{RESPONSE}}` 分支；推理请求的 `response is None`，因此把 `_get_response_prefix()` 选出的前缀直接写到 `ChatML prompt` 末尾。`enable_thinking` 的作用到这里才真正落到输入 `token` 上
+`SFT` 样本已经提供 `assistant` 标签，进入 `{{RESPONSE}}` 分支；推理请求的 `response is None`，因此把 `_get_response_prefix()` 选出的前缀直接写到 `ChatML prompt` 末尾。`enable_thinking` 通过前缀选择影响输入 `token`
 
 `enable_thinking=True` 时：
 
@@ -379,7 +379,7 @@ assistant: <think>
 最终答案
 ```
 
-这里没有从普通答案推导出真实思维链。`add_non_thinking_prefix=True` 只是把“没有推理过程”显式编码为空思考区；已有 `<think>真实推理</think>` 的样本保持 `thinking`，普通回答被归一化为 `non-thinking`
+`add_non_thinking_prefix=True` 不会从普通答案推导出真实思维链，只把“没有推理过程”显式编码为空思考区；已有 `<think>真实推理</think>` 的样本保持 `thinking`，普通回答被归一化为 `non-thinking`
 
 | `assistant` 原始标签 | `_add_non_thinking_prefix()` | 编码后的类型 |
 | --- | --- | --- |
