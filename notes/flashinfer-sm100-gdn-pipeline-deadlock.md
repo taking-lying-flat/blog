@@ -19,7 +19,7 @@
 ## 案例一：`DeepSpeed ZeRO-3` 梯度归约竞态
 
 > [!CAUTION]
-> **TL;DR**：`DeepSpeed` 固定等待 `default_stream()`，但 `param.grad` 可能由 `non-default current_stream()` 上的 `backward kernel` 产生。因此 `reduce_and_partition_stream` 可能在梯度写完前就读取它，形成 `read-after-write race`，并把污染后的 `gradient shard` 带入第一次 `optimizer update`
+> `DeepSpeed` 固定等待 `default_stream()`，但 `param.grad` 可能由 `non-default current_stream()` 上的 `backward kernel` 产生。因此 `reduce_and_partition_stream` 可能在梯度写完前就读取它，形成 `read-after-write race`，并把污染后的 `gradient shard` 带入第一次 `optimizer update`
 
 ```diff
  self.reduce_and_partition_stream.wait_stream(
@@ -127,7 +127,7 @@ S1 / backward_stream                   reduce_and_partition_stream
 ## 案例二：`FlashInfer GDN Pipeline` 死锁
 
 > [!CAUTION]
-> **TL;DR**：`SM100 GDN prefill kernel` 中，`o_store pipeline` 的合法 `producer` 是 `CG1`，但 `CG0` 也错误调用 `o_store_producer.tail()`。`CG0` 没有执行配套的 `acquire/commit`，其本地 `PipelineState` 与真实 `mbarrier phase` 不一致，最终等待一个不会再出现的 `barrier transition`
+> `SM100 GDN prefill kernel` 中，`o_store pipeline` 的合法 `producer` 是 `CG1`，但 `CG0` 也错误调用 `o_store_producer.tail()`。`CG0` 没有执行配套的 `acquire/commit`，其本地 `PipelineState` 与真实 `mbarrier phase` 不一致，最终等待一个不会再出现的 `barrier transition`
 
 这个缺陷在 `non-null initial state` 与 `long-tail ragged varlen workload` 下更容易触发。局部 `warp group` 阻塞会进一步阻止整个 `CTA` 完成，最终表现为 `GPU kernel hang`
 
