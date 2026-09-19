@@ -168,7 +168,20 @@ def _get_response_prefix(self, inputs=None):
 thinking_prefix / non_thinking_prefix
 ```
 
-因此，`enable_thinking` 并不直接拼接字符串；它只在没有显式 `response_prefix` 时，帮助 `_get_response_prefix()` 从模板注册的两种前缀中选择一个
+上述机制可形式化为具有显式覆盖语义的前缀解析函数。令 $`r`$ 表示按照“单条样本优先、全局配置回退”规则解析得到的有效 `response_prefix`，$`e`$ 表示按照相同作用域优先级解析得到的有效 `enable_thinking`，$`p_{\mathrm{think}}`$ 与 $`p_{\mathrm{non}}`$ 分别表示 `template_meta.thinking_prefix` 与 `template_meta.non_thinking_prefix`，则最终响应前缀为：
+
+```math
+P(r, e) =
+\begin{cases}
+r, & r \neq \mathrm{None}, \\
+p_{\mathrm{think}}, & r = \mathrm{None} \land e = \mathrm{True}, \\
+p_{\mathrm{non}}, & r = \mathrm{None} \land e = \mathrm{False}.
+\end{cases}
+```
+
+当有效 `response_prefix` 非 `None` 时，解析函数直接返回该显式配置值，模板定义的两类默认前缀不再参与本次选择；只有当样本级与全局 `response_prefix` 均为 `None` 时，`enable_thinking` 才决定采用 `thinking_prefix` 或 `non_thinking_prefix`。因此，`enable_thinking` 在该解析过程中承担的是缺省前缀的条件选择，而非对显式前缀的附加变换
+
+这里的“未设置”严格对应 `None`，不能等同于空字符串。显式设置 `response_prefix=''` 仍满足 `response_prefix is not None`，因而会返回空前缀，并阻止继续回退到模板定义的前缀
 
 ### 2. 推理路径：前缀如何进入 `ChatML`
 
