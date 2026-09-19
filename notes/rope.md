@@ -583,6 +583,19 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
           input_ids, inputs_embeds=inputs_embeds, image_features=image_embeds
       )
       inputs_embeds = inputs_embeds.masked_scatter(image_mask, image_embeds)
+
+  if pixel_values_videos is not None:
+      video_outputs = self.get_video_features(
+          pixel_values_videos, video_grid_thw, return_dict=True, **kwargs
+      )
+      video_embeds = video_outputs.pooler_output
+      video_embeds = torch.cat(video_embeds, dim=0).to(
+          inputs_embeds.device, inputs_embeds.dtype
+      )
+      _, video_mask = self.get_placeholder_mask(
+          input_ids, inputs_embeds=inputs_embeds, video_features=video_embeds
+      )
+      inputs_embeds = inputs_embeds.masked_scatter(video_mask, video_embeds)
   ```
 
 - **位置构造：`compute_3d_position_ids()`**。视觉特征填入后，未显式传入 `position_ids` 才进入位置构造；已有位置表则直接使用。传入 `input_ids` 与视觉网格时，必须同时提供 `mm_token_type_ids`，否则抛出异常。调用为：
