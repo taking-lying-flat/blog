@@ -1,4 +1,4 @@
-# `Packing`与 `FlashAttention Varlen`
+# `FlashAttention Varlen`
 
 ## 1. `Mental Model`：物理连续，逻辑不连续
 
