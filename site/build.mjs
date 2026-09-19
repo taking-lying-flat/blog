@@ -139,7 +139,9 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
   const label = languageNames[language] ?? language;
   const name = env.slug === 'rope'
     ? (language === 'json' ? 'config.json · text_config' : language === 'text' ? '张量维度'
-      : token.content.includes('def rotate_half') ? 'rotate_half / apply_rotary_pos_emb' : 'compute_default_rope_parameters')
+      : token.content.includes('def rotate_half') ? 'rotate_half / apply_rotary_pos_emb'
+      : token.content.includes('base =') && token.content.includes('inv_freq =')
+        ? 'compute_default_rope_parameters' : label)
     : label;
   const code = hljs.getLanguage(language)
     ? hljs.highlight(token.content, { language, ignoreIllegals: true }).value : escape(token.content);
