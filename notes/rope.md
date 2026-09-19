@@ -1,4 +1,4 @@
-# Interleaved Positional Encoding
+# Interleaved Rotary Position Embedding
 
 ## `RoPE`：旋转位置编码
 
