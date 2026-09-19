@@ -49,7 +49,10 @@ cos / sin        [B, T, 64] → unsqueeze(1) → [B, 1, T, 64]
 ```python
 base = config.rope_parameters["rope_theta"]
 partial_rotary_factor = config.rope_parameters.get("partial_rotary_factor", 1.0)
-head_dim = getattr(config, "head_dim", None) or config.hidden_size // config.num_attention_heads
+head_dim = (
+    getattr(config, "head_dim", None)
+    or config.hidden_size // config.num_attention_heads
+)
 dim = int(head_dim * partial_rotary_factor)
 
 attention_factor = 1.0
@@ -209,8 +212,8 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
 1. **准备混合序列**：`Qwen3VLProcessor` 展开图片、视频占位，输出 `input_ids`、`mm_token_type_ids`、视觉网格、像素张量和 `attention_mask`。
 2. **填入特征、分配位置**：`Qwen3_5Model` 将视觉特征填回占位；`get_rope_index()` 根据类型和网格生成 `[3,B,L]` 的 `T/H/W` 位置表及 `[B,1]` 的 `rope_deltas`。
-3. **分开序列位置与旋转位置**：`generate()` 首次构造多模态位置时，额外保留一行 `text_position_ids`，组成 `[4,B,L]`；文本模型将首行交给遮罩构造，后三行交给 `rotary_emb`。
-4. **生成系数并旋转**：三轴位置分别乘 `inv_freq`，求 `cos/sin`，按 `mrope_section` 为每对通道选轴；各 `full_attention` 层在投影和归一化后旋转 `Q/K`，再写入缓存、计算注意力。
+3. **分开序列位置与旋转位置**：`generate()` 首次构造多模态位置时，额外保留一行 `text_position_ids`，组成 `[4,B,L]`。文本模型将第一行作为序列位置信息传给注意力掩码函数，后三行传给 `rotary_emb`，用于计算旋转系数。
+4. **生成系数并旋转**：三轴位置分别乘 `inv_freq`，求 `cos/sin`，再按 `mrope_section` 确定每对通道使用时间、高度还是宽度坐标。各 `full_attention` 层在投影和归一化后旋转 `Q/K`，将旋转后的 `K` 与 `V` 写入缓存，再计算注意力。
 5. **接续生成位置**：后续文本从已有旋转位置继续递增；需要从一维序列位置恢复三轴位置时，使用保存的 `rope_deltas` 补上偏移。
 
 ### 混合序列与媒体字段
@@ -251,12 +254,20 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   num_frames = video_inputs["video_grid_thw"][video_idx][0]
   frame_seqlen = video_inputs["video_grid_thw"][video_idx][1:].prod() // merge_length
   metadata = video_inputs["video_metadata"][video_idx]
-  curr_timestamp = self._calculate_timestamps(metadata.frames_indices, metadata.fps, self.video_processor.temporal_patch_size)
+  curr_timestamp = self._calculate_timestamps(
+      metadata.frames_indices,
+      metadata.fps,
+      self.video_processor.temporal_patch_size,
+  )
   video_placeholder = ""
   for frame_idx in range(num_frames):
       curr_time = curr_timestamp[frame_idx]
       video_placeholder += f"<{curr_time:.1f} seconds>"
-      video_placeholder += self.vision_start_token + self.video_token * frame_seqlen + self.vision_end_token
+      video_placeholder += (
+          self.vision_start_token
+          + self.video_token * frame_seqlen
+          + self.vision_end_token
+      )
   ```
 
 - **区段标记**：`create_mm_token_type_ids()` 将图片、视频占位分别标成 `1/2`；时间戳、`<|vision_start|>`、`<|vision_end|>` 保持 `0`，把相邻媒体区段隔开。媒体占位的 `attention_mask` 为 `1`，名字中的 `pad` 不表示批处理补齐。图片、视频类型的赋值为：
@@ -272,10 +283,16 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
   ```python
   inputs_embeds = self.get_input_embeddings()(input_ids)
-  image_outputs = self.get_image_features(pixel_values, image_grid_thw, return_dict=True, **kwargs)
+  image_outputs = self.get_image_features(
+      pixel_values, image_grid_thw, return_dict=True, **kwargs
+  )
   image_embeds = image_outputs.pooler_output
-  image_embeds = torch.cat(image_embeds, dim=0).to(inputs_embeds.device, inputs_embeds.dtype)
-  image_mask, _ = self.get_placeholder_mask(input_ids, inputs_embeds=inputs_embeds, image_features=image_embeds)
+  image_embeds = torch.cat(image_embeds, dim=0).to(
+      inputs_embeds.device, inputs_embeds.dtype
+  )
+  image_mask, _ = self.get_placeholder_mask(
+      input_ids, inputs_embeds=inputs_embeds, image_features=image_embeds
+  )
   inputs_embeds = inputs_embeds.masked_scatter(image_mask, image_embeds)
   ```
 
@@ -295,7 +312,9 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
   ```python
   if video_grid_thw is not None:
-      video_grid_thw = torch.repeat_interleave(video_grid_thw, video_grid_thw[:, 0], dim=0)
+      video_grid_thw = torch.repeat_interleave(
+          video_grid_thw, video_grid_thw[:, 0], dim=0
+      )
       video_grid_thw[:, 0] = 1
   spatial_merge_size = self.config.vision_config.spatial_merge_size
   grid_iters = {
@@ -312,7 +331,12 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   for modality_type, start_idx, end_idx in input_type_group:
       if modality_type == 0:
           text_len = end_idx - start_idx
-          llm_pos_ids_list.append(torch.arange(text_len, device=input_ids.device).view(1, -1).expand(3, -1) + current_pos)
+          llm_pos_ids_list.append(
+              torch.arange(text_len, device=input_ids.device)
+              .view(1, -1)
+              .expand(3, -1)
+              + current_pos
+          )
           current_pos += text_len
       else:
           grid_thw = next(grid_iters[modality_type])
@@ -334,18 +358,22 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   position_temporal = (torch.arange(llm_grid_t, device=device) * time_interval).long()
   position_height = torch.arange(llm_grid_h, device=device) + start_position
   position_width = torch.arange(llm_grid_w, device=device) + start_position
-  T_grid, H_grid, W_grid = torch.meshgrid(position_temporal, position_height, position_width, indexing="ij")
+  T_grid, H_grid, W_grid = torch.meshgrid(
+      position_temporal, position_height, position_width, indexing="ij"
+  )
   vision_position_ids = torch.stack([T_grid, H_grid, W_grid], dim=0).reshape(3, -1)
   vision_position_ids[0] += start_position
   return vision_position_ids
   ```
 
-- **拼回整条序列**：各段沿序列维拼接，填回 `[3,B,L]` 的有效槽位，补齐位置由遮罩排除；差值保存“下一旋转位置”与“有效序列长度”的差。正常 `forward()` 未传 `position_ids` 时，`compute_3d_position_ids()` 负责调用该接口、保存 `self.rope_deltas`，并将位置表与 `inputs_embeds` 一起传入文本模型；手工调用接口只返回结果：
+- **拼回整条序列**：各段沿序列维拼接，填回 `[3,B,L]` 的有效槽位，补齐位置由 `attention_mask` 排除；差值保存“下一旋转位置”与“有效序列长度”的差。正常 `forward()` 未传 `position_ids` 时，`compute_3d_position_ids()` 负责调用该接口、保存 `self.rope_deltas`，并将位置表与 `inputs_embeds` 一起传入文本模型；手工调用接口只返回结果：
 
   ```python
   llm_positions = torch.cat(llm_pos_ids_list, dim=1).reshape(3, -1)
   if attention_mask is not None:
-      position_ids[:, batch_idx, attention_mask[batch_idx].bool()] = llm_positions.to(position_ids.device)
+      position_ids[:, batch_idx, attention_mask[batch_idx].bool()] = (
+          llm_positions.to(position_ids.device)
+      )
   else:
       position_ids[:, batch_idx] = llm_positions.to(position_ids.device)
   mrope_position_deltas.append(llm_positions.max() + 1 - len(current_input_ids))
@@ -356,11 +384,21 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 - **位置乘频率**：`Qwen3_5TextModel.forward()` 调用 `self.rotary_emb(hidden_states, position_ids)`。`Qwen3_5TextRotaryEmbedding` 为三个轴使用同一条 `inv_freq`，只改变相乘的位置；沿用前文配置，`[3,B,L] × [32]` 得到 `[3,B,L,32]` 的候选角度。相位和三角函数用 `float32` 计算，`hidden_states` 决定设备及返回精度：
 
   ```python
-  inv_freq_expanded = self.inv_freq[None, None, :, None].float().expand(3, position_ids.shape[1], -1, 1)
+  inv_freq_expanded = (
+      self.inv_freq[None, None, :, None]
+      .float()
+      .expand(3, position_ids.shape[1], -1, 1)
+  )
   position_ids_expanded = position_ids[:, :, None, :].float()
-  device_type = x.device.type if isinstance(x.device.type, str) and x.device.type != "mps" else "cpu"
+  device_type = (
+      x.device.type
+      if isinstance(x.device.type, str) and x.device.type != "mps"
+      else "cpu"
+  )
   with maybe_autocast(device_type=device_type, enabled=False):
-      freqs = (inv_freq_expanded.float() @ position_ids_expanded.float()).transpose(2, 3)
+      freqs = (
+          inv_freq_expanded.float() @ position_ids_expanded.float()
+      ).transpose(2, 3)
       cos = freqs.cos() * self.attention_scaling
       sin = freqs.sin() * self.attention_scaling
   sin = self.recomposition_frequencies(sin)
@@ -409,14 +447,18 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 - **一维序列位置**：`text_position_ids: [B,L]` 为整条序列编号，包含文本、媒体占位和起止标记。`GenerationMixin` 通常用 `attention_mask.long().cumsum(-1)-1` 生成有效位置；`Qwen3_5ForConditionalGeneration._prepare_position_ids_for_generation()` 将它和三轴位置拼为 `[4,B,L]`。多模态分支的关键语句为：
 
   ```python
-  text_positions = super()._prepare_position_ids_for_generation(inputs_tensor, model_kwargs)
-  vision_positions, rope_deltas = self.model.get_rope_index(inputs_tensor, **model_kwargs)
+  text_positions = super()._prepare_position_ids_for_generation(
+      inputs_tensor, model_kwargs
+  )
+  vision_positions, rope_deltas = self.model.get_rope_index(
+      inputs_tensor, **model_kwargs
+  )
   self.model.rope_deltas = rope_deltas
   text_positions = text_positions[None, ...]
   position_ids = torch.cat([text_positions, vision_positions], dim=0)
   ```
 
-- **序列位置与旋转位置分流**：`Qwen3_5TextModel.forward()` 将首行交给 `create_causal_mask()` / `create_recurrent_attention_mask()`，后三行交给 `rotary_emb`。直接传 `[3,B,L]` 时三行全部用于旋转；纯文本 `[B,L]` 会先复制成四行：
+- **两类位置的用途**：`Qwen3_5TextModel.forward()` 取出第一行作为 `text_position_ids`，传入 `create_causal_mask()` 和 `create_recurrent_attention_mask()`，为注意力掩码提供序列位置信息；后三行保留为三轴 `position_ids`，传入 `rotary_emb` 计算旋转系数。直接传 `[3,B,L]` 时三行全部用于旋转；纯文本 `[B,L]` 会先复制成四行：
 
   ```python
   if position_ids.ndim == 3 and position_ids.shape[0] == 4:
@@ -426,7 +468,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
       text_position_ids = None
   ```
 
-- **打包边界**：普通输入的因果顺序由序列槽位和缓存位置决定，二维 `attention_mask` 排除补齐。没有二维遮罩和历史缓存时，遮罩代码可用一维位置的不连续处识别打包边界；视觉坐标的重复和回退不能用于这个判断，具体隔离仍取决于后端及递推层支持。`find_packed_sequence_indices()` 的核心为：
+- **打包边界**：普通输入的因果顺序由序列槽位和缓存位置决定，二维 `attention_mask` 排除补齐位置。已提供 `text_position_ids`、未传入二维 `attention_mask`、且没有历史 `KV` 缓存时，构造注意力掩码的代码会检查一维位置编号是否连续，以识别打包样本之间的边界。视觉坐标本身会重复或回退，不能用于判断样本边界；样本之间能否正确隔离，还取决于注意力后端及递推层的支持。`find_packed_sequence_indices()` 的核心为：
 
   ```python
   first_dummy_value = position_ids[:, :1] - 1
@@ -434,12 +476,20 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   packed_sequence_mask = (position_diff != 1).cumsum(-1)
   ```
 
-- **生成位置偏移**：视觉网格按最大边长推进旋转位置，缓存按全部槽位增长，因此两者可能不同。`rope_deltas = llm_positions.max()+1-有效序列长度`，每个样本一个，形状为 `[B,1]`。`compute_3d_position_ids()` 复用差值时，先从 `attention_mask` 或缓存长度构造一维位置，扩展成三轴后加偏移；无二维遮罩分支的关键语句为：
+- **生成位置偏移**：视觉网格按最大边长推进旋转位置，缓存按全部槽位增长，因此两者可能不同。`rope_deltas = llm_positions.max()+1-有效序列长度`，每个样本一个，形状为 `[B,1]`。`compute_3d_position_ids()` 复用差值时，先从 `attention_mask` 或缓存长度构造一维位置，扩展成三轴后加偏移。未传入二维 `attention_mask` 时，从缓存长度开始生成位置编号，关键语句为：
 
   ```python
-  position_ids = torch.arange(past_key_values_length, past_key_values_length + seq_length)
-  position_ids = position_ids.view(1, 1, -1).expand(3, batch_size, -1).to(inputs_embeds.device)
-  delta = self.rope_deltas.repeat_interleave(batch_size // self.rope_deltas.shape[0], dim=0)
+  position_ids = torch.arange(
+      past_key_values_length, past_key_values_length + seq_length
+  )
+  position_ids = (
+      position_ids.view(1, 1, -1)
+      .expand(3, batch_size, -1)
+      .to(inputs_embeds.device)
+  )
+  delta = self.rope_deltas.repeat_interleave(
+      batch_size // self.rope_deltas.shape[0], dim=0
+  )
   position_ids = position_ids + delta.to(device=inputs_embeds.device)
   ```
 
