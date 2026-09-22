@@ -1,0 +1,18 @@
+{
+  "source_byte_identical": true,
+  "body_text_nodes_exact": 446,
+  "structure_and_formatting_elements_exact": 762,
+  "math_occurrences": 246,
+  "image_occurrences": 2,
+  "verified_assets": 165,
+  "headings": 11,
+  "image_dimension_mismatches": [],
+  "format_metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "visual_comparison": "pending_original_document_url"
+}

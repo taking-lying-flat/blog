@@ -1,5 +1,13 @@
 [
   {
+    "file": "../notes/genai-sakura-i/source.lake",
+    "format": "lake",
+    "slug": "genai-sakura-i",
+    "date": "2026-09-23",
+    "description": "生成模型笔记：Auto-Encoding Variational Bayes、重参数化技巧与非平衡热力学扩散模型。",
+    "tags": ["生成模型", "VAE", "扩散模型"]
+  },
+  {
     "file": "../notes/infra-quant-i/source.lake",
     "format": "lake",
     "slug": "infra-quant-i",
