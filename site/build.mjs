@@ -303,7 +303,7 @@ for (const [index, post] of posts.entries()) {
       <div class="${post.format === 'lake' ? 'lake-document' : 'prose'}">${post.content}</div>
       <footer class="post-footer">
         <div class="post-topics" aria-label="文章主题">${post.tags.map((tag) => `<span>${escape(tag)}</span>`).join('')}</div>
-        <div class="post-actions"><a href="#top">返回顶部 ↑</a>${post.format === 'lake' ? '<a href="source.lake" download>下载语雀源文件</a>' : ''}</div>
+        <div class="post-actions"><a href="#top">返回顶部 ↑</a></div>
         <nav class="post-pagination" aria-label="文章翻页">
           ${previous ? `<a href="../${previous.slug}/"><span>← 上一篇</span>${escape(previous.title)}</a>` : ''}
           ${next ? `<a class="post-next" href="../${next.slug}/"><span>下一篇 →</span>${escape(next.title)}</a>` : ''}
@@ -316,7 +316,6 @@ for (const [index, post] of posts.entries()) {
   await writeFile(path.join(output, post.route, 'index.html'), article);
   if (post.format === 'lake') {
     await cp(path.join(post.directory, 'assets'), path.join(output, post.route, 'assets'), { recursive: true });
-    await copyFile(path.join(root, post.file), path.join(output, post.route, 'source.lake'));
   }
 }
 
