@@ -1,0 +1,65 @@
+/* Yuque classic typography, 16 px, relaxed paragraph spacing. This scope
+   bypasses the Markdown reader's punctuation and typography adjustments. */
+.lake-document {
+  color-scheme: light;
+  background: #fff;
+  color: #262626;
+  margin: 0 -24px;
+  padding: 24px;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Segoe UI";
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.74;
+  letter-spacing: .008em;
+  white-space: break-spaces;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  font-feature-settings: normal;
+  font-variant-ligatures: none;
+  text-autospace: normal;
+}
+.lake-document :is(h1, h2) {
+  color: inherit;
+  font-weight: 700;
+  letter-spacing: inherit;
+  scroll-margin-top: 28px;
+}
+.lake-document h1 { margin: 38px 0 19px; font-size: 28px; line-height: 38px; }
+.lake-document h2 { margin: 34px 0 17px; font-size: 24px; line-height: 34px; }
+.lake-document > :first-child { margin-top: 0; }
+.lake-document p { min-height: 24px; margin: 0 0 8.352px; }
+.lake-document ul { margin: 0; padding-left: 2em; list-style-type: disc; }
+.lake-document ul ul { list-style-type: circle; }
+.lake-document ul ul ul { list-style-type: square; }
+.lake-document li { margin: 0 0 4.176px; padding: 0; }
+.lake-document strong { font-weight: 700; }
+.lake-document .lake-math {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: baseline;
+  white-space: normal;
+}
+.lake-document .lake-math img { display: inline; max-width: none; }
+/* Scroll long equations without shrinking their symbols or losing either end. */
+.lake-document .lake-math-wide {
+  width: var(--lake-math-width);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+.lake-document .lake-math-wide img { display: block; }
+.lake-document .lake-image {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  vertical-align: text-bottom;
+  margin: 16px 0;
+}
+@media (max-width: 640px) {
+  .lake-document h1 { font-size: 26px; line-height: 36px; margin: 36px 0 18px; }
+  .lake-document h2 { font-size: 22px; line-height: 30px; margin: 30px 0 15px; }
+  .lake-document > :first-child { margin-top: 0; }
+}
+@media (max-width: 600px) {
+  .lake-document { margin-inline: -20px; padding-inline: 20px; }
+}

@@ -1,0 +1,18 @@
+{
+  "source_byte_identical": true,
+  "verified_assets": 242,
+  "math_occurrences": 336,
+  "image_occurrences": 12,
+  "image_dimension_mismatches": [],
+  "headings": 22,
+  "text_nodes": 690,
+  "format_metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16",
+    "autoSpacing": "1"
+  },
+  "visual_comparison": "pending_original_document_url"
+}

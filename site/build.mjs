@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile, copyFile, cp, rm } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { readLake } from './lake.mjs';
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js/lib/core';
 import python from 'highlight.js/lib/languages/python';
@@ -168,8 +169,13 @@ const ropeSections = [
 ];
 
 for (const post of posts) {
-  post.source = await readFile(path.join(root, post.file), 'utf8');
   post.route = `posts/${post.slug}/`;
+  if (post.format === 'lake') {
+    Object.assign(post, await readLake(path.join(root, post.file), escape));
+    post.titleId = slugify(post.title);
+    continue;
+  }
+  post.source = await readFile(path.join(root, post.file), 'utf8');
   const tokens = markdown.parse(post.source, {});
   if (tokens[0]?.type !== 'heading_open' || tokens[0].tag !== 'h1') throw new Error(`Expected document title: ${post.file}`);
   post.title = inlineText(tokens[1]);
@@ -217,7 +223,7 @@ for (const post of posts) {
 const template = await readFile(path.join(root, 'template.html'), 'utf8');
 const primer = path.join(root, 'node_modules/@primer/primitives');
 const assets = new Map([
-  ...['reader.css', 'reader.js', 'theme.js', 'favicon.svg'].map((file) => [file, path.join(root, file)]),
+  ...['reader.css', 'reader.js', 'theme.js', 'favicon.svg', 'lake.css'].map((file) => [file, path.join(root, file)]),
   ['anime-readers.png', path.join(root, 'illustrations/anime-readers.png')],
   ...['light', 'dark'].map((mode) => [`github-${mode}-tritanopia.css`,
     path.join(primer, `dist/css/functional/themes/${mode}-tritanopia.css`)]),
@@ -294,10 +300,10 @@ for (const [index, post] of posts.entries()) {
         <h1 id="${escape(post.titleId)}">${escape(post.title)}</h1>
         <div class="post-meta">${metadata(post)}<span>taking-lying-flat</span></div>
       </header>
-      <div class="prose">${post.content}</div>
+      <div class="${post.format === 'lake' ? 'lake-document' : 'prose'}">${post.content}</div>
       <footer class="post-footer">
         <div class="post-topics" aria-label="文章主题">${post.tags.map((tag) => `<span>${escape(tag)}</span>`).join('')}</div>
-        <div class="post-actions"><a href="#top">返回顶部 ↑</a></div>
+        <div class="post-actions"><a href="#top">返回顶部 ↑</a>${post.format === 'lake' ? '<a href="source.lake" download>下载语雀源文件</a>' : ''}</div>
         <nav class="post-pagination" aria-label="文章翻页">
           ${previous ? `<a href="../${previous.slug}/"><span>← 上一篇</span>${escape(previous.title)}</a>` : ''}
           ${next ? `<a class="post-next" href="../${next.slug}/"><span>下一篇 →</span>${escape(next.title)}</a>` : ''}
@@ -308,6 +314,10 @@ for (const [index, post] of posts.entries()) {
   });
   await mkdir(path.join(output, post.route), { recursive: true });
   await writeFile(path.join(output, post.route, 'index.html'), article);
+  if (post.format === 'lake') {
+    await cp(path.join(post.directory, 'assets'), path.join(output, post.route, 'assets'), { recursive: true });
+    await copyFile(path.join(root, post.file), path.join(output, post.route, 'source.lake'));
+  }
 }
 
 await writeFile(path.join(output, 'assets/math.css'), adaptor.cssText(svg.styleSheet(document)));
