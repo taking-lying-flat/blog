@@ -1,0 +1,6 @@
+{
+  "weK3R": {
+    "from": "\\arg\\min_{W_\\ell^c} \\mathbb E_{X_\\ell} L\\bigl(f_\\ell(X_\\ell,W_\\ell),f_\\ell(X_\\ell,W_\\ell^c)\\bigr) \\quad \\text{subject to } C(W_\\ell^c)>C. \\tag{1}",
+    "to": "\\arg\\min_{W_\\ell^c} \\mathbb E_{X_\\ell} L\\bigl(f_\\ell(X_\\ell,W_\\ell),f_\\ell(X_\\ell,W_\\ell^c)\\bigr) \\quad \\text{s.t. } C(W_\\ell^c)>C. \\tag{1}"
+  }
+}

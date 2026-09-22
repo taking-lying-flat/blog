@@ -18,6 +18,7 @@ import { RegisterHTMLHandler } from '@mathjax/src/js/handlers/html.js';
 import '@mathjax/src/js/util/asyncLoad/esm.js';
 import '@mathjax/src/js/input/tex/base/BaseConfiguration.js';
 import '@mathjax/src/js/input/tex/ams/AmsConfiguration.js';
+import '@mathjax/src/js/input/tex/boldsymbol/BoldsymbolConfiguration.js';
 import '@mathjax/src/js/input/tex/newcommand/NewcommandConfiguration.js';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -51,7 +52,7 @@ RegisterHTMLHandler(adaptor);
 const svg = new SVG({ fontCache: 'local', displayOverflow: 'overflow', linebreaks: { inline: false } });
 const document = mathjax.document('', {
   InputJax: new TeX({
-    packages: ['base', 'ams', 'newcommand'],
+    packages: ['base', 'ams', 'boldsymbol', 'newcommand'],
     formatError(_jax, error) { throw error; },
   }),
   OutputJax: svg,
@@ -68,7 +69,7 @@ async function renderMath(token, display) {
   else inlineCount++;
 }
 
-async function repairLakeMath(code, original) {
+async function renderLakeMath(code, original) {
   const node = await document.convertPromise(code, { display: true, em: 16, ex: 8, containerWidth: 1024 });
   const svgNode = adaptor.tags(node, 'svg')[0];
   if (!svgNode) throw new Error(`Missing SVG for Lake formula: ${code}`);
@@ -77,7 +78,7 @@ async function repairLakeMath(code, original) {
   if (adaptor.getAttribute(svgNode, 'width').endsWith('%')) adaptor.setAttribute(svgNode, 'width', original.width);
   const content = adaptor.outerHTML(svgNode);
   if (/data-mjx-error|data-mml-node="merror"|\b(?:NaN|Infinity)\b/.test(content)) {
-    throw new Error(`Invalid repaired Lake formula: ${code}`);
+    throw new Error(`Invalid rendered Lake formula: ${code}`);
   }
   return {
     content,
@@ -190,7 +191,7 @@ const ropeSections = [
 for (const post of posts) {
   post.route = `posts/${post.slug}/`;
   if (post.format === 'lake') {
-    Object.assign(post, await readLake(path.join(root, post.file), escape, repairLakeMath));
+    Object.assign(post, await readLake(path.join(root, post.file), escape, renderLakeMath));
     post.titleId = slugify(post.title);
     continue;
   }
