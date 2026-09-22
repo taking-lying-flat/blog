@@ -68,6 +68,25 @@ async function renderMath(token, display) {
   else inlineCount++;
 }
 
+async function repairLakeMath(code, original) {
+  const node = await document.convertPromise(code, { display: true, em: 16, ex: 8, containerWidth: 1024 });
+  const svgNode = adaptor.tags(node, 'svg')[0];
+  if (!svgNode) throw new Error(`Missing SVG for Lake formula: ${code}`);
+  // Tagged equations use a percentage width; external images need the
+  // concrete width from the export to retain their original alignment.
+  if (adaptor.getAttribute(svgNode, 'width').endsWith('%')) adaptor.setAttribute(svgNode, 'width', original.width);
+  const content = adaptor.outerHTML(svgNode);
+  if (/data-mjx-error|data-mml-node="merror"|\b(?:NaN|Infinity)\b/.test(content)) {
+    throw new Error(`Invalid repaired Lake formula: ${code}`);
+  }
+  return {
+    content,
+    width: adaptor.getAttribute(svgNode, 'width'),
+    height: adaptor.getAttribute(svgNode, 'height'),
+    style: adaptor.getAttribute(svgNode, 'style') ?? '',
+  };
+}
+
 const inlineText = (token) => (token?.children ?? []).map((child) =>
   child.type === 'softbreak' || child.type === 'hardbreak' ? ' ' : child.content).join('');
 const slugify = (label) => label.toLowerCase().replace(/[^\p{L}\p{N}\p{M}_\-\s]/gu, '').replace(/\s/g, '-');
@@ -171,7 +190,7 @@ const ropeSections = [
 for (const post of posts) {
   post.route = `posts/${post.slug}/`;
   if (post.format === 'lake') {
-    Object.assign(post, await readLake(path.join(root, post.file), escape));
+    Object.assign(post, await readLake(path.join(root, post.file), escape, repairLakeMath));
     post.titleId = slugify(post.title);
     continue;
   }
@@ -316,6 +335,7 @@ for (const [index, post] of posts.entries()) {
   await writeFile(path.join(output, post.route, 'index.html'), article);
   if (post.format === 'lake') {
     await cp(path.join(post.directory, 'assets'), path.join(output, post.route, 'assets'), { recursive: true });
+    for (const asset of post.generatedAssets) await writeFile(path.join(output, post.route, asset.file), asset.content);
   }
 }
 

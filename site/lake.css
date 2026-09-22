@@ -36,9 +36,12 @@
 .lake-document .lake-math {
   display: inline-block;
   max-width: 100%;
+  margin-inline: .2em;
   vertical-align: baseline;
   white-space: normal;
 }
+.lake-document .lake-math + .lake-math { margin-inline-start: 0; }
+.lake-document p > .lake-math:only-child { margin-inline: 0; }
 .lake-document .lake-math img { display: inline; max-width: none; }
 /* Scroll long equations without shrinking their symbols or losing either end. */
 .lake-document .lake-math-wide {
