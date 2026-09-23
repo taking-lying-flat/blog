@@ -1,5 +1,13 @@
 [
   {
+    "file": "../notes/genai-sakura-iii/source.lake",
+    "format": "lake",
+    "slug": "genai-sakura-iii",
+    "date": "2026-09-23",
+    "description": "生成模型笔记：基于 SDE 的得分生成模型、EDM 与 DPM-Solver。",
+    "tags": ["生成模型", "SDE", "扩散模型"]
+  },
+  {
     "file": "../notes/genai-sakura-ii/source.lake",
     "format": "lake",
     "slug": "genai-sakura-ii",

@@ -1,0 +1,38 @@
+{
+  "source_byte_identical": true,
+  "source_sha256": "479467d78470e05d1a3c82c771a566e14946320542d112efb883adcb6271f822",
+  "body_text_nodes_exact": 774,
+  "structure_and_formatting_elements_exact": 1203,
+  "math_occurrences": 498,
+  "calligraphic_occurrences_rendered": 28,
+  "image_occurrences": 11,
+  "separators": 1,
+  "verified_assets": 375,
+  "headings": 14,
+  "image_dimension_mismatches": [],
+  "image_crops_preserved": [
+    "u01808f93"
+  ],
+  "format_metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "desktop_verification": {
+    "viewport_widths": [
+      1024,
+      1280,
+      1440
+    ],
+    "broken_images": [],
+    "overflowing_elements": [],
+    "page_errors": [],
+    "short_final_lines": {
+      "genai-sakura-iii-1440": 0,
+      "genai-sakura-iii-1024": 0
+    },
+    "home_first_post": "posts/genai-sakura-iii/"
+  }
+}
