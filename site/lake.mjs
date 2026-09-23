@@ -1,35 +1,16 @@
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
-import { liteAdaptor } from '@mathjax/src/js/adaptors/liteAdaptor.js';
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
 // Keep the archived export intact. Re-render equations only for display fixes
 // or explicit, checked corrections to their LaTeX.
-export async function readLake(file, escape, renderMath, renderInlineMath) {
+export async function readLake(file, escape, renderMath) {
   const directory = path.dirname(file);
   const manifest = JSON.parse(await readFile(path.join(directory, 'manifest.json'), 'utf8'));
   const source = await readFile(file);
   if (sha256(source) !== manifest.source.sha256) throw new Error(`Lake source changed: ${file}`);
-  const header = /^<!doctype lake><title>[\s\S]*?<\/title>(?:<meta\b[^>]*>)+/i;
-  if (!header.test(source.toString())) throw new Error(`Unexpected Lake header: ${file}`);
-  let content = source.toString().replace(header, '');
-  // Lake labels display equations as inline cards too. Only use flowing math
-  // inside prose; keep centered equations and equation-only paragraphs intact.
-  const adaptor = liteAdaptor();
-  const tree = adaptor.parse(content);
-  const inlineIds = new Set();
-  for (const [index, node] of adaptor.tags(adaptor.body(tree), 'card').entries()) {
-    const card = manifest.cards[index];
-    if (card.kind !== 'math' || /\\(?:tag|begin)\b/.test(card.value.code)) continue;
-    let block = adaptor.parent(node);
-    while (block && !['p', 'li', 'h1', 'h2'].includes(adaptor.kind(block))) block = adaptor.parent(block);
-    if (block && adaptor.textContent(block).trim() &&
-        !/text-align:\s*(?:center|right|end)\b/.test(adaptor.getAttribute(block, 'style') ?? '')) {
-      inlineIds.add(card.value.id);
-    }
-  }
   const overrides = JSON.parse(await readFile(path.join(directory, 'math-overrides.json'), 'utf8')
     .catch((error) => { if (error.code === 'ENOENT') return '{}'; throw error; }));
   for (const [id, override] of Object.entries(overrides)) {
@@ -50,14 +31,9 @@ export async function readLake(file, escape, renderMath, renderInlineMath) {
   // calligraphic font as the repaired equations, preserving the math commands.
   const renderedCards = new Map();
   const generated = new Map();
-  const inlineMath = new Map();
   for (const card of manifest.cards) {
     if (card.kind !== 'math') continue;
     const code = overrides[card.value.id]?.to ?? card.value.code;
-    if (inlineIds.has(card.value.id)) {
-      inlineMath.set(card.value.id, await renderInlineMath(code, card.value.id));
-      continue;
-    }
     if (!invalidMath.has(card.asset) && code === card.value.code && !/\\math(?:cal|scr)\b/.test(code)) continue;
     const key = JSON.stringify([code, assets.get(card.asset).width]);
     if (!generated.has(key)) {
@@ -67,6 +43,9 @@ export async function readLake(file, escape, renderMath, renderInlineMath) {
     renderedCards.set(card.value.id, generated.get(key));
   }
 
+  const header = /^<!doctype lake><title>[\s\S]*?<\/title>(?:<meta\b[^>]*>)+/i;
+  if (!header.test(source.toString())) throw new Error(`Unexpected Lake header: ${file}`);
+  let content = source.toString().replace(header, '');
   let index = 0;
   let mathCount = 0;
   let imageCount = 0;
@@ -85,14 +64,11 @@ export async function readLake(file, escape, renderMath, renderInlineMath) {
     if (!asset) throw new Error(`Missing Lake asset: ${card.asset}`);
     if (card.kind === 'math') {
       mathCount++;
-      const code = overrides[card.value.id]?.to ?? card.value.code;
-      if (inlineMath.has(card.value.id)) {
-        return `<span class="lake-math lake-math-inline" data-card-id="${id}" role="math" aria-label="${escape(code)}" style="${escape(card.attributes.style ?? '')}">${inlineMath.get(card.value.id)}</span>`;
-      }
       const wide = parseFloat(asset.width) > 20;
       const baseline = asset.style?.match(/vertical-align:\s*([^;]+)/)?.[1] ?? '0';
       const sizing = wide ? `--lake-math-width:${asset.width};vertical-align:${baseline};` : '';
       const style = ` style="${sizing}${escape(card.attributes.style ?? '')}"`;
+      const code = overrides[card.value.id]?.to ?? card.value.code;
       return `<span class="lake-math${wide ? ' lake-math-wide' : ''}" data-card-id="${id}"${style}><img src="${escape(asset.file)}" alt="${escape(code)}" style="width:${escape(asset.width)};height:${escape(asset.height)};${escape(asset.style ?? '')}" decoding="async"></span>`;
     }
     if (card.kind === 'image') {

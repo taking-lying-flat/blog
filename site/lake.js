@@ -15,7 +15,6 @@ if (lakeDocument) {
     const fragments = [];
     while (walker.nextNode()) {
       const node = walker.currentNode;
-      if (node.parentElement.closest('.lake-math')) continue;
       const start = node.textContent.search(/\S/u);
       if (start < 0) continue;
       range.setStart(node, start);
@@ -33,11 +32,10 @@ if (lakeDocument) {
     const last = rows.at(-1);
     const middle = (last.top + last.bottom) / 2;
     for (const image of element.querySelectorAll('.lake-math, .lake-image')) {
-      for (const rect of image.getClientRects()) {
-        // A following formula/image on its own line is not a stranded word.
-        if (rect.top >= last.bottom) return { count: rows.length, orphan: false };
-        if (rect.top <= middle && rect.bottom >= middle) last.right = Math.max(last.right, rect.right);
-      }
+      const rect = image.getBoundingClientRect();
+      // A following formula/image on its own line is not a stranded word.
+      if (rect.top >= last.bottom) return { count: rows.length, orphan: false };
+      if (rect.top <= middle && rect.bottom >= middle) last.right = Math.max(last.right, rect.right);
     }
     const width = last.right - element.getBoundingClientRect().left - parseFloat(getComputedStyle(element).paddingLeft);
     return { count: rows.length, orphan: width < fontSize * 3.5 };

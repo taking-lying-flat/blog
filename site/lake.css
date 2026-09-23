@@ -51,8 +51,6 @@
 .lake-document .lake-math + .lake-math { margin-inline-start: 0; }
 .lake-document p > .lake-math:only-child { margin-inline: 0; }
 .lake-document .lake-math img { display: inline; max-width: none; }
-.lake-document .lake-math-inline { display: inline; }
-.lake-document .lake-math-inline mjx-container { margin: 0; }
 /* Scroll long equations without shrinking their symbols or losing either end. */
 .lake-document .lake-math-wide {
   width: var(--lake-math-width);
@@ -70,6 +68,10 @@
 }
 .lake-document .lake-image-cropped { position: relative; overflow: hidden; }
 .lake-document .lake-image-cropped img { position: absolute; display: block; max-width: none; }
+/* Give Sakura III's DDPM paragraph two extra character widths on desktop. */
+@media (min-width: 1152px) {
+  .lake-document #u151ed2ee { width: calc(100% + 32px); }
+}
 @media (max-width: 640px) {
   .lake-document h1 { font-size: 26px; line-height: 36px; margin: 36px 0 18px; }
   .lake-document h2 { font-size: 22px; line-height: 30px; margin: 30px 0 15px; }
