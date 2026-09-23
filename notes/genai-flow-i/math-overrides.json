@@ -1,0 +1,230 @@
+{
+  "Xq8EW": {
+    "to": "p(x,z_1,\\ldots,z_L) = p(x|f_0(z_1))\\,p(z_L)\\prod_{l=1}^{L-1}p(z_l|f_l(z_{l+1})).",
+    "reason": "显式写出顶层先验，避免未定义的 z_{L+1}。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "p(x,z_1,\\ldots,z_L) = p(x|f_0(z_1)) \\prod_{l=1}^{L} p(z_l|f_l(z_{l+1}))."
+  },
+  "rnwzn": {
+    "to": "p(z_L)=\\mathcal{N}(0,I),",
+    "reason": "标准高斯先验用于顶层；下层有条件依赖。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "p(z_l)=\\mathcal{N}(0,I),"
+  },
+  "b3umL": {
+    "to": "\\boxed{\n\\begin{gathered}\n\\mathbf{z}_K = f_K \\circ \\dots \\circ f_2 \\circ f_1(\\mathbf{z}_0) \\\\\n\\ln q_K(\\mathbf{z}_K) = \\ln q_0(\\mathbf{z}_0) - \\sum_{k=1}^K \\ln \\left| \\det \\frac{\\partial f_k}{\\partial \\mathbf{z}_{k-1}} \\right|,\n\\end{gathered}\n}",
+    "reason": "绝对值应作用于行列式，而不是逐元素作用于矩阵。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "\\boxed{\n\\begin{gathered}\n\\mathbf{z}_K = f_K \\circ \\dots \\circ f_2 \\circ f_1(\\mathbf{z}_0) \\\\\n\\ln q_K(\\mathbf{z}_K) = \\ln q_0(\\mathbf{z}_0) - \\sum_{k=1}^K \\ln \\det \\left| \\frac{\\partial f_k}{\\partial \\mathbf{z}_{k-1}} \\right|,\n\\end{gathered}\n}"
+  },
+  "V7rSD": {
+    "to": "\\mathbb{E}[\\xi_i(t)\\xi_j(t\\prime)] = \\delta_{ij}\\min(t,t\\prime).",
+    "reason": "Wiener 过程的协方差为 min(t,s)，Dirac delta 对应形式导数白噪声。由独立增量直接推得。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "\\mathbb{E}[\\xi_i(t)\\xi_j(t')] = \\delta_{ij}\\delta(t-t')."
+  },
+  "BPfxV": {
+    "to": "H(z,\\omega) = L(z) + \\frac{1}{2}\\omega^\\top M^{-1}\\omega.",
+    "reason": "沿用前文能量 L 的定义；动量协方差为质量矩阵 M，动能使用 M^{-1}。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "H(z,\\omega) = -L(z) + \\frac{1}{2}\\omega^\\top M \\omega."
+  },
+  "FgTqK": {
+    "to": "\\boxed{\n\\begin{gathered}\n\\mathbf{z}_K = f_K \\circ f_{K-1} \\circ \\dots \\circ f_1(\\mathbf{z}) \\\\\n\\ln q_K(\\mathbf{z}_K) = \\ln q_0(\\mathbf{z}) - \\sum_{k=1}^K \\ln |1 + \\mathbf{u}_k^\\top \\psi_k(\\mathbf{z}_{k-1})|.\n\\end{gathered}\n}",
+    "reason": "第 k 个变换的雅可比必须在其输入 z_{k-1} 处计算。已用两层流有限差分核验。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "\\boxed{\n\\begin{gathered}\n\\mathbf{z}_K = f_K \\circ f_{K-1} \\circ \\dots \\circ f_1(\\mathbf{z}) \\\\\n\\ln q_K(\\mathbf{z}_K) = \\ln q_0(\\mathbf{z}) - \\sum_{k=1}^K \\ln |1 + \\mathbf{u}_k^\\top \\psi_k(\\mathbf{z}_k)|.\n\\end{gathered}\n}"
+  },
+  "y6hYw": {
+    "to": "\\boxed{\n\\begin{aligned}\n\\mathcal{F}(\\mathbf{x}) &= \\mathbb{E}_{q_\\phi(z|x)}[\\log q_\\phi(\\mathbf{z}|\\mathbf{x}) - \\log p(\\mathbf{x}, \\mathbf{z})] = \\mathbb{E}_{q_0(z_0)} [\\ln q_K(\\mathbf{z}_K) - \\log p(\\mathbf{x}, \\mathbf{z}_K)] \\\\\n&= \\mathbb{E}_{q_0(z_0)} [\\ln q_0(\\mathbf{z}_0)] - \\mathbb{E}_{q_0(z_0)} [\\log p(\\mathbf{x}, \\mathbf{z}_K)] - \\mathbb{E}_{q_0(z_0)} \\left[ \\sum_{k=1}^K \\ln |1 + \\mathbf{u}_k^\\top \\psi_k(\\mathbf{z}_{k-1})| \\right].\n\\end{aligned}\n}",
+    "reason": "第 k 个变换的雅可比必须在其输入 z_{k-1} 处计算。已用两层流有限差分核验。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "\\boxed{\n\\begin{aligned}\n\\mathcal{F}(\\mathbf{x}) &= \\mathbb{E}_{q_\\phi(z|x)}[\\log q_\\phi(\\mathbf{z}|\\mathbf{x}) - \\log p(\\mathbf{x}, \\mathbf{z})] = \\mathbb{E}_{q_0(z_0)} [\\ln q_K(\\mathbf{z}_K) - \\log p(\\mathbf{x}, \\mathbf{z}_K)] \\\\\n&= \\mathbb{E}_{q_0(z_0)} [\\ln q_0(\\mathbf{z}_0)] - \\mathbb{E}_{q_0(z_0)} [\\log p(\\mathbf{x}, \\mathbf{z}_K)] - \\mathbb{E}_{q_0(z_0)} \\left[ \\sum_{k=1}^K \\ln |1 + \\mathbf{u}_k^\\top \\psi_k(\\mathbf{z}_k)| \\right].\n\\end{aligned}\n}"
+  },
+  "uWe7v": {
+    "to": "\\boxed{\n\\mathcal{F}_{\\beta_t}(x) = \\mathbb{E}_{q_0(z_0)}[\\ln q_0(z_0)] - \\beta_t \\mathbb{E}_{q_0(z_0)}[\\log p(x, z_K)] - \\mathbb{E}_{q_0(z_0)} \\left[ \\sum_{k=1}^K \\ln |1 + u_k^\\top \\psi_k(z_{k-1})| \\right],\n}",
+    "reason": "退火目标与前文密度变换使用相同的雅可比求值点。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "\\boxed{\n\\mathcal{F}_{\\beta_t}(x) = \\mathbb{E}_{q_0(z_0)}[\\ln q_0(z_0)] - \\beta_t \\mathbb{E}_{q_0(z_0)}[\\log p(x, z_K)] - \\mathbb{E}_{q_0(z_0)} \\left[ \\sum_{k=1}^K \\ln |1 + u_k^\\top \\psi_k(z_k)| \\right],\n}"
+  },
+  "y4p1m": {
+    "to": "\\boxed{\n\\begin{gathered}\nf(\\mathbf z)=\\mathbf z+\\beta h(\\alpha,r)(\\mathbf z-\\mathbf z_0),\\\\\n\\det\\frac{\\partial f}{\\partial\\mathbf z}\n=[1+\\beta h(\\alpha,r)]^{D-1}[1+\\beta h(\\alpha,r)+\\beta h'(\\alpha,r)r],\\\\\nr=\\|\\mathbf z-\\mathbf z_0\\|_2,\\quad h(\\alpha,r)=\\frac{1}{\\alpha+r},\\quad h'=\\frac{\\partial h}{\\partial r}\n\\end{gathered}\n}",
+    "reason": "原论文此式也遗漏 beta。通过径向/切向特征值及有限差分行列式独立核验；统一维度 D。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "\\boxed{\n\\begin{gathered}\nf(\\mathbf{z}) = \\mathbf{z} + \\beta h(\\alpha, r)(\\mathbf{z} - \\mathbf{z}_0), \\\\\n\\det \\left| \\frac{\\partial f}{\\partial \\mathbf{z}} \\right| = [1 + \\beta h(\\alpha, r)]^{d-1} [1 + \\beta h(\\alpha, r) + h'(\\alpha, r)r], \\\\\n\\text{where } r = |\\mathbf{z} - \\mathbf{z}_0|, \\; h(\\alpha, r) = 1/(\\alpha + r)\n\\end{gathered}\n}"
+  },
+  "wSiMm": {
+    "to": "\\lambda=\\{z_0\\in\\mathbb R^D,\\ \\alpha>0,\\ \\beta>-\\alpha\\}.",
+    "reason": "补充保证径向流全局可逆、雅可比非奇异的充分参数约束。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "\\lambda=\\{z_0\\in \\mathbb{R}^D,\\ \\alpha\\in \\mathbb{R},\\ \\beta\\in \\mathbb{R}\\}."
+  },
+  "wlQQy": {
+    "to": "q_0=\\mathcal N(\\mu,\\operatorname{diag}(\\sigma^2))",
+    "reason": "明确向量标准差与协方差矩阵的区别。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "q_0=\\mathcal{N}(\\mu,\\sigma)"
+  },
+  "Hncbt": {
+    "to": "\\sigma\\in\\mathbb{R}_{>0}^D",
+    "reason": "标准差为正。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "\\sigma\\in\\mathbb{R}^D"
+  },
+  "wDw7w": {
+    "to": "(\\theta_{t+1},\\phi_{t+1}) \\leftarrow (\\theta_t,\\phi_t) - \\Gamma_t(g_\\theta^t,g_\\phi^t),",
+    "reason": "g 表示自由能梯度时，最小化更新应为减号；与下方算法图一致。",
+    "reference": "https://proceedings.mlr.press/v37/rezende15.pdf",
+    "from": "(\\theta_{t+1},\\phi_{t+1}) \\leftarrow (\\theta_t,\\phi_t) + \\Gamma_t(g_\\theta^t,g_\\phi^t),"
+  },
+  "k1Fbg": {
+    "to": "\\boxed{\n\\frac{da(t)}{dt} = -a(t) \\frac{\\partial f(z(t), t, \\theta)}{\\partial z}\n}",
+    "reason": "统一使用行向量伴随，保证矩阵维度正确。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\boxed{\n\\frac{da(t)}{dt} = -a(t)^\\top \\frac{\\partial f(z(t), t, \\theta)}{\\partial z}\n}"
+  },
+  "kb78n": {
+    "to": "\\boxed{\n\\frac{dL}{d\\theta}=-\\int_{t_1}^{t_0}a(t)\\frac{\\partial f(z(t),t,\\theta)}{\\partial\\theta}\\,dt\n}",
+    "reason": "反向积分参数梯度需负号；已用 z′=theta*z 的解析梯度和有限差分核验。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\boxed{\n\\frac{dL}{d\\theta} = \\int_{t_1}^{t_0} a(t)^\\top \\frac{\\partial f(z(t), t, \\theta)}{\\partial \\theta} dt\n}"
+  },
+  "EDHHC": {
+    "to": "a(t)\\frac{\\partial f}{\\partial z}",
+    "reason": "统一正文行向量伴随约定。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "a(t)^{\\top}\\frac{\\partial f}{\\partial z}"
+  },
+  "Ihs83": {
+    "to": "a(t)\\frac{\\partial f}{\\partial \\theta}",
+    "reason": "统一正文行向量伴随约定。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "a(t)^{\\top}\\frac{\\partial f}{\\partial \\theta}"
+  },
+  "wIiP8": {
+    "to": "\\boxed{\n\\frac{d\\mathbf{z}(t)}{dt} = \\sum_{n=1}^M f_n(\\mathbf{z}(t)), \\quad \\frac{d\\log p(\\mathbf{z}(t))}{dt} = -\\sum_{n=1}^M \\mathrm{tr} \\left( \\frac{\\partial f_n}{\\partial \\mathbf{z}} \\right)\n}",
+    "reason": "密度沿流的变化率为负散度；向量场求和不会改变负号。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\boxed{\n\\frac{d\\mathbf{z}(t)}{dt} = \\sum_{n=1}^M f_n(\\mathbf{z}(t)), \\quad \\frac{d\\log p(\\mathbf{z}(t))}{dt} = \\sum_{n=1}^M \\mathrm{tr} \\left( \\frac{\\partial f_n}{\\partial \\mathbf{z}} \\right)\n}"
+  },
+  "GJAE6": {
+    "to": "p(z,t)",
+    "reason": "Liouville 方程描述密度 p 的变化，而不是把状态 z 当作密度。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "z "
+  },
+  "bjUGE": {
+    "to": "\\boxed{\n\\begin{aligned}\n\\frac{d}{dt}p(\\mathbf z(t),t)\n&=\\nabla_{\\mathbf z}p(\\mathbf z(t),t)^\\top f(\\mathbf z(t),t)\n+\\left.\\frac{\\partial p(\\mathbf z,t)}{\\partial t}\\right|_{\\mathbf z=\\mathbf z(t)}\\\\\n&=\\sum_i f_i\\frac{\\partial p}{\\partial z_i}\n-\\sum_i\\left(p\\frac{\\partial f_i}{\\partial z_i}+f_i\\frac{\\partial p}{\\partial z_i}\\right)\\\\\n&=-p(\\mathbf z(t),t)\\sum_i\\frac{\\partial f_i(\\mathbf z(t),t)}{\\partial z_i}.\n\\end{aligned}\n}",
+    "reason": "区分沿轨迹总导数与固定空间点的时间偏导，明确对流项抵消。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\boxed{\n\\begin{aligned}\n\\frac{\\partial p(\\mathbf{z}(t), t)}{\\partial t} &= \\underbrace{\\frac{\\partial p(\\mathbf{z}(t), t)}{\\partial \\mathbf{z}(t)} \\frac{\\partial \\mathbf{z}(t)}{\\partial t}}_{\\text{partial derivative from first argument, } \\mathbf{z}(t)} + \\underbrace{\\frac{\\partial p(\\mathbf{z}(t), t)}{\\partial t}}_{\\text{partial derivative from second argument, } t} \\\\\n&= \\cancel{\\sum_{i=1}^D \\frac{\\partial p(\\mathbf{z}(t), t)}{\\partial \\mathbf{z}_i(t)} \\frac{\\partial \\mathbf{z}_i(t)}{\\partial t}} - \\sum_{i=1}^D \\frac{\\partial f_i(\\mathbf{z}(t), t)}{\\partial \\mathbf{z}_i} p(\\mathbf{z}(t), t) - \\cancel{\\sum_{i=1}^D f_i(\\mathbf{z}(t), t) \\frac{\\partial p(\\mathbf{z}(t), t)}{\\partial \\mathbf{z}_i(t)}} \\\\\n&= - \\sum_{i=1}^D \\frac{\\partial f_i(\\mathbf{z}(t), t)}{\\partial \\mathbf{z}_i} p(\\mathbf{z}(t), t)\n\\end{aligned}\n}"
+  },
+  "UIeiw": {
+    "to": "\\boxed{\n\\frac{d}{dt} \\begin{bmatrix} \\mathbf{z}(t) \\\\ \\log p(\\mathbf{z}(t), t) \\end{bmatrix} = \\begin{bmatrix} f(\\mathbf{z}(t), t) \\\\ - \\sum_{i=1}^D \\frac{\\partial f_i(\\mathbf{z}(t), t)}{\\partial \\mathbf z_i} \\end{bmatrix}\n}",
+    "reason": "增广密度 ODE 需要空间散度，不是时间导数；原论文 Eq.33 也有此笔误。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\boxed{\n\\frac{d}{dt} \\begin{bmatrix} \\mathbf{z}(t) \\\\ \\log p(\\mathbf{z}(t), t) \\end{bmatrix} = \\begin{bmatrix} f(\\mathbf{z}(t), t) \\\\ - \\sum_{i=1}^D \\frac{\\partial f_i(\\mathbf{z}(t), t)}{\\partial t} \\end{bmatrix}\n}"
+  },
+  "AfRqH": {
+    "to": "\\boxed{\n\\frac{d \\log p(\\mathbf{z}(t))}{dt} = -\\mathrm{tr}\\left( \\frac{df}{d\\mathbf{z}(t)} \\right)\n}",
+    "reason": "沿样本轨迹使用总时间导数，与 Liouville 方程的固定位置偏导区分。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\boxed{\n\\frac{\\partial \\log p(\\mathbf{z}(t))}{\\partial t} = -\\mathrm{tr}\\left( \\frac{df}{d\\mathbf{z}(t)} \\right)\n}"
+  },
+  "Gff17": {
+    "to": "\\boxed{\n\\frac{d\\mathbf{z}(t)}{dt} = u h(w^\\top \\mathbf{z}(t) + b), \\quad \\frac{d \\log p(\\mathbf{z}(t))}{dt} = -u^\\top \\frac{\\partial h}{\\partial \\mathbf{z}(t)}\n}",
+    "reason": "沿样本轨迹使用总时间导数，与 Liouville 方程的固定位置偏导区分。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\boxed{\n\\frac{d\\mathbf{z}(t)}{dt} = u h(w^\\top \\mathbf{z}(t) + b), \\quad \\frac{\\partial \\log p(\\mathbf{z}(t))}{\\partial t} = -u^\\top \\frac{\\partial h}{\\partial \\mathbf{z}(t)}\n}"
+  },
+  "PKPk3": {
+    "to": "\\frac{d \\log p(z)}{dt}=0",
+    "reason": "沿样本轨迹使用总时间导数，与 Liouville 方程的固定位置偏导区分。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\frac{\\partial \\log p(z)}{\\partial t}=0"
+  },
+  "KNHcg": {
+    "to": "\\frac{d \\log p(\\mathbf{z}(t))}{dt} = -\\mathrm{tr}\\left( \\frac{df}{d\\mathbf{z}(t)} \\right)",
+    "reason": "沿样本轨迹使用总时间导数，与 Liouville 方程的固定位置偏导区分。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\frac{\\partial \\log p(\\mathbf{z}(t))}{\\partial t} = -\\mathrm{tr}\\left( \\frac{df}{d\\mathbf{z}(t)} \\right)"
+  },
+  "p1h1z": {
+    "to": "\\begin{aligned}\n\\frac{d \\log p(\\mathbf{z}(t))}{dt} &= \\lim_{\\varepsilon \\to 0^+} \\frac{\\log p(\\mathbf{z}(t)) - \\log \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right| - \\log p(\\mathbf{z}(t))}{\\varepsilon} \\\\\n&= - \\lim_{\\varepsilon \\to 0^+} \\frac{\\log \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|}{\\varepsilon} \\\\\n&= - \\lim_{\\varepsilon \\to 0^+} \\frac{\\frac{\\partial}{\\partial \\varepsilon} \\log \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|}{\\frac{\\partial}{\\partial \\varepsilon} \\varepsilon} \\qquad \\text{(by L'Hôpital's rule)} \\\\\n&= - \\lim_{\\varepsilon \\to 0^+} \\frac{\\frac{\\partial}{\\partial \\varepsilon} \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|}{\\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|} \\qquad \\left( \\left. \\frac{\\partial \\log(\\mathbf{z})}{\\partial \\mathbf{z}} \\right|_{\\mathbf{z}=1} = 1 \\right) \\\\\n&= - \\underbrace{ \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right| \\right) }_{\\text{bounded}} \\underbrace{ \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{1}{\\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|} \\right) }_{=1} \\\\\n&= - \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|\n\\end{aligned}",
+    "reason": "沿样本轨迹使用总时间导数，与 Liouville 方程的固定位置偏导区分。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\begin{aligned}\n\\frac{\\partial \\log p(\\mathbf{z}(t))}{\\partial t} &= \\lim_{\\varepsilon \\to 0^+} \\frac{\\log p(\\mathbf{z}(t)) - \\log \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right| - \\log p(\\mathbf{z}(t))}{\\varepsilon} \\\\\n&= - \\lim_{\\varepsilon \\to 0^+} \\frac{\\log \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|}{\\varepsilon} \\\\\n&= - \\lim_{\\varepsilon \\to 0^+} \\frac{\\frac{\\partial}{\\partial \\varepsilon} \\log \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|}{\\frac{\\partial}{\\partial \\varepsilon} \\varepsilon} \\qquad \\text{(by L'Hôpital's rule)} \\\\\n&= - \\lim_{\\varepsilon \\to 0^+} \\frac{\\frac{\\partial}{\\partial \\varepsilon} \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|}{\\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|} \\qquad \\left( \\left. \\frac{\\partial \\log(\\mathbf{z})}{\\partial \\mathbf{z}} \\right|_{\\mathbf{z}=1} = 1 \\right) \\\\\n&= - \\underbrace{ \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right| \\right) }_{\\text{bounded}} \\underbrace{ \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{1}{\\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|} \\right) }_{=1} \\\\\n&= - \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\left| \\det \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right|\n\\end{aligned}"
+  },
+  "DK5nN": {
+    "to": "\\begin{aligned}\n\\frac{d \\log p(\\mathbf{z}(t))}{dt} &= - \\lim_{\\varepsilon \\to 0^+} \\mathrm{tr} \\left( \\mathrm{adj} \\left( \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right) \\frac{\\partial}{\\partial \\varepsilon} \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right) \\\\\n&= -\\mathrm{tr} \\left( \\underbrace{ \\left( \\lim_{\\varepsilon \\to 0^+} \\mathrm{adj} \\left( \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right) \\right) }_{=I} \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right) \\right) \\\\\n&= -\\mathrm{tr} \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right)\n\\end{aligned}",
+    "reason": "沿样本轨迹使用总时间导数，与 Liouville 方程的固定位置偏导区分。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\begin{aligned}\n\\frac{\\partial \\log p(\\mathbf{z}(t))}{\\partial t} &= - \\lim_{\\varepsilon \\to 0^+} \\mathrm{tr} \\left( \\mathrm{adj} \\left( \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right) \\frac{\\partial}{\\partial \\varepsilon} \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right) \\\\\n&= -\\mathrm{tr} \\left( \\underbrace{ \\left( \\lim_{\\varepsilon \\to 0^+} \\mathrm{adj} \\left( \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right) \\right) }_{=I} \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right) \\right) \\\\\n&= -\\mathrm{tr} \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\frac{\\partial}{\\partial \\mathbf{z}} T_\\varepsilon(\\mathbf{z}(t)) \\right)\n\\end{aligned}"
+  },
+  "aSWoz": {
+    "to": "\\begin{aligned}\n\\frac{d \\log p(\\mathbf{z}(t))}{dt} &= -\\mathrm{tr} \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\frac{\\partial}{\\partial \\mathbf{z}} (\\mathbf{z} + \\varepsilon f(\\mathbf{z}(t), t) + \\mathcal{O}(\\varepsilon^2) + \\mathcal{O}(\\varepsilon^3) + \\dots) \\right) \\\\\n&= -\\mathrm{tr} \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\left( I + \\frac{\\partial}{\\partial \\mathbf{z}} \\varepsilon f(\\mathbf{z}(t), t) + \\mathcal{O}(\\varepsilon^2) + \\mathcal{O}(\\varepsilon^3) + \\dots \\right) \\right) \\\\\n&= -\\mathrm{tr} \\left( \\lim_{\\varepsilon \\to 0^+} \\left( \\frac{\\partial}{\\partial \\mathbf{z}} f(\\mathbf{z}(t), t) + \\mathcal{O}(\\varepsilon) + \\mathcal{O}(\\varepsilon^2) + \\dots \\right) \\right) \\\\\n&= -\\mathrm{tr} \\left( \\frac{\\partial}{\\partial \\mathbf{z}} f(\\mathbf{z}(t), t) \\right)\n\\end{aligned}",
+    "reason": "沿样本轨迹使用总时间导数，与 Liouville 方程的固定位置偏导区分。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\begin{aligned}\n\\frac{\\partial \\log p(\\mathbf{z}(t))}{\\partial t} &= -\\mathrm{tr} \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\frac{\\partial}{\\partial \\mathbf{z}} (\\mathbf{z} + \\varepsilon f(\\mathbf{z}(t), t) + \\mathcal{O}(\\varepsilon^2) + \\mathcal{O}(\\varepsilon^3) + \\dots) \\right) \\\\\n&= -\\mathrm{tr} \\left( \\lim_{\\varepsilon \\to 0^+} \\frac{\\partial}{\\partial \\varepsilon} \\left( I + \\frac{\\partial}{\\partial \\mathbf{z}} \\varepsilon f(\\mathbf{z}(t), t) + \\mathcal{O}(\\varepsilon^2) + \\mathcal{O}(\\varepsilon^3) + \\dots \\right) \\right) \\\\\n&= -\\mathrm{tr} \\left( \\lim_{\\varepsilon \\to 0^+} \\left( \\frac{\\partial}{\\partial \\mathbf{z}} f(\\mathbf{z}(t), t) + \\mathcal{O}(\\varepsilon) + \\mathcal{O}(\\varepsilon^2) + \\dots \\right) \\right) \\\\\n&= -\\mathrm{tr} \\left( \\frac{\\partial}{\\partial \\mathbf{z}} f(\\mathbf{z}(t), t) \\right)\n\\end{aligned}"
+  },
+  "WX2TD": {
+    "to": "\\boxed{\n\\frac{d \\log p(\\mathbf{z}(t), t)}{dt} = \\frac{1}{p(\\mathbf{z}(t), t)} \\frac{d p(\\mathbf{z}(t), t)}{dt} = - \\sum_{i=1}^D \\frac{\\partial f_i(\\mathbf{z}(t), t)}{\\partial \\mathbf{z}_i}\n}",
+    "reason": "沿样本轨迹使用总时间导数，与 Liouville 方程的固定位置偏导区分。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\boxed{\n\\frac{\\partial \\log p(\\mathbf{z}(t), t)}{\\partial t} = \\frac{1}{p(\\mathbf{z}(t), t)} \\frac{\\partial p(\\mathbf{z}(t), t)}{\\partial t} = - \\sum_{i=1}^D \\frac{\\partial f_i(\\mathbf{z}(t), t)}{\\partial \\mathbf{z}_i}\n}"
+  },
+  "hCkan": {
+    "to": "\\boxed{\n\\frac{d \\log p(\\mathbf{z}(t))}{dt} = -\\mathrm{Tr}\\left(\\frac{\\partial f}{\\partial \\mathbf{z}(t)}\\right).\n}",
+    "reason": "沿样本轨迹使用总时间导数，与 Liouville 方程的固定位置偏导区分。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\boxed{\n\\frac{\\partial \\log p(\\mathbf{z}(t))}{\\partial t} = -\\mathrm{Tr}\\left(\\frac{\\partial f}{\\partial \\mathbf{z}(t)}\\right).\n}"
+  },
+  "jwfJn": {
+    "to": "\\boxed{\n\\underbrace{\\mathbf{a}(t_N) = \\frac{dL}{d\\mathbf{z}(t_N)}}_{\\text{initial condition of adjoint diffeq.}} \\qquad \\underbrace{\\mathbf{a}(t_0) = \\mathbf{a}(t_N) + \\int_{t_N}^{t_0} \\frac{d\\mathbf{a}(t)}{dt} dt = \\mathbf{a}(t_N) - \\int_{t_N}^{t_0} \\mathbf{a}(t) \\frac{\\partial f(\\mathbf{z}(t), t, \\theta)}{\\partial \\mathbf{z}(t)}\\,dt}_{\\text{gradient wrt. initial value}}\n}",
+    "reason": "补全积分微分 dt。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\boxed{\n\\underbrace{\\mathbf{a}(t_N) = \\frac{dL}{d\\mathbf{z}(t_N)}}_{\\text{initial condition of adjoint diffeq.}} \\qquad \\underbrace{\\mathbf{a}(t_0) = \\mathbf{a}(t_N) + \\int_{t_N}^{t_0} \\frac{d\\mathbf{a}(t)}{dt} dt = \\mathbf{a}(t_N) - \\int_{t_N}^{t_0} \\mathbf{a}(t)^T \\frac{\\partial f(\\mathbf{z}(t), t, \\theta)}{\\partial \\mathbf{z}(t)}}_{\\text{gradient wrt. initial value}}\n}"
+  },
+  "JLHxT": {
+    "to": "\\frac{d}{dt} \\begin{bmatrix} \\mathbf{z} \\\\ \\theta \\\\ t \\end{bmatrix} (t) = f_{aug}([\\mathbf{z}, \\theta, t]) := \\begin{bmatrix} f([\\mathbf{z}, \\theta, t]) \\\\ \\mathbf{0} \\\\ 1 \\end{bmatrix} , \\mathbf{a}_{aug} := \\begin{bmatrix} \\mathbf{a} & \\mathbf{a}_\\theta & \\mathbf{a}_t \\end{bmatrix} , \\mathbf{a}_\\theta(t) := \\frac{dL}{d\\theta(t)} , \\mathbf{a}_t(t) := \\frac{dL}{dt(t)}",
+    "reason": "增广伴随同样采用行向量，与后续乘法一致。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\frac{d}{dt} \\begin{bmatrix} \\mathbf{z} \\\\ \\theta \\\\ t \\end{bmatrix} (t) = f_{aug}([\\mathbf{z}, \\theta, t]) := \\begin{bmatrix} f([\\mathbf{z}, \\theta, t]) \\\\ \\mathbf{0} \\\\ 1 \\end{bmatrix} , \\mathbf{a}_{aug} := \\begin{bmatrix} \\mathbf{a} \\\\ \\mathbf{a}_\\theta \\\\ \\mathbf{a}_t \\end{bmatrix} , \\mathbf{a}_\\theta(t) := \\frac{dL}{d\\theta(t)} , \\mathbf{a}_t(t) := \\frac{dL}{dt(t)}"
+  },
+  "FVJBV": {
+    "to": "\\frac{dL}{d\\mathbf{z}(t)} = \\frac{dL}{d\\mathbf{z}(t+\\varepsilon)} \\frac{d\\mathbf{z}(t+\\varepsilon)}{d\\mathbf{z}(t)} \\qquad \\text{or} \\qquad \\mathbf{a}(t) = \\mathbf{a}(t+\\varepsilon) \\frac{\\partial T_\\varepsilon(\\mathbf{z}(t), t)}{\\partial \\mathbf{z}(t)}",
+    "reason": "修正混用 d 与 partial 的记号。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\frac{dL}{\\partial \\mathbf{z}(t)} = \\frac{dL}{d\\mathbf{z}(t+\\varepsilon)} \\frac{d\\mathbf{z}(t+\\varepsilon)}{d\\mathbf{z}(t)} \\qquad \\text{or} \\qquad \\mathbf{a}(t) = \\mathbf{a}(t+\\varepsilon) \\frac{\\partial T_\\varepsilon(\\mathbf{z}(t), t)}{\\partial \\mathbf{z}(t)}"
+  },
+  "giXzm": {
+    "to": "\\begin{aligned}\n\\frac{dL}{dt_N}&=\\mathbf a(t_N)f(\\mathbf z(t_N),t_N,\\theta),\\qquad\n\\mathbf a_t(t_N)=-\\frac{dL}{dt_N},\\\\\n\\frac{dL}{dt_0}&=\\mathbf a_t(t_0)\n=\\mathbf a_t(t_N)-\\int_{t_N}^{t_0}\\mathbf a(t)\\frac{\\partial f(\\mathbf z(t),t,\\theta)}{\\partial t}\\,dt\\\\\n&=-\\mathbf a(t_0)f(\\mathbf z(t_0),t_0,\\theta).\n\\end{aligned}",
+    "reason": "显式给出正确终端值，并用直接端点敏感度公式检查符号。",
+    "reference": "https://arxiv.org/html/1806.07366v5",
+    "from": "\\frac{dL}{dt_N} = \\mathbf{a}(t_N) f(\\mathbf{z}(t_N), t_N, \\theta) \\qquad \\frac{dL}{dt_0} = \\mathbf{a}_t(t_0) = \\mathbf{a}_t(t_N) - \\int_{t_N}^{t_0} \\mathbf{a}(t) \\frac{\\partial f(\\mathbf{z}(t), t, \\theta)}{\\partial t} dt"
+  },
+  "ADI4P": {
+    "to": "\\boxed{\nL(\\mathbf{z}(t_1)) = L\\left(\\mathbf z(t_0)+\\int_{t_0}^{t_1} f(\\mathbf{z}(t), t; \\theta)dt\\right)\n}",
+    "reason": "ODE 终态是初态加动力学积分，不能省略任意初始状态。",
+    "reference": "https://arxiv.org/html/1810.01367v2",
+    "from": "\\boxed{\nL(\\mathbf{z}(t_1)) = L\\left(\\int_{t_0}^{t_1} f(\\mathbf{z}(t), t; \\theta)dt\\right)\n}"
+  },
+  "iDgRU": {
+    "to": "\\boxed{\n\\frac{dL}{d\\theta} = -\\int_{t_1}^{t_0} \\frac{\\partial L}{\\partial \\mathbf{z}(t)} \\frac{\\partial f(\\mathbf{z}(t), t; \\theta)}{\\partial \\theta} dt.\n}",
+    "reason": "与本文行向量伴随约定一致。",
+    "reference": "https://arxiv.org/html/1810.01367v2",
+    "from": "\\boxed{\n\\frac{dL}{d\\theta} = -\\int_{t_1}^{t_0} \\left(\\frac{\\partial L}{\\partial \\mathbf{z}(t)}\\right)^T \\frac{\\partial f(\\mathbf{z}(t), t; \\theta)}{\\partial \\theta} dt.\n}"
+  },
+  "oS2sx": {
+    "to": "\\frac{\\partial L}{\\partial \\mathbf{z}(t)}",
+    "reason": "与前文及反向系统终端条件一致；去掉多余负号。",
+    "reference": "https://arxiv.org/html/1810.01367v2",
+    "from": "-\\frac{\\partial L}{\\partial \\mathbf{z}(t)}"
+  },
+  "SxKR3": {
+    "to": "\\theta",
+    "reason": "使用标准 LaTeX 命令，避免裸 Unicode 希腊字母渲染差异。",
+    "reference": "https://arxiv.org/html/1810.01367v2",
+    "from": " θ"
+  }
+}

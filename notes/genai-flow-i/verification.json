@@ -1,0 +1,164 @@
+{
+  "source_byte_identical": true,
+  "source_sha256": "4908044dd8fc287e5da8a6397871dd46a3a16d9196513056f312581ffd0e8e3c",
+  "text_matches_source_with_reviewed_corrections": true,
+  "original_structure_and_formatting_preserved": 1012,
+  "math_occurrences": 363,
+  "image_occurrences": 8,
+  "headings": 14,
+  "verified_original_assets": 263,
+  "math_corrections": 38,
+  "text_corrections": 33,
+  "external_runtime_assets": 0,
+  "missing_assets": 0,
+  "invalid_svg_assets": 0,
+  "unchanged_existing_article_bodies_and_math_geometry": [
+    "vllm-51593-persistent-topk-deadlock",
+    "flashinfer-sm100-gdn-pipeline-deadlock",
+    "gemma-4-nvfp4-moe-missing-scales",
+    "packing-flash-attention",
+    "ms-swift-chatml-rendering",
+    "ms-swift-model-runtime-failures",
+    "rope",
+    "infra-quant-i",
+    "genai-sakura-i",
+    "genai-sakura-ii",
+    "genai-sakura-iii"
+  ],
+  "format_metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "browser_verification": {
+    "base": "http://127.0.0.1:4175/",
+    "firstPost": "posts/genai-flow-i/",
+    "results": [
+      {
+        "width": 1440,
+        "pageWidth": 1440,
+        "math": 363,
+        "addedMath": 3,
+        "images": 8,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": []
+      },
+      {
+        "width": 1280,
+        "pageWidth": 1280,
+        "math": 363,
+        "addedMath": 3,
+        "images": 8,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": []
+      },
+      {
+        "width": 1024,
+        "pageWidth": 1024,
+        "math": 363,
+        "addedMath": 3,
+        "images": 8,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": []
+      },
+      {
+        "width": 768,
+        "pageWidth": 768,
+        "math": 363,
+        "addedMath": 3,
+        "images": 8,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": []
+      },
+      {
+        "width": 390,
+        "pageWidth": 390,
+        "math": 363,
+        "addedMath": 3,
+        "images": 8,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": []
+      },
+      {
+        "width": 320,
+        "pageWidth": 320,
+        "math": 363,
+        "addedMath": 3,
+        "images": 8,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": [
+          {
+            "id": "uac2e7140",
+            "lastWidth": 42.171875,
+            "text": "演化路径，则称为归一化流。这类变换具有一个重要性质，通常被称为无意识统计学家定律（LOTUS）：关于变换后密度的期望，可在不显式求得的情况下计算。对于任意函数​"
+          }
+        ]
+      }
+    ],
+    "errors": []
+  },
+  "numerical_verification": {
+    "radial_jacobian": {
+      "finite_difference": 1.943953070592089,
+      "corrected": 1.9439530705951638,
+      "original_missing_beta": 1.8386201627037988
+    },
+    "planar_composition": {
+      "finite_difference_logdet": -0.07683996131072199,
+      "input_state_logdet": -0.0768399613013303,
+      "output_state_logdet": -0.07792997857906027
+    },
+    "adjoint_parameter": {
+      "analytic": 2.4039806750825936,
+      "reverse_integral": 2.403980675082594,
+      "finite_difference": 2.4039806751918746
+    },
+    "adjoint_initial_time": {
+      "direct": -0.9014927531559727,
+      "augmented": -0.9014927531559724,
+      "finite_difference": -0.9014927531136863
+    },
+    "cnf_density_rate": {
+      "negative_spatial_divergence": -0.7,
+      "finite_difference": -0.6999999999955526,
+      "incorrect_time_divergence": 0
+    },
+    "hutchinson": {
+      "trace": 0.29999999999999993,
+      "exact_noise_expectation": 0.29999999999999993,
+      "bottleneck_variance_can_increase": true
+    }
+  }
+}

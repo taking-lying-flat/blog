@@ -1,5 +1,13 @@
 [
   {
+    "file": "../notes/genai-flow-i/source.lake",
+    "format": "lake",
+    "slug": "genai-flow-i",
+    "date": "2026-09-24",
+    "description": "生成模型笔记：归一化流、Neural ODE、连续归一化流与 FFJORD。",
+    "tags": ["生成模型", "Normalizing Flows", "Neural ODE"]
+  },
+  {
     "file": "../notes/genai-sakura-iii/source.lake",
     "format": "lake",
     "slug": "genai-sakura-iii",
