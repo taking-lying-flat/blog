@@ -49,5 +49,29 @@
     "from": "便可以由构造出对应的逆扩散过程，并通过数值模拟该逆过程，从先验分布",
     "to": "便可以构造出对应的逆扩散过程，并通过数值模拟该逆过程，从先验分布",
     "reason": "修正文字笔误。"
+  },
+  "u4ea72279": {
+    "from": "其扰动核为",
+    "to": "从给定初值出发、不额外注入初始噪声时，该连续 SDE 的精确扰动核为",
+    "reason": "区分连续 SDE 的精确转移方差与实际训练的几何加噪约定，说明零时刻条件方差并避免混用。",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2022/file/a98846e9d9cc01cfb87eb694d946ce6b-Supplemental-Conference.pdf#page=21"
+  },
+  "u4e103deb": {
+    "from": "由于",
+    "to": "这里的条件方差在",
+    "reason": "区分连续 SDE 的精确转移方差与实际训练的几何加噪约定，说明零时刻条件方差并避免混用。",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2022/file/a98846e9d9cc01cfb87eb694d946ce6b-Supplemental-Conference.pdf#page=21"
+  },
+  "ucb1446d9": {
+    "from": "处存在不可导的细节问题，实际计算中通常将时间区间限制为",
+    "to": "时必须为零。原论文实现直接按几何尺度扰动数据，其方差还包含初始噪声尺度的平方，与上述精确 SDE 转移核的约定不同。为避开零方差端点，实际计算通常将时间区间限制为",
+    "reason": "区分连续 SDE 的精确转移方差与实际训练的几何加噪约定，说明零时刻条件方差并避免混用。",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2022/file/a98846e9d9cc01cfb87eb694d946ce6b-Supplemental-Conference.pdf#page=21"
+  },
+  "ufd47542b": {
+    "from": "VP SDE 本身没有 VE SDE 那样的间断问题，但由于",
+    "to": "VP SDE 的扰动核在初始时刻也退化为给定初值；由于",
+    "reason": "与本节明确区分精确连续 SDE 和实际训练初始加噪约定的说明一致，避免继续将初始噪声约定的差异说成 SDE 本身的间断。",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2022/file/a98846e9d9cc01cfb87eb694d946ce6b-Supplemental-Conference.pdf#page=21"
   }
 }

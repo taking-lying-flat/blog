@@ -28,5 +28,11 @@
     "to": "p_0",
     "reason": "此处描述数据分布本身，应为 p0，而非重复 x(0)~p0。",
     "from": "x(0)\\sim p_0"
+  },
+  "jB99u": {
+    "from": "p_{0t}(x(t)\\mid x(0)) = \\mathcal N\\!\\left( x(t);x(0),\\, \\sigma_{\\min}^2\\left(\\frac{\\sigma_{\\max}}{\\sigma_{\\min}}\\right)^{2t}I \\right),\\quad t\\in[0,1]. ",
+    "to": "p_{0t}(x(t)\\mid x(0)) = \\mathcal N\\!\\left( x(t);x(0),\\, \\sigma_{\\min}^2\\left[\\left(\\frac{\\sigma_{\\max}}{\\sigma_{\\min}}\\right)^{2t}-1\\right]I \\right),\\quad t\\in[0,1].",
+    "reason": "从给定初值出发积分扩散系数平方，方差为 sigma_min²[(sigma_max/sigma_min)^(2t)−1]。与前文 VE 通式一致，且 t=0 条件方差为零。EDM 会议补充材料 C.2.1 式 (194)–(199) 明确推导并指出其与原实现几何噪声约定的差异。",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2022/file/a98846e9d9cc01cfb87eb694d946ce6b-Supplemental-Conference.pdf#page=21"
   }
 }
