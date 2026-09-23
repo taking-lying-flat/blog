@@ -59,6 +59,11 @@
   scrollbar-width: thin;
 }
 .lake-document .lake-math-wide img { display: block; }
+/* The group OBS update is an unnumbered display equation. */
+.lake-document #ue3e6cab9 > [data-card-id="zSMaf"] {
+  display: block;
+  margin: 12px auto 16px;
+}
 .lake-document .lake-image {
   display: inline-block;
   max-width: 100%;
@@ -73,10 +78,15 @@
   .lake-document #u151ed2ee { width: calc(100% + 32px); }
   /* Keep the quantization projection and AWQ search endings on their lines. */
   .lake-document :is(#u85c0c527, #uf2442aea) { width: calc(100% + 32px); }
+  /* Small, local adjustments keep short formulas with the preceding text. */
+  .lake-document :is(#u7c3fd815, #ub6a9714d, #u8adcd7c0, #u19c78a7f, #uec06f9b1) {
+    width: calc(100% + 16px);
+  }
+  .lake-document :is(#u74939caa, #ub461f999) { width: calc(100% + 32px); }
 }
 @media (min-width: 1280px) {
-  /* Keep the group OBS update beside its explanation. */
-  .lake-document #ue3e6cab9 { width: calc(100% + 80px); }
+  .lake-document :is(#u584477c8, #u39839d42) { width: calc(100% + 64px); }
+  .lake-document #u0db141a1 { width: calc(100% + 80px); }
 }
 @media (max-width: 640px) {
   .lake-document h1 { font-size: 26px; line-height: 36px; margin: 36px 0 18px; }

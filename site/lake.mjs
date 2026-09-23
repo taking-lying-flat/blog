@@ -50,15 +50,25 @@ export async function readLake(file, escape, renderMath) {
   const textOverrides = JSON.parse(await readFile(path.join(directory, 'text-overrides.json'), 'utf8')
     .catch((error) => { if (error.code === 'ENOENT') return '{}'; throw error; }));
   for (const [id, override] of Object.entries(textOverrides)) {
-    if (!/^[\w-]+$/.test(id) || typeof override.from !== 'string' || typeof override.to !== 'string') {
+    const parts = Array.isArray(override.to) ? override.to : [override.to];
+    if (!/^[\w-]+$/.test(id) || typeof override.from !== 'string' || !parts.length ||
+      parts.some(part => typeof part !== 'string' && (!part || typeof part.math !== 'string'))) {
       throw new Error(`Invalid Lake text correction: ${id}`);
+    }
+    let replacement = '';
+    for (const part of parts) {
+      if (typeof part === 'string') { replacement += escape(part); continue; }
+      const rendered = await renderMath(part.math, { width: '100%' });
+      const asset = { ...rendered, file: `assets/math/${sha256(rendered.content).slice(0, 32)}.rendered.svg` };
+      generated.set(`text:${id}:${part.math}`, asset);
+      replacement += `<span class="lake-math" data-text-math="${escape(id)}"><img src="${asset.file}" alt="${escape(part.math)}" style="width:${escape(asset.width)};height:${escape(asset.height)};${escape(asset.style)}" decoding="async"></span>`;
     }
     const pattern = new RegExp(`(<([a-z][\\w:-]*)\\b[^>]*\\sid="${id}"[^>]*>)([^<>]*)(<\\/\\2>)`, 'g');
     let matches = 0;
     content = content.replace(pattern, (_original, opening, _tag, text, closing) => {
       if (text !== escape(override.from)) throw new Error(`Lake text correction source changed: ${id}`);
       matches++;
-      return `${opening}${escape(override.to)}${closing}`;
+      return `${opening}${replacement}${closing}`;
     });
     if (matches !== 1) throw new Error(`Lake text correction must match once: ${id}`);
   }
