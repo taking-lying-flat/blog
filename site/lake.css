@@ -71,6 +71,12 @@
 /* Give Sakura III's DDPM paragraph two extra character widths on desktop. */
 @media (min-width: 1152px) {
   .lake-document #u151ed2ee { width: calc(100% + 32px); }
+  /* Keep the quantization projection and AWQ search endings on their lines. */
+  .lake-document :is(#u85c0c527, #uf2442aea) { width: calc(100% + 32px); }
+}
+@media (min-width: 1280px) {
+  /* Keep the group OBS update beside its explanation. */
+  .lake-document #ue3e6cab9 { width: calc(100% + 80px); }
 }
 @media (max-width: 640px) {
   .lake-document h1 { font-size: 26px; line-height: 36px; margin: 36px 0 18px; }
