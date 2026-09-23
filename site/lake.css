@@ -28,11 +28,19 @@
 .lake-document h2 { margin: 34px 0 17px; font-size: 24px; line-height: 34px; }
 .lake-document > :first-child { margin-top: 0; }
 .lake-document p { min-height: 24px; margin: 0 0 8.352px; }
-.lake-document ul { margin: 0; padding-left: 2em; list-style-type: disc; }
+.lake-document :is(ul, ol) { margin: 0; padding-left: 2em; }
+.lake-document ul { list-style-type: disc; }
+.lake-document ol { list-style-type: decimal; }
 .lake-document ul ul { list-style-type: circle; }
 .lake-document ul ul ul { list-style-type: square; }
 .lake-document li { margin: 0 0 4.176px; padding: 0; }
 .lake-document strong { font-weight: 700; }
+.lake-document blockquote { margin: 10px 0; padding-left: 10px; position: relative; }
+.lake-document blockquote::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 2px; border-radius: 2px; background: #d9d9d9; }
+.lake-document blockquote[style*="padding-left: 2em"] { padding-left: calc(2em + 10px) !important; }
+.lake-document blockquote[style*="padding-left: 2em"]::before { left: 2em; }
+.lake-document blockquote span[data-lake-id] { opacity: .7; }
+.lake-document .lake-separator { margin: 12px 0; border: 0; border-top: 1px solid #d9d9d9; }
 .lake-document .lake-math {
   display: inline-block;
   max-width: 100%;
@@ -58,6 +66,8 @@
   vertical-align: text-bottom;
   margin: 16px 0;
 }
+.lake-document .lake-image-cropped { position: relative; overflow: hidden; }
+.lake-document .lake-image-cropped img { position: absolute; display: block; max-width: none; }
 @media (max-width: 640px) {
   .lake-document h1 { font-size: 26px; line-height: 36px; margin: 36px 0 18px; }
   .lake-document h2 { font-size: 22px; line-height: 30px; margin: 30px 0 15px; }

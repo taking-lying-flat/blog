@@ -49,14 +49,19 @@ export async function readLake(file, escape, renderMath) {
   let index = 0;
   let mathCount = 0;
   let imageCount = 0;
+  let separatorCount = 0;
   content = content.replace(/<card\b[^>]*>[\s\S]*?<\/card>/g, (original) => {
     const card = manifest.cards[index++];
     if (!card || !original.includes(`value="${card.attributes.value}"`)) {
       throw new Error(`Lake card order changed: ${index}`);
     }
+    const id = escape(card.value.id);
+    if (card.kind === 'hr') {
+      separatorCount++;
+      return `<hr class="lake-separator" data-card-id="${id}">`;
+    }
     const asset = renderedCards.get(card.value.id) ?? assets.get(card.asset);
     if (!asset) throw new Error(`Missing Lake asset: ${card.asset}`);
-    const id = escape(card.value.id);
     if (card.kind === 'math') {
       mathCount++;
       const wide = parseFloat(asset.width) > 20;
@@ -68,11 +73,21 @@ export async function readLake(file, escape, renderMath) {
     }
     if (card.kind === 'image') {
       imageCount++;
+      const { crop = [0, 0, 1, 1], originWidth, originHeight, width, height } = card.value;
+      if (crop.some((value, index) => value !== [0, 0, 1, 1][index])) {
+        const [left, top, right, bottom] = crop;
+        const cropWidth = right - left;
+        const cropHeight = bottom - top;
+        // Lake stores the uncropped height, but displays the selected region
+        // at the authored width. Keep the source image and crop only its view.
+        const sizing = `width:${100 / cropWidth}%;height:auto;left:${-100 * left / cropWidth}%;top:${-100 * top / cropHeight}%;`;
+        return `<span class="lake-image lake-image-cropped" data-card-id="${id}" style="width:${width}px;aspect-ratio:${originWidth * cropWidth}/${originHeight * cropHeight}"><img src="${escape(card.asset)}" alt="${escape(card.value.title ?? '')}" width="${width}" height="${height}" style="${sizing}" decoding="async"></span>`;
+      }
       return `<img class="lake-image" data-card-id="${id}" src="${escape(card.asset)}" alt="${escape(card.value.title ?? '')}" width="${card.value.width}" height="${card.value.height}" style="width:${card.value.width}px;aspect-ratio:${card.value.width}/${card.value.height}" decoding="async">`;
     }
     throw new Error(`Unsupported Lake card: ${card.kind}`);
   });
-  if (index !== manifest.cards.length || mathCount !== manifest.counts.math || imageCount !== manifest.counts.images) {
+  if (index !== manifest.cards.length || mathCount !== manifest.counts.math || imageCount !== manifest.counts.images || separatorCount !== (manifest.counts.separators ?? 0)) {
     throw new Error(`Lake card count mismatch: ${file}`);
   }
   // Lake's paired light/dark color syntax is not a CSS color. The document uses
