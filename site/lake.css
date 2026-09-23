@@ -51,6 +51,8 @@
 .lake-document .lake-math + .lake-math { margin-inline-start: 0; }
 .lake-document p > .lake-math:only-child { margin-inline: 0; }
 .lake-document .lake-math img { display: inline; max-width: none; }
+.lake-document .lake-math-inline { display: inline; }
+.lake-document .lake-math-inline mjx-container { margin: 0; }
 /* Scroll long equations without shrinking their symbols or losing either end. */
 .lake-document .lake-math-wide {
   width: var(--lake-math-width);

@@ -57,6 +57,22 @@ const document = mathjax.document('', {
   }),
   OutputJax: svg,
 });
+document.inputJax[0].postFilters.add(({ data }) => {
+  if (!svg.options.linebreaks.inline) return;
+  // Keep function arguments and conditional probability bars together while
+  // allowing TeX's normal breaks at surrounding relations and operators.
+  data.root.walkTree(node => {
+    if (!node.isKind('mrow')) return;
+    let depth = 0;
+    for (const child of node.childNodes) {
+      if (!child.isKind('mo')) continue;
+      const operator = child.getText();
+      if (['(', '[', '{', '⟨'].includes(operator)) depth++;
+      if (depth || ['|', '∣', '∥'].includes(operator)) child.attributes.set('linebreak', 'nobreak');
+      if ([')', ']', '}', '⟩'].includes(operator)) depth = Math.max(0, depth - 1);
+    }
+  });
+});
 let inlineCount = 0;
 let displayCount = 0;
 
@@ -86,6 +102,23 @@ async function renderLakeMath(code, original) {
     height: adaptor.getAttribute(svgNode, 'height'),
     style: adaptor.getAttribute(svgNode, 'style') ?? '',
   };
+}
+
+async function renderLakeInlineMath(code, id) {
+  svg.options.linebreaks.inline = true;
+  svg.options.localID = `lake-${id}`;
+  try {
+    const node = await document.convertPromise(code, { display: false, em: 16, ex: 8, containerWidth: 1024 });
+    adaptor.setAttribute(node, 'aria-hidden', 'true');
+    const html = adaptor.outerHTML(node);
+    if (/data-mjx-error|data-mml-node="merror"|\b(?:NaN|Infinity)\b/.test(html)) {
+      throw new Error(`Invalid inline Lake formula: ${id}`);
+    }
+    return html;
+  } finally {
+    svg.options.linebreaks.inline = false;
+    svg.options.localID = null;
+  }
 }
 
 const inlineText = (token) => (token?.children ?? []).map((child) =>
@@ -191,7 +224,7 @@ const ropeSections = [
 for (const post of posts) {
   post.route = `posts/${post.slug}/`;
   if (post.format === 'lake') {
-    Object.assign(post, await readLake(path.join(root, post.file), escape, renderLakeMath));
+    Object.assign(post, await readLake(path.join(root, post.file), escape, renderLakeMath, renderLakeInlineMath));
     post.titleId = slugify(post.title);
     continue;
   }
