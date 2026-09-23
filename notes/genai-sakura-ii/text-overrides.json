@@ -48,5 +48,10 @@
     "to": "论文观察到，当 score 网络训练得接近最优时，近似有",
     "reason": "论文的 score 范数标度是经验观察，并非普适恒等式。",
     "reference": "https://proceedings.neurips.cc/paper_files/paper/2019/file/3001ef257407d5a371a96dcd947c7d93-Paper.pdf#page=7"
+  },
+  "u69f2099b": {
+    "from": "其采样形式为",
+    "to": "最后一步按前文定义的高斯分布单独采样；确定性 DDIM 则将最后一步噪声设为零。采样形式为",
+    "reason": "明确有正方差的终端解码分布与确定性 DDIM 末步的区别。"
   }
 }

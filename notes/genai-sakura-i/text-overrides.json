@@ -19,5 +19,35 @@
     "to": "。前向方程即 Fokker–Planck 方程，描述概率密度的演化；后向方程描述给定起点时条件期望的演化。扩散过程的时间反演则由逆时间 SDE 描述，其漂移项需要边缘概率密度对状态变量的对数梯度（score）",
     "reason": "会议 2015 版沿用了容易混淆的表述；逆时间漂移与 score 的关系见 DPM-Solver 会议版式 (2.4)。",
     "reference": "https://proceedings.neurips.cc/paper_files/paper/2022/file/260a14acce2a89dad36adc8eefe7c59e-Paper-Conference.pdf#page=3"
+  },
+  "uf9aaf4dc": {
+    "from": "并定义前向扩散过程的单步转移为",
+    "to": "以下高斯情形沿用论文的数据标准化设定：输入数据已中心化且各坐标方差为 1，不要求白化。后文的熵上界及交叉熵常数化简均在此设定下使用。定义前向扩散过程的单步转移为",
+    "reason": "会议补充材料 Appendix A 明确要求高斯数据的单位方差条件；Appendix B.1 的交叉熵常数也依赖相同二阶矩条件。未标准化的高方差高斯构成熵上界的反例。",
+    "reference": "https://proceedings.mlr.press/v37/sohl-dickstein15-supp.pdf#page=1"
+  },
+  "u8651d462": {
+    "from": "一种可行的方式是将新的马尔可夫链定义为",
+    "to": "原论文提出以下逐步重加权方案。需要区分转移核的重加权与整条链的边缘分布：归一化常数通常依赖于条件变量，因此，下式一般不能直接保证上面指定的重加权边缘分布，也不能仅凭 Bayes 定理断言两个方向相容",
+    "reason": "独立核验会议版式 (19)–(20) 及补充材料 Appendix C：分别归一化后的核通常不满足给定重加权边缘下的 Bayes 关系。二状态 Bernoulli 扩散反例可直接验证。附录式 (59) 到 (60) 将依赖条件变量的归一化积分当作常数合并，不能用于一般情形的证明。",
+    "reference": "https://proceedings.mlr.press/v37/sohl-dickstein15-supp.pdf#page=3"
+  },
+  "u29e91592": {
+    "from": "因此，为使",
+    "to": "在该重加权方案中，令",
+    "reason": "移除由 Bayes 定理必然推出精确后验的因果表述。",
+    "reference": "https://proceedings.mlr.press/v37/sohl-dickstein15-supp.pdf#page=3"
+  },
+  "uf4345f3b": {
+    "from": "对应，原有的反向转移",
+    "to": "采用相同的重加权形式，原有的反向转移",
+    "reason": "将原论文的逐步重加权方案明确为一般情形下的近似构造。",
+    "reference": "https://proceedings.mlr.press/v37/sohl-dickstein15-supp.pdf#page=3"
+  },
+  "uc7f266cc": {
+    "from": "，以平滑且可计算的方式实现分布相乘和后验推断",
+    "to": "，构造后验采样的修正核；能否精确得到目标后验，还需验证各步边缘分布与归一化的一致性",
+    "reason": "区分单步核可闭式相乘与整条链能精确采样目标后验，避免过强结论。",
+    "reference": "https://proceedings.mlr.press/v37/sohl-dickstein15-supp.pdf#page=3"
   }
 }

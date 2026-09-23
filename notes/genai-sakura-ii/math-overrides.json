@@ -103,5 +103,15 @@
     "to": "2\\le t\\le T",
     "reason": "反向归纳使用的转移仅对 t>1 定义，归纳步骤终止于 t=2 推出 t=1。",
     "from": "t\\le T"
+  },
+  "Pviu0": {
+    "from": "x_{t-1} = \\underbrace{\\sqrt{\\alpha_{t-1}} \\left( \\frac{x_t-\\sqrt{1-\\alpha_t}\\,\\epsilon_\\theta^{(t)}(x_t)}{\\sqrt{\\alpha_t}} \\right)}_{\\text{预测的 }x_0} + \\underbrace{\\sqrt{1-\\alpha_{t-1}-\\sigma_t^2}\\,\\epsilon_\\theta^{(t)}(x_t)}_{\\text{指向 }x_t\\text{ 的方向项}} + \\underbrace{\\sigma_t\\epsilon_t}_{\\text{随机噪声}}, ",
+    "to": "\\begin{aligned}\nx_{t-1} &= \\underbrace{\\sqrt{\\alpha_{t-1}} \\left( \\frac{x_t-\\sqrt{1-\\alpha_t}\\,\\epsilon_\\theta^{(t)}(x_t)}{\\sqrt{\\alpha_t}} \\right)}_{\\text{预测的 }x_0} + \\underbrace{\\sqrt{1-\\alpha_{t-1}-\\sigma_t^2}\\,\\epsilon_\\theta^{(t)}(x_t)}_{\\text{指向 }x_t\\text{ 的方向项}} + \\underbrace{\\sigma_t\\epsilon_t}_{\\text{随机噪声}},\\quad t>1,\\\\[6pt]\nx_0 &= f_\\theta^{(1)}(x_1)+\\sigma_1\\epsilon_1,\\quad t=1.\n\\end{aligned}",
+    "reason": "由本文前述分段定义 p_theta^(t) 直接推得：含方向项的更新仅用于 t>1；t=1 按终端高斯单独采样。否则 alpha_0=1 且 sigma_1>0 时根号内为负数。确定性 DDIM 的末步取 sigma_1=0。"
+  },
+  "T0oSm": {
+    "from": "x_{t-1} = \\sqrt{\\alpha_{t-1}}\\hat x_0 + \\sqrt{1-\\alpha_{t-1}-\\sigma_t^2}\\, \\frac{x_t-\\sqrt{\\alpha_t}\\hat x_0}{\\sqrt{1-\\alpha_t}} + \\sigma_t\\epsilon_t.",
+    "to": "\\begin{aligned}\nx_{t-1} &= \\sqrt{\\alpha_{t-1}}\\hat x_0 + \\sqrt{1-\\alpha_{t-1}-\\sigma_t^2}\\, \\frac{x_t-\\sqrt{\\alpha_t}\\hat x_0}{\\sqrt{1-\\alpha_t}} + \\sigma_t\\epsilon_t,\\quad t>1,\\\\[6pt]\nx_0 &= f_\\theta^{(1)}(x_1)+\\sigma_1\\epsilon_1,\\quad t=1.\n\\end{aligned}",
+    "reason": "由本文前述分段定义 p_theta^(t) 直接推得：含方向项的更新仅用于 t>1；t=1 按终端高斯单独采样。否则 alpha_0=1 且 sigma_1>0 时根号内为负数。确定性 DDIM 的末步取 sigma_1=0。"
   }
 }

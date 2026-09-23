@@ -48,5 +48,11 @@
     "reason": "逐通道缩放向量为 n 维；diag(c) 应是 n×n 矩阵。",
     "from": "\\operatorname{diag}(c)\\in\\mathbb{R}^{n}",
     "reference": "https://proceedings.mlr.press/v267/sun25l.html"
+  },
+  "FLJC4": {
+    "from": "P_1\\bar{X}P_2",
+    "to": "P_1^\\top\\bar{X}P_2",
+    "reason": "按本文行向量化定义及会议版式 (3)，左矩阵必须转置；一般非对称矩阵的数值核验表明省略转置会改变结果。会议版 3.3 的同一处简写也漏了转置，依式 (3) 统一。",
+    "reference": "https://proceedings.mlr.press/v267/sun25l.html"
   }
 }
