@@ -2,5 +2,51 @@
   "weK3R": {
     "from": "\\arg\\min_{W_\\ell^c} \\mathbb E_{X_\\ell} L\\bigl(f_\\ell(X_\\ell,W_\\ell),f_\\ell(X_\\ell,W_\\ell^c)\\bigr) \\quad \\text{subject to } C(W_\\ell^c)>C. \\tag{1}",
     "to": "\\arg\\min_{W_\\ell^c} \\mathbb E_{X_\\ell} L\\bigl(f_\\ell(X_\\ell,W_\\ell),f_\\ell(X_\\ell,W_\\ell^c)\\bigr) \\quad \\text{s.t. } C(W_\\ell^c)>C. \\tag{1}"
+  },
+  "sRJU2": {
+    "to": "H^{-1}_{-q} = \\left( H^{-1} - \\frac{1}{[H^{-1}]_{qq}} H^{-1}_{:,q}H^{-1}_{q,:} \\right)_{-q}. \\tag{3}",
+    "reason": "消去 q 行、列，右端删除索引也必须为 q；由相邻公式和 Schur 补直接核验。",
+    "from": "H^{-1}_{-q} = \\left( H^{-1} - \\frac{1}{[H^{-1}]_{qq}} H^{-1}_{:,q}H^{-1}_{q,:} \\right)_{-p}. \\tag{3}"
+  },
+  "xMyms": {
+    "to": "\\delta_F = - (H_F^{-1})_{:,Q} \\left( [H_F^{-1}]_{QQ} \\right)^{-1} \\left( w_Q-\\operatorname{quant}(w_Q) \\right), \\tag{4}",
+    "reason": "统一为列向量约定，矩阵维度为 |F|×|Q|、|Q|×|Q|、|Q|×1；单权重情形退化为前文公式。",
+    "from": "\\delta_F = - \\left( w_Q-\\operatorname{quant}(w_Q) \\right) \\left( [H_F^{-1}]_{QQ} \\right)^{-1} (H_F^{-1})_{:,Q}, \\tag{4}"
+  },
+  "zSMaf": {
+    "to": "\\delta_{M_i} = -H^{-1}_{:,M_i} \\left((H^{-1})_{M_i}\\right)^{-1} w_{M_i}.",
+    "reason": "按前文 w_new=w+delta 的增量约定补负号；会议版此行也漏写，与同页式 (5) 不一致。",
+    "from": "\\delta_{M_i} = H^{-1}_{:,M_i} \\left((H^{-1})_{M_i}\\right)^{-1} w_{M_i}.",
+    "reference": "https://papers.nips.cc/paper_files/paper/2022/file/1caf09c9f4e6b0150b06a07e77f2710c-Paper-Conference.pdf#page=6"
+  },
+  "NOvhi": {
+    "to": "R' = \\Delta_R(Y)R := \\left(I+\\frac{\\alpha}{2}Y\\right)^{-1} \\left(I-\\frac{\\alpha}{2}Y\\right)R",
+    "reason": "G=+∇L 且学习率为正时，应使用下降方向的 Cayley 变换；会议版式 (3)–(4) 的符号不一致，已用二阶正交矩阵数值反例核验。",
+    "from": "R' = \\Delta_R(Y)R := \\left(I-\\frac{\\alpha}{2}Y\\right)^{-1} \\left(I+\\frac{\\alpha}{2}Y\\right)R",
+    "reference": "https://proceedings.iclr.cc/paper_files/paper/2025/file/e5b1c0d4866f72393c522c8a00eed4eb-Paper-Conference.pdf#page=5"
+  },
+  "z5rKA": {
+    "to": "\\Delta_R(Y):=\\left(I+\\frac{\\alpha}{2}Y\\right)^{-1}\\left(I-\\frac{\\alpha}{2}Y\\right)",
+    "reason": "G=+∇L 且学习率为正时，应使用下降方向的 Cayley 变换；会议版式 (3)–(4) 的符号不一致，已用二阶正交矩阵数值反例核验。",
+    "from": "\\Delta_R(Y):=\\left(I-\\frac{\\alpha}{2}Y\\right)^{-1}\\left(I+\\frac{\\alpha}{2}Y\\right)",
+    "reference": "https://proceedings.iclr.cc/paper_files/paper/2025/file/e5b1c0d4866f72393c522c8a00eed4eb-Paper-Conference.pdf#page=5"
+  },
+  "tEWqN": {
+    "to": "H\\in\\left\\{+\\frac{1}{\\sqrt n},-\\frac{1}{\\sqrt n}\\right\\}^{n\\times n}",
+    "reason": "使用归一化 Hadamard 才有 HᵀH=I；会议版正文也省略了该归一化因子。",
+    "from": "H\\in\\{+1,-1\\}^{n\\times n}",
+    "reference": "https://proceedings.mlr.press/v267/sun25l.html"
+  },
+  "VSZxR": {
+    "to": "\\Omega(b)=\\{-2^{b-1},\\ldots,2^{b-1}-1\\}",
+    "reason": "原非负整数网格配合无零点公式会将所有负权重量化为零；统一采用有符号量化约定。会议版也有此定义省略。",
+    "from": "\\Omega(b)=\\{0,1,\\ldots,2^b-1\\}",
+    "reference": "https://proceedings.mlr.press/v267/sun25l.html"
+  },
+  "OExcg": {
+    "to": "c\\in\\mathbb{R}^{n}",
+    "reason": "逐通道缩放向量为 n 维；diag(c) 应是 n×n 矩阵。",
+    "from": "\\operatorname{diag}(c)\\in\\mathbb{R}^{n}",
+    "reference": "https://proceedings.mlr.press/v267/sun25l.html"
   }
 }

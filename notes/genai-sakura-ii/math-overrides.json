@@ -1,0 +1,107 @@
+{
+  "tHfpD": {
+    "to": "\\begin{aligned}\nH(0)&=H(M)+\\int_M^0 \\epsilon_\\theta\\!\\left(\\frac{H(\\lambda)}{\\sqrt{1+\\lambda^2}},\\,t(\\lambda)\\right)\\,d\\lambda,\\\\\nH(M)&=\\sqrt{1+M^2}\\,x_T,\\qquad x_T\\sim\\mathcal N(\\mathbf 0,\\mathbf I).\n\\end{aligned}",
+    "reason": "由 λ²=(1−α)/α 及 H=x/√α 直接反解网络输入和初始状态尺度；DPM-Solver 会议版式 (4.1) 给出对应 DDIM 更新。",
+    "from": "H(0) = \\int_{M}^{0} \\epsilon_\\theta(H(\\lambda)\\sqrt{\\lambda^2 - 1})\\mathrm{d}\\lambda + H(M), \\quad H(M) \\sim \\mathcal{N}(\\mathbf{0}, \\boldsymbol{I})",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2022/file/260a14acce2a89dad36adc8eefe7c59e-Paper-Conference.pdf#page=7"
+  },
+  "TWYcx": {
+    "to": "q_{\\sigma}(x_t\\mid x_0)=\\mathcal N\\!\\left(\\sqrt{\\alpha_t}x_0,(1-\\alpha_t)I\\right),",
+    "reason": "高斯第二参数为协方差；本文相邻协方差推导也给出 (1−α)I。DDPM 会议版式 (4) 一致。",
+    "from": "q_{\\sigma}(x_t\\mid x_0)=\\mathcal N\\!\\left(\\sqrt{\\alpha_t}x_0,\\sqrt{1-\\alpha_t}\\,I\\right),",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf#page=2"
+  },
+  "EAGfF": {
+    "to": "q_{\\sigma}(x_{t-1}\\mid x_0)=\\mathcal N\\!\\left(\\sqrt{\\alpha_{t-1}}x_0,(1-\\alpha_{t-1})I\\right),",
+    "reason": "高斯第二参数为协方差；本文相邻协方差推导也给出 (1−α)I。DDPM 会议版式 (4) 一致。",
+    "from": "q_{\\sigma}(x_{t-1}\\mid x_0)=\\mathcal N\\!\\left(\\sqrt{\\alpha_{t-1}}x_0,\\sqrt{1-\\alpha_{t-1}}\\,I\\right),",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf#page=2"
+  },
+  "tFfdZ": {
+    "to": "q_{\\sigma}(x_{t-1}\\mid x_0) = \\mathcal N\\!\\left(\\sqrt{\\alpha_{t-1}}x_0,(1-\\alpha_{t-1})I\\right),",
+    "reason": "高斯第二参数为协方差；本文相邻协方差推导也给出 (1−α)I。DDPM 会议版式 (4) 一致。",
+    "from": "q_{\\sigma}(x_{t-1}\\mid x_0) = \\mathcal N\\!\\left(\\sqrt{\\alpha_{t-1}}x_0,\\sqrt{1-\\alpha_{t-1}}\\,I\\right),",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf#page=2"
+  },
+  "lFdbF": {
+    "to": "\\mathbb{E}[\\boldsymbol{x}_{t-1}\\mid\\boldsymbol{x}_0] = \\sqrt{\\alpha_{t-1}}\\boldsymbol{x}_0 + \\sqrt{1 - \\alpha_{t-1} - \\sigma_t^2} \\cdot \\frac{\\sqrt{\\alpha_t}\\boldsymbol{x}_0 - \\sqrt{\\alpha_t}\\boldsymbol{x}_0}{\\sqrt{1 - \\alpha_t}} = \\sqrt{\\alpha_{t-1}}\\boldsymbol{x}_0",
+    "reason": "均值和协方差作用于随机变量，而非密度函数的数值。",
+    "from": "\\mathbb{E}[q_\\sigma(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_0)] = \\sqrt{\\alpha_{t-1}}\\boldsymbol{x}_0 + \\sqrt{1 - \\alpha_{t-1} - \\sigma_t^2} \\cdot \\frac{\\sqrt{\\alpha_t}\\boldsymbol{x}_0 - \\sqrt{\\alpha_t}\\boldsymbol{x}_0}{\\sqrt{1 - \\alpha_t}} = \\sqrt{\\alpha_{t-1}}\\boldsymbol{x}_0"
+  },
+  "JuyZU": {
+    "to": "\\mathrm{Cov}[\\boldsymbol{x}_{t-1}\\mid\\boldsymbol{x}_0] = \\sigma_t^2 \\boldsymbol{I} + \\frac{1 - \\alpha_{t-1} - \\sigma_t^2}{1 - \\alpha_t}(1 - \\alpha_t)\\boldsymbol{I} = (1 - \\alpha_{t-1})\\boldsymbol{I}",
+    "reason": "均值和协方差作用于随机变量，而非密度函数的数值。",
+    "from": "\\mathrm{Cov}[q_\\sigma(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_0)] = \\sigma_t^2 \\boldsymbol{I} + \\frac{1 - \\alpha_{t-1} - \\sigma_t^2}{1 - \\alpha_t}(1 - \\alpha_t)\\boldsymbol{I} = (1 - \\alpha_{t-1})\\boldsymbol{I}"
+  },
+  "Xb97e": {
+    "to": "\\begin{aligned}\nJ_\\sigma(\\epsilon_\\theta)\n&:=\\mathbb E_{q_\\sigma(x_{0:T})}\\Biggl[\n \\log q_\\sigma(x_T\\mid x_0)-\\log p(x_T)\\\\\n&\\qquad+\\sum_{t=2}^T\\log q_\\sigma(x_{t-1}\\mid x_t,x_0)\n -\\sum_{t=1}^T\\log p_\\theta^{(t)}(x_{t-1}\\mid x_t)\\Biggr]\\\\\n&\\equiv\\mathbb E_{q_\\sigma(x_{0:T})}\\Biggl[\n \\sum_{t=2}^T D_{\\mathrm{KL}}\\!\\left(\n q_\\sigma(x_{t-1}\\mid x_t,x_0)\\,\\|\\,p_\\theta^{(t)}(x_{t-1}\\mid x_t)\n \\right)-\\log p_\\theta^{(1)}(x_0\\mid x_1)\\Biggr].\n\\end{aligned}",
+    "reason": "从本文联合分布定义展开 ELBO；补首项 log 与先验项，统一 q_sigma 下标。",
+    "from": "\\begin{equation*}\n\\begin{aligned}\nJ_\\sigma(\\epsilon_\\theta) &:= \\mathbb{E}_{\\boldsymbol{x}_{0:T} \\sim q(\\boldsymbol{x}_{0:T})} \\left[ q_\\sigma(\\boldsymbol{x}_T|\\boldsymbol{x}_0) + \\sum_{t=2}^T \\log q_\\sigma(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t, \\boldsymbol{x}_0) - \\sum_{t=1}^T \\log p_\\theta^{(t)}(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t) \\right] \\\\\n&\\equiv \\mathbb{E}_{\\boldsymbol{x}_{0:T} \\sim q(\\boldsymbol{x}_{0:T})} \\left[ \\sum_{t=2}^T D_{\\mathrm{KL}}(q_\\theta(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t, \\boldsymbol{x}_0) \\| p_\\theta^{(t)}(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t)) - \\log p_\\theta^{(1)}(\\boldsymbol{x}_0|\\boldsymbol{x}_1) \\right]\n\\end{aligned}\n\\end{equation*}"
+  },
+  "K4q1G": {
+    "to": "\\begin{aligned}\n\\kappa_t&:=\\sqrt{\\alpha_{t-1}}-\\sqrt{\\alpha_t}\\,\n \\sqrt{\\frac{1-\\alpha_{t-1}-\\sigma_t^2}{1-\\alpha_t}},\\qquad t>1,\\\\\n&\\mathbb E_{x_0,x_t}D_{\\mathrm{KL}}\\!\\left(\n q_\\sigma(x_{t-1}\\mid x_t,x_0)\\,\\|\\,p_\\theta^{(t)}(x_{t-1}\\mid x_t)\\right)\\\\\n&=\\frac{\\kappa_t^2}{2\\sigma_t^2}\n \\mathbb E_{x_0,x_t}\\left\\|x_0-f_\\theta^{(t)}(x_t)\\right\\|_2^2\\\\\n&=\\frac{\\kappa_t^2(1-\\alpha_t)}{2\\sigma_t^2\\alpha_t}\n \\mathbb E_{x_0,\\epsilon}\\left\\|\\epsilon-\\epsilon_\\theta^{(t)}(x_t)\\right\\|_2^2,\n \\quad x_t=\\sqrt{\\alpha_t}x_0+\\sqrt{1-\\alpha_t}\\epsilon.\n\\end{aligned}",
+    "reason": "独立计算同协方差高斯 KL：均值对 x0 的系数为 kappa_t；噪声替换产生 (1−alpha_t)/alpha_t。数值反例核验原权重不成立。",
+    "from": "\\begin{aligned}\n&\\quad \\mathbb{E}_{\\boldsymbol{x}_0,\\boldsymbol{x}_t \\sim q(\\boldsymbol{x}_0,\\boldsymbol{x}_t)}[D_{\\mathrm{KL}}(q_\\sigma(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t,\\boldsymbol{x}_0)) \\| p_\\theta^{(t)}(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t))] \\\\\n&= \\mathbb{E}_{\\boldsymbol{x}_0,\\boldsymbol{x}_t \\sim q(\\boldsymbol{x}_0,\\boldsymbol{x}_t)}[D_{\\mathrm{KL}}(q_\\sigma(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t,\\boldsymbol{x}_0)) \\| q_\\sigma(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t, f_\\theta^{(t)}(\\boldsymbol{x}_t)))] \\equiv \\mathbb{E}_{\\boldsymbol{x}_0,\\boldsymbol{x}_t \\sim q(\\boldsymbol{x}_0,\\boldsymbol{x}_t)} \\left[ \\frac{\\left\\| \\boldsymbol{x}_0 - f_\\theta^{(t)}(\\boldsymbol{x}_t) \\right\\|_2^2}{2\\sigma_t^2} \\right] \\\\\n&= \\mathbb{E}_{\\substack{\\boldsymbol{x}_0 \\sim q(\\boldsymbol{x}_0), \\boldsymbol{\\epsilon} \\sim \\mathcal{N}(\\boldsymbol{0},\\boldsymbol{I}) \\\\ \\boldsymbol{x}_t = \\sqrt{\\alpha_t}\\boldsymbol{x}_0 + \\sqrt{1-\\alpha_t}\\boldsymbol{\\epsilon}}} \\left[ \\frac{\\left\\| \\frac{(\\boldsymbol{x}_t - \\sqrt{1-\\alpha_t}\\boldsymbol{\\epsilon})}{\\sqrt{\\alpha_t}} - \\frac{(\\boldsymbol{x}_t - \\sqrt{1-\\alpha_t}\\boldsymbol{\\epsilon}_\\theta^{(t)}(\\boldsymbol{x}_t))}{\\sqrt{\\alpha_t}} \\right\\|_2^2}{2\\sigma_t^2} \\right] \\\\\n&= \\mathbb{E}_{\\substack{\\boldsymbol{x}_0 \\sim q(\\boldsymbol{x}_0), \\boldsymbol{\\epsilon} \\sim \\mathcal{N}(\\boldsymbol{0},\\boldsymbol{I}) \\\\ \\boldsymbol{x}_t = \\sqrt{\\alpha_t}\\boldsymbol{x}_0 + \\sqrt{1-\\alpha_t}\\boldsymbol{\\epsilon}}} \\left[ \\frac{\\left\\| \\boldsymbol{\\epsilon} - \\boldsymbol{\\epsilon}_\\theta^{(t)}(\\boldsymbol{x}_t) \\right\\|_2^2}{2d\\sigma_t^2\\alpha_t} \\right]\n\\end{aligned}"
+  },
+  "hGayb": {
+    "to": "\\begin{aligned}\n&\\mathbb E_{x_0,x_1}\\!\\left[-\\log p_\\theta^{(1)}(x_0\\mid x_1)\\right]\\\\\n&\\equiv\\frac{1}{2\\sigma_1^2}\\mathbb E_{x_0,x_1}\n \\left\\|x_0-f_\\theta^{(1)}(x_1)\\right\\|_2^2\\\\\n&=\\frac{1-\\alpha_1}{2\\sigma_1^2\\alpha_1}\n \\mathbb E_{x_0,\\epsilon}\\left\\|\\epsilon-\\epsilon_\\theta^{(1)}(x_1)\\right\\|_2^2,\n \\quad x_1=\\sqrt{\\alpha_1}x_0+\\sqrt{1-\\alpha_1}\\epsilon.\n\\end{aligned}",
+    "reason": "终端高斯重构项的噪声 MSE 权重由重参数化直接得到；修正 t/1 下标并删除无依据的 d。",
+    "from": "\\begin{aligned}\n&\\mathbb{E}_{\\boldsymbol{x}_0,\\boldsymbol{x}_1\\sim q(\\boldsymbol{x}_0,\\boldsymbol{x}_1)}[-\\log p_\\theta^{(1)}(\\boldsymbol{x}_0|\\boldsymbol{x}_1)] \\equiv \\mathbb{E}_{\\boldsymbol{x}_0,\\boldsymbol{x}_1\\sim q(\\boldsymbol{x}_0,\\boldsymbol{x}_1)}\\left[\\frac{\\|\\boldsymbol{x}_0-f_\\theta^{(t)}(\\boldsymbol{x}_1)\\|_2^2}{2\\sigma_1^2}\\right] \\\\\n&= \\mathbb{E}_{\\boldsymbol{x}_0\\sim q(\\boldsymbol{x}_0),\\epsilon\\sim\\mathcal{N}(\\mathbf{0},\\boldsymbol{I}),\\boldsymbol{x}_1=\\sqrt{\\alpha_1}\\boldsymbol{x}_0+\\sqrt{1-\\alpha_t}\\epsilon}\\left[\\frac{\\|\\epsilon-\\epsilon_\\theta^{(1)}(\\boldsymbol{x}_1)\\|_2^2}{2d\\sigma_1^2\\alpha_1}\\right]\n\\end{aligned}"
+  },
+  "sOidZ": {
+    "to": "\\gamma_t=\\frac{\\kappa_t^2(1-\\alpha_t)}{2\\sigma_t^2\\alpha_t},\\quad\\kappa_1:=1,",
+    "reason": "与已重推导的各步高斯 KL 及 t=1 末端项统一。",
+    "from": "\\gamma_t=\\frac{1}{2d\\sigma_t^2\\alpha_t},"
+  },
+  "zGWHm": {
+    "to": "J_{\\sigma}(\\epsilon_{\\theta}) \\equiv \\sum_{t=1}^{T} \\frac{\\kappa_t^2(1-\\alpha_t)}{2\\sigma_t^2\\alpha_t} \\mathbb{E}_{x_0,\\epsilon_t} \\left[ \\|\\epsilon_{\\theta}^{(t)}(x_t)-\\epsilon_t\\|_2^2 \\right] = L_{\\gamma}(\\epsilon_{\\theta}).",
+    "reason": "同步修正求和中的权重及数据期望。",
+    "from": "J_{\\sigma}(\\epsilon_{\\theta}) \\equiv \\sum_{t=1}^{T} \\frac{1}{2d\\sigma_t^2\\alpha_t} \\mathbb{E}_{\\epsilon_t} \\left[ \\|\\epsilon_{\\theta}^{(t)}(x_t)-\\epsilon_t\\|_2^2 \\right] = L_{\\gamma}(\\epsilon_{\\theta})."
+  },
+  "sA7XN": {
+    "to": "\\sigma_t^2 ",
+    "reason": "固定的是方差而非标准差；会议版 3.1 原文为 sigma_t²。",
+    "from": "\\sigma_t ",
+    "reference": "https://proceedings.mlr.press/v139/nichol21a/nichol21a.pdf#page=3"
+  },
+  "JLK29": {
+    "to": "\\mathbb{E}_q \\left[ \\underbrace{D_{\\mathrm{KL}}(q(\\mathbf{x}_T|\\mathbf{x}_0) \\parallel p(\\mathbf{x}_T))}_{L_T} + \\sum_{t>1} \\underbrace{D_{\\mathrm{KL}}(q(\\mathbf{x}_{t-1}|\\mathbf{x}_t, \\mathbf{x}_0) \\parallel p_\\theta(\\mathbf{x}_{t-1}|\\mathbf{x}_t))}_{L_{t-1}} - \\underbrace{\\log p_\\theta(\\mathbf{x}_0|\\mathbf{x}_1)}_{-L_0} \\right]",
+    "reason": "外部负号保留，括号内 log p 应标为 −L0，保证与后文 L0=−log p 一致。",
+    "from": "\\mathbb{E}_q \\left[ \\underbrace{D_{\\mathrm{KL}}(q(\\mathbf{x}_T|\\mathbf{x}_0) \\parallel p(\\mathbf{x}_T))}_{L_T} + \\sum_{t>1} \\underbrace{D_{\\mathrm{KL}}(q(\\mathbf{x}_{t-1}|\\mathbf{x}_t, \\mathbf{x}_0) \\parallel p_\\theta(\\mathbf{x}_{t-1}|\\mathbf{x}_t))}_{L_{t-1}} - \\underbrace{\\log p_\\theta(\\mathbf{x}_0|\\mathbf{x}_1)}_{L_0} \\right]",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf#page=2"
+  },
+  "kI8p6": {
+    "to": "\\boxed{ L \\;=\\; \\mathbb{E}_q\\Big[ \\underbrace{D_{KL}(q(x_T|x_0)\\|p(x_T))}_{L_T} \\;+\\;\\sum_{t>1}\\underbrace{D_{KL}(q(x_{t-1}|x_t,x_0)\\|p_\\theta(x_{t-1}|x_t))}_{L_{t-1}} \\;-\\;\\underbrace{\\log p_\\theta(x_0|x_1)}_{-L_0} \\Big] }",
+    "reason": "外部负号保留，括号内 log p 应标为 −L0，保证与后文 L0=−log p 一致。",
+    "from": "\\boxed{ L \\;=\\; \\mathbb{E}_q\\Big[ \\underbrace{D_{KL}(q(x_T|x_0)\\|p(x_T))}_{L_T} \\;+\\;\\sum_{t>1}\\underbrace{D_{KL}(q(x_{t-1}|x_t,x_0)\\|p_\\theta(x_{t-1}|x_t))}_{L_{t-1}} \\;-\\;\\underbrace{\\log p_\\theta(x_0|x_1)}_{L_0} \\Big] }",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf#page=2"
+  },
+  "MUkpo": {
+    "to": "\\mathbf v^\\top \\nabla_{\\mathbf{x}}s_\\theta(\\mathbf{x})\\,\\mathbf v",
+    "reason": "二次型 vᵀJv 缺少右侧向量；与前文 sliced score matching 公式一致。",
+    "from": "\\mathbf v^\\top \\nabla_{\\mathbf{x}} s_\\theta(\\mathbf{x})"
+  },
+  "rN9Ad": {
+    "to": "\\mathrm{SNR}_i:=\\frac{\\mathbb E\\|\\alpha_i s_\\theta(x,\\sigma_i)/2\\|_2^2}{\\mathbb E\\|\\sqrt{\\alpha_i}z\\|_2^2}",
+    "reason": "使用标量能量比消除原式向量相除的歧义和多余字符。",
+    "from": "\\frac{\\alpha_i s_\\theta(x,\\sigma_i)}{2\\sqrt{\\alpha_i}\\,z}2",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2019/file/3001ef257407d5a371a96dcd947c7d93-Paper.pdf#page=7"
+  },
+  "O5X0u": {
+    "to": "\\mathrm{SNR}_i=\\frac{\\alpha_i}{4D}\\mathbb E\\|s_\\theta(x,\\sigma_i)\\|_2^2\\propto\\mathbb E\\|\\sigma_i s_\\theta(x,\\sigma_i)\\|_2^2.",
+    "reason": "D 维标准高斯的期望平方范数为 D，且 alpha_i 正比于 sigma_i²。",
+    "from": "\\mathbb{E}\\left[\\left\\|\\frac{\\alpha_i s_\\theta(x,\\sigma_i)}{2\\sqrt{\\alpha_i}}z\\right\\|_2^2\\right] \\approx \\mathbb{E}\\left[\\frac{\\alpha_i\\|s_\\theta(x,\\sigma_i)\\|_2^2}{4}\\right] \\propto \\frac{1}{4}\\mathbb{E}\\left[\\|\\sigma_i s_\\theta(x,\\sigma_i)\\|_2^2\\right].",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2019/file/3001ef257407d5a371a96dcd947c7d93-Paper.pdf#page=7"
+  },
+  "JFR3B": {
+    "to": "\\mathrm{SNR}_i\\propto\\mathbb E\\|\\sigma_i s_\\theta(x,\\sigma_i)\\|_2^2\\propto 1",
+    "reason": "同步修正 SNR 结论，常数比例不依赖噪声层级。",
+    "from": "\\mathbb{E}\\left[\\left\\|\\frac{\\alpha_i s_\\theta(x,\\sigma_i)}{2\\sqrt{\\alpha_i}}z\\right\\|_2^2\\right] \\propto \\frac{1}{4}\\mathbb{E}\\left[\\|\\sigma_i s_\\theta(x;\\sigma_i)\\|_2^2\\right] \\propto \\frac{1}{4}",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2019/file/3001ef257407d5a371a96dcd947c7d93-Paper.pdf#page=7"
+  },
+  "uOKz2": {
+    "to": "2\\le t\\le T",
+    "reason": "反向归纳使用的转移仅对 t>1 定义，归纳步骤终止于 t=2 推出 t=1。",
+    "from": "t\\le T"
+  }
+}

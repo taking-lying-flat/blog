@@ -1,0 +1,32 @@
+{
+  "ScE40": {
+    "to": "\\sigma_i^2 \\propto \\frac{1}{\\mathbb{E} \\left[ \\| \\nabla_{\\tilde{\\mathbf{x}}} \\log p_{\\sigma_i}(\\tilde{\\mathbf{x}} \\mid \\mathbf{x}) \\|_2^2 \\right]}, \\quad (1 - \\alpha_i) \\propto \\frac{1}{\\mathbb{E} \\left[ \\| \\nabla_{\\tilde{\\mathbf{x}}} \\log p_{\\alpha_i}(\\tilde{\\mathbf{x}} \\mid \\mathbf{x}) \\|_2^2 \\right]}.",
+    "reason": "条件 score 对带噪变量求导；对干净 x 求导会在 DDPM 权重中额外引入 alpha_i。已用高斯核解析核验。",
+    "from": "\\sigma_i^2 \\propto \\frac{1}{\\mathbb{E} \\left[ \\| \\nabla_{\\mathbf{x}} \\log p_{\\sigma_i}(\\tilde{\\mathbf{x}} \\mid \\mathbf{x}) \\|_2^2 \\right]}, \\quad (1 - \\alpha_i) \\propto \\frac{1}{\\mathbb{E} \\left[ \\| \\nabla_{\\mathbf{x}} \\log p_{\\alpha_i}(\\tilde{\\mathbf{x}} \\mid \\mathbf{x}) \\|_2^2 \\right]}."
+  },
+  "tUSOx": {
+    "to": "t_i=i/N,\\quad\\Delta t=1/N,\\quad\\sigma_i=\\sigma(t_i)",
+    "reason": "离散到连续需离散时间轴并采样一般噪声调度，不能将噪声方差任意固定为 i/N。",
+    "from": "\\sigma_i^2=i/N"
+  },
+  "BFtjd": {
+    "to": "\\sqrt{\\Delta t}\\,\\mathbf z_{i-1}",
+    "reason": "布朗增量由 √Δt 乘标准高斯构造。",
+    "from": "\\mathbf{z}_i"
+  },
+  "aoUBN": {
+    "to": "\\Delta\\mathbf w_i",
+    "reason": "标准高斯序列不会直接变成连续过程 z(t)，这里应表示布朗增量。",
+    "from": "z(t)"
+  },
+  "OtCGG": {
+    "to": "N\\to\\infty,\\quad\\beta_i=\\beta(t_i)/N",
+    "reason": "VP 连续极限要求离散噪声方差按时间步长缩放。",
+    "from": "N\\to\\infty"
+  },
+  "lBWuY": {
+    "to": "p_0",
+    "reason": "此处描述数据分布本身，应为 p0，而非重复 x(0)~p0。",
+    "from": "x(0)\\sim p_0"
+  }
+}

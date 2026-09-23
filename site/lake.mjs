@@ -46,6 +46,22 @@ export async function readLake(file, escape, renderMath) {
   const header = /^<!doctype lake><title>[\s\S]*?<\/title>(?:<meta\b[^>]*>)+/i;
   if (!header.test(source.toString())) throw new Error(`Unexpected Lake header: ${file}`);
   let content = source.toString().replace(header, '');
+  // Apply reviewed wording corrections without modifying the archived export.
+  const textOverrides = JSON.parse(await readFile(path.join(directory, 'text-overrides.json'), 'utf8')
+    .catch((error) => { if (error.code === 'ENOENT') return '{}'; throw error; }));
+  for (const [id, override] of Object.entries(textOverrides)) {
+    if (!/^[\w-]+$/.test(id) || typeof override.from !== 'string' || typeof override.to !== 'string') {
+      throw new Error(`Invalid Lake text correction: ${id}`);
+    }
+    const pattern = new RegExp(`(<([a-z][\\w:-]*)\\b[^>]*\\sid="${id}"[^>]*>)([^<>]*)(<\\/\\2>)`, 'g');
+    let matches = 0;
+    content = content.replace(pattern, (_original, opening, _tag, text, closing) => {
+      if (text !== escape(override.from)) throw new Error(`Lake text correction source changed: ${id}`);
+      matches++;
+      return `${opening}${escape(override.to)}${closing}`;
+    });
+    if (matches !== 1) throw new Error(`Lake text correction must match once: ${id}`);
+  }
   let index = 0;
   let mathCount = 0;
   let imageCount = 0;

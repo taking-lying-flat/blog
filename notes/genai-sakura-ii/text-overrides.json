@@ -1,0 +1,52 @@
+{
+  "ue6c7d0f9": {
+    "from": "证明：若假设对于任意",
+    "to": "证明：对某个",
+    "reason": "将反向归纳写成假设当前步、证明前一步。"
+  },
+  "ue7793630": {
+    "from": "若进一步有",
+    "to": "若能进一步推出",
+    "reason": "明确归纳步骤需要证明而不是再次假设。"
+  },
+  "u66201e61": {
+    "from": "对于任意",
+    "to": "对于使上述高斯转移有定义的任意",
+    "reason": "正噪声参数还需满足条件均值中的根号非负。"
+  },
+  "uc55b3f18": {
+    "from": "当每一步扩散只加入较小的高斯噪声时，反向过程的转移也可以设为条件高斯分布，因此能够采用非常简洁的神经网络参数化形式。训练时，模型优化负对数似然的变分下界。而在特定的噪声预测参数化下，这一目标又可写成与多噪声层级 denoising score matching 相似的形式，并使采样过程呈现出 annealed Langevin dynamics 的解释",
+    "to": "当每一步扩散只加入较小的高斯噪声时，反向过程的转移也可以设为条件高斯分布，因此能够采用非常简洁的神经网络参数化形式。训练时，模型优化负对数似然的变分上界。而在特定的噪声预测参数化下，这一目标又可写成与多噪声层级 denoising score matching 相似的形式，并使采样过程呈现出 annealed Langevin dynamics 的解释",
+    "reason": "负 ELBO 是负对数似然的上界，会议版式 (3) 的不等号方向可直接核验。",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf#page=2"
+  },
+  "u9ef4a602": {
+    "from": "将扩散模型的训练目标写为负对数似然的变分下界，并进一步分解为若干时间步上的 KL 散度项",
+    "to": "将扩散模型的训练目标写为负对数似然的变分上界，并进一步分解为若干时间步上的 KL 散度项",
+    "reason": "负 ELBO 是负对数似然的上界，会议版式 (3) 的不等号方向可直接核验。",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf#page=2"
+  },
+  "u9ea2d75c": {
+    "from": "共同构成的模型可以视为一种变分自编码器，其变分下界可写为：",
+    "to": "共同构成的模型可以视为一种变分自编码器，其负变分下界（即负对数似然的变分上界）可写为：",
+    "reason": "区分习惯名称 VLB 与这里实际最小化的负 ELBO。",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf#page=2"
+  },
+  "u5458bfbd": {
+    "from": "。动机是让不同噪声层级下 Langevin 更新中的信号—噪声比使 Langevin 动力学中信噪比",
+    "to": "。动机是让不同噪声层级下 Langevin 更新的信噪比",
+    "reason": "删除重复文字，并明确采用信号与噪声的期望能量之比。",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2019/file/3001ef257407d5a371a96dcd947c7d93-Paper.pdf#page=7"
+  },
+  "u9e2d8f55": {
+    "from": "的量级保持稳定。注意到",
+    "to": "的量级保持稳定。令 D 为数据维数，则标准高斯噪声的期望平方范数为 D，因此",
+    "reason": "补充 SNR 中维数因子的定义。"
+  },
+  "udf1ce606": {
+    "from": "当 score 网络训练得接近最优时",
+    "to": "论文观察到，当 score 网络训练得接近最优时，近似有",
+    "reason": "论文的 score 范数标度是经验观察，并非普适恒等式。",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2019/file/3001ef257407d5a371a96dcd947c7d93-Paper.pdf#page=7"
+  }
+}

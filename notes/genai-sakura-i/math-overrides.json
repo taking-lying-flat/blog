@@ -1,0 +1,24 @@
+{
+  "zIpkT": {
+    "to": "\\begin{aligned}\np(x^{(0)}) &= \\int dx^{(1\\cdots T)} p(x^{(0\\cdots T)}) \\frac{q(x^{(1\\cdots T)} \\mid x^{(0)})}{q(x^{(1\\cdots T)} \\mid x^{(0)})} \\\\[8pt]\n&= \\int dx^{(1\\cdots T)} q(x^{(1\\cdots T)} \\mid x^{(0)}) \\frac{p(x^{(0\\cdots T)})}{q(x^{(1\\cdots T)} \\mid x^{(0)})} \\\\[8pt]\n&= \\int dx^{(1\\cdots T)} q(x^{(1\\cdots T)} \\mid x^{(0)}) \\cdot \\frac{p(x^{(T)}) \\prod_{t=1}^{T} p(x^{(t-1)} \\mid x^{(t)})}{\\prod_{t=1}^{T}q(x^{(t)} \\mid x^{(t-1)})}\n\\end{aligned}",
+    "reason": "轨迹概率必须连乘全部前向转移核；会议版式 (9)、(11)。",
+    "from": "\\begin{aligned}\np(x^{(0)}) &= \\int dx^{(1\\cdots T)} p(x^{(0\\cdots T)}) \\frac{q(x^{(1\\cdots T)} \\mid x^{(0)})}{q(x^{(1\\cdots T)} \\mid x^{(0)})} \\\\[8pt]\n&= \\int dx^{(1\\cdots T)} q(x^{(1\\cdots T)} \\mid x^{(0)}) \\frac{p(x^{(0\\cdots T)})}{q(x^{(1\\cdots T)} \\mid x^{(0)})} \\\\[8pt]\n&= \\int dx^{(1\\cdots T)} q(x^{(1\\cdots T)} \\mid x^{(0)}) \\cdot \\frac{p(x^{(T)}) \\prod_{t=1}^{T} p(x^{(t-1)} \\mid x^{(t)})}{q(x^{(t)} \\mid x^{(t-1)})}\n\\end{aligned}",
+    "reference": "https://proceedings.mlr.press/v37/sohl-dickstein15.pdf#page=5"
+  },
+  "TLx0w": {
+    "to": "L = \\int dx^{(0)}\\, q\\bigl(x^{(0)}\\bigr)\\cdot \\log \\left[ \\int dx^{(1\\cdots T)} \\, q\\bigl(x^{(1\\cdots T)}\\mid x^{(0)}\\bigr)\\cdot \\frac{ p\\bigl(x^{(T)}\\bigr)\\prod_{t=1}^{T} p\\bigl(x^{(t-1)}\\mid x^{(t)}\\bigr) }{ \\prod_{t=1}^{T}q\\bigl(x^{(t)}\\mid x^{(t-1)}\\bigr) } \\right] ",
+    "reason": "轨迹概率必须连乘全部前向转移核；会议版式 (9)、(11)。",
+    "from": "L = \\int dx^{(0)}\\, q\\bigl(x^{(0)}\\bigr)\\cdot \\log \\left[ \\int dx^{(1\\cdots T)} \\, q\\bigl(x^{(1\\cdots T)}\\mid x^{(0)}\\bigr)\\cdot \\frac{ p\\bigl(x^{(T)}\\bigr)\\prod_{t=1}^{T} p\\bigl(x^{(t-1)}\\mid x^{(t)}\\bigr) }{ q\\bigl(x^{(t)}\\mid x^{(t-1)}\\bigr) } \\right] ",
+    "reference": "https://proceedings.mlr.press/v37/sohl-dickstein15.pdf#page=5"
+  },
+  "biuas": {
+    "to": "\\boxed{\n\\begin{aligned}\n\\mathcal{L}(\\boldsymbol{\\theta}, \\phi; \\mathbf{x}^{(i)}) &\\simeq \\underbrace{ \\frac{1}{2} \\sum_{j=1}^{J} \\left( 1 + \\log((\\sigma_j^{(i)})^2) - (\\mu_j^{(i)})^2 - (\\sigma_j^{(i)})^2 \\right) }_{\\text{Negative KL Divergence (Analytical)}} + \\underbrace{ \\frac{1}{L} \\sum_{l=1}^{L} \\log p_{\\boldsymbol{\\theta}}(\\mathbf{x}^{(i)} \\mid \\mathbf{z}^{(i,l)}) }_{\\text{Reconstruction Likelihood}} \\\\[8pt]\n\\text{where} \\quad \\mathbf{z}^{(i,l)} &= \\boldsymbol{\\mu}^{(i)} + \\boldsymbol{\\sigma}^{(i)} \\odot \\boldsymbol{\\epsilon}^{(l)}, \\quad \\boldsymbol{\\epsilon}^{(l)} \\sim \\mathcal{N}(0, \\mathbf{I})\n\\end{aligned}\n}",
+    "reason": "该闭式表达式是负 KL；公式数值正确，仅修正括号标签。可由一维高斯直接核验。",
+    "from": "\\boxed{\n\\begin{aligned}\n\\mathcal{L}(\\boldsymbol{\\theta}, \\phi; \\mathbf{x}^{(i)}) &\\simeq \\underbrace{ \\frac{1}{2} \\sum_{j=1}^{J} \\left( 1 + \\log((\\sigma_j^{(i)})^2) - (\\mu_j^{(i)})^2 - (\\sigma_j^{(i)})^2 \\right) }_{\\text{KL Divergence (Analytical)}} + \\underbrace{ \\frac{1}{L} \\sum_{l=1}^{L} \\log p_{\\boldsymbol{\\theta}}(\\mathbf{x}^{(i)} \\mid \\mathbf{z}^{(i,l)}) }_{\\text{Reconstruction Likelihood}} \\\\[8pt]\n\\text{where} \\quad \\mathbf{z}^{(i,l)} &= \\boldsymbol{\\mu}^{(i)} + \\boldsymbol{\\sigma}^{(i)} \\odot \\boldsymbol{\\epsilon}^{(l)}, \\quad \\boldsymbol{\\epsilon}^{(l)} \\sim \\mathcal{N}(0, \\mathbf{I})\n\\end{aligned}\n}"
+  },
+  "ZCaWz": {
+    "to": "q_{\\phi}(z\\mid x)\\,\\prod_i\\lvert dz_i\\rvert = p(\\epsilon)\\,\\prod_i\\lvert d\\epsilon_i\\rvert .",
+    "reason": "多维联合密度对应全体坐标的体积元，不能只乘一个坐标的微分。",
+    "from": "q_{\\phi}(z\\mid x)\\, \\lvert dz_i \\rvert = p(\\epsilon)\\, \\lvert d\\epsilon_i \\rvert ."
+  }
+}
