@@ -1,4 +1,4 @@
-# `vLLM` #51593：负长度触发 `Persistent Top-K CTA` 死锁
+# `vLLM` #51593：`Persistent Top-K CTA` 死锁
 
 > `DeepSeek-V4 MTP` 在 `SM120` 下的 `persistent_topk` 死锁分析
 
