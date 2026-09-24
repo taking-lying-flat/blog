@@ -1,4 +1,4 @@
-# `CUDA` 同步故障：`ZeRO-3` 梯度竞态与 `GDN Pipeline` 死锁
+# `ZeRO-3` 梯度竞态与 `GDN Pipeline` 死锁
 
 > 两个表面症状完全不同、但本质都属于同步协议被破坏的 `GPU` 并发故障
 
