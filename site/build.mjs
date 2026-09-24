@@ -91,6 +91,14 @@ async function renderLakeMath(code, original) {
 const inlineText = (token) => (token?.children ?? []).map((child) =>
   child.type === 'softbreak' || child.type === 'hardbreak' ? ' ' : child.content).join('');
 const slugify = (label) => label.toLowerCase().replace(/[^\p{L}\p{N}\p{M}_\-\s]/gu, '').replace(/\s/g, '-');
+const plainTitle = (title) => title.replace(/[\u{1D400}-\u{1D7FF}]/gu, (letter) => letter.normalize('NFKC'));
+// Match the upright mathematical bold letters used by the Infra title.
+// Keep the ordinary text as the link's accessible name.
+const indexTitle = (title) => plainTitle(title).replace(/[A-Za-z0-9]/g, (letter) => {
+  const code = letter.codePointAt(0);
+  const offset = code >= 97 ? 0x1d41a - 97 : code >= 65 ? 0x1d400 - 65 : 0x1d7ce - 48;
+  return String.fromCodePoint(code + offset);
+});
 const dateLabel = (date) => new Intl.DateTimeFormat('zh-CN', {
   dateStyle: 'long', timeZone: 'UTC',
 }).format(new Date(`${date}T00:00:00Z`));
@@ -273,7 +281,7 @@ const home = page({
   body: `<section aria-labelledby="post-list-title">
     <div class="post-list-heading"><h1 id="post-list-title">全部文章 <span>${String(posts.length).padStart(2, '0')}</span></h1></div>
     <div class="post-list">${posts.map((post) => `<article class="post-entry">
-      <h2><a href="${post.route}">${escape(post.title)}</a></h2>
+      <h2><a href="${post.route}" aria-label="${escape(plainTitle(post.title))}">${escape(indexTitle(post.title))}</a></h2>
       <footer class="entry-footer">
         <div class="entry-details">
           <div class="post-meta">${metadata(post)}</div>

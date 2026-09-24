@@ -160,7 +160,7 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .post-list { display: grid; gap: 18px; }
 .post-entry { position: relative; min-width: 0; padding: 22px 26px 18px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); box-shadow: var(--card-shadow); }
 .post-entry:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
-.post-entry h2 { margin: 0 0 16px; font-family: var(--reading); font-size: 21px; font-weight: 700; line-height: 1.5; letter-spacing: 0; text-wrap: balance; }
+.post-entry h2 { margin: 0 0 16px; font-family: "Noto Serif SC Variable", var(--reading); font-size: 21px; font-style: normal; font-weight: 700; line-height: 1.5; letter-spacing: 0; text-wrap: balance; }
 .post-entry h2 a { color: var(--accent); text-decoration: none; }
 .post-entry h2 a::after { content: ""; position: absolute; inset: 0; border-radius: 6px; }
 .post-entry h2 a:focus-visible { outline: none; }
