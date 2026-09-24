@@ -1,5 +1,13 @@
 [
   {
+    "file": "../notes/genai-flow-ii/source.lake",
+    "format": "lake",
+    "slug": "genai-flow-ii",
+    "date": "2026-09-24",
+    "description": "生成模型笔记：Rectified Flow、Flow Matching 与 Stable Diffusion 3。",
+    "tags": ["生成模型", "Rectified Flow", "Flow Matching"]
+  },
+  {
     "file": "../notes/genai-flow-i/source.lake",
     "format": "lake",
     "slug": "genai-flow-i",

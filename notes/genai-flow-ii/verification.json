@@ -1,0 +1,147 @@
+{
+  "source_byte_identical": true,
+  "source_sha256": "5eec8b9b2f6a32533c8652ea7d190784d4c779a00c66ff65654bc03565e7b4f0",
+  "original_structure_and_formatting_preserved": 1043,
+  "math_occurrences": 428,
+  "image_occurrences": 12,
+  "separators": 2,
+  "headings": 14,
+  "verified_original_assets": 293,
+  "math_corrections": 3,
+  "text_corrections": 0,
+  "external_runtime_assets": 0,
+  "missing_assets": 0,
+  "invalid_svg_assets": 0,
+  "unchanged_existing_article_bodies_and_math_geometry": [
+    "vllm-51593-persistent-topk-deadlock",
+    "flashinfer-sm100-gdn-pipeline-deadlock",
+    "gemma-4-nvfp4-moe-missing-scales",
+    "packing-flash-attention",
+    "ms-swift-chatml-rendering",
+    "ms-swift-model-runtime-failures",
+    "rope",
+    "infra-quant-i",
+    "genai-sakura-i",
+    "genai-sakura-ii",
+    "genai-sakura-iii",
+    "genai-flow-i"
+  ],
+  "format_metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "text_matches_source_exactly": true,
+  "numerical_checks": {
+    "fm_cfm_exact_sums": {
+      "loss_gap_spread": 7.105427357601002e-15,
+      "max_gradient_error": 1.5987211554602254e-14
+    },
+    "conditional_velocity_finite_difference_errors": {
+      "VE": 7.22325310675842e-10,
+      "VP": 1.3032330770101908e-09,
+      "OT": 2.7866819962696354e-10
+    },
+    "rf_noise_parameterization_max_error": 8.881784197001252e-15,
+    "mode_density_integrals": {
+      "-0.8": 0.9999999991868812,
+      "0": 1.0,
+      "1": 1.000000000049378,
+      "1.5": 1.0000000001597995
+    },
+    "cosmap_density_integral": 1.0000000000026525
+  },
+  "browser_checks": {
+    "base": "http://127.0.0.1:4176/",
+    "firstPost": "posts/genai-flow-ii/",
+    "results": [
+      {
+        "width": 1440,
+        "pageWidth": 1440,
+        "math": 428,
+        "addedMath": 0,
+        "images": 12,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": []
+      },
+      {
+        "width": 1280,
+        "pageWidth": 1280,
+        "math": 428,
+        "addedMath": 0,
+        "images": 12,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": []
+      },
+      {
+        "width": 1024,
+        "pageWidth": 1024,
+        "math": 428,
+        "addedMath": 0,
+        "images": 12,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": []
+      },
+      {
+        "width": 768,
+        "pageWidth": 768,
+        "math": 428,
+        "addedMath": 0,
+        "images": 12,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": []
+      },
+      {
+        "width": 390,
+        "pageWidth": 390,
+        "math": 428,
+        "addedMath": 0,
+        "images": 12,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": []
+      },
+      {
+        "width": 320,
+        "pageWidth": 320,
+        "math": 428,
+        "addedMath": 0,
+        "images": 12,
+        "headings": 14,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "inaccessibleWideMath": [],
+        "orphans": []
+      }
+    ],
+    "errors": []
+  }
+}

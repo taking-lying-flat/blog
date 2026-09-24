@@ -1,0 +1,20 @@
+{
+  "wrBZh": {
+    "from": "v: \\mathbb{R}^d \\to \\mathbb{R}^d",
+    "to": "v: \\mathbb{R}^d\\times[0,1] \\to \\mathbb{R}^d",
+    "reason": "漂移场显式依赖状态和时间，与 v(Z_t,t) 的输入顺序一致。",
+    "reference": "https://arxiv.org/html/2209.03003v1"
+  },
+  "kwefa": {
+    "from": "\\mu_t(x) = tx_1, \\text{ and } \\sigma_t(x) = 1 - (1 - \\sigma_{\\min})t.",
+    "to": "\\mu_t(x_1) = tx_1, \\text{ and } \\sigma_t(x_1) = 1 - (1 - \\sigma_{\\min})t.",
+    "reason": "统一条件均值与标准差的条件变量记号。",
+    "reference": "https://arxiv.org/html/2210.02747v2"
+  },
+  "xtoHJ": {
+    "from": "\\pi_{\\mathrm{mode}}(t;s) = \\frac{d}{dt}f_{\\mathrm{mode}}^{-1}(t).",
+    "to": "\\pi_{\\mathrm{mode}}(t;s) = \\left|\\frac{d}{dt}f_{\\mathrm{mode}}^{-1}(t;s)\\right|.",
+    "reason": "mode 映射单调递减，密度换元必须取逆映射导数绝对值；s=0 时应为正的均匀密度。",
+    "reference": "https://arxiv.org/html/2403.03206v1"
+  }
+}
