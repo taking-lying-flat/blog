@@ -87,6 +87,8 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .prose strong > code { font-weight: 700; }
 .math-inline { white-space: normal; }
 .math-inline mjx-container { font-size: 1em; }
+[data-post="qwen35-gated-deltanet"] .math-inline { display: inline; white-space: nowrap; overflow-wrap: normal; word-break: normal; }
+[data-post="qwen35-gated-deltanet"] .math-inline mjx-container { display: inline-block; width: auto; min-width: 0; margin: 0; padding: 0; }
 .equation { overflow-x: auto; overflow-y: hidden; margin: 26px 0 30px; padding: 10px 0 16px; max-width: 100%; font-size: 18px; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
 .equation mjx-container[jax="SVG"][display="true"] { display: block; width: max-content; min-width: 100%; margin: 0; text-align: center; }
 .equation svg { max-width: none; }

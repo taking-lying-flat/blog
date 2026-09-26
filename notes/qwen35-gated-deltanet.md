@@ -97,7 +97,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 
 ### 在线学习与 TTT 视角
 
-- 论文 Table 1 将 GDN 更新表示为在线目标的闭式解。该目标的参考状态为衰减后的 $`\alpha_t\mathbf S_{t-1}`$，关联项使用当前键值对相对于该参考状态的残差：
+- 论文 Table 1 将 GDN 更新表示为在线目标的闭式解。该目标的参考状态为衰减后的&nbsp;$`\alpha_t\mathbf S_{t-1}`$，关联项使用当前键值对相对于该参考状态的残差：
 
 ```math
 \mathbf S_t=\underset{\mathbf S}{\arg\min}\left[\begin{aligned}
