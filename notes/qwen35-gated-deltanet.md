@@ -114,7 +114,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 ## Chunk 的矩阵表示
 
 <figure class="gdn-chunk-diagram">
-  <img src="../../assets/gdn-chunk-parallel.png" alt="顺序计算与分离状态递推后的 Chunk 并行计算示意图" width="668" height="603" loading="lazy">
+  <img src="../../assets/gdn-chunk-parallel.png" alt="顺序计算与分离状态递推后的 Chunk 并行计算示意图" width="1260" height="370" loading="lazy">
 </figure>
 
 ### DeltaNet 的 WY 表示与 UT 变换
