@@ -97,24 +97,19 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 
 ### 在线学习与 TTT 视角
 
-论文 Table 1 将 GDN 更新表示为在线目标的闭式解。该目标的参考状态为衰减后的&nbsp;$`\alpha_t\mathbf S_{t-1}`$，关联项使用当前键值对相对于该参考状态的残差。从 TTT（Test-Time Training）视角，状态矩阵作为在线回归模型的参数。DeltaNet 对平方回归损失执行一步梯度下降，beta 对应更新步长。GDN 在这一步更新前加入自适应权重衰减 alpha。在线目标给出状态更新的闭式形式，TTT 则将同一状态递推解释为对键值回归问题的逐 token 优化。
+- 论文 Table 1 将 GDN 更新表示为在线目标的闭式解。该目标的参考状态为衰减后的&nbsp;$`\alpha_t\mathbf S_{t-1}`$，关联项使用当前键值对相对于该参考状态的残差：
 
 ```math
-\mathbf S_t=\underset{\mathbf S}{\arg\min}\left[\begin{aligned}
-&\|\mathbf S-\alpha_t\mathbf S_{t-1}\|_F^2\\
-&-2\left\langle\mathbf S\boldsymbol k_t,
-\beta_t(\boldsymbol v_t-\alpha_t\mathbf S_{t-1}\boldsymbol k_t)\right\rangle
-\end{aligned}\right].
+\mathbf S_t=\underset{\mathbf S}{\arg\min}\left[\|\mathbf S-\alpha_t\mathbf S_{t-1}\|_F^2-2\left\langle\mathbf S\boldsymbol k_t,\beta_t(\boldsymbol v_t-\alpha_t\mathbf S_{t-1}\boldsymbol k_t)\right\rangle\right].
 ```
 
+- 从 TTT（Test-Time Training）视角，状态矩阵作为在线回归模型的参数。DeltaNet 对平方回归损失执行一步梯度下降，beta 对应更新步长：
+
 ```math
-\begin{aligned}
-\mathcal L(\mathbf S)&=\tfrac12\|\mathbf S\boldsymbol k_t-\boldsymbol v_t\|_2^2,\\
-\mathbf S_t&=\mathbf S_{t-1}-\beta_t\nabla\mathcal L(\mathbf S_{t-1})\\
-&=\mathbf S_{t-1}-\beta_t
-(\mathbf S_{t-1}\boldsymbol k_t-\boldsymbol v_t)\boldsymbol k_t^\top.
-\end{aligned}
+\mathcal L(\mathbf S)=\tfrac12\|\mathbf S\boldsymbol k_t-\boldsymbol v_t\|_2^2,\qquad \mathbf S_t=\mathbf S_{t-1}-\beta_t\nabla\mathcal L(\mathbf S_{t-1})=\mathbf S_{t-1}-\beta_t(\mathbf S_{t-1}\boldsymbol k_t-\boldsymbol v_t)\boldsymbol k_t^\top.
 ```
+
+- GDN 在这一步更新前加入自适应权重衰减 alpha。在线目标给出状态更新的闭式形式，TTT 则将同一状态递推解释为对键值回归问题的逐 token 优化。
 
 ## Chunk 的矩阵表示
 
