@@ -10,9 +10,9 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 \qquad s=d_k^{-1/2}.
 ```
 
-- 上述并行表达式包含序列长度平方数量的成对权重。FlashAttention 可通过分块与融合避免完整权重矩阵的显存往返，但成对计算量仍随序列长度平方增长。线性注意力的优势来自其等价递推：每个 head 维护 $`d_v\times d_k`$ 的状态，单步更新与读出的计算量为 $`O(d_kd_v)`$。因果掩码不能直接移到矩阵乘法外，因此训练时需要 chunkwise 分解，将块内计算组织为矩阵乘法，将块间依赖压缩到状态传递。
+- 上述并行表达式包含序列长度平方数量的成对权重。FlashAttention 可通过分块与融合避免完整权重矩阵的显存往返，但成对计算量仍随序列长度平方增长。线性注意力的优势来自其等价递推：每个 head 维护 $`d_v\times d_k`$ 的状态，<span style="white-space: nowrap;">单步更新与读出均为 $`O(d_kd_v)`$。</span>因果掩码不能直接移到矩阵乘法外，因此训练时需要 chunkwise 分解，将块内计算组织为矩阵乘法，将块间依赖压缩到状态传递。
 
-- 固定大小的状态将多组键值关联叠加存储，非正交 key 会在读出时相互干扰。GDN 同时引入历史衰减 $`\alpha_t`$ 和残差写入强度 $`\beta_t`$：前者控制旧状态整体保留多少，后者控制沿当前 key 方向修正多少。二者作用于同一个状态更新，而输出门只调节本层读出的结果。
+- 状态通过外积将多组 key–value 关联叠加到同一个矩阵中。用某个 key 读取时，其他 key 对应的 value 也会按两者的内积参与结果：内积为零时没有这项干扰，内积非零时读出就会混入其他 value。GDN 先用 $`\alpha_t`$ 缩放整个旧状态，再用当前 key 读取旧 value 的预测；将新 value 与该预测作差，乘以 $`\beta_t`$ 后沿当前 key 方向写回。因此，$`\alpha_t`$ 控制历史信息的整体衰减，$`\beta_t`$ 控制本次预测误差的修正幅度。输出门则作用于状态读出之后，只调节传给下一层的结果，不改写状态。
 
 <figure style="margin: 24px 0;">
   <a href="../../assets/gdn-architecture.png"><img src="../../assets/gdn-architecture.png" alt="Gated DeltaNet 模型结构与 token mixer" width="2058" height="1122"></a>
@@ -20,7 +20,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 
 - Token mixer 的 Q/K/V 分支依次经过线性投影、逐通道短因果卷积和 SiLU，Q/K 再沿 head 维做 L2 归一化。短卷积提供局部时序特征，Gated Delta Rule 维护跨 token 的矩阵状态；两者在解码时分别保留卷积窗口与 recurrent state。
 
-- 衰减门与写入系数由独立投影生成，不经过 Q/K/V 的短卷积。状态输出先按 head 归一化，再与输出门逐元素相乘，最后投影回隐藏维度。图中的结构对应论文 §3.4；第 4 节展开 Qwen3.5 的具体投影、门控参数化与算子调用。
+- 衰减门与写入系数由独立投影生成，不经过 Q/K/V 的短卷积。状态输出先按 head 归一化，再与输出门逐元素相乘，最后投影回隐藏维度。
 
 ## 2. Gated Delta Rule 的计算公式
 
