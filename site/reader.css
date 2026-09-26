@@ -93,12 +93,16 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .equation mjx-container[jax="SVG"][display="true"] { display: block; width: max-content; min-width: 100%; margin: 0; text-align: center; }
 .equation svg { max-width: none; }
 @media screen {
-  [data-post="qwen35-gated-deltanet"] .prose { line-height: 1.75; }
-  [data-post="qwen35-gated-deltanet"] .prose :is(p, ul, ol) { margin-bottom: 14px; }
-  [data-post="qwen35-gated-deltanet"] .prose li { margin-block: 6px; }
-  [data-post="qwen35-gated-deltanet"] .equation { margin: 12px 0; padding: 4px 0 6px; }
-  [data-post="qwen35-gated-deltanet"] .prose :is(p, ul, ol):has(+ .equation) { margin-bottom: 10px; }
-  [data-post="qwen35-gated-deltanet"] .equation + .code-block { margin-top: 14px; }
+  [data-post="qwen35-gated-deltanet"] .prose { line-height: 1.65; }
+  [data-post="qwen35-gated-deltanet"] .prose :is(p, ul, ol) { margin-bottom: 10px; }
+  [data-post="qwen35-gated-deltanet"] .prose li { margin-block: 4px; }
+  [data-post="qwen35-gated-deltanet"] .equation { margin: 8px 0; padding: 2px 0 4px; }
+  [data-post="qwen35-gated-deltanet"] .prose :is(p, ul, ol):has(+ .equation) { margin-bottom: 6px; }
+  [data-post="qwen35-gated-deltanet"] .code-block { margin: 14px 0 16px; }
+  [data-post="qwen35-gated-deltanet"] .code-block pre { padding: 14px 18px; line-height: 1.5; }
+  [data-post="qwen35-gated-deltanet"] .code-caption { min-height: 35px; padding: 5px 18px; }
+  [data-post="qwen35-gated-deltanet"] .prose .table-scroll { margin: 14px 0 16px; }
+  [data-post="qwen35-gated-deltanet"] .prose :is(th, td) { padding: 7px 12px; }
 }
 .code-block {
   --code-bg: var(--page);
