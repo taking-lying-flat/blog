@@ -10,7 +10,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 \qquad s=d_k^{-1/2}.
 ```
 
-- 上述并行表达式包含序列长度平方数量的成对权重。FlashAttention 可通过分块与融合避免完整权重矩阵的显存往返，但成对计算量仍随序列长度平方增长。线性注意力的优势来自其等价递推：每个 head 维护 $`d_v\times d_k`$ 的状态，<span style="white-space: nowrap;">单步更新与读出均为 $`O(d_kd_v)`$。</span>因果掩码不能直接移到矩阵乘法外，因此训练时需要 chunkwise 分解，将块内计算组织为矩阵乘法，将块间依赖压缩到状态传递。
+- 上述并行表达式包含序列长度平方数量的成对权重。FlashAttention 可通过分块与融合避免完整权重矩阵的显存往返，但成对计算量仍随序列长度平方增长。线性注意力的优势来自其等价递推：每个 head 维护 $`d_v\times d_k`$ 的状态，单步更新与读出均为 $`O(d_kd_v)`$。因果掩码不能直接移到矩阵乘法外，因此训练时需要 chunkwise 分解，将块内计算组织为矩阵乘法，将块间依赖压缩到状态传递。
 
 - 状态矩阵构成从 key 到 value 的线性关联记忆。外积叠加时，非正交 key 之间的交叉内积会耦合不同关联，形成检索干扰。GDN 以 $`\alpha_tS_{t-1}`$ 为衰减后的参考状态，以 $`v_t-\alpha_tS_{t-1}k_t`$ 为当前键值对的预测残差，沿 key 方向执行秩一校正。其中，$`\alpha_t`$ 调节历史状态的整体保留比例，$`\beta_t`$ 调节残差校正的步长，二者共同决定状态的遗忘与写入。输出门对状态读出结果进行逐通道调制，不参与状态递推。
 
@@ -22,73 +22,103 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 
 - 衰减门与写入系数由独立投影生成，不经过 Q/K/V 的短卷积。状态输出先按 head 归一化，再与输出门逐元素相乘，最后投影回隐藏维度。
 
-## 2. Gated Delta Rule 的计算公式
+## 2. 前置知识：线性注意力与 DeltaNet
 
-### 2.1 线性注意力与标量衰减
+### 2.1 线性注意力与 Mamba2
 
-- 对单个 head，令 $`q_t,k_t\in\mathbb R^{d_k}`$、$`v_t\in\mathbb R^{d_v}`$，状态 $`S_t\in\mathbb R^{d_v\times d_k}`$。外积 $`v_tk_t^\top`$ 写入键值关联，矩阵向量乘法 $`S_tq_t`$ 读取关联。论文 §2.1 的线性注意力与 Mamba2 标量衰减形式分别为：
+- 对单个注意力头，$`\boldsymbol q_t,\boldsymbol k_t\in\mathbb R^{d_k}`$、$`\boldsymbol v_t\in\mathbb R^{d_v}`$ 均为列向量，状态 $`\mathbf S_t\in\mathbb R^{d_v\times d_k}`$。论文 §2.1 的线性注意力通过外积累积键值关联，通过矩阵向量乘法读取状态：
+
+```math
+\mathbf S_t=\mathbf S_{t-1}+\boldsymbol v_t\boldsymbol k_t^\top,
+\qquad \boldsymbol o_t=\mathbf S_t\boldsymbol q_t.
+```
+
+- 在零初态下，将状态展开并代入输出，得到矩阵并行形式。$`\mathbf Q,\mathbf K,\mathbf V`$ 按 token 排成行，M 为包含对角线的二值因果掩码：
+
+```math
+\boldsymbol o_t=\sum_{j=1}^{t}
+(\boldsymbol q_t^\top\boldsymbol k_j)\boldsymbol v_j,
+\qquad
+\mathbf O=(\mathbf Q\mathbf K^\top\odot\mathbf M)\mathbf V.
+```
+
+- Mamba2 的标量衰减形式在状态更新中引入数据相关的 $`\alpha_t`$。令 $`\gamma_t=\prod_{i=1}^{t}\alpha_i`$，位置 j 的写入传播到位置 t 时保留 $`\gamma_t/\gamma_j`$，并行形式中的因果掩码相应变为带衰减的 $`\Gamma`$：
 
 ```math
 \begin{aligned}
-\text{Linear Attention:}\quad&S_t=S_{t-1}+v_tk_t^\top,\\
-\text{Scalar decay:}\quad&S_t=\alpha_tS_{t-1}+v_tk_t^\top,
-\qquad o_t=sS_tq_t.
+\mathbf S_t&=\alpha_t\mathbf S_{t-1}+\boldsymbol v_t\boldsymbol k_t^\top,
+&\boldsymbol o_t&=\mathbf S_t\boldsymbol q_t,\\
+\mathbf O&=(\mathbf Q\mathbf K^\top\odot\Gamma)\mathbf V,
+&\Gamma_{ij}&=\begin{cases}\gamma_i/\gamma_j,&i\ge j,\\0,&i<j.\end{cases}
 \end{aligned}
 ```
 
-- 令 $`\gamma_t=\prod_{r=1}^{t}\alpha_r`$。在 $`S_0=0`$ 时，递推展开为带区间衰减的键值累加，输出仍是对历史 value 的加权求和：
-
-```math
-S_t=\sum_{j=1}^{t}\frac{\gamma_t}{\gamma_j}v_jk_j^\top,
-\qquad o_t=s\sum_{j=1}^{t}\frac{\gamma_t}{\gamma_j}(k_j^\top q_t)v_j.
-```
-
-- 系数 $`\gamma_t/\gamma_j=\prod_{r=j+1}^{t}\alpha_r`$ 表示位置 j 写入的信息传播到位置 t 后的保留比例。若存在初始状态，还需加上 $`\gamma_tS_0`$。标量门会同时缩放所有 key 方向，无法单独修正某个 key 对应的旧 value。
-
-### 2.2 Delta 更新与 Gated Delta Rule
-
-- DeltaNet 先用当前 key 从旧状态读取预测值，再写入新旧 value 的差。GDN 将读取位置改为衰减后的状态，对应论文 Eq. (10)。在 sigmoid 写入门与标量衰减的参数化下，$`\alpha_t,\beta_t\in(0,1)`$：
+- 分块训练将序列划分为长度 C 的 chunk。入口状态向块内位置 r 传播时乘 $`\gamma_{[t]}^r`$，当前位置的写入传播到块末时乘 $`\gamma_{[t]}^C/\gamma_{[t]}^r`$。将这些系数分别吸收到 Q、K 和入口状态中，得到论文 Eq. (2) 的分块形式：
 
 ```math
 \begin{aligned}
-\text{DeltaNet:}\quad
-S_t&=S_{t-1}+\beta_t(v_t-S_{t-1}k_t)k_t^\top,\\
-\text{GDN:}\quad
-S_t&=\alpha_tS_{t-1}(I-\beta_tk_tk_t^\top)+\beta_tv_tk_t^\top\\
-&=\alpha_tS_{t-1}+\beta_t(v_t-\alpha_tS_{t-1}k_t)k_t^\top.
+\mathbf S_{[t+1]}&=\overrightarrow{\mathbf S}_{[t]}
++\mathbf V_{[t]}^\top\overrightarrow{\mathbf K}_{[t]},\\
+\mathbf O_{[t]}&=\overleftarrow{\mathbf Q}_{[t]}\mathbf S_{[t]}^\top
++(\mathbf Q_{[t]}\mathbf K_{[t]}^\top\odot\Gamma_{[t]})\mathbf V_{[t]}.
 \end{aligned}
 ```
 
-- 对单位范数的 key，转移矩阵 $`I-\beta_tk_tk_t^\top`$ 是广义 Householder 矩阵：沿 $`k_t`$ 方向的特征值为 $`1-\beta_t`$，在其正交补空间上的特征值为 1。$`\beta_t=2`$ 时退化为标准 Householder 反射，$`\beta_t=1`$ 时为投影到 key 正交补空间的正交投影。当前 sigmoid 参数化使 $`\beta_t\in(0,1)`$，对应沿 key 方向的收缩；GDN 的 $`\alpha_t`$ 则进一步对所有方向施加统一衰减。
+- 这里 $`\overleftarrow{\boldsymbol q}_{[t]}^r=\gamma_{[t]}^r\boldsymbol q_{[t]}^r`$，$`\overrightarrow{\boldsymbol k}_{[t]}^r=(\gamma_{[t]}^C/\gamma_{[t]}^r)\boldsymbol k_{[t]}^r`$，$`\overrightarrow{\mathbf S}_{[t]}=\gamma_{[t]}^C\mathbf S_{[t]}`$。状态在 chunk 之间递推，块内输出通过矩阵乘法并行计算；第 3 节在这一分解上引入 Delta 更新。
 
-- 当 $`\|k_t\|_2=1`$ 时，当前 key 上的读出是旧值与新值的插值；对任意正交方向 $`x\perp k_t`$，Delta 项为零，只保留整体衰减：
+### 2.2 DeltaNet 与 Gated Delta Rule
 
-```math
-S_tk_t=(1-\beta_t)\alpha_tS_{t-1}k_t+\beta_tv_t,
-\qquad S_tx=\alpha_tS_{t-1}x\quad(k_t^\top x=0).
-```
-
-- 因而 $`\beta_t=1`$ 在单位 key 方向上完成替换，$`\beta_t=0`$ 只执行衰减；令 $`\alpha_t=1`$ 则退化为 DeltaNet。与当前 key 非正交的其他关联仍可能受到更新影响，不能将“定向更新”理解为所有其他记忆都不变。
-
-### 2.3 在线回归视角
-
-- 将状态视为一个从 key 映射到 value 的线性模型，记衰减后的参考状态为 $`\bar S_t=\alpha_tS_{t-1}`$。GDN 等价于从该参考状态出发，对当前键值回归损失做一步梯度更新：
+- 标量门对整个状态统一衰减。DeltaNet 则先由 $`\mathbf S_{t-1}\boldsymbol k_t`$ 读取当前 key 对应的旧 value，再以 beta 控制旧值擦除和新值写入。对应论文 §2.2 的更新为：
 
 ```math
-\mathcal L_t(S)=\tfrac12\|Sk_t-v_t\|_2^2,
-\qquad S_t=\bar S_t-\beta_t\nabla\mathcal L_t(\bar S_t)
-=\bar S_t+\beta_t(v_t-\bar S_tk_t)k_t^\top.
+\begin{aligned}
+\mathbf S_t&=\mathbf S_{t-1}
+-\beta_t(\mathbf S_{t-1}\boldsymbol k_t)\boldsymbol k_t^\top
++\beta_t\boldsymbol v_t\boldsymbol k_t^\top\\
+&=\mathbf S_{t-1}(\mathbf I-\beta_t\boldsymbol k_t\boldsymbol k_t^\top)
++\beta_t\boldsymbol v_t\boldsymbol k_t^\top.
+\end{aligned}
 ```
 
-- 论文 Table 1 将同一更新写为一个在线目标的闭式解。令 $`r_t=\beta_t(v_t-\bar S_tk_t)`$，将本步残差视为固定量，则：
+- $`\mathbf I-\beta_t\boldsymbol k_t\boldsymbol k_t^\top`$ 是广义 Householder 转移矩阵；单位 key 且 $`\beta_t=2`$ 时为标准 Householder 反射。当前 sigmoid 写入门取 $`\beta_t\in(0,1)`$，控制沿 key 方向的部分擦除；正交方向不受这项更新影响。连续转移矩阵的乘积可用 WY 表示组织为块矩阵计算，具体对应第 3.1 节。
+
+- Gated DeltaNet 将全局衰减与 Delta 更新结合，对应论文 Eq. (10)：先衰减入口状态，再按当前键值关联完成残差写入。
 
 ```math
-S_t=\underset{S}{\arg\min}\;
-\left\{\tfrac12\|S-\bar S_t\|_F^2-\langle Sk_t,r_t\rangle\right\}
-=\bar S_t+r_tk_t^\top.
+\begin{aligned}
+\mathbf S_t&=\mathbf S_{t-1}
+\left[\alpha_t(\mathbf I-\beta_t\boldsymbol k_t\boldsymbol k_t^\top)\right]
++\beta_t\boldsymbol v_t\boldsymbol k_t^\top,\\
+\boldsymbol o_t&=\mathbf S_t\boldsymbol q_t.
+\end{aligned}
 ```
 
-- 第一项约束新状态偏离衰减参考点的程度，第二项沿当前 key 方向写入残差。这里更新的是每条序列的运行状态；$`\beta_t`$ 决定本次状态修正的幅度，$`\alpha_t`$ 决定进入该更新前保留多少历史。
+- $`\alpha_t`$ 控制历史状态的整体衰减，$`\beta_t`$ 控制当前 key 方向的更新强度。令 $`\alpha_t=1`$ 即退化为 DeltaNet；单位 key 且 $`\beta_t=1`$ 时，该方向上的旧 value 被新 value 替换。
+
+### 2.3 在线学习与 TTT 视角
+
+- 论文 Table 1 将 GDN 更新表示为在线目标的闭式解。该目标的参考状态为衰减后的 $`\alpha_t\mathbf S_{t-1}`$，关联项使用当前键值对相对于该参考状态的残差：
+
+```math
+\mathbf S_t=\underset{\mathbf S}{\arg\min}\left[\begin{aligned}
+&\|\mathbf S-\alpha_t\mathbf S_{t-1}\|_F^2\\
+&-2\left\langle\mathbf S\boldsymbol k_t,
+\beta_t(\boldsymbol v_t-\alpha_t\mathbf S_{t-1}\boldsymbol k_t)\right\rangle
+\end{aligned}\right].
+```
+
+- 从 TTT（Test-Time Training）视角，状态矩阵作为在线回归模型的参数。DeltaNet 对平方回归损失执行一步梯度下降，beta 对应更新步长：
+
+```math
+\begin{aligned}
+\mathcal L(\mathbf S)&=\tfrac12\|\mathbf S\boldsymbol k_t-\boldsymbol v_t\|_2^2,\\
+\mathbf S_t&=\mathbf S_{t-1}-\beta_t\nabla\mathcal L(\mathbf S_{t-1})\\
+&=\mathbf S_{t-1}-\beta_t
+(\mathbf S_{t-1}\boldsymbol k_t-\boldsymbol v_t)\boldsymbol k_t^\top.
+\end{aligned}
+```
+
+- GDN 在这一步更新前加入自适应权重衰减 alpha。在线目标给出状态更新的闭式形式，TTT 则将同一状态递推解释为对键值回归问题的逐 token 优化。
 
 ## 3. Chunk 的矩阵表示
 
@@ -102,7 +132,15 @@ S_t=\underset{S}{\arg\min}\;
 =\mathbf I-\sum_{i=1}^{r}\boldsymbol w_{[t]}^i\boldsymbol k_{[t]}^{i\top}.
 ```
 
-- 其中 $`\boldsymbol w_{[t]}^r=\beta_{[t]}^r(\boldsymbol k_{[t]}^r-\sum_{i<r}\boldsymbol w_{[t]}^i(\boldsymbol k_{[t]}^{i\top}\boldsymbol k_{[t]}^r))`$。新增状态同样可以写成 $`\sum_{i=1}^r\boldsymbol u_{[t]}^i\boldsymbol k_{[t]}^{i\top}`$，U 的递推只需将 W 递推右端的当前 key 换成 value。两者共享此前 key 内积形成的下三角系数。
+- WY 系数按以下递推生成，对应论文 Eq. (4)。每个新 key 的写入系数需要扣除此前 key 内积带来的贡献：
+
+```math
+\boldsymbol w_{[t]}^r=\beta_{[t]}^r\left(
+\boldsymbol k_{[t]}^r-\sum_{i<r}\boldsymbol w_{[t]}^i
+(\boldsymbol k_{[t]}^{i\top}\boldsymbol k_{[t]}^r)\right).
+```
+
+- 新增状态同样可以写成 $`\sum_{i=1}^r\boldsymbol u_{[t]}^i\boldsymbol k_{[t]}^{i\top}`$，U 的递推将右端的当前 key 换成 value；两者共享此前 key 内积形成的下三角系数。
 
 - UT 变换将上述逐位置递推写为同一个下三角系统，对应论文 Eq. (6)–(7)：
 
@@ -217,7 +255,42 @@ self.in_proj_b = nn.Linear(self.hidden_size, self.num_v_heads, bias=False)
 self.in_proj_z = nn.Linear(self.hidden_size, self.value_dim, bias=False)
 ```
 
-### 4.2 短卷积、门控与 Head 映射
+### 4.2 Short Conv、门控与 Head 映射
+
+- **Short Conv 的计算。** Q/K/V 的联合投影 P 先经过 depthwise causal convolution，再应用 SiLU。每个通道有独立的宽度 w 的卷积核，不进行通道间混合。按 PyTorch 的权重排列，第 c 个通道在位置 t 的输出为：
+
+```math
+\operatorname{ShortConv}(P)_{t,c}
+=\operatorname{SiLU}\!\left(\sum_{j=0}^{w-1}
+\theta_{c,j}P_{t-w+1+j,c}\right).
+```
+
+- 序列起点之前补零；w=4 时，输出依赖当前 token 与之前三个 token。代码使用 `groups=hidden_size` 实现逐通道卷积，`padding=w-1` 后截取前 `seq_len` 个位置，保证不使用未来输入。以下是 Transformers 中 `causal_conv1d_fn` 的实际 PyTorch 后备实现；对应加速算子可用时由 kernel dispatch 替换。
+
+```python
+def causal_conv1d_fn(
+    hidden_states: torch.Tensor,
+    weight: nn.Parameter,
+    bias: nn.Parameter | None = None,
+    activation: str | None = None,
+    **kwargs,
+):
+    _, hidden_size, seq_len = hidden_states.shape
+    padding = weight.shape[-1] - 1
+
+    out = F.conv1d(
+        hidden_states.to(weight.dtype),
+        weight=weight.unsqueeze(1),
+        bias=bias,
+        padding=padding,
+        groups=hidden_size,
+    )[:, :, :seq_len]
+    if activation is not None:
+        out = ACT2FN[activation](out)
+    return out.to(hidden_states.dtype)
+```
+
+- **Short Conv 的作用。** K 经局部卷积后包含邻近 token 的组合特征，可作为局部 n-gram 地址；Q/V 的卷积分别补充局部查询与写入内容。从在线回归视角看，这一步改变状态更新所使用的键值表示。随后 Q/K 做 L2 归一化，局部卷积产生的特征再进入 Gated Delta Rule 的长期状态递推。
 
 - 令 $`\mathcal C`$ 表示按通道独立计算的因果卷积。卷积后的 Q/K 尚未归一化，记为 $`Q^0,K^0`$。该阶段计算：
 
@@ -263,7 +336,27 @@ if self.num_v_heads // self.num_k_heads > 1:
     key = key.repeat_interleave(self.num_v_heads // self.num_k_heads, dim=2)
 ```
 
-- 有缓存的单 token 分支使用增量因果卷积维护短卷积窗口；它与 GDN 的矩阵状态分别保存。前者提供当前 token 的局部 Q/K/V 特征，后者累积更长范围的序列信息。
+- **解码时的卷积缓存。** 单 token 解码沿用相同的短卷积，只需接续缓存中的最近投影，按上述 Short Conv 公式计算当前位置。`conv_state` 保存短卷积输入，GDN 的 `recurrent_state` 保存矩阵状态；两份缓存分别对应局部窗口与长期递推。下面是 `causal_conv1d_update` 的实际后备实现：先拼接缓存与新输入，原位保留最近窗口，再取最后 `seq_len` 个卷积输出。
+
+```python
+def causal_conv1d_update(
+    hidden_states: torch.Tensor,
+    conv_state: torch.Tensor,
+    weight: nn.Parameter,
+    bias: nn.Parameter | None = None,
+    activation: str | None = None,
+):
+    _, hidden_size, seq_len = hidden_states.shape
+    state_len = conv_state.shape[-1]
+
+    hidden_states_new = torch.cat([conv_state, hidden_states], dim=-1).to(weight.dtype)
+    conv_state.copy_(hidden_states_new[:, :, -state_len:])
+    out = F.conv1d(hidden_states_new, weight.unsqueeze(1), bias, padding=0, groups=hidden_size)
+    out = out[:, :, -seq_len:]
+    if activation is not None:
+        out = ACT2FN[activation](out)
+    return out.to(hidden_states.dtype)
+```
 
 ### 4.3 状态算子与输出门控
 
@@ -766,10 +859,10 @@ b_h2 += tl.dot(b_k, b_v)
 - **第一段：沿 K 维累计两个矩阵乘积。** 两个 FP32 累加器分别保存尚未施加衰减的历史读出和块内 QK 权重：
 
 ```math
-\texttt{b\_o}\ \longleftrightarrow\;
+\mathtt{b\_o}\ \longleftrightarrow\;
 \mathbf Q_{[t]}\mathbf S_{[t]}^\top,
 \qquad
-\texttt{b\_A}\ \longleftrightarrow\;
+\mathtt{b\_A}\ \longleftrightarrow\;
 \mathbf Q_{[t]}\mathbf K_{[t]}^\top.
 ```
 
@@ -805,12 +898,12 @@ for i_k in range(tl.cdiv(K, BK)):
 
 ```math
 \begin{aligned}
-\texttt{b\_o}&\ \longleftarrow\;
+\mathtt{b\_o}&\ \longleftarrow\;
 \overleftarrow{\mathbf Q}_{[t]}\mathbf S_{[t]}^\top,\\
-\texttt{b\_A}&\ \longleftarrow\;
+\mathtt{b\_A}&\ \longleftarrow\;
 \mathbf Q_{[t]}\mathbf K_{[t]}^\top\odot\Gamma_{[t]},\\
-\mathbf O_{[t]}&=s\left(\texttt{b\_o}+
-\texttt{b\_A}\,\mathbf V_{\mathrm{new},[t]}\right).
+\mathbf O_{[t]}&=s\left(\mathtt{b\_o}+
+\mathtt{b\_A}\,\mathbf V_{\mathrm{new},[t]}\right).
 \end{aligned}
 ```
 
