@@ -93,6 +93,8 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 [data-post="qwen35-gated-deltanet"] .gdn-chunk-diagram { max-width: 100%; margin: 14px auto 10px; }
 [data-post="qwen35-gated-deltanet"] .gdn-chunk-diagram img { margin: 0; }
 [data-post="qwen35-gated-deltanet"] .gdn-chunk-diagram + h3 { margin-top: 10px; }
+[data-post="qwen35-gated-deltanet"] .gdn-model-diagram { max-width: 100%; margin: 14px auto 18px; }
+[data-post="qwen35-gated-deltanet"] .gdn-model-diagram img { margin: 0; }
 .equation { overflow-x: auto; overflow-y: hidden; margin: 26px 0 30px; padding: 10px 0 16px; max-width: 100%; font-size: 18px; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
 .equation mjx-container[jax="SVG"][display="true"] { display: block; width: max-content; min-width: 100%; margin: 0; text-align: center; }
 .equation svg { max-width: none; }

@@ -260,6 +260,7 @@ const assets = new Map([
   ['anime-readers.png', path.join(root, 'illustrations/anime-readers.png')],
   ['gdn-architecture.png', path.join(root, 'illustrations/gdn-architecture.png')],
   ['gdn-chunk-parallel.png', path.join(root, 'illustrations/gdn-chunk-parallel.png')],
+  ['gdn-model-flow.png', path.join(root, 'illustrations/gdn-model-flow.png')],
   ...['light', 'dark'].map((mode) => [`github-${mode}-tritanopia.css`,
     path.join(primer, `dist/css/functional/themes/${mode}-tritanopia.css`)]),
 ]);

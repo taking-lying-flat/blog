@@ -229,6 +229,10 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 
 - W/U 可以按 chunk 并行生成；状态更新按 chunk 顺序推进；各块入口状态得到后，输出再次按 chunk 并行。块内残差 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top`$ 在状态更新与输出计算之间复用。
 
+<figure class="gdn-model-diagram">
+  <img src="../../assets/gdn-model-flow.png" alt="Qwen3.5 Gated DeltaNet 计算流程：Q/K 经独立 L2 归一化，与 V、衰减门 alpha 和写入门 beta 进入状态算子，读出经 RMSNorm 和 SiLU 输出门后投影" width="1672" height="941" loading="lazy">
+</figure>
+
 ## 模型调用方式：Qwen3.5 GatedDeltaNet
 
 ### 输入投影
