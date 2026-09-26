@@ -257,6 +257,7 @@ const primer = path.join(root, 'node_modules/@primer/primitives');
 const assets = new Map([
   ...['reader.css', 'reader.js', 'theme.js', 'favicon.svg', 'lake.css', 'lake.js', 'body-serif.css'].map((file) => [file, path.join(root, file)]),
   ['anime-readers.png', path.join(root, 'illustrations/anime-readers.png')],
+  ['gdn-architecture.png', path.join(root, 'illustrations/gdn-architecture.png')],
   ...['light', 'dark'].map((mode) => [`github-${mode}-tritanopia.css`,
     path.join(primer, `dist/css/functional/themes/${mode}-tritanopia.css`)]),
 ]);
