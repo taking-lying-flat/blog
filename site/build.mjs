@@ -170,12 +170,13 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
   }
   const id = token.attrGet('id');
   const label = languageNames[language] ?? language;
-  const name = env.slug === 'rope'
+  const [caption = '', source = ''] = token.info.trim().replace(/^\S+\s*/, '').split('|').map((part) => part.trim());
+  const name = caption || (env.slug === 'rope'
     ? (language === 'json' ? 'config.json · text_config' : language === 'text' ? '张量维度'
       : token.content.includes('def rotate_half') ? 'rotate_half / apply_rotary_pos_emb'
       : token.content.includes('base =') && token.content.includes('inv_freq =')
         ? 'compute_default_rope_parameters' : label)
-    : label;
+    : label);
   const code = hljs.getLanguage(language)
     ? hljs.highlight(token.content, { language, ignoreIllegals: true }).value : escape(token.content);
   const lineCount = token.content.replace(/\n$/, '').split('\n').length;
@@ -184,7 +185,7 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
   }</span>`;
   return `<figure class="code-block"${id ? ` id="${escape(id)}"` : ''}>
     <figcaption class="code-caption">
-      <span class="code-caption-text">${escape(name)}</span>
+      <span class="code-caption-text">${escape(name)}${source ? `<span class="code-source">${escape(source)}</span>` : ''}</span>
       <span class="code-actions">${name !== label ? `<span class="code-language">${escape(label)}</span>` : ''}<button type="button" class="copy-button" hidden>复制</button></span>
     </figcaption>
     <pre tabindex="0">${numbers}<code class="language-${escape(language)}">${code}</code></pre>
@@ -258,6 +259,7 @@ const assets = new Map([
   ...['reader.css', 'reader.js', 'theme.js', 'favicon.svg', 'lake.css', 'lake.js', 'body-serif.css'].map((file) => [file, path.join(root, file)]),
   ['anime-readers.png', path.join(root, 'illustrations/anime-readers.png')],
   ['gdn-architecture.png', path.join(root, 'illustrations/gdn-architecture.png')],
+  ['gdn-chunk-parallel.png', path.join(root, 'illustrations/gdn-chunk-parallel.png')],
   ...['light', 'dark'].map((mode) => [`github-${mode}-tritanopia.css`,
     path.join(primer, `dist/css/functional/themes/${mode}-tritanopia.css`)]),
 ]);

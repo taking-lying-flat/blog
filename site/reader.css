@@ -89,6 +89,9 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .math-inline mjx-container { font-size: 1em; }
 [data-post="qwen35-gated-deltanet"] .math-inline { display: inline; white-space: nowrap; overflow-wrap: normal; word-break: normal; }
 [data-post="qwen35-gated-deltanet"] .math-inline mjx-container { display: inline-block; width: auto; min-width: 0; margin: 0; padding: 0; }
+[data-post="qwen35-gated-deltanet"] .prose :not(pre) > code { word-break: break-all; white-space: normal; padding: .08em .22em; }
+[data-post="qwen35-gated-deltanet"] .gdn-chunk-diagram { max-width: 668px; margin: 14px auto 20px; }
+[data-post="qwen35-gated-deltanet"] .gdn-chunk-diagram img { margin: 0; }
 .equation { overflow-x: auto; overflow-y: hidden; margin: 26px 0 30px; padding: 10px 0 16px; max-width: 100%; font-size: 18px; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
 .equation mjx-container[jax="SVG"][display="true"] { display: block; width: max-content; min-width: 100%; margin: 0; text-align: center; }
 .equation svg { max-width: none; }
@@ -127,6 +130,7 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 }
 .code-caption { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; min-height: 43px; padding: 7px 18px; background: var(--surface); color: var(--muted); }
 .code-caption-text { min-width: 0; font: 500 12px/1.6 var(--mono); overflow-wrap: anywhere; }
+.code-source { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; line-height: 1.4; }
 .code-actions { display: flex; align-items: center; gap: 10px; }
 .code-language { padding: 2px 6px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font: 11px/1.6 var(--mono); }
 .copy-button { border: 1px solid var(--line); border-radius: 5px; background: var(--button-default-bgColor-rest); font: 12px var(--sans); padding: 5px 10px; min-height: 28px; white-space: nowrap; color: var(--ink); }
