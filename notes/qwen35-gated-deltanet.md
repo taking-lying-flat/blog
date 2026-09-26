@@ -14,7 +14,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 
 - 状态通过外积将多组 key–value 关联叠加到同一个矩阵中。用某个 key 读取时，其他 key 对应的 value 也会按两者的内积参与结果：内积为零时没有这项干扰，内积非零时读出就会混入其他 value。GDN 先用 $`\alpha_t`$ 缩放整个旧状态，再用当前 key 读取旧 value 的预测；将新 value 与该预测作差，乘以 $`\beta_t`$ 后沿当前 key 方向写回。因此，$`\alpha_t`$ 控制历史信息的整体衰减，$`\beta_t`$ 控制本次预测误差的修正幅度。输出门则作用于状态读出之后，只调节传给下一层的结果，不改写状态。
 
-<figure style="margin: 24px 0;">
+<figure style="width: 100%; max-width: 600px; margin: 20px auto;">
   <a href="../../assets/gdn-architecture.png"><img src="../../assets/gdn-architecture.png" alt="Gated DeltaNet 模型结构与 token mixer" width="2058" height="1122"></a>
 </figure>
 
@@ -92,77 +92,107 @@ S_t=\underset{S}{\arg\min}\;
 
 ### 3.1 DeltaNet 的 WY 表示与 UT 变换
 
-- 将序列划分为长度 C 的块，块内 Q/K/V 按 token 排成行。$`S_{[t]}`$ 表示第 t 块的入口状态，$`S_{[t]}^r`$ 表示处理块内前 r 个 token 后的状态。先考虑不含衰减的 DeltaNet，并在块内省略下标 [t]。连续转移矩阵的乘积可写为论文 Eq. (4) 的 WY 表示：
+- 将序列划分为长度 C 的块，块内 Q/K/V 按 token 排成行。$`\mathbf S_{[t]}`$ 为第 t 块的入口状态，$`\mathbf S_{[t]}^r`$ 为处理块内前 r 个 token 后的状态。先考虑不含衰减的 DeltaNet，连续转移矩阵的乘积具有论文 Eq. (4) 的 WY 表示：
 
 ```math
-P_r=\prod_{i=1}^{r}(I-\beta_i k_i k_i^\top)
-=I-\sum_{i=1}^{r}w_i k_i^\top,
-\qquad
-w_i=\beta_i\!\left(k_i-\sum_{j<i}w_j(k_j^\top k_i)\right).
+\mathbf P_{[t]}^r
+=\prod_{i=1}^{r}\left(\mathbf I-\beta_{[t]}^i\boldsymbol k_{[t]}^i\boldsymbol k_{[t]}^{i\top}\right)
+=\mathbf I-\sum_{i=1}^{r}\boldsymbol w_{[t]}^i\boldsymbol k_{[t]}^{i\top}.
 ```
 
-- 乘积按 token 顺序从左向右排列。当前块产生的新增状态也具有相同结构：$`G_r^{(0)}=\sum_{i=1}^{r}u_i k_i^\top`$，其中 $`u_i=\beta_i(v_i-\sum_{j<i}u_j(k_j^\top k_i))`$。W 与 U 的递推共享相同的 key 内积系数，仅右端输入分别为 K 和 V。
+- 其中 $`\boldsymbol w_{[t]}^r=\beta_{[t]}^r(\boldsymbol k_{[t]}^r-\sum_{i<r}\boldsymbol w_{[t]}^i(\boldsymbol k_{[t]}^{i\top}\boldsymbol k_{[t]}^r))`$。新增状态同样可以写成 $`\sum_{i=1}^r\boldsymbol u_{[t]}^i\boldsymbol k_{[t]}^{i\top}`$，U 的递推只需将 W 递推右端的当前 key 换成 value。两者共享此前 key 内积形成的下三角系数。
 
-- 记 $`B=\operatorname{diag}(\beta)`$、$`L_0=\operatorname{strictLower}(BKK^\top)`$。将 W/U 的向量递推按行堆叠，得到论文 Eq. (6)–(7) 的 UT 变换：
-
-```math
-\begin{aligned}
-\mathcal T_0&=(I+L_0)^{-1}B,
-& W_0&=\mathcal T_0K,\qquad U_0=\mathcal T_0V,\\
-P_C&=I-W_0^\top K,
-& S_{[t+1]}&=S_{[t]}P_C+U_0^\top K.
-\end{aligned}
-```
-
-- WY 表示将转移矩阵的连乘改写为 W 与 K 的矩阵乘积；UT 变换将 W/U 的逐位置依赖改写为同一个单位下三角系统。求解仍具有因果顺序，但可以按小块前代，再通过块间矩阵乘法合并，这正是第 5.4 节的两级实现。
-
-### 3.2 引入衰减后的三角系统
-
-- 对每个 chunk 重新定义累计衰减 $`\gamma_i=\prod_{r=1}^{i}\alpha_r`$。D 描述入口状态传播到各位置的衰减，R 描述各位置写入量传播到块末的衰减，$`\Gamma`$ 同时编码块内的因果可见性与区间衰减：
-
-```math
-D=\operatorname{diag}(\gamma),\qquad
-R=\operatorname{diag}(\gamma_C/\gamma),\qquad
-\Gamma_{ij}=\begin{cases}\gamma_i/\gamma_j,&i\ge j,\\0,&i<j.\end{cases}
-```
-
-- 论文 §3.3 将块内状态展开为 $`S_{[t]}^r=S_{[t]}F_r+G_r`$，其中 $`F_r=\gamma_rP_r`$。新增状态的 WY 表示需要同时计入此前更新传播到当前位置时的衰减：
-
-```math
-G_r=\sum_{i=1}^{r}\frac{\gamma_r}{\gamma_i}\widetilde u_i k_i^\top,
-\qquad
-\widetilde u_i=\beta_i\!\left(v_i-\sum_{j<i}\Gamma_{ij}\widetilde u_j(k_j^\top k_i)\right).
-```
-
-- 因此，UT 系统中的 Gram 矩阵由 $`KK^\top`$ 变为 $`\Gamma\odot KK^\top`$。定义 L 为严格下三角系数，A 为单位下三角矩阵的逆，可同时求得 value 变换与入口状态变换：
+- UT 变换将上述逐位置递推写为同一个下三角系统，对应论文 Eq. (6)–(7)：
 
 ```math
 \begin{aligned}
-L&=\operatorname{strictLower}\!\left(B(\Gamma\odot KK^\top)\right),
-& A&=(I+L)^{-1},\\
-\widetilde U&=ABV,
-& \overleftarrow W&=ABDK=DW_0.
+\mathbf T_{[t]}&=
+\left[\mathbf I+\operatorname{strictLower}\!\left(
+\operatorname{diag}(\beta_{[t]})\mathbf K_{[t]}\mathbf K_{[t]}^\top
+\right)\right]^{-1}\operatorname{diag}(\beta_{[t]}),\\
+\mathbf W_{[t]}&=\mathbf T_{[t]}\mathbf K_{[t]},\qquad
+\mathbf U_{[t]}=\mathbf T_{[t]}\mathbf V_{[t]}.
 \end{aligned}
 ```
 
-- $`\overleftarrow W=DW_0`$ 对齐论文中的箭头记号：它是无衰减 W 的逐行缩放。实现直接计算 $`A(BDK)`$，因为 $`L=DL_0D^{-1}`$，两种写法等价。A 只表示逆矩阵；右端项的 B 在生成 W/U 时相乘，不能再次计入 A 的定义。
+- WY 表示把转移矩阵的连乘改写为低秩更新的累加；UT 变换进一步将 W/U 的计算组织成三角求解与矩阵乘法。求解内部的因果依赖仍然存在，第 5.4 节通过 16×16 局部前代与块间合并实现这一过程。
+
+### 3.2 Gated DeltaNet 的衰减与扩展 WY 表示
+
+- 在每个 chunk 内定义累计衰减 $`\gamma_{[t]}^r=\prod_{i=1}^r\alpha_{[t]}^i`$。将 Gated Delta Rule 展开，块内状态由入口状态的传播与当前块的新增状态组成：
+
+```math
+\begin{aligned}
+\mathbf S_{[t]}^r&=\mathbf S_{[t]}\mathbf F_{[t]}^r+\mathbf G_{[t]}^r,\\
+\mathbf F_{[t]}^r&=\prod_{i=1}^{r}\alpha_{[t]}^i
+\left(\mathbf I-\beta_{[t]}^i\boldsymbol k_{[t]}^i\boldsymbol k_{[t]}^{i\top}\right)
+=\gamma_{[t]}^r\mathbf P_{[t]}^r.
+\end{aligned}
+```
+
+- 扩展的 WY 表示将每次新增写入传播到位置 r 的衰减显式保留。$`\widetilde{\boldsymbol u}_{[t]}^r`$ 扣除此前写入在当前 key 上的预测，再乘当前位置的写入系数：
+
+```math
+\begin{aligned}
+\mathbf G_{[t]}^r&=\sum_{i=1}^{r}
+\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}
+\widetilde{\boldsymbol u}_{[t]}^i\boldsymbol k_{[t]}^{i\top},\\
+\widetilde{\boldsymbol u}_{[t]}^r
+&=\beta_{[t]}^r\left(\boldsymbol v_{[t]}^r-
+\sum_{i=1}^{r-1}\widetilde{\boldsymbol u}_{[t]}^i
+\left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}
+\boldsymbol k_{[t]}^{i\top}\boldsymbol k_{[t]}^r\right)\right).
+\end{aligned}
+```
+
+- 令 $`(\Gamma_{[t]})_{ij}=\gamma_{[t]}^i/\gamma_{[t]}^j`$（$`i\ge j`$），上三角为零。按行堆叠后，得到论文 §3.3 的 UT 形式：
+
+```math
+\widetilde{\mathbf U}_{[t]}=
+\left[\mathbf I+\operatorname{strictLower}\!\left(
+\operatorname{diag}(\beta_{[t]})
+\left(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^\top\right)
+\right)\right]^{-1}
+\operatorname{diag}(\beta_{[t]})\mathbf V_{[t]}.
+```
+
+- 与 DeltaNet 相比，三角系统中的 Gram 矩阵由 $`\mathbf K_{[t]}\mathbf K_{[t]}^\top`$ 改为 $`\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^\top`$。第 5.3 节构造这一系数，第 5.4 节求逆，第 5.5 节将逆变换应用于 K/V。
 
 ### 3.3 块间状态与块内输出
 
-- 令 $`E=\widetilde U-\overleftarrow W S_{[t]}^\top`$，表示扣除块入口状态预测后的写入残差。沿用论文的箭头记号，$`\overleftarrow Q=DQ`$、$`\overrightarrow K=RK`$、$`\overrightarrow S=\gamma_CS_{[t]}`$。完整 chunk 计算为：
+- 沿用论文的箭头记号，将入口到当前位置、当前位置到块末的衰减分别写为：
 
 ```math
 \begin{aligned}
-S_{[t+1]}&=\overrightarrow S+E^\top\overrightarrow K
-=\gamma_CS_{[t]}+E^\top RK,\\
-O_{[t]}&=s\left[\overleftarrow Q S_{[t]}^\top
-+(QK^\top\odot\Gamma)E\right].
+\overleftarrow{\boldsymbol q}_{[t]}^r&=\gamma_{[t]}^r\boldsymbol q_{[t]}^r,
+&\overleftarrow{\boldsymbol w}_{[t]}^r&=\gamma_{[t]}^r\boldsymbol w_{[t]}^r,\\
+\overrightarrow{\boldsymbol k}_{[t]}^r&=
+\frac{\gamma_{[t]}^C}{\gamma_{[t]}^r}\boldsymbol k_{[t]}^r,
+&\overrightarrow{\mathbf S}_{[t]}&=\gamma_{[t]}^C\mathbf S_{[t]}.
 \end{aligned}
 ```
 
-- 状态更新先将历史衰减到块末，再累积当前块的残差写入。输出中的第一项读取块前历史，第二项汇总当前块内的残差；后一项使用带衰减的 $`\Gamma`$，其对角线为 1，使当前 token 的更新参与当前输出。只有在 $`\alpha_i=1`$ 时，$`\Gamma`$ 才退化为二值因果掩码 M。
+- 其中 W 为第 3.1 节无衰减 DeltaNet 的 WY 系数。块间状态更新先将入口状态衰减至块末，再累积当前块的残差写入；论文原式为：
 
-- W/U 的生成可按块并行，状态更新按块顺序推进；各块入口状态得到后，输出计算再次按块并行。尾块使用最后一个有效 token 的累计衰减。第 5 节依次实现上述三角系统、残差计算、状态写入与输出读出；令 C=1 时，即得到第 6 节的单步 recurrent 更新。
+```math
+\mathbf S_{[t+1]}=\overrightarrow{\mathbf S}_{[t]}+
+\left(\widetilde{\mathbf U}_{[t]}-
+\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top\right)^\top
+\overrightarrow{\mathbf K}_{[t]}.
+```
+
+- 块内输出由历史读出与当前块内的残差贡献相加。[论文 §3.3](https://arxiv.org/html/2412.06464v3#S3.SS3) 将其写为：
+
+```math
+\mathbf O_{[t]}=\overleftarrow{\mathbf Q}_{[t]}\mathbf S_{[t]}^\top+
+\left(\mathbf Q_{[t]}\mathbf K_{[t]}^\top\odot\mathbf M\right)
+\left(\widetilde{\mathbf U}_{[t]}-
+\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top\right).
+```
+
+- 上式保留论文的 M 记号；若 M 仅表示二值因果掩码，局部项还缺少 $`\gamma_{[t]}^i/\gamma_{[t]}^j`$。FLA 显式乘入这一衰减，因此第 5.7 节对照代码时将该处写为 $`\Gamma_{[t]}`$，其余矩阵与箭头记号保持一致。
+
+- W/U 可以按 chunk 并行生成；状态更新按 chunk 顺序推进；各块入口状态得到后，输出再次按 chunk 并行。块内残差 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top`$ 在状态更新与输出计算之间复用，分别对应第 5.6、5.7 节。
 
 ## 4. 模型调用方式：Qwen3.5 GatedDeltaNet
 
@@ -291,19 +321,15 @@ output = self.out_proj(core_attn_out.reshape(batch_size, seq_len, -1))
 
 ### 5.1 前向计算的矩阵分解
 
-- 对第 $`t`$ 个 chunk，记 $`H_t=S_{[t]}^\top`$，$`R=\operatorname{diag}(\gamma_C/\gamma)`$。前向计算由下三角求解、残差变换、状态递推和输出矩阵乘法组成：
+- Chunk 前向围绕论文中的 $`\widetilde{\mathbf U}_{[t]}`$、$`\overleftarrow{\mathbf W}_{[t]}`$、$`\mathbf S_{[t]}`$ 和 $`\mathbf O_{[t]}`$ 展开。计算顺序为：累计门控、构造 KKT、求解下三角系统、生成 W/U、递推状态、计算输出。其中状态与输出复用同一个残差：
 
 ```math
-\begin{aligned}
-A&=(I+L)^{-1},\qquad
-\widetilde U=ABV,\qquad \overleftarrow W=ABDK,\\
-V_{\mathrm{new}}&=\widetilde U-\overleftarrow W H_t,\\
-H_{t+1}&=\gamma_C H_t+K^\top R V_{\mathrm{new}},\\
-O_{[t]}&=s\left[DQH_t+(QK^\top\odot\Gamma)V_{\mathrm{new}}\right].
-\end{aligned}
+\mathbf V_{\mathrm{new},[t]}=
+\widetilde{\mathbf U}_{[t]}-
+\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top.
 ```
 
-- `chunk_gated_delta_rule_fwd_intra` 构造并求解块内系统，生成 `A`、`u` 和 `w`；`chunk_gated_delta_rule_fwd_h` 引入块入口状态，计算 `v_new` 及下一块状态；`chunk_fwd_o` 完成输出计算。这里 `h` 保存所有块的入口状态，`final_state` 保存各序列的最终状态。
+- `chunk_gated_delta_rule_fwd_intra` 构造并求解块内系统，生成逆矩阵 `A`、`u` 和 `w`；`chunk_gated_delta_rule_fwd_h` 引入块入口状态，计算 `v_new` 及下一块状态；`chunk_fwd_o` 完成输出计算。这里 `h` 保存所有块的入口状态，`final_state` 保存各序列的最终状态。
 
 - 默认 64-token 路径将 KKT 构造与下三角求解融合执行，随后单独生成 W/U。块内变换可以跨 chunk 并行；状态更新仍按 chunk 顺序递推；入口状态生成后，各块输出又可以并行计算。下面保留固定长度、无 context parallelism 的调用主干。
 
@@ -327,13 +353,13 @@ o = chunk_fwd_o(
 
 ### 5.2 累积门控：将连乘转为前缀和
 
-- 令 $`J`$ 为包含对角线的全 1 下三角矩阵，$`g_i=\log\alpha_i`$。累计门控等价于一次下三角线性变换：
+- 逐 token 的输入为 $`g_{[t]}^i=\log\alpha_{[t]}^i`$。对每个 chunk 独立求前缀和，即得到累计衰减的对数：
 
 ```math
-\ell=\frac{1}{\ln 2}Jg,\qquad
-J_{ij}=\mathbf 1_{j\le i},\qquad
-\gamma_i=2^{\ell_i},\qquad
-\frac{\gamma_i}{\gamma_j}=2^{\ell_i-\ell_j}.
+\widehat g_{[t]}^r=\frac{1}{\ln 2}\sum_{i=1}^{r}g_{[t]}^i,
+\qquad \gamma_{[t]}^r=2^{\widehat g_{[t]}^r},
+\qquad \frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}
+=2^{\widehat g_{[t]}^r-\widehat g_{[t]}^i}.
 ```
 
 - 算子位于 `fla/ops/utils/cumsum.py`，标量 kernel 的网格为 `(NT, B * H)`：每个 program 负责一个 chunk 和一个 gate head。`o_t` 构造块内 token 索引，`m_t` 屏蔽尾块越界位置；按 `[B, T, H]` 布局加载后，`tl.cumsum` 沿时间轴执行前缀和。累积在 FP32 中完成，并通过 `RCP_LN2` 将自然对数转换为以 2 为底的对数。后续 kernel 使用 `exp2` 还原整体衰减和区间衰减，避免在各阶段重复计算连乘。
@@ -377,7 +403,7 @@ def chunk_local_cumsum_scalar_kernel(
     tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=m_t)
 ```
 
-- `REVERSE` 分支计算后缀和：$`(J^\top x)_i=\sum_jx_j-(Jx)_i+x_i`$，对应前缀和的反向传播。`HAS_SCALE` 决定是否乘调用侧传入的缩放，GDN 前向传入 `RCP_LN2`。上述代码保留时间优先的访存分支。
+- `REVERSE` 分支计算后缀和：$`\sum_{j\ge i}x_j=\sum_jx_j-\sum_{j\le i}x_j+x_i`$，对应前缀和的反向传播。`HAS_SCALE` 决定是否乘调用侧传入的缩放，GDN 前向传入 `RCP_LN2`。上述代码保留时间优先的访存分支。
 
 - 每个 chunk 独立累计 gate。块前历史已经包含在入口状态中，再乘当前块的累计衰减即可；因此前缀和不需要跨 chunk 延伸。对于变长输入，块索引同时指定序列编号和序列内块编号，累计过程不能跨越序列边界。
 
@@ -386,15 +412,24 @@ def chunk_local_cumsum_scalar_kernel(
 - 第 $`i`$ 个位置的 Delta 修正依赖更早位置的 key 内积。更新系数按行缩放，区间衰减逐元素作用于 Gram 矩阵，得到：
 
 ```math
-L=\operatorname{strictLower}\!\left(B(\Gamma\odot KK^\top)\right),\qquad
-L_{ij}=\begin{cases}\beta_i\,2^{\ell_i-\ell_j}\,k_i^\top k_j,&i>j,\\0,&i\le j.\end{cases}
+\begin{aligned}
+\mathbf A_{[t]}&=\operatorname{strictLower}\!\left(
+\operatorname{diag}(\beta_{[t]})
+\left(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^\top\right)\right),\\
+(\mathbf A_{[t]})_{ij}&=
+\begin{cases}
+\beta_{[t]}^i\,2^{\widehat g_{[t]}^i-\widehat g_{[t]}^j}
+\boldsymbol k_{[t]}^{i\top}\boldsymbol k_{[t]}^j,&i>j,\\
+0,&i\le j.
+\end{cases}
+\end{aligned}
 ```
 
 - `fla/ops/common/chunk_scaled_dot_kkt.py` 的 `chunk_scaled_dot_kkt_fwd_kernel` 实现这一计算。网格为 `(NT, B * HV)`，每个 program 生成一个 head 的块内系数。K 维按 `BK` 分片，`tl.dot(b_k, tl.trans(b_k))` 将各片段的内积累加到 FP32 的 `[BT, BT]` 矩阵中。
 
 - 这是 16/32-token 分步路径使用的 kernel；64-token 默认路径将相同计算与下一节的求解融合。先展开独立 KKT，能够直接对应“内积、衰减、beta、严格下三角”四个矩阵操作。
 
-- **代码作用：构造严格下三角系数 L。** 输入 K、累计 gate 和 beta，分片累计 key 内积并施加衰减与掩码，输出 `[B, T, HV, BT]` 系数缓冲区。
+- **代码作用：构造严格下三角系数。** 输入 K、累计 gate 和 beta，分片累计 key 内积并施加衰减与掩码，输出 `[B, T, HV, BT]` 系数缓冲区。
 
 ```python
 @triton.jit(do_not_specialize=['T'])
@@ -443,7 +478,7 @@ def chunk_scaled_dot_kkt_fwd_kernel(
     tl.store(p_A, b_A.to(p_A.dtype.element_ty), mask=m_t[:, None])
 ```
 
-- `i_h // (HV // H)` 将 value head 映射到共享的 Q/K head。K 的时间步长为 `H * K`，gate 和 beta 的时间步长为 `HV`；因此 head 共享改变输入索引，但每个 value head 仍生成独立的 L。
+- `i_h // (HV // H)` 将 value head 映射到共享的 Q/K head。K 的时间步长为 `H * K`，gate 和 beta 的时间步长为 `HV`；因此 head 共享改变输入索引，但每个 value head 仍生成独立的块内系数。
 
 - 变长输入通过 `chunk_indices[i_t]` 取得“序列编号、序列内 chunk 编号”，再由 `cu_seqlens` 确定 `bos` 和当前序列长度。`o_t < T` 限制实际 token 范围，`o_t[:, None] > o_t[None, :]` 只保留此前位置对当前残差的影响。结果按 `[B, T, HV, BT]` 写回，每个 token 保存其所在块的一行系数。
 
@@ -451,213 +486,368 @@ def chunk_scaled_dot_kkt_fwd_kernel(
 
 ### 5.4 下三角求解：局部前代与块间合并
 
-- L 严格下三角，因此 $`M=I+L`$ 的对角线为 1。标量前代与 16×16 分块前代分别满足：
+- 上一步得到严格下三角矩阵 $`\mathbf A_{[t]}`$。包含 beta 的完整 UT 变换为：
+
+```math
+\mathbf T_{[t]}=
+\left[\mathbf I+\operatorname{strictLower}\!\left(
+\operatorname{diag}(\beta_{[t]})
+\left(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^\top\right)
+\right)\right]^{-1}\operatorname{diag}(\beta_{[t]}).
+```
+
+- $`\mathbf I+\mathbf A_{[t]}`$ 是对角线为 1 的下三角矩阵，可用前代法逐行求解其逆。kernel 只生成逆矩阵；右端的 $`\operatorname{diag}(\beta_{[t]})`$ 留到 W/U 阶段相乘。因此，求解后的代码变量 `A` 对应 $`(\mathbf I+\mathbf A_{[t]})^{-1}`$，尚不是完整的 $`\mathbf T_{[t]}`$。
+
+- `fla/ops/utils/solve_tril.py` 采用两级分块：先对 16×16 对角块逐行前代，再通过分块矩阵公式合并。`BT=16` 使用 `solve_tril_16x16_kernel`，`BT=32/64` 分别使用 `merge_16x16_to_32x32_inverse_kernel` 与 `merge_16x16_to_64x64_inverse_kernel`。当前 GDN 默认 64-token 路径进一步将 KKT 与这两级求解融合到 `chunk_gated_delta_rule_fwd_kkt_solve_kernel`；以下分段摘录该 kernel 的实际代码。
+
+- **第一段：16×16 对角块前代。** 以第一个对角块为例，`b_A00` 对应严格下三角子块 $`\mathbf A_{00}`$，`b_Ai00` 最终对应 $`\mathbf A^{\mathrm{inv}}_{00}=(\mathbf I+\mathbf A_{00})^{-1}`$。对块内元素，前代关系为：
+
+```math
+(\mathbf A^{\mathrm{inv}}_{00})_{ii}=1,\qquad
+(\mathbf A^{\mathrm{inv}}_{00})_{ij}
+=-(\mathbf A_{00})_{ij}
+-\sum_{k=j+1}^{i-1}(\mathbf A_{00})_{ik}
+(\mathbf A^{\mathrm{inv}}_{00})_{kj}\quad(i>j).
+```
+
+```python
+b_Ai00 = -b_A00
+for i in range(2, min(BC, T - i_tc0)):
+    b_a00 = tl.sum(tl.where((o_i == i)[:, None], -b_A00, 0.), 0)
+    b_a00 = tl.where(o_i < i, b_a00, 0.)
+    b_a00 = b_a00 + tl.sum(b_a00[:, None] * b_Ai00, 0)
+    b_Ai00 = tl.where((o_i == i)[:, None], b_a00, b_Ai00)
+b_Ai00 += m_I
+```
+
+- 逆矩阵的严格下三角部分初始化为 `-b_A00`。第 0 行没有下三角元素，第 1 行的结果已由初始化给出，因此循环从索引 2 开始。`tl.sum(tl.where(...), 0)` 从寄存器矩阵中提取当前行；第二个 `tl.sum` 累积已求出的行对当前行的贡献；`tl.where` 将结果写回对应行，最后加上单位对角线 `m_I`。其余三个对角块执行相同操作。
+
+- **第二段：合并相邻的 16×16 块。** 以零基索引表示四行四列子块。$`\mathbf A^{\mathrm{inv}}_{rs}`$ 表示整体逆矩阵的第 (r,s) 个子块，不是非对角块单独求逆。三个紧邻对角线的子块分别为：
 
 ```math
 \begin{aligned}
-A_{ii}&=1,\qquad A_{ij}=-L_{ij}-\sum_{k=j+1}^{i-1}L_{ik}A_{kj}\quad(i>j),\\
-\mathcal A_{rr}&=(I+\mathcal L_{rr})^{-1},\qquad
-\mathcal A_{rs}=-\mathcal A_{rr}\sum_{p=s}^{r-1}\mathcal L_{rp}\mathcal A_{ps}\quad(r>s).
+\mathbf A^{\mathrm{inv}}_{10}&=-\mathbf A^{\mathrm{inv}}_{11}\mathbf A_{10}\mathbf A^{\mathrm{inv}}_{00},\\
+\mathbf A^{\mathrm{inv}}_{21}&=-\mathbf A^{\mathrm{inv}}_{22}\mathbf A_{21}\mathbf A^{\mathrm{inv}}_{11},\\
+\mathbf A^{\mathrm{inv}}_{32}&=-\mathbf A^{\mathrm{inv}}_{33}\mathbf A_{32}\mathbf A^{\mathrm{inv}}_{22}.
 \end{aligned}
 ```
 
-- $`\mathcal L_{rs}`$、$`\mathcal A_{rs}`$ 分别表示 L 和 A 的子块。整体矩阵关系为：
+```python
+b_Ai10 = -tl.dot(
+    tl.dot(b_Ai11, b_A10, input_precision=SOLVE_TRIL_DOT_PRECISION),
+    b_Ai00,
+    input_precision=SOLVE_TRIL_DOT_PRECISION
+)
+b_Ai21 = -tl.dot(
+    tl.dot(b_Ai22, b_A21, input_precision=SOLVE_TRIL_DOT_PRECISION),
+    b_Ai11,
+    input_precision=SOLVE_TRIL_DOT_PRECISION
+)
+b_Ai32 = -tl.dot(
+    tl.dot(b_Ai33, b_A32, input_precision=SOLVE_TRIL_DOT_PRECISION),
+    b_Ai22,
+    input_precision=SOLVE_TRIL_DOT_PRECISION
+)
+```
+
+- 每个结果由两个对角块的逆和一个原始非对角块相乘得到。上述三个子块之间没有依赖；完成后才能计算跨越更多子块的结果。
+
+- **第三段：合并更远的非对角块。** 第 (2,0)、(3,1) 个子块依赖相邻块结果，左下角第 (3,0) 个子块进一步依赖第 (2,0) 个结果：
 
 ```math
-\begin{pmatrix}
-I+\mathcal L_{00}&0&0&0\\
-\mathcal L_{10}&I+\mathcal L_{11}&0&0\\
-\mathcal L_{20}&\mathcal L_{21}&I+\mathcal L_{22}&0\\
-\mathcal L_{30}&\mathcal L_{31}&\mathcal L_{32}&I+\mathcal L_{33}
-\end{pmatrix}
-\begin{pmatrix}
-\mathcal A_{00}&0&0&0\\
-\mathcal A_{10}&\mathcal A_{11}&0&0\\
-\mathcal A_{20}&\mathcal A_{21}&\mathcal A_{22}&0\\
-\mathcal A_{30}&\mathcal A_{31}&\mathcal A_{32}&\mathcal A_{33}
-\end{pmatrix}=I.
+\begin{aligned}
+\mathbf A^{\mathrm{inv}}_{20}&=-\mathbf A^{\mathrm{inv}}_{22}
+\left(\mathbf A_{20}\mathbf A^{\mathrm{inv}}_{00}
++\mathbf A_{21}\mathbf A^{\mathrm{inv}}_{10}\right),\\
+\mathbf A^{\mathrm{inv}}_{31}&=-\mathbf A^{\mathrm{inv}}_{33}
+\left(\mathbf A_{31}\mathbf A^{\mathrm{inv}}_{11}
++\mathbf A_{32}\mathbf A^{\mathrm{inv}}_{21}\right),\\
+\mathbf A^{\mathrm{inv}}_{30}&=-\mathbf A^{\mathrm{inv}}_{33}
+\left(\mathbf A_{30}\mathbf A^{\mathrm{inv}}_{00}
++\mathbf A_{31}\mathbf A^{\mathrm{inv}}_{10}
++\mathbf A_{32}\mathbf A^{\mathrm{inv}}_{20}\right).
+\end{aligned}
 ```
-
-- `fla/ops/utils/solve_tril.py` 采用两级分块：先分别求四个 16×16 对角块的逆，再用矩阵乘法补齐六个非对角块。`merge_16x16_to_64x64_inverse_kernel` 在一个 program 内完成两级操作。下面以零基索引表示子块；`split_blocks` 和 `assemble_blocks` 仅表示子块视图与结果组装。
-
-- **伪代码：求解单位下三角系统。** 输入严格下三角矩阵 L；先做 16 行以内的局部前代，再按块距离合并；输出 $`A=(I+L)^{-1}`$。尾块的无效行列按零填充，写回时只保留有效 token。
 
 ```python
-# 伪代码；矩阵乘法对应 kernel 中的 tl.dot。
-def inverse_unit_lower(L):
-    L_blocks = split_blocks(L, block_size=16)
-    A_blocks = zeros_like(L_blocks)  # 4 × 4 个子块
-    index = arange(16)
-
-    # 第一级：四个对角子问题相互独立。
-    for r in range(4):
-        lower = strict_lower(L_blocks[r, r])
-        inverse = -lower
-        for i in range(2, 16):
-            row = where(index < i, -lower[i], 0)
-            inverse[i] = row + row @ inverse
-        A_blocks[r, r] = inverse + eye(16)
-
-    # 第二级：相邻块 → 跨一块 → 跨两块。
-    for distance in range(1, 4):
-        for r in range(distance, 4):
-            c = r - distance
-            accumulated = zeros((16, 16))
-            for p in range(c, r):
-                accumulated += L_blocks[r, p] @ A_blocks[p, c]
-            A_blocks[r, c] = -A_blocks[r, r] @ accumulated
-
-    return assemble_blocks(A_blocks)
+b_Ai20 = -tl.dot(
+    b_Ai22,
+    tl.dot(b_A20, b_Ai00, input_precision=SOLVE_TRIL_DOT_PRECISION) +
+    tl.dot(b_A21, b_Ai10, input_precision=SOLVE_TRIL_DOT_PRECISION),
+    input_precision=SOLVE_TRIL_DOT_PRECISION,
+)
+b_Ai31 = -tl.dot(
+    b_Ai33,
+    tl.dot(b_A31, b_Ai11, input_precision=SOLVE_TRIL_DOT_PRECISION) +
+    tl.dot(b_A32, b_Ai21, input_precision=SOLVE_TRIL_DOT_PRECISION),
+    input_precision=SOLVE_TRIL_DOT_PRECISION,
+)
+b_Ai30 = -tl.dot(
+    b_Ai33,
+    tl.dot(b_A30, b_Ai00, input_precision=SOLVE_TRIL_DOT_PRECISION) +
+    tl.dot(b_A31, b_Ai10, input_precision=SOLVE_TRIL_DOT_PRECISION) +
+    tl.dot(b_A32, b_Ai20, input_precision=SOLVE_TRIL_DOT_PRECISION),
+    input_precision=SOLVE_TRIL_DOT_PRECISION,
+)
 ```
 
-- **局部前代。** 逆矩阵的严格下三角部分初始化为负 L。第 0 行没有下三角元素，第 1 行的结果已由初始化给出，因此循环从索引 2 开始。`row @ inverse` 对应 Triton 的 `tl.sum(row[:, None] * inverse, 0)`；当前行只引用已经求出的行，最后再加入单位对角线。
+- 两级分块将逐行依赖限制在 16×16 对角块内部，再用 `tl.dot` 完成块间合并。四个对角块与六个非对角块共同构成完整的 64×64 下三角逆矩阵。默认融合路径直接复用 KKT 的寄存器结果，省去严格下三角系数的中间写回和重新加载。
 
-- **块间合并。** 距离为 1 时计算三个相邻子块，距离为 2 时计算两个子块，距离为 3 时计算左下角子块。例如 $`\mathcal A_{20}=-\mathcal A_{22}(\mathcal L_{20}\mathcal A_{00}+\mathcal L_{21}\mathcal A_{10})`$。每个非对角结果都由此前求出的逆矩阵子块共同决定。
-
-- **执行路径。** 通用 `BT=16/32/64` 路径分别使用 `solve_tril_16x16_kernel` 与两种 `merge_16x16_to_*_inverse_kernel`。GDN 默认 64-token 路径则在 `chunk_gated_delta_rule_fwd_kkt_solve_kernel` 中将 KKT、局部前代和块合并融合：直接从寄存器矩阵提取当前行，省去 L 的中间写回与重新加载。
-
-- **访存与精度。** 通用 `solve_tril` 在环境支持时使用 TMA descriptor；`FLA_TRIL_PRECISION` 默认 `ieee`，支持 TMA 时 autotune 的精度候选为 `ieee` 与用户指定值。默认 GDN 融合 kernel 使用普通指针加载，支持 TF32 时块合并采用 `tf32`，否则采用 `ieee`。两条路径的数学分解相同，访存与精度配置分别选择。
+- 通用 `solve_tril` 在环境支持时使用 TMA descriptor，`FLA_TRIL_PRECISION` 默认 `ieee`；支持 TMA 时，autotune 在 `ieee` 与用户指定精度之间选择。GDN 默认融合 kernel 使用普通指针加载，块合并在支持 TF32 时使用 `tf32`，否则使用 `ieee`。二者使用同一分块求解原理，但访存与精度配置不同。
 
 ### 5.5 W/U：共享同一个三角变换
 
-- 求得 A 后，将两个右端项分别代入同一个系统：
+- `fla/ops/gated_delta_rule/wy_fast.py` 的 `recompute_w_u_fwd_kernel` 使用网格 `(NT, B * HV)`，每个 program 处理一个 chunk、一个 value head。读取求解后的逆矩阵 `b_A`，分别对 V、K 执行矩阵乘法，生成 $`\widetilde{\mathbf U}_{[t]}`$ 与 $`\overleftarrow{\mathbf W}_{[t]}`$。
+
+- **第一段：计算 value 的 UT 变换。** 由于 $`\mathbf T_{[t]}`$ 的定义已经包含 beta，此处不再额外写一次 $`\operatorname{diag}(\beta_{[t]})`$：
 
 ```math
-\widetilde U=A(BV),\qquad \overleftarrow W=A(BDK),\qquad A=(I+L)^{-1}.
+\widetilde{\mathbf U}_{[t]}
+=\mathbf T_{[t]}\mathbf V_{[t]}
+=(\mathbf I+\mathbf A_{[t]})^{-1}
+\left(\operatorname{diag}(\beta_{[t]})\mathbf V_{[t]}\right).
 ```
-
-- `fla/ops/gated_delta_rule/wy_fast.py` 的 `recompute_w_u_fwd_kernel` 使用网格 `(NT, B * HV)`。每个 program 读取一个 chunk 的 A，沿 V 维和 K 维分别分片计算 U/W；A 在两组矩阵乘法之间复用。
-
-- **伪代码：重建块内 W/U。** 输入 A、K、V、beta 和累计 gate；将 beta 乘入两个右端项，将累计衰减额外乘入 K；输出 `u` 与 `w`。`load_*`、`store_*` 表示带尾块掩码的读取与写回。
 
 ```python
-# 伪代码；每个 program 处理一个 chunk、一个 value head。
-chunk, head = program_id()
-A, beta, ell = load_chunk_transform(chunk, head)
-gamma = exp2(ell)
-key_head = head // (HV // H)
+o_t = i_t * BT + tl.arange(0, BT)
+o_A = tl.arange(0, BT)
+m_t = o_t < T
+m_A = m_t[:, None] & (o_A[None, :] < BT)
+p_b = beta + bos*HV + i_h + o_t * HV
+b_b = tl.load(p_b, mask=m_t, other=0.0)
 
-for value_slice in tiles(V, BV):
-    v = load_v(chunk, head, value_slice)
-    rhs_v = (beta[:, None] * v).to(v.dtype)
-    u = tl.dot(A, rhs_v, allow_tf32=False)
-    store_u(chunk, head, value_slice, u)
+p_A = A + (bos*HV + i_h) * BT + o_t[:, None] * (HV*BT) + o_A[None, :]
+b_A = tl.load(p_A, mask=m_A, other=0.0)
 
-for key_slice in tiles(K, BK):
-    k = load_k(chunk, key_head, key_slice)
-    rhs_k = beta[:, None] * gamma[:, None] * k
-    w = tl.dot(A, rhs_k.to(k.dtype))
-    store_w(chunk, head, key_slice, w)
+for i_v in range(tl.cdiv(V, BV)):
+    o_v = i_v * BV + tl.arange(0, BV)
+    m_v = m_t[:, None] & (o_v[None, :] < V)
+    p_v = v + (bos*HV + i_h) * V + o_t[:, None] * (HV*V) + o_v[None, :]
+    p_u = u + (bos*HV + i_h) * V + o_t[:, None] * (HV*V) + o_v[None, :]
+    b_v = tl.load(p_v, mask=m_v, other=0.0)
+    b_vb = (b_v * b_b[:, None]).to(b_v.dtype)
+    b_u = tl.dot(b_A, b_vb, allow_tf32=False)
+    tl.store(p_u, b_u.to(p_u.dtype.element_ty), mask=m_v)
 ```
 
-- K 的衰减发生在乘 A 之前，对应右端项 BDK；一般情况下 D 与 A 不可交换。A 本身只包含三角逆变换，右端项的 beta 在这里相乘一次。`u` 尚未扣除块入口状态的预测，下一步通过 `u - w @ h` 形成实际写入残差。
+- `b_b` 为逐 token 的 beta，`b_A` 为整个 chunk 的逆矩阵。V 维按 `BV` 划分：先通过 `b_v * b_b[:, None]` 按行缩放 V，再用 `tl.dot(b_A, b_vb)` 应用三角逆变换。计算结果按 `[B, T, HV, V]` 写入 `u`；此时尚未扣除块入口状态的预测。
+
+- **第二段：计算衰减后的 W。** 入口状态传播到位置 r 时需要乘 $`\gamma_{[t]}^r`$，因此 K 的右端项还需按累计衰减缩放：
+
+```math
+\overleftarrow{\mathbf W}_{[t]}
+=\mathbf T_{[t]}\operatorname{diag}(\gamma_{[t]})\mathbf K_{[t]}
+=(\mathbf I+\mathbf A_{[t]})^{-1}
+\left(\operatorname{diag}(\beta_{[t]})
+\operatorname{diag}(\gamma_{[t]})\mathbf K_{[t]}\right).
+```
+
+```python
+if USE_G:
+    p_g = g + (bos*HV + i_h) + o_t * HV
+    b_g = exp2(tl.load(p_g, mask=m_t, other=0.0))
+
+for i_k in range(tl.cdiv(K, BK)):
+    o_k = i_k * BK + tl.arange(0, BK)
+    m_k = m_t[:, None] & (o_k[None, :] < K)
+    p_k = k + (bos*H + i_h // (HV // H)) * K + o_t[:, None] * (H*K) + o_k[None, :]
+    p_w = w + (bos*HV + i_h) * K + o_t[:, None] * (HV*K) + o_k[None, :]
+    b_k = tl.load(p_k, mask=m_k, other=0.0)
+    b_kb = b_k * b_b[:, None]
+    if USE_G:
+        b_kb *= b_g[:, None]
+    b_w = tl.dot(b_A, b_kb.to(b_k.dtype))
+    tl.store(p_w, b_w.to(p_w.dtype.element_ty), mask=m_k)
+```
+
+- `exp2` 将累计 gate 还原为 gamma；`b_kb` 依次乘 beta 与 gamma，然后与同一份 `b_A` 相乘。衰减乘在右端 K 上，不能任意移到 `tl.dot` 之后。这里得到的 W 与论文 $`\overleftarrow{\boldsymbol w}_{[t]}^r=\gamma_{[t]}^r\boldsymbol w_{[t]}^r`$ 一致，其中无箭头 W 使用无衰减的三角系统。
+
+- K 的 head 通过 `i_h // (HV // H)` 映射到共享的 key head，W 则为每个 value head 独立保存。U 不需要额外乘 gamma：它的块内衰减已经包含在三角系数 $`\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^\top`$ 中；W 的额外 gamma 用于入口状态向块内各位置的传播。
 
 ### 5.6 块间状态：残差校正与衰减写入
 
-- 记入口状态 $`H_t=S_{[t]}^\top`$，$`R=\operatorname{diag}(\gamma_C/\gamma)`$。一次块更新包括残差计算与状态写入：
+- `fla/ops/common/chunk_delta_h.py` 的 `chunk_gated_delta_rule_fwd_kernel_h_blockdim64` 实现论文的块间递推：
 
 ```math
-V_{\mathrm{new}}=\widetilde U-\overleftarrow W H_t,
-\qquad H_{t+1}=\gamma_C H_t+K^\top R V_{\mathrm{new}}.
+\mathbf S_{[t+1]}=\overrightarrow{\mathbf S}_{[t]}+
+\left(\widetilde{\mathbf U}_{[t]}-
+\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top\right)^\top
+\overrightarrow{\mathbf K}_{[t]}.
 ```
 
-- `fla/ops/common/chunk_delta_h.py` 的 `chunk_gated_delta_rule_fwd_kernel_h_blockdim64` 使用网格 `(ceil(V / BV), N * HV)`。每个 program 处理一条序列、一个 value head 和一片 value 通道，沿 chunk 顺序递推；K 维按 64 通道展开为多个寄存器状态片段。
+- 网格为 `(ceil(V / BV), N * HV)`，每个 program 处理一条序列、一个 value head 和一片 value 通道，并沿 chunk 顺序递推。下面展开 scalar gate、K=128 的源码分支：`b_h1`、`b_h2` 分别保存 $`\mathbf S_{[t]}^\top`$ 的两个 `[64, BV]` 片段，初值从 `h0` 加载，无初始状态时置零。各基址已定位到当前序列与 head；`o_k1`、`o_k2` 分别覆盖 K 维的 0–63、64–127 通道。两段代码属于同一个 `for i_t in range(NT)` 循环。
 
-- **伪代码：递推状态并保存块内残差。** 输入 K、W、U、累计 gate 与初始状态；先保存块入口状态，再计算残差并更新寄存器状态；输出所有入口状态 `h`、未乘尾部衰减的 `v_new` 和最终状态。各 `load_*`、`store_*` 均使用当前序列边界与有效 token 掩码。
+- **第一段：保存入口状态并计算写入残差。** W 乘入口状态得到此前历史在当前块的预测，从 U 中扣除后即为实际残差：
+
+```math
+\mathbf V_{\mathrm{new},[t]}=
+\widetilde{\mathbf U}_{[t]}-
+\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top.
+```
 
 ```python
-# 伪代码；每个 program 处理 (sequence, value_head, value_slice)。
-sequence, head, value_slice = program_id()
-key_head = head // (HV // H)
-key_tiles = tiles(K, 64)
-H_parts = load_initial_state(sequence, head, key_tiles, value_slice)
+i_t_int64 = i_t.to(tl.int64)
+o_t = i_t * BT + tl.arange(0, BT)
+m_t = o_t < T
+p_h1 = h + i_t_int64 * HV*K*V + o_k1[:, None] * V + o_v[None, :]
+m_h1 = m_k1[:, None] & m_v[None, :]
+tl.store(p_h1, b_h1.to(p_h1.dtype.element_ty), mask=m_h1)
+p_h2 = h + i_t_int64 * HV*K*V + o_k2[:, None] * V + o_v[None, :]
+m_h2 = m_k2[:, None] & m_v[None, :]
+tl.store(p_h2, b_h2.to(p_h2.dtype.element_ty), mask=m_h2)
 
-for chunk in sequence_chunks(sequence):
-    ell, valid = load_cumulative_gate(chunk, head)
-    ell_last = ell[last_valid_position(valid)]
-    store_entry_state(chunk, head, value_slice, H_parts)
+p_w = w + o_t[:, None] * (HV*K) + o_k1[None, :]
+b_w = tl.load(p_w, mask=m_t[:, None] & m_k1[None, :], other=0.0)
+b_v = tl.dot(b_w, b_h1.to(b_w.dtype))
+p_w = w + o_t[:, None] * (HV*K) + o_k2[None, :]
+b_w = tl.load(p_w, mask=m_t[:, None] & m_k2[None, :], other=0.0)
+b_v += tl.dot(b_w, b_h2.to(b_w.dtype))
+p_v = v + o_t[:, None] * (HV*V) + o_v[None, :]
+b_v = tl.load(p_v, mask=m_t[:, None] & m_v[None, :], other=0.0) - b_v
 
-    prediction = zeros((BT, BV), dtype=float32)
-    for j, key_slice in enumerate(key_tiles):
-        w = load_w(chunk, head, key_slice)
-        prediction += tl.dot(w, H_parts[j].to(w.dtype))
-    u = load_u(chunk, head, value_slice)
-    v_new = u - prediction
-    store_v_new(chunk, head, value_slice, v_new)
-
-    # 保存后再施加从当前位置到块末的衰减。
-    tail_decay = where(valid, exp2(ell_last - ell), 0)
-    residual = v_new * tail_decay[:, None]
-    for j, key_slice in enumerate(key_tiles):
-        k = load_k_transposed(chunk, key_head, key_slice)
-        H_parts[j] *= exp2(ell_last)
-        H_parts[j] += tl.dot(k, residual.to(k.dtype))
-
-store_final_state(sequence, head, value_slice, H_parts)
+p_v = v_new + o_t[:, None] * (HV*V) + o_v[None, :]
+tl.store(p_v, b_v.to(p_v.dtype.element_ty), mask=m_t[:, None] & m_v[None, :])
 ```
 
-- **K 维分片。** K=128 时维护两个 `[64, BV]` 片段。计算 $`\overleftarrow W H_t`$ 时，两个乘法结果先相加，再从 U 中扣除；更新状态时，同一份残差分别与两片 key 相乘。各片段共同构成一个状态矩阵，源码以相同方式支持 K≤256。
+- 开头两次 `tl.store` 保存当前块的入口状态，供输出 kernel 读取。两个 `tl.dot` 分别收缩 W 与状态的两片 K 通道，结果相加后才构成完整的 $`\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top`$。参数 `v` 在调用时传入的是 U，因此 `tl.load(p_v) - b_v` 正好得到上述残差，写入 `v_new`。
 
-- **保存顺序。** `h` 保存块入口状态，`v_new` 保存尚未乘 R 的残差。后续输出 kernel 使用它们恢复块内各位置的结果；块末状态与乘 R 后的残差分别服务于下一块状态递推。
+- **第二段：衰减至块末并累积状态。** 对残差的第 r 行乘 $`\gamma_{[t]}^C/\gamma_{[t]}^r`$，等价于将相同衰减乘入论文中的 $`\overrightarrow{\mathbf K}_{[t]}`$。转置后的状态更新为：
 
-- **尾块与变长序列。** `ell_last` 取最后一个有效 token 的累计 gate。packed 输入使用 `cu_seqlens` 定位 token 范围，使用 `chunk_offsets` 定位入口状态缓冲区；两种偏移分别按 token 数和 chunk 数累计。每条序列从自己的初始状态开始，结束后独立保存末态。
+```math
+\mathbf S_{[t+1]}^\top
+=\gamma_{[t]}^C\mathbf S_{[t]}^\top+
+\mathbf K_{[t]}^\top
+\operatorname{diag}\!\left(\frac{\gamma_{[t]}^C}{\gamma_{[t]}}\right)
+\left(\widetilde{\mathbf U}_{[t]}-
+\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top\right).
+```
+
+```python
+last_idx = min((i_t + 1) * BT, T) - 1
+b_g_last = tl.load(g + (bos * HV + last_idx * HV + i_h).to(tl.int64)).to(tl.float32)
+p_g = g + (bos * HV + i_h).to(tl.int64) + o_t * HV
+b_g = tl.load(p_g, mask=m_t, other=0.0).to(tl.float32)
+b_v = b_v * tl.where(m_t, exp2(b_g_last - b_g), 0)[:, None]
+b_g_last = exp2(b_g_last)
+b_h1 *= b_g_last
+b_h2 *= b_g_last
+
+b_v = b_v.to(k.dtype.element_ty)
+
+p_k = k + o_k1[:, None] + o_t[None, :] * (H*K)
+b_k = tl.load(p_k, mask=m_k1[:, None] & m_t[None, :], other=0.0)
+b_h1 += tl.dot(b_k, b_v)
+p_k = k + o_k2[:, None] + o_t[None, :] * (H*K)
+b_k = tl.load(p_k, mask=m_k2[:, None] & m_t[None, :], other=0.0)
+b_h2 += tl.dot(b_k, b_v)
+```
+
+- `last_idx` 取当前 chunk 的最后一个有效 token；尾块不足 64 个 token 时，衰减终点随有效长度缩短。`exp2(b_g_last - b_g)` 对残差施加位置到块末的衰减，`exp2(b_g_last)` 则整体缩放入口状态。随后两次 `tl.dot(b_k, b_v)` 分别将同一份残差写入两片状态，组成下一块的入口状态。
+
+- `v_new` 必须在乘块末衰减之前保存，因为下一节需要按每个 query 的位置计算区间衰减。状态寄存器在循环内持续更新；循环结束后，按 `STORE_FINAL_STATE` 写回最终状态 `ht`。packed 输入用 `cu_seqlens` 定位 token，用 `chunk_offsets` 定位块入口状态，各序列独立递推。
 
 ### 5.7 块内输出：历史项与局部项
 
-- 各块的入口状态与残差生成后，输出可按块并行。记 $`P=s(QK^\top\odot\Gamma)`$，则：
+- `fla/ops/common/chunk_o.py` 的 `chunk_fwd_kernel_o` 读取块入口状态与 `v_new`，实现论文输出式中的两项。将局部项的区间衰减显式写出，并保留代码中的缩放 $`s=d_k^{-1/2}`$：
 
 ```math
-O_{[t]}=sDQH_t+PV_{\mathrm{new}},\qquad P=s(QK^\top\odot\Gamma).
+\mathbf O_{[t]}=s\left[
+\overleftarrow{\mathbf Q}_{[t]}\mathbf S_{[t]}^\top+
+\left(\mathbf Q_{[t]}\mathbf K_{[t]}^\top\odot\Gamma_{[t]}\right)
+\left(\widetilde{\mathbf U}_{[t]}-
+\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top\right)
+\right].
 ```
 
-- `fla/ops/common/chunk_o.py` 的 `chunk_fwd_kernel_o` 使用网格 `(ceil(V / BV), NT, B * HV)`。沿 K 维循环时，同时累加 `[BT, BV]` 的历史读出与 `[BT, BT]` 的块内权重；前者与后者共享同一份 query 分片。
+- 网格为 `(ceil(V / BV), NT, B * HV)`。每个 program 处理一个 chunk、一个 value head 和一片 value 通道；各块入口状态已在上一阶段生成，因此此处可以按 chunk 并行。以下两段连续摘录 scalar gate 分支，指针基址已按当前序列、head 和 chunk 定位。
 
-- **伪代码：合成当前块输出。** 输入 Q/K、块入口状态、`v_new` 与累计 gate；分别计算历史项和块内项，应用衰减、因果掩码及 query 缩放；输出当前 value 分片的 O。`load_*` 屏蔽越界行列并补零。
+- **第一段：沿 K 维累计两个矩阵乘积。** 两个 FP32 累加器分别保存尚未施加衰减的历史读出和块内 QK 权重：
+
+```math
+\texttt{b\_o}\ \longleftrightarrow\;
+\mathbf Q_{[t]}\mathbf S_{[t]}^\top,
+\qquad
+\texttt{b\_A}\ \longleftrightarrow\;
+\mathbf Q_{[t]}\mathbf K_{[t]}^\top.
+```
 
 ```python
-# 伪代码；每个 program 处理 (chunk, value_head, value_slice)。
-chunk, head, value_slice = program_id()
-key_head = head // (HV // H)
-history = zeros((BT, BV), dtype=float32)
-scores = zeros((BT, BT), dtype=float32)
+b_o = tl.zeros([BT, BV], dtype=tl.float32)
+b_A = tl.zeros([BT, BT], dtype=tl.float32)
 
-for key_slice in tiles(K, BK):
-    q = load_q(chunk, key_head, key_slice)          # [BT, BK]
-    k = load_k_transposed(chunk, key_head, key_slice)  # [BK, BT]
-    h = load_entry_state(chunk, head, key_slice, value_slice)
-    history += tl.dot(q, h)                       # [BT, BV]
-    scores += tl.dot(q, k)                        # [BT, BT]
+o_t = i_t * BT + tl.arange(0, BT)
+m_t = o_t < T
+o_v = i_v * BV + tl.arange(0, BV)
+for i_k in range(tl.cdiv(K, BK)):
+    o_k = i_k * BK + tl.arange(0, BK)
+    m_k = o_k < K
+    p_q = q + o_t[:, None] * (H*K) + o_k[None, :]
+    p_k = k + o_k[:, None] + o_t[None, :] * (H*K)
+    p_h = h + o_k[:, None] * V + o_v[None, :]
+    m_h = m_k[:, None] & (o_v[None, :] < V)
+    # [BT, BK]
+    b_q = tl.load(p_q, mask=m_t[:, None] & m_k[None, :], other=0.0)
+    # [BK, BT]
+    b_k = tl.load(p_k, mask=m_k[:, None] & m_t[None, :], other=0.0)
+    b_h = tl.load(p_h, mask=m_h, other=0.0)
 
-ell, valid = load_cumulative_gate(chunk, head)
-history *= exp2(ell)[:, None]
-scores *= exp2(ell[:, None] - ell[None, :])
-causal = lower_triangle(BT, include_diagonal=True)
-scores = where(causal & valid[:, None] & valid[None, :], scores, 0)
-v_new = load_v_new(chunk, head, value_slice)
-output = scale * (history + tl.dot(scores.to(v_new.dtype), v_new))
-store_output(chunk, head, value_slice, output)
+    # [BT, BK] @ [BK, BV] -> [BT, BV]
+    b_o += tl.dot(b_q, b_h)
+    # [BT, BK] @ [BK, BT] -> [BT, BT]
+    b_A += tl.dot(b_q, b_k)
 ```
 
-- 历史项中的 D 表示入口状态传播到各位置的衰减；局部项中的 $`\Gamma`$ 表示块内残差在不同位置之间的传播。输出掩码包含对角线，使当前 token 读到本步更新后的状态；KKT 掩码则严格下三角，只表示此前位置对当前残差的影响。
+- Q 的片段为 `[BT, BK]`，K 按 `[BK, BT]` 读取，入口状态片段为 `[BK, BV]`。同一份 `b_q` 同时参与两个 `tl.dot`；沿 K 维累加后，分别得到 `[BT, BV]` 的历史项与 `[BT, BT]` 的局部权重。这里的 `b_A` 是 QK 权重，与三角求解中的 A 无关。
 
-- 变长输入保留全局 chunk 编号以读取入口状态，同时使用序列内 chunk 编号读取 Q/K/V。源码的 `i_tg` 与 `i_t` 分别承担这两种索引。局部变量 `b_A` 在此处表示 QK 权重，与三角求解的 A 无关。
-
-### 5.8 反向传播：状态伴随与三角变换梯度
-
-- 令 $`E=V_{\mathrm{new}}`$，$`G_O=\partial\mathcal L/\partial O`$，$`G_{H_{t+1}}=\partial\mathcal L/\partial H_{t+1}`$。块内输出和块间状态两条路径共同形成 E 的梯度；入口状态的伴随则按逆序递推：
+- **第二段：施加区间衰减、因果掩码并合成输出。** 历史项的第 r 行乘 $`\gamma_{[t]}^r`$，局部权重的第 (r,i) 项乘 $`\gamma_{[t]}^r/\gamma_{[t]}^i`$ 并保留 $`i\le r`$，随后与残差相乘：
 
 ```math
 \begin{aligned}
-G_E&=P^\top G_O+RK\,G_{H_{t+1}},\\
-G_{H_t}&=\gamma_C G_{H_{t+1}}
-+sQ^\top D G_O-\overleftarrow W^\top G_E,\\
-G_{\widetilde U}&=G_E,\qquad
-G_{\overleftarrow W}=-G_EH_t^\top,\\
-G_L&=\operatorname{strictLower}\!\left(-A^\top G_AA^\top\right).
+\texttt{b\_o}&\ \longleftarrow\;
+\overleftarrow{\mathbf Q}_{[t]}\mathbf S_{[t]}^\top,\\
+\texttt{b\_A}&\ \longleftarrow\;
+\mathbf Q_{[t]}\mathbf K_{[t]}^\top\odot\Gamma_{[t]},\\
+\mathbf O_{[t]}&=s\left(\texttt{b\_o}+
+\texttt{b\_A}\,\mathbf V_{\mathrm{new},[t]}\right).
 \end{aligned}
 ```
 
-- `chunk_bwd_dv_local` 计算局部输出贡献 $`P^\top G_O`$；`chunk_gated_delta_rule_bwd_dhu` 加入来自后续状态的贡献，并从后向前递推状态梯度。`chunk_bwd_dqkwg` 处理输出与状态更新对 Q/K/W 和 gate 的梯度；`prepare_wy_repr_bwd` 再通过三角变换将 W/U 梯度传回 K/V、beta 和 gate。
+```python
+g += bos * HV + i_h
+p_g = g + o_t * HV
+b_g = tl.load(p_g, mask=m_t, other=0.0)
+b_o = b_o * exp2(b_g)[:, None]
+b_A = b_A * exp2(b_g[:, None] - b_g[None, :])
+m_A = (o_t[:, None] >= o_t[None, :]) & (m_t[:, None] & m_t)
+b_A = tl.where(m_A, b_A, 0)
+
+p_v = v + o_t[:, None] * (HV*V) + o_v[None, :]
+p_o = o + o_t[:, None] * (HV*V) + o_v[None, :]
+
+b_v = tl.load(p_v, mask=m_t[:, None] & (o_v < V)[None, :], other=0.0)
+# to fix mma -> mma layout conversion
+# already solved by triton v3.2 or higher
+b_o = b_o * scale + tl.dot(b_A.to(b_v.dtype), b_v) * scale
+tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=m_t[:, None] & (o_v < V)[None, :])
+```
+
+- `exp2(b_g)` 将历史读出衰减到各 query 位置；`exp2(b_g[:, None] - b_g[None, :])` 对应 $`\Gamma_{[t]}`$ 的非零元素。这里的掩码使用 `>=`，包含对角线，使当前 token 读到本步写入；KKT 的掩码使用 `>`，只表示此前写入对当前残差的影响。
+
+- 参数 `v` 传入上一阶段保存的 `v_new`。最后一次 `tl.dot` 汇总块内残差，并与历史项相加、乘 `scale` 后写回输出。变长输入通过全局 chunk 编号 `i_tg` 读取入口状态，通过序列内 chunk 编号 `i_t` 读取 Q/K/V，二者不能混用。
+
+### 5.8 反向传播：状态伴随与三角变换梯度
+
+- 输出计算与块末状态都依赖 $`\mathbf V_{\mathrm{new},[t]}`$，因此残差梯度由两条路径相加：
+
+```math
+\frac{\partial\mathcal L}{\partial\mathbf V_{\mathrm{new},[t]}}
+=s\left(\mathbf Q_{[t]}\mathbf K_{[t]}^\top\odot\Gamma_{[t]}\right)^\top
+\frac{\partial\mathcal L}{\partial\mathbf O_{[t]}}
++\overrightarrow{\mathbf K}_{[t]}
+\left(\frac{\partial\mathcal L}{\partial\mathbf S_{[t+1]}}\right)^\top.
+```
+
+- `chunk_bwd_dv_local` 计算上式第一项；`chunk_gated_delta_rule_bwd_dhu` 加入后续状态贡献，并从后向前递推状态梯度。`chunk_bwd_dqkwg` 处理输出与状态更新对 Q/K/W 和 gate 的梯度；`prepare_wy_repr_bwd` 再通过三角变换将 W/U 梯度传回 K/V、beta 和 gate。
 
 - 前向保存 A 及必要输入，反向先重算 W/U、入口状态和 `v_new`，以计算量换取较低的中间状态存储开销。最后的反向前缀和将累计 gate 的梯度汇总到逐 token gate。
 
