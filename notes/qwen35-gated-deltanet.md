@@ -1,626 +1,738 @@
-# Qwen3.5 Gated DeltaNet
+# Qwen3.5 Gated DeltaNet：从递推公式到 FLA 内核
 
-`Qwen3.5` 的 `Gated DeltaNet` 将历史压缩为一个固定大小的矩阵：每个 token 先衰减旧状态，再读取当前 key 已经对应的 value，最后把预测误差写回状态。推理时，这个过程可以逐 token 执行；训练时，同一递推被改写成分块矩阵运算，让大部分工作交给 Tensor Core
+Qwen3.5 的 Gated DeltaNet 用一个状态矩阵保存历史。每个 token 先衰减旧状态，再用当前 key 读出预测 value，把预测误差写回，最后用 query 得到输出。本文从 `Qwen3_5GatedDeltaNet.forward()` 出发，沿着这四步进入 FLA：先看逐 token 的 recurrent kernel，再推导它如何变成 chunk kernel 中的下三角求解和矩阵乘法。
 
-本文沿着[原文的数学推导与 kernel 解析](https://zhuanlan.zhihu.com/p/2007937984738129405)，重新梳理 `Linear Attention → Delta Rule → Gated Delta Rule → Chunkwise / Recurrent`，并对照当前代码更新实现细节。公式统一采用代码默认的 **`[K, V]` 状态布局**；原文和部分论文使用 `[V, K]`，两种记法互为转置
+代码固定到截至 2026-09-26 的最新正式版 **Transformers v5.17.0 / FLA v0.5.2**。正文展示真实源码节选，省略的相邻分支通过链接查看。FLA 部分采用默认 `chunk_size=64`、`state_v_first=False`，不展开 context parallel 分支。
 
-核对日期为 **2026 年 9 月 26 日**。正式版以 PyPI 与 GitHub release 交叉确认，主分支固定到提交，避免后续代码变化影响阅读
+## 1. 模型入口：准备 Q、K、V 和三个门
 
-| 项目 | 最新正式版 | 同时核对的主分支 |
+`forward()` 收到的 `hidden_states` 形状为 `[B, T, D]`。输入先经过四组线性投影：一组生成拼接的 QKV，另外三组生成输出门 `z`、写入门的原始值 `b`、衰减门的原始值 `a`。
+
+[modeling_qwen3_5.py · L565–L572](https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L565-L572)
+
+```python
+mixed_qkv = self.in_proj_qkv(hidden_states)
+mixed_qkv = mixed_qkv.transpose(1, 2)
+
+z = self.in_proj_z(hidden_states)
+z = z.reshape(batch_size, seq_len, -1, self.head_v_dim)
+
+b = self.in_proj_b(hidden_states)
+a = self.in_proj_a(hidden_states)
+```
+
+`mixed_qkv` 接着经过逐通道的因果卷积和 SiLU；`z`、`a`、`b` 不经过这层卷积。训练或 prefill 使用整段卷积；常规单 token 缓存解码（`record_past=False`）用 `causal_conv1d_update()` 更新卷积窗口。卷积之后拆开 QKV，恢复 head 维度：
+
+[modeling_qwen3_5.py · L602–L622](https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L602-L622)
+
+```python
+mixed_qkv = mixed_qkv.transpose(1, 2)
+query, key, value = torch.split(
+    mixed_qkv,
+    [
+        self.key_dim,
+        self.key_dim,
+        self.value_dim,
+    ],
+    dim=-1,
+)
+
+query = query.reshape(batch_size, seq_len, -1, self.head_k_dim)
+key = key.reshape(batch_size, seq_len, -1, self.head_k_dim)
+value = value.reshape(batch_size, seq_len, -1, self.head_v_dim)
+
+beta = b.sigmoid()
+# If the model is loaded in fp16, without the .float() here, A might be -inf
+g = -self.A_log.float().exp() * F.softplus(a.float() + self.dt_bias)
+if self.num_v_heads // self.num_k_heads > 1:
+    query = query.repeat_interleave(self.num_v_heads // self.num_k_heads, dim=2)
+    key = key.repeat_interleave(self.num_v_heads // self.num_k_heads, dim=2)
+```
+
+这里有两个与后面内核直接相关的细节。
+
+第一，`g` 已经是**对数衰减**，真正乘在状态上的系数是 $`\alpha_t=\exp(g_t)`$。`A_log` 是可学习参数；先对它取指数，再取负号乘 softplus，使 $`g_t\leq 0`$。`beta` 则经过 sigmoid，控制本次误差写入的强度。
+
+```math
+\beta_t=\sigma(b_t),\qquad
+ g_t=-\exp(A_{\log})\,\operatorname{softplus}(a_t+\mathrm{dt\_bias}),
+\qquad \alpha_t=\exp(g_t).
+```
+
+第二，Q/K head 数可以少于 V head 数。以 [Qwen3.5-9B 的配置](https://huggingface.co/Qwen/Qwen3.5-9B/blob/c202236235762e1c871ad0ccb60c8ee5ba337b9a/config.json)为例，`D=4096`，Q/K 有 16 个 head，V 有 32 个 head，每个 head 的 K/V 维度都是 128。上面的 `repeat_interleave()` 把 Q/K 扩展到 32 个 head。
+
+| 张量 | 模型侧形状（Q/K 扩展前） | FLA 输入形状或用途 |
 | --- | --- | --- |
-| Transformers | [v5.17.0](https://github.com/huggingface/transformers/releases/tag/v5.17.0) | [`27166ea`](https://github.com/huggingface/transformers/tree/27166ea03f12c940f23176a904ab1d2ff1a3dcbb) |
-| Flash Linear Attention | [v0.5.2](https://github.com/fla-org/flash-linear-attention/releases/tag/v0.5.2) | [`954438d`](https://github.com/fla-org/flash-linear-attention/tree/954438d1fcb5e1bb05c22f9908de9c5c2df74ae5) |
+| `query`、`key` | `[B, T, 16, 128]` | `[B, T, 32, 128]` |
+| `value` | `[B, T, 32, 128]` | `[B, T, 32, 128]` |
+| `z` | `[B, T, 32, 128]` | 留在模型侧，用于输出门控 |
+| `g`、`beta` | `[B, T, 32]` | `[B, T, 32]` |
+| `recurrent_state` | — | `[B, 32, 128, 128]` |
 
-正文以正式版的默认 Triton 路径为主，主分支差异单独说明。`Qwen3.5-9B` 用于展示具体尺寸；其他尺寸和 MoE 模型需要读取各自的 `text_config`
+FLA 自身也支持 Q/K head 共享，内核中的 `i_h // (HV // H)` 就是对应的 head 映射；不过这个 Transformers 入口已经显式重复了 Q/K。
 
-## 1. 从 Attention 到状态矩阵
+接下来选择计算路径：**已有状态且本次只有一个 token**，走 recurrent；其余情况走 chunk。两个分支都要求在算子内做 Q/K 的 L2 归一化。
 
-### 1.1 线性复杂度来自哪里
+[modeling_qwen3_5.py · L624–L650](https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L624-L650)
 
-设序列长度为 $`T`$，每个 head 的 key、value 维度分别为 $`d_k,d_v`$。标准因果 Attention 为
-
-```math
-O=\operatorname{softmax}\!\left(\frac{QK^{\top}}{\sqrt{d_k}}+M_{\mathrm{causal}}\right)V
+```python
+recurrent_state = cache_params.layers[self.layer_idx].recurrent_states[0] if use_precomputed_states else None
+if use_precomputed_states and seq_len == 1:
+    core_attn_out, last_recurrent_state = torch_recurrent_gated_delta_rule(
+        query,
+        key,
+        value,
+        g=g,
+        beta=beta,
+        initial_state=recurrent_state,
+        output_final_state=cache_params is not None,
+        use_qk_l2norm_in_kernel=True,
+        cu_seqlens=kwargs.pop("cu_seq_lens_q", None),
+        **kwargs,
+    )
+else:
+    core_attn_out, last_recurrent_state = torch_chunk_gated_delta_rule(
+        query,
+        key,
+        value,
+        g=g,
+        beta=beta,
+        initial_state=recurrent_state,
+        output_final_state=cache_params is not None,
+        use_qk_l2norm_in_kernel=True,
+        cu_seqlens=kwargs.pop("cu_seq_lens_q", None),
+        **kwargs,
+    )
 ```
 
-它需要计算 token 之间的两两关联。`FlashAttention` 通过分块、在线 softmax 和重计算减少 HBM 访问及中间结果存储，但保留了关于序列长度的二次计算量。实际何时受计算吞吐限制，取决于 GPU、head 维度、batch、dtype 和 kernel，不能用一个固定序列长度作为通用分界
+函数名中的 `torch_` 不代表一定执行 PyTorch 参考实现。这些函数由 Transformers 的 [kernel 分派装饰器](https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/integrations/hub_kernels.py#L829-L896)包装，可以使用本地 FLA、指定的 Hub kernel 或回退实现。下面展开本地 FLA 路径。
 
-先考虑不带归一化分母的点积型线性注意力。把每个 token 的 $`q_t,k_t,v_t`$ 都视为列向量，定义
+## 2. Recurrent：一个 token 如何修改状态
 
-```math
-S_t=S_{t-1}+k_tv_t^{\top},
-\qquad o_t=S_t^{\top}q_t,
-\qquad S_t\in\mathbb R^{d_k\times d_v}
-```
-
-若 $`S_0=0`$，展开后得到
+先只考虑一个 batch 中的一个 head。用列向量表示 $`q_t,k_t\in\mathbb R^{d_k}`$、$`v_t\in\mathbb R^{d_v}`$，状态布局跟随源码默认值：
 
 ```math
-o_t=\sum_{j\le t}(q_t^{\top}k_j)v_j
+S_t\in\mathbb R^{d_k\times d_v}.
 ```
 
-矩阵形式仍可写成 $`O=\operatorname{tril}(QK^{\top})V`$，但实现时不必物化完整的 $`T\times T`$ 矩阵，而是逐步维护 $`S_t`$。每步主要处理 $`d_k\times d_v`$ 个元素，总工作量随 $`T`$ 线性增长
+### 2.1 归一化与状态衰减
 
-这里的状态矩阵相当于一个线性关联存储器。向量 $`k_t`$ 指定读写方向，$`v_t`$ 是希望存入的信息。不同 key 不一定正交，因此向一个方向写入时，可能改变其他相关 key 的读出值；这种干扰没有一个等于 $`d_kd_v`$ 的硬性 token 数阈值
+`fused_recurrent_gated_delta_rule_fwd_kernel()` 在进入循环前，将初始状态加载到 FP32 的 `b_h`。循环首先加载当前 token 的 QKV，然后对 Q/K 做 L2 归一化，并对 query 乘 $`d_k^{-1/2}`$：
 
-一般的核化线性注意力还可以引入特征映射和归一化状态。本文采用上面的简化形式，目的是推导 Delta Rule，并不把所有线性注意力都视为同一种 softmax 近似
+[fused_recurrent.py · L112–L119](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L112-L119)
 
-### 1.2 遗忘与修正是两种操作
-
-为旧状态增加一个标量衰减，得到
-
-```math
-S_t=\alpha_tS_{t-1}+k_tv_t^{\top},\qquad 0<\alpha_t<1
+```python
+for _ in tl.range(0, T):
+    b_q = tl.load(p_q, mask=mask_k, other=0).to(tl.float32)
+    b_k = tl.load(p_k, mask=mask_k, other=0).to(tl.float32)
+    b_v = tl.load(p_v, mask=mask_v, other=0).to(tl.float32)
+    if USE_QK_L2NORM_IN_KERNEL:
+        b_q = b_q / tl.sqrt(tl.sum(b_q * b_q) + 1e-6)
+        b_k = b_k / tl.sqrt(tl.sum(b_k * b_k) + 1e-6)
+    b_q = b_q * scale
 ```
 
-它可以清除陈旧信息，但所有方向都会同时衰减。这个式子便于理解 Mamba2 一类标量状态衰减；GLA 更一般地支持按通道的门控，不能将它的所有形式都缩成同一个标量 $`\alpha_t`$
+下文的 $`q_t`$ 都表示已经归一化并缩放后的 query，$`k_t`$ 表示归一化后的 key。随后处理衰减：
 
-`DeltaNet` 则读取当前 key 已经关联的 value，只写入误差
+[fused_recurrent.py · L129–L136](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L129-L136)
 
-```math
-\widehat v_t=S_{t-1}^{\top}k_t,
-\qquad e_t=\beta_t(v_t-\widehat v_t),
-\qquad S_t=S_{t-1}+k_te_t^{\top}
+```python
+if USE_G:
+    b_g = tl.load(p_g).to(tl.float32)
+    if USE_GATE_IN_KERNEL:
+        b_A = tl.load(A_log + i_hv).to(tl.float32)
+        if HAS_DT_BIAS:
+            b_g = b_g + tl.load(dt_bias + i_hv).to(tl.float32)
+        b_g = -exp(b_A) * softplus(b_g)
+    b_h *= exp(b_g)
 ```
 
-展开后是
+Qwen 的入口已经算好了 `g`，所以这里 `USE_GATE_IN_KERNEL=False`，直接执行最后一行。这时 `b_h` 从 $`S_{t-1}`$ 变成 $`\bar S_t=\alpha_t S_{t-1}`$。
 
-```math
-S_t=(I-\beta_tk_tk_t^{\top})S_{t-1}
-    +\beta_tk_tv_t^{\top}
+### 2.2 读出误差、写回、查询
+
+默认 `[K, V]` 状态布局的核心更新如下：
+
+[fused_recurrent.py · L157–L159](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L157-L159)
+
+```python
+b_v = b_beta * (b_v - tl.sum(b_h * b_k[:, None], 0))
+b_h += b_k[:, None] * b_v
+b_o = tl.sum(b_h * b_q[:, None], 0)
 ```
 
-若 $`\lVert k_t\rVert_2=1`$ 且 $`\beta_t=1`$，更新后有 $`S_t^{\top}k_t=v_t`$，即当前 key 的读出被替换为新 value。对于另一个 key $`r`$，更新引起的变化为
-
-```math
-(S_t-S_{t-1})^{\top}r=e_t(k_t^{\top}r)
-```
-
-因此，**只有与当前 key 正交的方向才完全不受这次 delta 更新影响**。把它类比成修改字典中的一个条目很直观，但真实 key 是向量，不是彼此隔离的离散地址
-
-## 2. Gated Delta Rule：先衰减，再写入误差
-
-### 2.1 四行递推
-
-`Gated DeltaNet` 把上述两种操作组合起来。用 $`\bar S_t`$ 表示衰减后的临时状态
+第一行沿 K 维求和，得到 $`\bar S_t^\top k_t`$，也就是衰减后的旧状态对当前 value 的预测。`b_v` 被覆盖成加权预测误差。第二行把这个误差与 key 做外积，写回状态；第三行用 query 查询**更新后的**状态。
 
 ```math
 \begin{aligned}
-\bar S_t&=\alpha_tS_{t-1},\\
-\widehat v_t&=\bar S_t^{\top}k_t,\\
-e_t&=\beta_t(v_t-\widehat v_t),\\
-S_t&=\bar S_t+k_te_t^{\top},\qquad o_t=S_t^{\top}q_t.
+\bar S_t &= \alpha_t S_{t-1},\\
+e_t &= \beta_t\left(v_t-\bar S_t^\top k_t\right),\\
+S_t &= \bar S_t+k_te_t^\top,\\
+o_t &= S_t^\top q_t.
 \end{aligned}
 ```
 
-等价地
+展开状态更新，可以看到 Delta Rule 对旧状态做了什么：
 
 ```math
-S_t=\alpha_t(I-\beta_tk_tk_t^{\top})S_{t-1}
-    +\beta_tk_tv_t^{\top}
+S_t=\alpha_t\left(I-\beta_t k_tk_t^\top\right)S_{t-1}
+       +\beta_t k_tv_t^\top.
 ```
 
-**读取旧 value 时，状态已经乘过 $`\alpha_t`$**。若从未衰减的状态读取，再在别处补一个衰减，会得到不同的更新规则。代码中的 `g` 是 $`\log\alpha_t`$，所以第一步使用 `exp(g)`，不是直接乘 `g`
+$`\alpha_t`$ 对整个状态做衰减；$`I-\beta_t k_tk_t^\top`$ 修正 key 指定的方向。与直接累加 $`k_tv_t^\top`$ 相比，这次写入会扣掉状态已经记住的部分。
 
-以一个 $`2\times2`$ 状态为例，令
+这个 kernel 沿序列时间循环，在 batch、head 和 V 的分片上并行。单 token decode 只执行一次循环，也不需要构造 token 间的注意力矩阵。长序列训练则不能只依赖这条逐 token 的状态链：下一节将把块内依赖改写成一个可求解的矩阵系统。
+
+## 3. 从递推到 Chunk：下三角系统是怎样来的
+
+取连续的 $`C`$ 个 token 作为一个块，把块入口状态记为 $`S_{\mathrm{in}}`$。本节所有下标都相对于当前块，先定义块内累计衰减：
 
 ```math
-S_{t-1}=I,\qquad
-k_t=\begin{bmatrix}1\\0\end{bmatrix},\qquad
-v_t=\begin{bmatrix}0.7\\0.3\end{bmatrix},\qquad
-\alpha_t=0.9,\quad\beta_t=1
-```
-
-衰减后读出 $`\widehat v_t=[0.9,0]^{\top}`$，误差为 $`e_t=[-0.2,0.3]^{\top}`$，于是
-
-```math
-S_t=
-\begin{bmatrix}0.9&0\\0&0.9\end{bmatrix}
-+
-\begin{bmatrix}-0.2&0.3\\0&0\end{bmatrix}
-=
-\begin{bmatrix}0.7&0.3\\0&0.9\end{bmatrix}
-```
-
-在本文的 `[K, V]` 布局下，第一个 key 基方向对应状态的第一行。若采用原文的 `[V, K]` 布局，将整个矩阵转置，更新就落在第一列；二者表示同一个算子
-
-### 2.2 在线学习视角
-
-把状态当作一个线性模型，令它用 key 预测 value
-
-```math
-\ell_t(S)=\frac12\lVert S^{\top}k_t-v_t\rVert_2^2,
-\qquad
-\nabla_S\ell_t=k_t(S^{\top}k_t-v_t)^{\top}
-```
-
-在 $`\bar S_t=\alpha_tS_{t-1}`$ 处做一步学习率为 $`\beta_t`$ 的梯度更新，就得到 Gated Delta Rule。这里被更新的是每条序列自己的状态，并不是推理时对模型投影权重调用 optimizer。这一视角解释了为什么写入误差比不断累加原始 value 更有针对性
-
-推导与模型动机可参照 [Gated Delta Networks 论文](https://arxiv.org/abs/2412.06464)。下面把这个小型线性模型放回实际的 Qwen3.5 层
-
-## 3. Qwen3.5：从 hidden states 到三个 gate
-
-### 3.1 一层的数据流
-
-`Qwen3.5-9B` 的配置共有 32 个文本层，其中 24 个使用 GDN，8 个使用 Full Attention，按三个 GDN 层接一个 Full Attention 层排列。Full Attention 的输出门控不会将它自动变成稀疏注意力；其可见范围与实现仍应按该层的 attention 路径理解。[模型配置](https://huggingface.co/Qwen/Qwen3.5-9B/blob/c202236235762e1c871ad0ccb60c8ee5ba337b9a/config.json)
-
-下图只展开 GDN token mixer，外层残差连接与 FFN 略去
-
-```text
-hidden_states [B,T,D]
-    │
-    ├─ in_proj_qkv ─ depthwise causal Conv1d ─ SiLU ─ split ─ Q,K,V
-    │                                                          │
-    ├─ in_proj_b ─ sigmoid ─ beta ──────────────────────────────┤
-    │                                                          │
-    ├─ in_proj_a ─ softplus / A_log / dt_bias ─ g ──────────────┤
-    │                                                          ▼
-    │                                                Gated Delta Rule
-    │                                                          │
-    └─ in_proj_z ─ z ──────────────────────────────── RMSNorm + SiLU gate
-                                                               │
-                                                            out_proj
-                                                               │
-                                                        output [B,T,D]
-```
-
-这里有三个用途不同的控制量
-
-| 变量 | 生成方式 | 控制对象 |
-| --- | --- | --- |
-| $`\alpha=\exp(g)`$ | `in_proj_a`、`A_log`、`dt_bias` | 旧状态的衰减 |
-| $`\beta`$ | `sigmoid(in_proj_b(x))` | delta 误差的写入强度 |
-| $`z`$ | `in_proj_z(x)` | 递推输出经过 RMSNorm 后的逐通道门控 |
-
-`Q/K/V` 经过短卷积，`a/b/z` 由当前层输入直接投影。短卷积提供局部因果混合，每个通道拥有自己的卷积核；它本身不会把训练标签向后移动，也不等同于 next-token loss 的 shift。GDN 分支没有在这里对 Q/K 应用 RoPE；Full Attention 分支另有位置编码路径
-
-### 3.2 张量尺寸与 GVA
-
-以下尺寸取自 `Qwen3.5-9B` 配置，其中 `H_K` 表示 Q/K head 数，`H_V` 表示 value head 数
-
-| 张量或参数 | 一般尺寸 | 9B 示例 |
-| --- | --- | --- |
-| `hidden_states` | `[B,T,D]` | `D=4096` |
-| 卷积前后合并的 QKV | `[B,T,2 H_K d_k + H_V d_v]` | 最后一维 `8192` |
-| `Q/K`，复制前 | `[B,T,H_K,d_k]` | `H_K=16, d_k=128` |
-| `V` | `[B,T,H_V,d_v]` | `H_V=32, d_v=128` |
-| `g/beta` | `[B,T,H_V]` | 每个 value head 一个标量 |
-| `z` | `[B,T,H_V,d_v]` | 与递推输出逐通道对应 |
-| 递推状态 | `[N,H_V,d_k,d_v]` | 等长 batch 中 `N=B` |
-
-多个 value head 共享一个 Q/K head，称为 `Grouped Value Attention`。若 `H_K=2,H_V=4`，对应关系是 `0→0、1→0、2→1、3→1`
-
-Transformers 5.17.0 的 Qwen3.5 实现仍会通过 `repeat_interleave` 显式复制 Q/K。FLA 0.5.2 的算子已经能直接接受不同的 head 数，在 kernel 内按下式映射
-
-```python
-qk_head = value_head // (num_value_heads // num_key_heads)
-```
-
-因此要区分两层：**FLA 算子具备原生 GVA 能力，当前 Transformers 模型入口仍先展开 Q/K**。不能只看到底层支持 GVA，就断言模型调用已经省掉了这次复制。[Transformers 模型入口](https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L504-L663)、[FLA 算子接口](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L395)
-
-### 3.3 衰减、归一化与输出门控
-
-状态衰减的参数化为
-
-```math
-g_{t,h}=-\exp(A_{\log,h})\,operatorname{softplus}(a_{t,h}+b_{dt,h}),
-\qquad\alpha_{t,h}=\exp(g_{t,h})
-```
-
-对有限实数输入，$`g<0`$，从而 $`0<\alpha<1`$；浮点运算中极强衰减可能下溢为零。`g` 在模型入口以 FP32 计算，避免低精度参数变换带来额外溢出风险
-
-当前 `A` 的初始化区间是 `(0.01,16)`，`A_log=log(A)`，下界避开零。实际模型还会执行 `PreTrainedModel` 的初始化逻辑；加载 checkpoint 时则使用训练好的权重。因此，仅把构造函数里的均值代入，不能得出已发布模型从近乎无记忆状态运行的结论
-
-Q/K 的 L2 归一化与 query 缩放是两个步骤。将卷积后的向量记为 $`q_t^{\mathrm{raw}},k_t^{\mathrm{raw}}`$，递推真正使用
-
-```math
-k_t=\frac{k_t^{\mathrm{raw}}}
-{\sqrt{\lVert k_t^{\mathrm{raw}}\rVert_2^2+\varepsilon}},
-\qquad
-q_t=\frac{1}{\sqrt{d_k}}
-\frac{q_t^{\mathrm{raw}}}
-{\sqrt{\lVert q_t^{\mathrm{raw}}\rVert_2^2+\varepsilon}}
-```
-
-后面的公式统一把 $`1/\sqrt{d_k}`$ 吸收到 $`q_t`$ 中，避免重复乘 `scale`。前文关于单位 key 的精确替换是理想数学条件；代码使用带 $`\varepsilon`$ 的归一化，范数与 1 可能有微小差别
-
-得到递推输出 $`o_t`$ 后，模型对每个 value head 的最后一维做 RMSNorm，再乘输出门控
-
-```math
-y_t=
-\left(w\odot\frac{o_t}{\sqrt{\operatorname{mean}(o_t^2)+\varepsilon}}\right)
-\odot\operatorname{SiLU}(z_t)
-```
-
-这里是 **归一化 `o`，然后乘 `SiLU(z)`**，不是 `sigmoid(z)`，也不是 `o * RMSNorm(z)`。最后拼接各 head，经 `out_proj` 回到 hidden size。[门控归一化与参数初始化](https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L216-L232)
-
-## 4. Recurrent：一个 token 如何更新状态
-
-### 4.1 kernel 中的对应关系
-
-忽略地址计算、dtype 转换和边界掩码，默认 `[K,V]` 布局下的核心操作可写成
-
-```python
-state = state * exp(g_t)
-prediction = sum(state * k_t[:, None], axis=0)
-error = beta_t * (v_t - prediction)
-state = state + k_t[:, None] * error[None, :]
-out = sum(state * q_t[:, None], axis=0)
-```
-
-`sum(..., axis=0)` 沿 key 维归约，得到 value 向量；外积写回的是 `[K,V]` 矩阵。`out` 读取更新后的状态，因此当前 token 的写入也会参与当前输出
-
-FLA 的 recurrent kernel 用 FP32 保存局部状态，沿 value 维切 tile。不同 tile 处理同一个 key 方向下的不同 value 通道，序列内的时间步仍按顺序执行。这条通用 Triton 路径使用逐元素乘加与归约，循环中没有 `tl.dot`；这描述的是该实现，并不意味着所有可能的 decode 优化都只能采用同样的硬件映射
-
-FLA 0.5.2 的 launch grid 是 `(N_V, N*H_V)`；主分支将其压成一维，再从 `pid` 解码 value tile、序列和 head。调度形状改变了，状态递推公式没有改变。[正式版 recurrent](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py)、[主分支对应提交](https://github.com/fla-org/flash-linear-attention/blob/954438d1fcb5e1bb05c22f9908de9c5c2df74ae5/fla/ops/gated_delta_rule/fused_recurrent.py)
-
-### 4.2 模型什么时候使用 recurrent
-
-当前 Transformers 入口的判断同时检查缓存与本次输入长度
-
-| 条件 | GDN 计算路径 |
-| --- | --- |
-| 已有该层状态，且本次 `seq_len == 1` | recurrent |
-| 首次 prefill、无已有状态 | chunk |
-| 已有状态，但本次输入多个 token | chunk，以上次状态作为 `initial_state` |
-
-所以单 token 输入并不必然走 recurrent：首次输入长度为 1 时，没有已有状态，仍可进入 chunk 路径。卷积更新还有 `record_past` 分支，不能仅根据 `model.training` 判断所有执行路径
-
-FLA 当前这个 `fused_recurrent_gated_delta_rule` 的 backward 明确抛出 `NotImplementedError`。训练通常使用支持反向的 chunk 算子；这属于当前实现能力，不是递推公式在数学上不可微
-
-函数名也不能单独证明实际运行了哪个 kernel。Transformers 5.17.0 的装饰器按配置优先选择 Hub kernel，再尝试本地 FLA，最后回退到 PyTorch 参考实现；导出时还有强制使用参考路径的处理。[内核选择逻辑](https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/integrations/hub_kernels.py#L829-L896)
-
-## 5. Chunkwise：把时间依赖移进下三角系统
-
-### 5.1 三种衰减必须分清
-
-现在只看一个长度为 $`C`$ 的 chunk，用 $`S_{\mathrm{in}}`$ 表示它开始前的状态。chunk 内位置从 1 开始，定义
-
-```math
-G_i=\sum_{r=1}^{i}g_r,
-\qquad\gamma_i=\exp(G_i),
-\qquad
+G_i=\sum_{r=1}^{i}g_r,\qquad \gamma_i=\exp(G_i),\qquad
 D_{ij}=\begin{cases}
-\exp(G_i-G_j),&j\le i,\\
-0,&j>i.
+\exp(G_i-G_j), & j\leq i,\\
+0, & j>i.
 \end{cases}
 ```
 
-$`D_{ij}`$ 表示第 $`j`$ 个 token 写入后，到第 $`i`$ 个 token 为止经历的衰减，所以 $`D_{ii}=1`$。它与旧状态进入 chunk 时经历的 $`\gamma_i`$ 不同
-
-| 用途 | 衰减系数 | 含义 |
-| --- | --- | --- |
-| 当前 query 读取块前状态 | $`\gamma_i`$ | 从 chunk 开始到位置 $`i`$ |
-| 位置 $`i`$ 读取块内第 $`j`$ 次写入 | $`D_{ij}`$ | 写入之后从 $`j+1`$ 到 $`i`$ |
-| 第 $`i`$ 次写入进入块末状态 | $`\gamma_C/\gamma_i`$ | 从 $`i+1`$ 到 chunk 末尾 |
-
-若四个位置都取 $`\alpha=0.9`$，三组系数中的前后两组为
-
-| 位置 | 读取块前状态：$`\gamma_i`$ | 写入到块末：$`\gamma_C/\gamma_i`$ |
-| --- | ---: | ---: |
-| 1 | 0.9 | 0.729 |
-| 2 | 0.81 | 0.81 |
-| 3 | 0.729 | 0.9 |
-| 4 | 0.6561 | 1 |
-
-原文中的左右箭头就是对这两种乘法的简写。下面直接使用 $`\gamma`$，并显式保留 $`D`$，避免把带衰减的因果权重误写成普通 0/1 mask
-
-### 5.2 从误差递推得到线性系统
-
-仍将每次实际写入的 value 向量记为 $`e_i`$。把前面所有写入展开
+$`\gamma_i`$ 是从块入口到第 $`i`$ 个 token 的衰减，$`D_{ij}`$ 是第 $`j`$ 次写入传播到第 $`i`$ 个位置时的衰减。将第二节的状态递推展开：
 
 ```math
-S_i=\gamma_iS_{\mathrm{in}}
-+\sum_{j\le i}D_{ij}k_je_j^{\top}
+S_i=\gamma_i S_{\mathrm{in}}+\sum_{j\leq i}D_{ij}k_je_j^\top.
 ```
 
-计算第 $`i`$ 次误差时，读取的是已经衰减、尚未写入本次误差的状态。因此
+计算第 $`i`$ 次写入误差时，只使用前面的写入，因此
 
 ```math
-e_i^{\top}
-=\beta_i v_i^{\top}
--\beta_i\gamma_i k_i^{\top}S_{\mathrm{in}}
--\sum_{j<i}\beta_iD_{ij}(k_i^{\top}k_j)e_j^{\top}
+e_i^\top
+=\beta_i v_i^\top
+-\beta_i\gamma_i k_i^\top S_{\mathrm{in}}
+-\sum_{j<i}\beta_i D_{ij}(k_i^\top k_j)e_j^\top.
 ```
 
-把每个 token 作为矩阵的一行，令 $`B_\beta=\operatorname{diag}(\beta)`$，并定义严格下三角矩阵
+把所有 $`e_i^\top`$ 堆成矩阵 $`E\in\mathbb R^{C\times d_v}`$，把 K、V 按 token 堆成行。再定义 $`B_\beta=\operatorname{diag}(\beta)`$、$`\Gamma=\operatorname{diag}(\gamma)`$，上面的逐行关系就变成：
 
 ```math
-L=\operatorname{tril}\!\left(
-B_\beta\bigl((KK^{\top})\odot D\bigr),-1
-\right)
-```
-
-那么所有误差组成的矩阵 $`E\in\mathbb R^{C\times d_v}`$ 满足
-
-```math
-(I+L)E=B_\beta V-B_\beta\operatorname{diag}(\gamma)KS_{\mathrm{in}}
-```
-
-$`I+L`$ 的对角线全为 1，所以这是一个单位下三角系统。定义
-
-```math
-\begin{aligned}
-A&=(I+L)^{-1},\\
-U&=AB_\beta V,\\
-W&=AB_\beta\operatorname{diag}(\gamma)K,\\
-E&=U-WS_{\mathrm{in}}.
-\end{aligned}
-```
-
-这就是代码中 `A / u / w / v_new` 的来源。**`A` 只表示逆矩阵，尚未包含右侧的 $`B_\beta`$**；某些文献把两者合并记成另一个变换矩阵，阅读时要先核对定义，不能再额外乘一次 beta
-
-$`W`$ 与块前状态相乘，所以它需要额外携带 $`\gamma_i`$。$`U`$ 中也有衰减，但它通过 $`A`$ 内的 $`D_{ij}`$ 影响先前写入之间的相互作用；两者的衰减来源不同
-
-### 5.3 输出与块末状态
-
-一旦得到 $`E`$，chunk 输出为
-
-```math
-\boxed{
-O=\operatorname{diag}(\gamma)QS_{\mathrm{in}}
-+\bigl((QK^{\top})\odot D\bigr)E
-}
-```
-
-第一项读取块前状态，第二项读取块内写入。第二项的 **$`D`$ 同时包含因果掩码与区间衰减**；只写 $`\operatorname{tril}(QK^{\top})E`$ 会漏掉旧写入到当前 query 之间的遗忘
-
-块末状态则是
-
-```math
-\boxed{
-S_{\mathrm{out}}=
-\gamma_CS_{\mathrm{in}}
-+\left(\operatorname{diag}\!\left(\frac{\gamma_C}{\gamma}\right)K\right)^{\top}E
-}
-```
-
-两条公式可直接核对尺寸：`Q @ S_in` 是 `[C,V]`，`QKᵀ` 是 `[C,C]`，`Kᵀ @ E` 是 `[K,V]`
-
-`U/W` 只依赖本 chunk 的输入，可以跨 chunk 并行预计算；`E` 还依赖 $`S_{\mathrm{in}}`$，这一步需要沿 chunk 顺序传播状态；各 chunk 的入口状态保存下来后，输出计算又可以跨 chunk 并行。**分块减少了时间方向的串行步数，并没有消除块间依赖**
-
-```text
-每个 chunk 独立：     K,V,g,beta ─── A ─── U,W
-                                          │
-沿 chunk 传状态：    S_in ─── E=U-W@S_in ── S_out ─── 下一个 chunk
-                       │          │
-每个 chunk 独立：     Q ────────── O
-```
-
-这些变换在实数算术下与逐 token 递推等价。浮点下，chunk size、归约顺序和中间 dtype 都可能改变末位结果，不能把数学等价写成逐位一致
-
-## 6. 最新 FLA 如何执行这些公式
-
-### 6.1 数学阶段与 kernel 边界
-
-原文按 `cumsum → KKT → solve_tril → W/U → h → o` 六个阶段展开，有助于理解数学。FLA 0.5.2 的默认前向已将 KKT 和下三角求解放到同一个 kernel 中；`W/U` 仍由另一个 kernel 计算
-
-```text
-chunk_gated_delta_rule
-  ├─ 可选 Q/K L2 normalization、beta activation
-  └─ chunk_gated_delta_rule_fwd
-       ├─ chunk_local_cumsum，或 gate activation + cumsum
-       ├─ chunk_gated_delta_rule_fwd_intra
-       │    ├─ KKT + solve，默认 C=64 的融合 kernel
-       │    └─ recompute_w_u_fwd
-       ├─ chunk_gated_delta_rule_fwd_h
-       └─ chunk_fwd_o
-```
-
-上图描述默认 Triton 实现，省略 CP 前后处理。当前实现另有 backend dispatch，不能把图中步骤数等同于所有设备和配置上的固定 kernel launch 数。[前向组织](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py)、[融合入口](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L332-L427)
-
-### 6.2 `cumsum`：从自然对数转换到 `exp2`
-
-数学上使用 $`G_i=\sum_{j\le i}g_j`$。当前 FLA 的 chunk 路径在前缀和时乘 `RCP_LN2`，存入
-
-```math
-G_i^{(2)}=\frac{1}{\ln2}\sum_{j\le i}g_j,
+L=\operatorname{tril}\!\left(B_\beta\left(KK^\top\odot D\right),-1\right),
 \qquad
-2^{G_i^{(2)}-G_j^{(2)}}=\exp(G_i-G_j)
+(I+L)E=B_\beta V-B_\beta\Gamma K S_{\mathrm{in}}.
 ```
 
-后面的 kernel 使用 `exp2`，二者是一套配合。若照搬旧版伪代码，把预处理保留为自然对数累加、后面却改用 `exp2`，就改变了衰减强度
-
-当前 API 还支持 `use_gate_in_kernel=True`：输入原始 `a`，由 kernel 结合 `A_log/dt_bias` 计算激活与前缀和。Qwen3.5 的上述 Transformers 入口已经在外面算好 `g`，不要再把它当作原始 `a` 激活一次
-
-log-space 的好处是将连乘变成求和，并用差值计算局部区间衰减；这降低了直接计算两个极小乘积再相除的风险，但不能保证最终指数永不下溢
-
-### 6.3 `KKT + solve`：严格下三角与块矩阵逆
-
-默认 $`C=64`$ 时，融合 kernel 将 $`64\times64`$ 的系统拆成四个 $`16\times16`$ 对角块与六个非对角下三角块。它先计算 key 内积、衰减和 beta，再对角块求解，最后合并为整个逆矩阵
-
-用一个二乘二块矩阵看合并关系最清楚
+**这里必须是严格下三角。** 当前 token 的误差不能依赖自己刚写入的状态，所以 $`L`$ 不含对角线。$`I+L`$ 的对角线全为 1，可以直接做前代求解。令
 
 ```math
-M=\begin{bmatrix}M_{11}&0\\M_{21}&M_{22}\end{bmatrix},
-\qquad
-M^{-1}=\begin{bmatrix}
-M_{11}^{-1}&0\\
--M_{22}^{-1}M_{21}M_{11}^{-1}&M_{22}^{-1}
-\end{bmatrix}
+A=(I+L)^{-1},\qquad
+U=A B_\beta V,\qquad
+W=A B_\beta\Gamma K,
 ```
 
-左下角是整个逆矩阵的一个块，**不是 $`M_{21}^{-1}`$**。分块让求解中的工作能利用矩阵乘法，并减少中间严格下三角矩阵写回 HBM 的开销；它不等于从数学上消除了全部三次项
-
-当前这条 intra-chunk 实现支持 `C=16/32/64`，默认取 64；16/32 使用分开的 KKT 与求解路径。原文中的通用 `solve_tril` 调优经验仍可用于理解取舍，但不能据此判断默认 64 路径的精度配置与性能，因为它已经走不同的融合 kernel
-
-在 dtype 方面，融合 kernel 内有 FP32 累积，求解结果 `A` 的缓冲则按 key dtype 分配。因此 BF16 输入下，不应把整条下三角求解与后续矩阵运算描述为全程 FP32
-
-### 6.4 `W/U`：两次矩阵乘法共享同一个逆
-
-这一阶段对应
+就得到 FLA 后续计算使用的形式：
 
 ```math
-U=A(\beta\odot V),
-\qquad
-W=A\bigl((\beta\odot\gamma)\odot K\bigr)
+\boxed{E=U-W S_{\mathrm{in}}.}
 ```
 
-此处 $`\beta,\gamma`$ 按行广播。kernel 在 value 维分块计算 `U`，在 key 维分块计算 `W`；二者共享 `A`，但右侧向量不同。GVA 下，`K` 使用映射后的 Q/K head，`beta/g/U/W` 按 value head 定位。[WY 实现](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/wy_fast.py)
+`u` 和 `w` 只依赖当前块的输入，所有块可以并行计算；块入口状态到达后，再用一次矩阵乘法得到 `v_new`，即这里的 $`E`$。源码中称为 WY representation 的中间量就在这里。
 
-### 6.5 `forward_h`：保存的是每个 chunk 的入口状态
-
-状态 kernel 按序列、value head 和 value tile 并行，在一个 program 内按顺序遍历该序列的 chunk。每一步的逻辑是
-
-1. 保存当前 `S_in`，供输出 kernel 读取
-2. 计算并保存 `E = U - W @ S_in`，代码中叫 `v_new`
-3. 将 `S_in` 乘以整个 chunk 的衰减
-4. 把每次写入按距 chunk 末尾的长度衰减后，累加到状态
-5. 将更新后的状态传给下一个 chunk
-
-要区分三个存储位置
-
-| 对象 | 用途 | 当前默认实现中的 dtype |
+| 数学量 | FLA 变量 | 单个块、单个 head 的形状 |
 | --- | --- | --- |
-| program 内局部状态 | chunk 间递推累积 | FP32 |
-| `h` | 保存各 chunk 的入口状态，供输出和反向重计算使用 | key dtype |
-| `final_state` | 整条序列结束后的状态 | FP32 |
+| $`A=(I+L)^{-1}`$ | `A` | `[C, C]` |
+| $`U=A B_\beta V`$ | `u` | `[C, d_v]` |
+| $`W=A B_\beta\Gamma K`$ | `w` | `[C, d_k]` |
+| $`S_{\mathrm{in}}`$ | `h` 中当前块的状态 | `[d_k, d_v]` |
+| $`E=U-W S_{\mathrm{in}}`$ | `v_new` | `[C, d_v]` |
 
-`h` 的尺寸包含 chunk 数，不能用推理缓存大小代替训练时的中间激活大小。将 key 维拆成多个 64 宽的局部块，也不意味着总寄存器需求凭空消失；实际压力取决于编译后的布局、同时存活的值以及 tile 大小。[状态前向实现](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_delta_h.py)
+后面的源码按这个顺序执行：`chunk_local_cumsum` 准备 $`G`$，`chunk_gated_delta_rule_fwd_intra` 生成 `A/w/u`，`chunk_gated_delta_rule_fwd_h` 计算 `h/v_new`，最后 `chunk_fwd_o` 生成输出。
 
-### 6.6 `chunk_fwd_o`：输出必须保留区间衰减
+## 4. 块内计算：累计衰减、KKT 和三角求解
 
-输出 kernel 在同一段计算中完成块间读取与块内读取
+### 4.1 Cumsum 为什么乘 1 / ln 2
 
-```text
-inter = Q @ S_in
-intra = Q @ K.T
-inter *= gamma[:, None]
-intra *= interval_decay
-O = inter + intra @ E
+`chunk_gated_delta_rule_fwd()` 的普通 gate 分支先调用：
+
+[chunk.py · L63–L69](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L63-L69)
+
+```python
+g = chunk_local_cumsum(
+    g,
+    chunk_size=chunk_size,
+    scale=RCP_LN2,
+    cu_seqlens=cu_seqlens,
+    chunk_indices=chunk_indices,
+)
 ```
 
-这里 `interval_decay` 就是带因果约束的 $`D`$。当前实现中的 `exp2(g_i-g_j)` 与前面的 log2 前缀和配套；输出用的是更新后的状态，因此块内矩阵包含对角线，而构造下三角系统 $`L`$ 时使用严格下三角
+传给 cumsum 的 `scale=RCP_LN2`，因此保存在张量中的实际上是 $`\widetilde G_i=G_i/\ln 2`$。后续 Triton 内核使用 `exp2()`，两者组合满足
 
-这两处 mask 的差别来自语义：计算本次误差时尚未写入当前 token，所以排除对角线；计算输出时已经写入，所以包含对角线。`QKᵀ` 的局部块在 kernel 内参与计算，不需要物化完整序列的注意力矩阵。[输出实现](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_o.py)
-
-## 7. Varlen 与缓存：两种不同的边界
-
-### 7.1 token 偏移和 chunk 偏移
-
-变长输入通常按 `[1,total_tokens,H,D]` 打平，由 `cu_seqlens` 恢复各样本的逻辑边界。例如
-
-```text
-cu_seqlens = [0, 16, 128]
-C = 64
-
-sequence 0: tokens [0,16)     → 1 chunk
-sequence 1: tokens [16,128)   → 2 chunks
-
-chunk_indices = [[0,0], [1,0], [1,1]]
-chunk_offsets = [0,1,3]
+```math
+2^{\widetilde G_i}=e^{G_i},\qquad
+2^{\widetilde G_i-\widetilde G_j}=e^{G_i-G_j}.
 ```
 
-`cu_seqlens` 指向 token 空间；`chunk_indices` 将一个并行任务映射到序列及其局部 chunk；`chunk_offsets` 指向 `h` 等 chunk 级缓冲。序列 1 的首个 chunk 从 token 16 开始，不是从全局 token 64 开始
+对应 scalar kernel 的主要工作如下。每个 program 只扫描一个 chunk，累计和在每个块的起点重新开始：
 
-没有块间依赖的阶段可以把所有 chunk 展开并行；状态递推需要在每条序列内部保持顺序，并为每条序列加载自己的初始状态。把两条序列直接拼起来却不传边界，会让后一条继承前一条的记忆
+[cumsum.py · L65–L73](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/utils/cumsum.py#L65-L73)
 
-FLA 主分支新增了公开的 `chunk_indices` 参数，允许调用者传入预计算索引；0.5.2 的公开入口没有这个同名显式参数，主要在内部生成。若想减少热路径的元数据处理，应先核对安装版本的函数签名。[固定主分支接口](https://github.com/fla-org/flash-linear-attention/blob/954438d1fcb5e1bb05c22f9908de9c5c2df74ae5/fla/ops/gated_delta_rule/chunk.py#L397)
+```python
+# [BT]
+b_s = tl.load(p_s, mask=m_t, other=0.0).to(tl.float32)
+b_o = tl.cumsum(b_s, axis=0)
+if REVERSE:
+    b_z = tl.sum(b_s, axis=0)
+    b_o = -b_o + b_z[None] + b_s
+if HAS_SCALE:
+    b_o *= scale
+tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=m_t)
+```
 
-GDN 算子识别样本边界还不够：前面的 causal convolution 也必须识别同一组边界。并且，Transformers 的纯 PyTorch 参考函数虽接收 `**kwargs`，其函数体没有实现与 FLA 相同的 packed `cu_seqlens` 分段计算，不能据此假定所有 fallback 都支持相同的 packed 输入语义
+前向的 `REVERSE=False`；反向会复用同一个 kernel 做后缀和。
 
-### 7.2 推理需要两份 GDN 状态
+### 4.2 先形成严格下三角的 L
 
-增量生成除了保存 recurrent state，还要保存短卷积所需的历史投影值
+默认 `C=64` 时，FLA 将 $`64\times64`$ 的矩阵拆成四个 $`16\times16`$ 对角块和六个下三角非对角块。`chunk_gated_delta_rule_fwd_kkt_solve_kernel()` 把 KKT 和三角求解融合到一个 kernel。下面是前两个子块的 KKT：
 
-| 缓存 | 常规增量推理中的形状 | 随上下文长度增长 |
-| --- | --- | --- |
-| GDN recurrent state | `[B,H_V,d_k,d_v]` | 否 |
-| GDN convolution state | `[B,2 H_K d_k + H_V d_v,conv_width]` | 否 |
-| Full Attention K/V | `[B,H_KV,T,head_dim]`，各一份 | 是 |
+[chunk_fwd.py · L137–L150](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L137-L150)
 
-只复用 recurrent state 而丢掉卷积历史，下一步的 Q/K/V 就已改变。当前 Transformers 的 `LinearAttentionLayer` 管理两类状态，并通常原地复制以维持缓存地址；`record_past` 等回滚模式可能保存更多卷积历史，上表描述普通增量生成。[缓存实现](https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/cache_utils.py#L1017-L1105)
+```python
+for i_k in range(tl.cdiv(K, BK)):
+    o_k = i_k * BK + tl.arange(0, BK)
+    p_k0 = k + (i_tc0 + o_i)[:, None] * (H*K) + o_k[None, :]
+    b_k0 = tl.load(p_k0, mask=m_tc0[:, None] & (o_k[None, :] < K), other=0.0)
+    # diagonal block 0
+    b_A00 += tl.dot(b_k0, tl.trans(b_k0))
 
-以 9B、batch 1、recurrent state FP32、卷积及 K/V BF16 为例，忽略分配对齐和管理元数据
+    if i_tc1 < T:
+        p_k1 = k + (i_tc1 + o_i)[:, None] * (H*K) + o_k[None, :]
+        b_k1 = tl.load(p_k1, mask=m_tc1[:, None] & (o_k[None, :] < K), other=0.0)
+        # diagonal block 1
+        b_A11 += tl.dot(b_k1, tl.trans(b_k1))
+        # off-diagonal (1,0)
+        b_A10 += tl.dot(b_k1, tl.trans(b_k0))
+```
 
-- 24 层 GDN recurrent state：`24 × 32 × 128 × 128 × 4 bytes = 48 MiB`
-- 24 层短卷积状态：`24 × 8192 × 4 × 2 bytes = 1.5 MiB`
-- 8 层 Full Attention，在 8192 token 时：`8 × 2 × 4 × 8192 × 256 × 2 bytes = 256 MiB`
+`b_A00` 是 $`K_0K_0^\top`$，`b_A10` 是 $`K_1K_0^\top`$。这里只计算下三角区域需要的十个子块。随后乘上累计 gate 差值的指数，再按行乘 beta。以第一个对角块为例：
 
-这解释了混合架构的缓存优势，也说明 **Qwen3.5 整个模型的缓存仍随上下文增长**。固定大小的是 GDN 状态部分，不是所有层的缓存
+[chunk_fwd.py · L179–L183](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L179-L183)
 
-## 8. 反向传播：重计算与逆序状态传递
+```python
+m_d = o_i[:, None] > o_i[None, :]
+m_I = o_i[:, None] == o_i[None, :]
 
-chunk 前向中的 `U/W/h/v_new` 并非都长期保留。当前 FLA 的反向会利用保存的输入、求解结果 `A` 等重新构建部分中间值，用计算换取显存
+if USE_G:
+    b_A00 *= tl.where(m_d & m_tc0[:, None] & m_tc0[None, :], exp2(b_g0[:, None] - b_g0[None, :]), 0.)
+```
 
-整体依赖顺序是：重计算 `U/W` 和状态 → 计算输出对 `E` 的局部梯度 → 沿 chunk 逆序传递状态梯度 → 汇总 Q/K/W 与 gate 梯度 → 对 WY 变换求导 → 合并并传播到原始 gate 输入
+[chunk_fwd.py · L200–L204](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L200-L204)
 
-两个位置值得单独核对
+```python
+# diagonal blocks: scaled by beta
+b_A00 = b_A00 * b_b0[:, None]
+b_A11 = b_A11 * b_b1[:, None]
+b_A22 = b_A22 * b_b2[:, None]
+b_A33 = b_A33 * b_b3[:, None]
+```
 
-**前缀和的梯度是后缀和。** 若 $`G_i=\sum_{j\le i}g_j`$，则
+此时的 `b_A00` 对应 $`L`$ 的一个严格下三角子块，还不是逆矩阵 $`A`$。`m_d` 去掉对角线和上三角；`m_tc0` 同时屏蔽尾块越界的行、列。非对角子块已经完整位于下三角区域，因此只需要边界 mask。
+
+### 4.3 在寄存器中做前代，再合并子块
+
+先看第一个 $`16\times16`$ 对角块的求逆过程：
+
+[chunk_fwd.py · L222–L231](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L222-L231)
+
+```python
+b_Ai00 = -b_A00
+b_Ai11 = -b_A11
+b_Ai22 = -b_A22
+b_Ai33 = -b_A33
+
+for i in range(2, min(BC, T - i_tc0)):
+    b_a00 = tl.sum(tl.where((o_i == i)[:, None], -b_A00, 0.), 0)
+    b_a00 = tl.where(o_i < i, b_a00, 0.)
+    b_a00 = b_a00 + tl.sum(b_a00[:, None] * b_Ai00, 0)
+    b_Ai00 = tl.where((o_i == i)[:, None], b_a00, b_Ai00)
+```
+
+用 $`L_{00}`$ 表示这块严格下三角矩阵，目标是 $`A_{00}=(I+L_{00})^{-1}`$。由 $`(I+L_{00})A_{00}=I`$，第 $`i`$ 行满足
+
+```math
+(A_{00})_{i,:}=I_{i,:}-\sum_{j<i}(L_{00})_{ij}(A_{00})_{j,:}.
+```
+
+代码先把 `b_Ai00` 设为 $`-L_{00}`$，暂时不存对角线上的 1。循环中，`b_a00` 取出当前行的 $`-L_{00}`$；`tl.sum(b_a00[:, None] * b_Ai00, 0)` 累加已经求出的前面各行。最后再加回单位阵：
+
+[chunk_fwd.py · L248–L251](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L248-L251)
+
+```python
+b_Ai00 += m_I
+b_Ai11 += m_I
+b_Ai22 += m_I
+b_Ai33 += m_I
+```
+
+循环从第 2 行开始，是因为从 0 编号时，第 0 行没有严格下三角元素，第 1 行只有一项 $`-L_{10}`$，初始化已经得到这两行的结果。
+
+四个对角子块求完之后，还要补出逆矩阵的六个非对角子块。对于相邻的两个块，块矩阵前代给出
+
+```math
+A_{10}=-A_{11}L_{10}A_{00}.
+```
+
+源码直接用两次矩阵乘法实现：
+
+[chunk_fwd.py · L257–L261](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L257-L261)
+
+```python
+b_Ai10 = -tl.dot(
+    tl.dot(b_Ai11, b_A10, input_precision=SOLVE_TRIL_DOT_PRECISION),
+    b_Ai00,
+    input_precision=SOLVE_TRIL_DOT_PRECISION
+)
+```
+
+再往下的 $`A_{20}`$ 要累计经过第 0、1 个块的贡献：
+
+```math
+A_{20}=-A_{22}(L_{20}A_{00}+L_{21}A_{10}).
+```
+
+[chunk_fwd.py · L273–L278](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L273-L278)
+
+```python
+b_Ai20 = -tl.dot(
+    b_Ai22,
+    tl.dot(b_A20, b_Ai00, input_precision=SOLVE_TRIL_DOT_PRECISION) +
+    tl.dot(b_A21, b_Ai10, input_precision=SOLVE_TRIL_DOT_PRECISION),
+    input_precision=SOLVE_TRIL_DOT_PRECISION,
+)
+```
+
+其余子块按同一规则合并，最终写出的 `A` 才是完整的 $`(I+L)^{-1}`$。默认路径的融合边界也由此明确：KKT 的临时结果和子块求解留在同一个 kernel 内；生成 W/U 仍是后续 kernel。`chunk_size=16/32` 则走分开的 KKT 与 `solve_tril`，可见 [Python 调度代码](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L368-L427)。
+
+### 4.4 用 A 生成 U 和 W
+
+`recompute_w_u_fwd_kernel()` 先加载刚求出的 `A`。U 的计算就是先给 V 乘 beta，再左乘 A：
+
+[wy_fast.py · L78–L86](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/wy_fast.py#L78-L86)
+
+```python
+for i_v in range(tl.cdiv(V, BV)):
+    o_v = i_v * BV + tl.arange(0, BV)
+    m_v = m_t[:, None] & (o_v[None, :] < V)
+    p_v = v + (bos*HV + i_h) * V + o_t[:, None] * (HV*V) + o_v[None, :]
+    p_u = u + (bos*HV + i_h) * V + o_t[:, None] * (HV*V) + o_v[None, :]
+    b_v = tl.load(p_v, mask=m_v, other=0.0)
+    b_vb = (b_v * b_b[:, None]).to(b_v.dtype)
+    b_u = tl.dot(b_A, b_vb, allow_tf32=False)
+    tl.store(p_u, b_u.to(p_u.dtype.element_ty), mask=m_v)
+```
+
+W 的计算多了一项从块入口到当前位置的累计衰减：
+
+[wy_fast.py · L88–L102](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/wy_fast.py#L88-L102)
+
+```python
+if USE_G:
+    p_g = g + (bos*HV + i_h) + o_t * HV
+    b_g = exp2(tl.load(p_g, mask=m_t, other=0.0))
+
+for i_k in range(tl.cdiv(K, BK)):
+    o_k = i_k * BK + tl.arange(0, BK)
+    m_k = m_t[:, None] & (o_k[None, :] < K)
+    p_k = k + (bos*H + i_h // (HV // H)) * K + o_t[:, None] * (H*K) + o_k[None, :]
+    p_w = w + (bos*HV + i_h) * K + o_t[:, None] * (HV*K) + o_k[None, :]
+    b_k = tl.load(p_k, mask=m_k, other=0.0)
+    b_kb = b_k * b_b[:, None]
+    if USE_G:
+        b_kb *= b_g[:, None]
+    b_w = tl.dot(b_A, b_kb.to(b_k.dtype))
+    tl.store(p_w, b_w.to(p_w.dtype.element_ty), mask=m_k)
+```
+
+这对应第三节的 $`W=A B_\beta\Gamma K`$。`exp2(g)` 必须在乘 A **之前**作用于 K 的各行；它一般不能移到 A 左侧，因为 A 混合的是不同时间位置的数据。
+
+到这里，每个 chunk 已经独立得到 `A/w/u`。下一个 kernel 才沿时间传播状态。
+
+## 5. 块间状态：先减去旧记忆，再推进到块末
+
+`chunk_gated_delta_rule_fwd_h()` 的每个 program 负责一个序列、一个 V head 和一片 V 通道，并在内部顺序遍历 chunk。循环开始时的 `b_h` 就是当前块的入口状态；它先被写入 `h`，供稍后的输出 kernel 使用。
+
+K 维以 64 为一片，Qwen3.5-9B 的 `d_k=128` 因而用到 `b_h1`、`b_h2`。下面两段点积累加得到 $`W S_{\mathrm{in}}`$：
+
+[chunk_delta_h.py · L200–L212](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_delta_h.py#L200-L212)
+
+```python
+p_w = w + o_t[:, None] * (HV*K) + o_k1[None, :]
+b_w = tl.load(p_w, mask=m_t[:, None] & m_k1[None, :], other=0.0)
+if STATE_V_FIRST:
+    b_v = tl.dot(b_w, tl.trans(b_h1).to(b_w.dtype))
+else:
+    b_v = tl.dot(b_w, b_h1.to(b_w.dtype))
+if K > 64:
+    p_w = w + o_t[:, None] * (HV*K) + o_k2[None, :]
+    b_w = tl.load(p_w, mask=m_t[:, None] & m_k2[None, :], other=0.0)
+    if STATE_V_FIRST:
+        b_v += tl.dot(b_w, tl.trans(b_h2).to(b_w.dtype))
+    else:
+        b_v += tl.dot(b_w, b_h2.to(b_w.dtype))
+```
+
+这里 `v` 参数实际传入的是上一节的 `u`。加载 U 后减掉刚才的结果，就得到本块每次写入的误差 E，并存入 `v_new`：
+
+[chunk_delta_h.py · L227–L232](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_delta_h.py#L227-L232)
+
+```python
+p_v = v + o_t[:, None] * (HV*V) + o_v[None, :]
+b_v = tl.load(p_v, mask=m_t[:, None] & m_v[None, :], other=0.0) - b_v
+
+if SAVE_NEW_VALUE:
+    p_v = v_new + o_t[:, None] * (HV*V) + o_v[None, :]
+    tl.store(p_v, b_v.to(p_v.dtype.element_ty), mask=m_t[:, None] & m_v[None, :])
+```
+
+### 5.1 状态如何从块入口走到块末
+
+将第三节的状态展开式取在块末位置 $`C`$：
+
+```math
+S_{\mathrm{out}}
+=\gamma_C S_{\mathrm{in}}
++K^\top\operatorname{diag}\!\left(\gamma_C/\gamma\right)E.
+```
+
+第一项是旧状态衰减到块末，第二项是各次新写入也衰减到块末后再求和。代码恰好按这两项执行：
+
+[chunk_delta_h.py · L234–L247](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_delta_h.py#L234-L247)
+
+```python
+last_idx = min((i_t + 1) * BT, T) - 1
+if USE_G:
+    b_g_last = tl.load(g + (bos * HV + last_idx * HV + i_h).to(tl.int64)).to(tl.float32)
+    p_g = g + (bos * HV + i_h).to(tl.int64) + o_t * HV
+    b_g = tl.load(p_g, mask=m_t, other=0.0).to(tl.float32)
+    b_v = b_v * tl.where(m_t, exp2(b_g_last - b_g), 0)[:, None]
+    b_g_last = exp2(b_g_last)
+    b_h1 *= b_g_last
+    if K > 64:
+        b_h2 *= b_g_last
+    if K > 128:
+        b_h3 *= b_g_last
+    if K > 192:
+        b_h4 *= b_g_last
+```
+
+`b_v` 在保存到 `v_new` 时还是 E；这里才乘上 $`\gamma_C/\gamma_i`$，用于更新块末状态。`last_idx` 取本块最后一个**有效** token，尾块不足 64 个 token 时不会把填充位置当成终点。
+
+接着加载 K，累加写入项。下面展示第一片 K 的更新，其他 K 分片执行相同运算：
+
+[chunk_delta_h.py · L277–L284](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_delta_h.py#L277-L284)
+
+```python
+b_v = b_v.to(k.dtype.element_ty)
+
+p_k = k + o_k1[:, None] + o_t[None, :] * (H*K)
+b_k = tl.load(p_k, mask=m_k1[:, None] & m_t[None, :], other=0.0)
+if STATE_V_FIRST:
+    b_h1 += tl.trans(tl.dot(b_k, b_v))
+else:
+    b_h1 += tl.dot(b_k, b_v)
+```
+
+`b_h1` 等状态累加器保持 FP32，参与 `tl.dot` 时按输入类型转换；块入口快照 `h` 按 K 的 dtype 存储，返回的 `final_state` 使用 FP32。这里同时存在寄存器中的工作状态、供输出使用的块入口快照和最终缓存，读源码时需要区分它们。
+
+这一阶段仍然有块间依赖，但序列上的迭代次数已经从 T 次变成约 $`T/C`$ 次；每次更新中的 $`WS`$ 和 $`K^\top E`$ 都可以使用矩阵乘法。
+
+### 5.2 Packed 序列怎样保持独立
+
+packed 输入把多条序列拼进 `[1, T_total, H, ...]`，但每条序列的 chunk 划分和初始状态仍然独立。`cu_seqlens` 给出 token 边界，`chunk_indices` 给出每个全局 chunk 对应的“序列编号、序列内 chunk 编号”。输出 kernel 的解码如下：
+
+[chunk_o.py · L70–L80](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_o.py#L70-L80)
+
+```python
+if IS_VARLEN:
+    i_tg = i_t
+    i_n, i_t = tl.load(chunk_indices + i_t * 2).to(tl.int32), tl.load(chunk_indices + i_t * 2 + 1).to(tl.int64)
+    bos, eos = tl.load(cu_seqlens + i_n).to(tl.int32), tl.load(cu_seqlens + i_n + 1).to(tl.int32)
+    T = eos - bos
+    NT = tl.cdiv(T, BT)
+else:
+    NT = tl.cdiv(T, BT)
+    i_tg = i_b * NT + i_t
+    bos, eos = i_b * T, i_b * T + T
+
+```
+
+`bos` 用来定位 Q/K/V 的 token 区间；`i_tg` 则用于定位 `h` 中的块入口状态。二者的单位不同：前者数 token，后者数 chunk。每条序列分别分块，不能将整个 packed token 流直接切成连续的 64-token 块，否则一个块可能跨过样本边界。
+
+## 6. 输出：历史状态与块内写入相加
+
+每个位置的输出是 $`o_i=S_i^\top q_i`$。把第三节展开的状态代入，按 token 堆成矩阵：
+
+```math
+\boxed{O=\Gamma Q S_{\mathrm{in}}+(QK^\top\odot D)E.}
+```
+
+第一项查询进入本块之前的历史；第二项查询本块已经发生的写入。计算 E 时的 $`L`$ 是严格下三角，而这里 $`D`$ **包含对角线**，因为输出要读到当前 token 刚写入的内容。
+
+`chunk_fwd_kernel_o()` 先分别累加 $`QS_{\mathrm{in}}`$ 和 $`QK^\top`$：
+
+[chunk_o.py · L111–L117](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_o.py#L111-L117)
+
+```python
+# [BT, BK] @ [BK, BV] -> [BT, BV]
+if STATE_V_FIRST:
+    b_o += tl.dot(b_q, tl.trans(b_h))
+else:
+    b_o += tl.dot(b_q, b_h)
+# [BT, BK] @ [BK, BT] -> [BT, BT]
+b_A += tl.dot(b_q, b_k)
+```
+
+再为两项乘上各自的 gate：
+
+[chunk_o.py · L119–L124](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_o.py#L119-L124)
+
+```python
+if USE_G:
+    g += bos * HV + i_h
+    p_g = g + o_t * HV
+    b_g = tl.load(p_g, mask=m_t, other=0.0)
+    b_o = b_o * exp2(b_g)[:, None]
+    b_A = b_A * exp2(b_g[:, None] - b_g[None, :])
+```
+
+最后加因果 mask，加载 `v_new` 并生成输出：
+
+[chunk_o.py · L130–L140](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_o.py#L130-L140)
+
+```python
+m_A = (o_t[:, None] >= o_t[None, :]) & (m_t[:, None] & m_t)
+b_A = tl.where(m_A, b_A, 0)
+
+p_v = v + o_t[:, None] * (HV*V) + o_v[None, :]
+p_o = o + o_t[:, None] * (HV*V) + o_v[None, :]
+
+b_v = tl.load(p_v, mask=m_t[:, None] & (o_v < V)[None, :], other=0.0)
+# to fix mma -> mma layout conversion
+# already solved by triton v3.2 or higher
+b_o = b_o * scale + tl.dot(b_A.to(b_v.dtype), b_v) * scale
+tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=m_t[:, None] & (o_v < V)[None, :])
+```
+
+传入这个 kernel 的 `v` 就是 E。注意 `scale` 在写回前同时乘给两项；FLA 的 chunk 路径在这里应用 $`d_k^{-1/2}`$，等价于本文公式预先缩放 query，不能重复乘一次。
+
+### 6.1 回到 Qwen：输出门 z 在哪里使用
+
+GDN 内核返回 `[B, T, HV, d_v]` 的结果。Transformers 将它和 `z` 都展平成每行一个 V head，送入 `Qwen3_5RMSNormGated`：
+
+[modeling_qwen3_5.py · L225–L234](https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L225-L234)
+
+```python
+def forward(self, hidden_states: torch.Tensor, gate: torch.Tensor) -> torch.Tensor:
+    input_dtype = hidden_states.dtype
+    hidden_states = hidden_states.to(torch.float32)
+    variance = hidden_states.pow(2).mean(-1, keepdim=True)
+    # Norm before gate
+    hidden_states = hidden_states * torch.rsqrt(variance + self.variance_epsilon)
+    hidden_states = self.weight * hidden_states.to(input_dtype)
+    hidden_states = hidden_states * ACT2FN[self.activation](gate.to(torch.float32))
+
+    return hidden_states.to(input_dtype)
+```
+
+因此这里的操作是
+
+```math
+\widetilde o_t=\operatorname{RMSNorm}(o_t)\odot\operatorname{SiLU}(z_t).
+```
+
+RMSNorm 沿每个 V head 的通道做归一化，之后乘 SiLU 输出门。它和前面的 $`\alpha`$、$`\beta`$ 作用在不同位置：前两者决定状态如何演化，`z` 决定当前输出通过多少。最后把所有 V head 拼接，经过 `out_proj` 返回模型隐藏维度；有 cache 时，同时把 `last_recurrent_state` 存回这一层，供下一次 decode 使用。
+
+## 7. 反向：为什么再次出现 W、U 和状态扫描
+
+chunk 训练路径由 `ChunkGatedDeltaRuleFunction` 接管 autograd。它在前向保存归一化后的 Q/K、原始 V、累计 gate、beta、A 和初始状态等，但没有保存 W、U、所有块入口状态与 `v_new`。因此反向一开始先重算 W/U：
+
+[chunk.py · L147–L155](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L147-L155)
+
+```python
+w, u = recompute_w_u_fwd(
+    k=k,
+    v=v,
+    beta=beta,
+    A=A,
+    g=g,
+    cu_seqlens=cu_seqlens,
+    chunk_indices=chunk_indices,
+)
+```
+
+然后重新调用状态前向，得到 `h/v_new`，并先算输出对块内写入的局部梯度：
+
+[chunk.py · L160–L181](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L160-L181)
+
+```python
+h, v_new, _ = chunk_gated_delta_rule_fwd_h(
+    k=k,
+    w=w,
+    u=u,
+    g=g,
+    initial_state=initial_state,
+    output_final_state=False,
+    cu_seqlens=cu_seqlens,
+    chunk_indices=chunk_indices,
+    state_v_first=state_v_first,
+    chunk_size=chunk_size,
+)
+dv = chunk_bwd_dv_local(
+    q=q,
+    k=k,
+    g=g,
+    do=do,
+    scale=scale,
+    cu_seqlens=cu_seqlens,
+    chunk_indices=chunk_indices,
+    chunk_size=chunk_size,
+)
+```
+
+这对应一个直接的依赖关系：由
+
+```math
+O=\Gamma Q S_{\mathrm{in}}+M E,\qquad M=QK^\top\odot D,
+```
+
+得到当前块输出贡献的 $`\nabla_E=M^\top\nabla_O`$。但 E 也参与块末状态更新，会影响后面所有 chunk，所以反向还要调用 [`chunk_gated_delta_rule_bwd_dhu()`](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L202-L216)，从后往前传播状态梯度，再由 `chunk_bwd_dqkwg()` 计算输出和状态路径的 Q/K/W/g 梯度。
+
+最后通过 W/U 的构造继续反传到原始 K/V/beta/g，并合并 K、g 的两路贡献：
+
+[chunk.py · L233–L246](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L233-L246)
+
+```python
+dk2, dv, db, dg2 = prepare_wy_repr_bwd(
+    k=k,
+    v=v,
+    beta=beta,
+    g=g,
+    A=A,
+    dw=dw,
+    du=dv,
+    cu_seqlens=cu_seqlens,
+    chunk_indices=chunk_indices,
+)
+dk.add_(dk2)
+dg.add_(dg2)
+dg = chunk_local_cumsum(dg, chunk_size=chunk_size, reverse=True, cu_seqlens=cu_seqlens, chunk_indices=chunk_indices)
+```
+
+最后一行是反向 cumsum。前向有 $`G_i=\sum_{j\leq i}g_j`$，因此每个原始 gate 的梯度需要累加所有后续累计 gate 的贡献：
 
 ```math
 \frac{\partial\mathcal L}{\partial g_j}
-=\sum_{i\ge j}\frac{\partial\mathcal L}{\partial G_i}
+=\sum_{i\geq j}\frac{\partial\mathcal L}{\partial G_i}.
 ```
 
-实现使用 reverse cumsum，并在具体计算链中处理 `exp2` 与对数底数转换。若修改 gate 激活或融合位置，需要核对完整链式法则，不能只改前向指数函数
+`exp2` 与 `1 / ln 2` 的换底因子在整条链式求导中抵消；这里需要的就是块内后缀和。Q/K 的 L2 归一化梯度随后由 autograd 包装层计算，再返回模型入口，继续传到卷积、线性投影和 gate 参数。训练因而保留完整的状态依赖，同时通过重计算减少前向中间张量的保存。
 
-**矩阵微分与反向梯度要区分。** 对 $`A=(I+L)^{-1}`$，微分满足 $`\mathrm dA=-A(\mathrm dL)A`$；在以元素内积定义梯度时，对应
+---
 
-```math
-\nabla_L\mathcal L
-=-\operatorname{tril}\!\left(
-A^{\top}(\nabla_A\mathcal L)A^{\top},-1
-\right)
-```
-
-两侧的转置来自向量—雅可比积。kernel 可能通过转置加载、交换操作数来实现它，所以阅读 `tl.dot` 时要连同实际内存视图一起看，不能直接把微分式抄成梯度式。[反向组织](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L126-L250)、[WY 反向](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/wy_fast.py)
-
-## 9. 数值核对与性能边界
-
-### 9.1 先验证公式，再验证低精度 kernel
-
-本文使用独立的逐 token 参考实现和下三角分块实现，对照输出、最终状态以及 Q/K/V/g/beta/初始状态的梯度。FP64 验证覆盖长度 `1/3/7/17/65`、chunk size `1/4/16`，key/value 维度故意取不同的 `5/3`，避免方阵掩盖转置错误
-
-| 核对项 | 最大绝对误差 |
-| --- | ---: |
-| FP64 递推与分块：输出 | `2.22e-16` |
-| FP64 递推与分块：最终状态 | `1.94e-16` |
-| FP64 递推与分块：梯度 | `2.66e-15` |
-| Transformers 5.17.0 实际参考函数：FP32 输出 | `4.47e-7` |
-| Transformers 5.17.0 实际参考函数：FP32 最终状态 | `4.17e-7` |
-
-后一组直接提取正式版源码中的 PyTorch chunk/recurrent 函数，移除选择 kernel 的装饰器后执行，覆盖长度 `1/7/65/137`、非零初始状态以及 Q/K L2 normalization。它验证参考函数的等价性，不代表完整模型端到端评测
-
-另外在 `NVIDIA RTX A1000 Laptop GPU`、`PyTorch 2.12.1+cu130` 上执行了两个版本的真实 Triton 算子，关闭可选 backend dispatch，使对照确实落在本文分析的默认实现。随机种子为 `20260926`；输入尺寸为 `B=1,T=137,H_K=2,H_V=4,d_k=32,d_v=24`，Q/K/V 为 BF16，g/beta/初始状态为 FP32
-
-下面报告相对于 FP32 逐 token 参考的 $`\lVert x-x_{\mathrm{ref}}\rVert_2/\lVert x_{\mathrm{ref}}\rVert_2`$，数值经过四舍五入
-
-| GPU 核对项 | FLA 0.5.2 | 主分支 `954438d` |
-| --- | ---: | ---: |
-| Chunk 输出相对误差 | `4.16e-3` | `4.16e-3` |
-| Chunk 最终状态相对误差 | `3.34e-3` | `3.34e-3` |
-| Q/K/V/g/beta/初始状态六组梯度的最大相对误差 | `5.36e-3` | `5.36e-3` |
-| Recurrent 输出相对误差 | `1.67e-3` | `1.67e-3` |
-| Recurrent 最终状态相对误差 | `1.14e-7` | `1.14e-7` |
-
-同一组数据还检查了两类接口语义：将长度 `3/65/69` 的序列打包后，与分别调用 chunk 算子的输出、最终状态完全一致；将初始状态转成 `[V,K]` 并启用 `state_v_first=True` 后，输出一致，转回来的最终状态最大绝对差约 `1.19e-7`
-
-这些是小尺寸算子验证，覆盖了非整块尾部、GVA、非零初始状态、变长边界和状态转置。它们不等于完整 Qwen3.5 的模型精度评测，也没有覆盖 CP、多卡或其他硬件后端。BF16 chunk 与 FP32 reference 的误差进一步说明了数学等价和浮点逐位一致的区别
-
-### 9.2 性能不能只由复杂度推断
-
-recurrent 的每步状态工作量约为 $`O(d_kd_v)`$；chunk 通过 $`C\times C`$ 的局部交互与状态矩阵乘法提高并行度。主要矩阵工作包括 $`O(Td_kd_v)`$ 与 $`O(TC(d_k+d_v))`$，下三角求解还有自身开销。当 chunk size 固定时，总工作量对序列长度保持线性
-
-这并不直接给出某张 GPU 上的加速倍数。prefill 需要考虑 chunk 数、矩阵乘法效率与中间缓冲；单 token decode 则常受状态读写、launch 开销、并发序列数和 value tile 划分影响。低 batch 下，增加并行 program 可能有益，也可能引入更多 Q/K 重复加载；融合能够减少访存，但可能增加寄存器压力
-
-原文的 cumsum 加速、求解拆分以及特定 decode kernel 收益属于其测量配置。本文没有复跑相同 benchmark，不将这些数字当作最新版的性能结论，也不把数学等价视为更改累积精度的充分依据
-
-## 10. 阅读源码时的对照表
-
-| 原文中的讲解点 | 本文对照当前实现后的处理 |
-| --- | --- |
-| 论文状态常记为 `[V,K]` | 全文统一成默认代码布局 `[K,V]`，显式说明转置 |
-| 用字典条目解释 delta 更新 | 补充单位 key 条件与非正交 key 的相互干扰 |
-| 输出门控的注释 | 明确为 `RMSNorm(o) × SiLU(z)` |
-| 分块输出中的普通 causal mask | 补全区间衰减 $`D_{ij}`$，保留对角线 |
-| 六个数学阶段逐一对应 kernel | 更新成默认 64 路径的 `KKT + solve` 融合 |
-| 自然对数前缀和与 `exp` | 补充当前 chunk 路径的 `RCP_LN2 + exp2` 配套 |
-| GVA 需要在外部复制 Q/K | 区分 Transformers 仍复制与 FLA 已原生支持 |
-| chunk size 不影响数值 | 限定为实数算术等价，浮点结果需要容差验证 |
-| 初始衰减率的估算 | 核对 `(0.01,16)`、模型初始化与 checkpoint 加载 |
-| recurrent 不支持 backward | 限定到当前 FLA 算子实现 |
-| 固定大小的状态缓存 | 同时计入卷积状态，保留 Full Attention 的增长项 |
-
-继续阅读时，可将本文的源码链与 [Token Mixer I](../token-mixer-i/) 中的 Gated DeltaNet、Kimi Linear 和 Gated DeltaNet-2 推导对照。原始算法出处是 [Gated Delta Networks: Improving Mamba2 with Delta Rule](https://arxiv.org/abs/2412.06464)，本次重写的阅读起点为[知乎原文](https://zhuanlan.zhihu.com/p/2007937984738129405)
+本文依据[原文的 GDN 推导与 kernel 解析](https://zhuanlan.zhihu.com/p/2007937984738129405)重新组织，并对照当前源码展开。源码节选来自 [Transformers（Apache-2.0；© 2025 The Qwen Team and The HuggingFace Inc. team）](https://github.com/huggingface/transformers/blob/v5.17.0/LICENSE)及 [FLA（MIT；© 2023–2026 Songlin Yang, Yu Zhang, Zhiyuan Li）](https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/LICENSE)，各段链接固定到正式版。另核对了 Transformers [`27166ea`](https://github.com/huggingface/transformers/tree/27166ea03f12c940f23176a904ab1d2ff1a3dcbb) 与 FLA [`954438d`](https://github.com/fla-org/flash-linear-attention/tree/954438d1fcb5e1bb05c22f9908de9c5c2df74ae5) 主分支；本文所推导的状态递推与 chunk 分解不变。
