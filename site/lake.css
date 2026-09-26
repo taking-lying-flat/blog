@@ -62,6 +62,8 @@
   scrollbar-width: thin;
 }
 .lake-document .lake-math-wide img { display: block; }
+/* Remove the exported blank line after FlashAttention's V-transpose options. */
+.lake-document #u9509cdfc > br { display: none; }
 /* The group OBS update is an unnumbered display equation. */
 .lake-document #ue3e6cab9 > [data-card-id="zSMaf"] {
   display: block;
