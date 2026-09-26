@@ -1,6 +1,6 @@
 # Gated DeltaNet：模型调用、Chunk 与 Recurrent 实现
 
-## 1. GDN 与 Token Mixer
+## GDN 与 Token Mixer
 
 - 标准因果注意力先构造 token 两两之间的相似度，再经过 softmax 归一化。以下采用不含 softmax 的点积形式表示线性注意力，其历史键值对可累积到固定大小的状态矩阵。设 Q/K/V 按 token 排成行，$`M_{ij}=\mathbf 1_{j\le i}`$ 为二值因果掩码，$`\mathcal M_{ij}`$ 在可见位置为 0、不可见位置为 $`-\infty`$，两种输出分别为：
 
@@ -22,9 +22,9 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 
 - 衰减门与写入系数由独立投影生成，不经过 Q/K/V 的短卷积。状态输出先按 head 归一化，再与输出门逐元素相乘，最后投影回隐藏维度。
 
-## 2. 前置知识：线性注意力与 DeltaNet
+## 前置知识：线性注意力与 DeltaNet
 
-### 2.1 线性注意力与 Mamba2
+### 线性注意力与 Mamba2
 
 - 对单个注意力头，$`\boldsymbol q_t,\boldsymbol k_t\in\mathbb R^{d_k}`$、$`\boldsymbol v_t\in\mathbb R^{d_v}`$ 均为列向量，状态 $`\mathbf S_t\in\mathbb R^{d_v\times d_k}`$。论文 §2.1 的线性注意力通过外积累积键值关联，通过矩阵向量乘法读取状态：
 
@@ -64,9 +64,9 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 \end{aligned}
 ```
 
-- 这里 $`\overleftarrow{\boldsymbol q}_{[t]}^r=\gamma_{[t]}^r\boldsymbol q_{[t]}^r`$，$`\overrightarrow{\boldsymbol k}_{[t]}^r=(\gamma_{[t]}^C/\gamma_{[t]}^r)\boldsymbol k_{[t]}^r`$，$`\overrightarrow{\mathbf S}_{[t]}=\gamma_{[t]}^C\mathbf S_{[t]}`$。状态在 chunk 之间递推，块内输出通过矩阵乘法并行计算；第 3 节在这一分解上引入 Delta 更新。
+- 这里 $`\overleftarrow{\boldsymbol q}_{[t]}^r=\gamma_{[t]}^r\boldsymbol q_{[t]}^r`$，$`\overrightarrow{\boldsymbol k}_{[t]}^r=(\gamma_{[t]}^C/\gamma_{[t]}^r)\boldsymbol k_{[t]}^r`$，$`\overrightarrow{\mathbf S}_{[t]}=\gamma_{[t]}^C\mathbf S_{[t]}`$。状态在 chunk 之间递推，块内输出通过矩阵乘法并行计算。
 
-### 2.2 DeltaNet 与 Gated Delta Rule
+### DeltaNet 与 Gated Delta Rule
 
 - 标量门对整个状态统一衰减。DeltaNet 则先由 $`\mathbf S_{t-1}\boldsymbol k_t`$ 读取当前 key 对应的旧 value，再以 beta 控制旧值擦除和新值写入。对应论文 §2.2 的更新为：
 
@@ -80,7 +80,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 \end{aligned}
 ```
 
-- $`\mathbf I-\beta_t\boldsymbol k_t\boldsymbol k_t^\top`$ 是广义 Householder 转移矩阵；单位 key 且 $`\beta_t=2`$ 时为标准 Householder 反射。当前 sigmoid 写入门取 $`\beta_t\in(0,1)`$，控制沿 key 方向的部分擦除；正交方向不受这项更新影响。连续转移矩阵的乘积可用 WY 表示组织为块矩阵计算，具体对应第 3.1 节。
+- $`\mathbf I-\beta_t\boldsymbol k_t\boldsymbol k_t^\top`$ 是广义 Householder 转移矩阵；单位 key 且 $`\beta_t=2`$ 时为标准 Householder 反射。当前 sigmoid 写入门取 $`\beta_t\in(0,1)`$，控制沿 key 方向的部分擦除；正交方向不受这项更新影响。连续转移矩阵的乘积可用 WY 表示组织为块矩阵计算。
 
 - Gated DeltaNet 将全局衰减与 Delta 更新结合，对应论文 Eq. (10)：先衰减入口状态，再按当前键值关联完成残差写入。
 
@@ -95,7 +95,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 
 - $`\alpha_t`$ 控制历史状态的整体衰减，$`\beta_t`$ 控制当前 key 方向的更新强度。令 $`\alpha_t=1`$ 即退化为 DeltaNet；单位 key 且 $`\beta_t=1`$ 时，该方向上的旧 value 被新 value 替换。
 
-### 2.3 在线学习与 TTT 视角
+### 在线学习与 TTT 视角
 
 - 论文 Table 1 将 GDN 更新表示为在线目标的闭式解。该目标的参考状态为衰减后的 $`\alpha_t\mathbf S_{t-1}`$，关联项使用当前键值对相对于该参考状态的残差：
 
@@ -120,9 +120,9 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 
 - GDN 在这一步更新前加入自适应权重衰减 alpha。在线目标给出状态更新的闭式形式，TTT 则将同一状态递推解释为对键值回归问题的逐 token 优化。
 
-## 3. Chunk 的矩阵表示
+## Chunk 的矩阵表示
 
-### 3.1 DeltaNet 的 WY 表示与 UT 变换
+### DeltaNet 的 WY 表示与 UT 变换
 
 - 将序列划分为长度 C 的块，块内 Q/K/V 按 token 排成行。$`\mathbf S_{[t]}`$ 为第 t 块的入口状态，$`\mathbf S_{[t]}^r`$ 为处理块内前 r 个 token 后的状态。不含衰减的 DeltaNet 在块内累积广义 Householder 转移矩阵；WY 表示将这一连乘写成单位矩阵减去低秩项，对应论文 Eq. (4)：
 
@@ -155,9 +155,9 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 \end{aligned}
 ```
 
-- WY 表示把转移矩阵的连乘改写为低秩更新的累加；UT 变换进一步将 W/U 的计算组织成三角求解与矩阵乘法。求解内部的因果依赖仍然存在，第 5.4 节通过 16×16 局部前代与块间合并实现这一过程。
+- WY 表示把转移矩阵的连乘改写为低秩更新的累加；UT 变换进一步将 W/U 的计算组织成三角求解与矩阵乘法。求解内部的因果依赖仍然存在，通过 16×16 局部前代与块间合并完成计算。
 
-### 3.2 Gated DeltaNet 的衰减与扩展 WY 表示
+### Gated DeltaNet 的衰减与扩展 WY 表示
 
 - 在每个 chunk 内定义累计衰减 $`\gamma_{[t]}^r=\prod_{i=1}^r\alpha_{[t]}^i`$。将 Gated Delta Rule 展开，块内状态由入口状态的传播与当前块的新增状态组成：
 
@@ -196,9 +196,9 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 \operatorname{diag}(\beta_{[t]})\mathbf V_{[t]}.
 ```
 
-- 与 DeltaNet 相比，三角系统中的 Gram 矩阵由 $`\mathbf K_{[t]}\mathbf K_{[t]}^\top`$ 改为 $`\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^\top`$。第 5.3 节构造这一系数，第 5.4 节求逆，第 5.5 节将逆变换应用于 K/V。
+- 与 DeltaNet 相比，三角系统中的 Gram 矩阵由 $`\mathbf K_{[t]}\mathbf K_{[t]}^\top`$ 改为 $`\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^\top`$。
 
-### 3.3 块间状态与块内输出
+### 块间状态与块内输出
 
 - 沿用论文的箭头记号，将入口到当前位置、当前位置到块末的衰减分别写为：
 
@@ -212,7 +212,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 \end{aligned}
 ```
 
-- 其中 W 为第 3.1 节无衰减 DeltaNet 的 WY 系数。块间状态更新先将入口状态衰减至块末，再累积当前块的残差写入；论文原式为：
+- 其中 W 为无衰减 DeltaNet 的 WY 系数。块间状态更新先将入口状态衰减至块末，再累积当前块的残差写入；论文原式为：
 
 ```math
 \mathbf S_{[t+1]}=\overrightarrow{\mathbf S}_{[t]}+
@@ -230,13 +230,13 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 \overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top\right).
 ```
 
-- 上式保留论文的 M 记号；若 M 仅表示二值因果掩码，局部项还缺少 $`\gamma_{[t]}^i/\gamma_{[t]}^j`$。FLA 显式乘入这一衰减，因此第 5.7 节对照代码时将该处写为 $`\Gamma_{[t]}`$，其余矩阵与箭头记号保持一致。
+- 上式保留论文的 M 记号；若 M 仅表示二值因果掩码，局部项还缺少 $`\gamma_{[t]}^i/\gamma_{[t]}^j`$。FLA 显式乘入这一衰减，对应带衰减的因果掩码 $`\Gamma_{[t]}`$。
 
-- W/U 可以按 chunk 并行生成；状态更新按 chunk 顺序推进；各块入口状态得到后，输出再次按 chunk 并行。块内残差 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top`$ 在状态更新与输出计算之间复用，分别对应第 5.6、5.7 节。
+- W/U 可以按 chunk 并行生成；状态更新按 chunk 顺序推进；各块入口状态得到后，输出再次按 chunk 并行。块内残差 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top`$ 在状态更新与输出计算之间复用。
 
-## 4. 模型调用方式：Qwen3.5 GatedDeltaNet
+## 模型调用方式：Qwen3.5 GatedDeltaNet
 
-### 4.1 输入投影
+### 输入投影
 
 - 设输入为 $`X\in\mathbb R^{T\times d_{\mathrm{model}}}`$。Q/K 的总投影维度为 $`d_Q=H_Kd_k`$，V 的总投影维度为 $`d_V=H_Vd_v`$。四个线性映射分别产生卷积输入、衰减参数、写入参数和输出门：
 
@@ -255,7 +255,7 @@ self.in_proj_b = nn.Linear(self.hidden_size, self.num_v_heads, bias=False)
 self.in_proj_z = nn.Linear(self.hidden_size, self.value_dim, bias=False)
 ```
 
-### 4.2 Short Conv、门控与 Head 映射
+### Short Conv、门控与 Head 映射
 
 - **Short Conv 的计算。** Q/K/V 的联合投影 P 先经过 depthwise causal convolution，再应用 SiLU。每个通道有独立的宽度 w 的卷积核，不进行通道间混合。按 PyTorch 的权重排列，第 c 个通道在位置 t 的输出为：
 
@@ -358,7 +358,7 @@ def causal_conv1d_update(
     return out.to(hidden_states.dtype)
 ```
 
-### 4.3 状态算子与输出门控
+### 状态算子与输出门控
 
 - Q/K 在进入状态更新前沿 head 维归一化。记 $`\mathcal D`$ 为 Gated Delta Rule 算子，则输入归一化、状态计算和输出映射可写为：
 
@@ -412,9 +412,9 @@ core_attn_out = self.norm(
 output = self.out_proj(core_attn_out.reshape(batch_size, seq_len, -1))
 ```
 
-## 5. Chunk-wise 算法代码解析
+## Chunk-wise 算法代码解析
 
-### 5.1 前向计算的矩阵分解
+### 前向计算的矩阵分解
 
 - Chunk 前向围绕论文中的 $`\widetilde{\mathbf U}_{[t]}`$、$`\overleftarrow{\mathbf W}_{[t]}`$、$`\mathbf S_{[t]}`$ 和 $`\mathbf O_{[t]}`$ 展开。计算顺序为：累计门控、构造 KKT、求解下三角系统、生成 W/U、递推状态、计算输出。其中状态与输出复用同一个残差：
 
@@ -446,7 +446,7 @@ o = chunk_fwd_o(
 )
 ```
 
-### 5.2 累积门控：将连乘转为前缀和
+### 累积门控：将连乘转为前缀和
 
 - 逐 token 的输入为 $`g_{[t]}^i=\log\alpha_{[t]}^i`$。对每个 chunk 独立求前缀和，即得到累计衰减的对数：
 
@@ -502,7 +502,7 @@ def chunk_local_cumsum_scalar_kernel(
 
 - 每个 chunk 独立累计 gate。块前历史已经包含在入口状态中，再乘当前块的累计衰减即可；因此前缀和不需要跨 chunk 延伸。对于变长输入，块索引同时指定序列编号和序列内块编号，累计过程不能跨越序列边界。
 
-### 5.3 KKT：构造块内递推系数
+### KKT：构造块内递推系数
 
 - 第 $`i`$ 个位置的 Delta 修正依赖更早位置的 key 内积。更新系数按行缩放，区间衰减逐元素作用于 Gram 矩阵，得到：
 
@@ -522,7 +522,7 @@ def chunk_local_cumsum_scalar_kernel(
 
 - `fla/ops/common/chunk_scaled_dot_kkt.py` 的 `chunk_scaled_dot_kkt_fwd_kernel` 实现这一计算。网格为 `(NT, B * HV)`，每个 program 生成一个 head 的块内系数。K 维按 `BK` 分片，`tl.dot(b_k, tl.trans(b_k))` 将各片段的内积累加到 FP32 的 `[BT, BT]` 矩阵中。
 
-- 这是 16/32-token 分步路径使用的 kernel；64-token 默认路径将相同计算与下一节的求解融合。先展开独立 KKT，能够直接对应“内积、衰减、beta、严格下三角”四个矩阵操作。
+- 这是 16/32-token 分步路径使用的 kernel；64-token 默认路径将相同计算与下三角求解融合。独立 KKT 对应内积、衰减、beta、严格下三角四个矩阵操作。
 
 - **第一段：定位 chunk 并累计 Gram 矩阵。** `chunk_indices` 给出序列编号与序列内块编号，`cu_seqlens` 确定起点 `bos` 和有效长度 T；定长分支直接通过 batch 编号计算起点。K 维按 `BK` 分片，逐片累加 $`\mathbf K_{[t]}\mathbf K_{[t]}^\top`$。`i_h // (HV // H)` 将 value head 映射到共享的 key head；K 的时间步长为 `H * K`，beta 的时间步长为 `HV`。`m_t` 屏蔽尾块的无效 token。
 
@@ -579,7 +579,7 @@ tl.store(p_A, b_A.to(p_A.dtype.element_ty), mask=m_t[:, None])
 
 - 64-token 融合 kernel 位于 `fla/ops/gated_delta_rule/chunk_fwd.py`，名称为 `chunk_gated_delta_rule_fwd_kkt_solve_kernel`。它将时间维拆成四个 16-token 子块，只计算四个对角块和六个非对角下三角块；对角块额外应用严格下三角掩码。这十个子矩阵保留在寄存器中，直接进入前代与合并阶段。
 
-### 5.4 下三角求解：局部前代与块间合并
+### 下三角求解：局部前代与块间合并
 
 - 上一步得到严格下三角矩阵 $`\mathbf A_{[t]}`$。包含 beta 的完整 UT 变换为：
 
@@ -690,7 +690,7 @@ b_Ai30 = -tl.dot(
 
 - 通用 `solve_tril` 在环境支持时使用 TMA descriptor，`FLA_TRIL_PRECISION` 默认 `ieee`；支持 TMA 时，autotune 在 `ieee` 与用户指定精度之间选择。GDN 默认融合 kernel 使用普通指针加载，块合并在支持 TF32 时使用 `tf32`，否则使用 `ieee`。二者使用同一分块求解原理，但访存与精度配置不同。
 
-### 5.5 W/U：共享同一个三角变换
+### W/U：共享同一个三角变换
 
 - `fla/ops/gated_delta_rule/wy_fast.py` 的 `recompute_w_u_fwd_kernel` 使用网格 `(NT, B * HV)`，每个 program 处理一个 chunk、一个 value head。读取求解后的逆矩阵 `b_A`，分别对 V、K 执行矩阵乘法，生成 $`\widetilde{\mathbf U}_{[t]}`$ 与 $`\overleftarrow{\mathbf W}_{[t]}`$。
 
@@ -759,7 +759,7 @@ for i_k in range(tl.cdiv(K, BK)):
 
 - K 的 head 通过 `i_h // (HV // H)` 映射到共享的 key head，W 则为每个 value head 独立保存。U 不需要额外乘 gamma：它的块内衰减已经包含在三角系数 $`\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^\top`$ 中；W 的额外 gamma 用于入口状态向块内各位置的传播。
 
-### 5.6 块间状态：残差校正与衰减写入
+### 块间状态：残差校正与衰减写入
 
 - `fla/ops/common/chunk_delta_h.py` 的 `chunk_gated_delta_rule_fwd_kernel_h_blockdim64` 实现论文的块间递推：
 
@@ -839,9 +839,9 @@ b_h2 += tl.dot(b_k, b_v)
 
 - `last_idx` 取当前 chunk 的最后一个有效 token；尾块不足 64 个 token 时，衰减终点随有效长度缩短。`exp2(b_g_last - b_g)` 对残差施加位置到块末的衰减，`exp2(b_g_last)` 则整体缩放入口状态。随后两次 `tl.dot(b_k, b_v)` 分别将同一份残差写入两片状态，组成下一块的入口状态。
 
-- `v_new` 必须在乘块末衰减之前保存，因为下一节需要按每个 query 的位置计算区间衰减。状态寄存器在循环内持续更新；循环结束后，按 `STORE_FINAL_STATE` 写回最终状态 `ht`。packed 输入用 `cu_seqlens` 定位 token，用 `chunk_offsets` 定位块入口状态，各序列独立递推。
+- `v_new` 必须在乘块末衰减之前保存，因为块内输出需要按每个 query 的位置计算区间衰减。状态寄存器在循环内持续更新；循环结束后，按 `STORE_FINAL_STATE` 写回最终状态 `ht`。packed 输入用 `cu_seqlens` 定位 token，用 `chunk_offsets` 定位块入口状态，各序列独立递推。
 
-### 5.7 块内输出：历史项与局部项
+### 块内输出：历史项与局部项
 
 - `fla/ops/common/chunk_o.py` 的 `chunk_fwd_kernel_o` 读取块入口状态与 `v_new`，实现论文输出式中的两项。将局部项的区间衰减显式写出，并保留代码中的缩放 $`s=d_k^{-1/2}`$：
 
@@ -930,7 +930,7 @@ tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=m_t[:, None] & (o_v < V)[None, 
 
 - 参数 `v` 传入上一阶段保存的 `v_new`。最后一次 `tl.dot` 汇总块内残差，并与历史项相加、乘 `scale` 后写回输出。变长输入通过全局 chunk 编号 `i_tg` 读取入口状态，通过序列内 chunk 编号 `i_t` 读取 Q/K/V，二者不能混用。
 
-### 5.8 反向传播：状态伴随与三角变换梯度
+### 反向传播：状态伴随与三角变换梯度
 
 - 输出计算与块末状态都依赖 $`\mathbf V_{\mathrm{new},[t]}`$，因此残差梯度由两条路径相加：
 
@@ -971,9 +971,9 @@ dg.add_(dg2)
 dg = chunk_local_cumsum(dg, chunk_size=64, reverse=True)
 ```
 
-## 6. Recurrent 算法代码解析
+## Recurrent 算法代码解析
 
-### 6.1 状态分块与并行网格
+### 状态分块与并行网格
 
 - Recurrent kernel 将每个序列、每个 value head 的状态沿 value 维划分。对于 scalar gate 分支，线程块尺寸与输出状态缓冲区为：
 
@@ -1001,7 +1001,7 @@ grid = (NV, N * HV)
 
 - 这里 N 为序列数，$`H_V`$ 为 value head 数。Q/K head 通过 `i_hv // (HV // H)` 映射，同一组 value head 共享 Q/K 输入，但各自维护独立的状态。prefill 写出的 chunk 末态与此处初始状态使用同一种缓冲区排列，二者之间不需要重新组织数学状态。
 
-### 6.2 逐 Token 更新：衰减、残差与读出
+### 逐 Token 更新：衰减、残差与读出
 
 - 以代码中的状态矩阵 $`H_t=S_t^\top`$ 表示递推。完成 Q/K 归一化后，一步更新由以下算式组成：
 
