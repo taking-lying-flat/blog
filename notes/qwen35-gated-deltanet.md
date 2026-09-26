@@ -1,4 +1,4 @@
-# Gated DeltaNet：模型调用、Chunk 与 Recurrent 实现
+# Gated DeltaNet
 
 ## GDN 与 Token Mixer
 
