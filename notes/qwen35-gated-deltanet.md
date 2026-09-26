@@ -10,7 +10,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 \qquad s=d_k^{-1/2}.
 ```
 
-- 上述并行表达式包含序列长度平方数量的成对权重。FlashAttention 可通过分块与融合避免完整权重矩阵的显存往返，但成对计算量仍随序列长度平方增长。线性注意力的优势来自其等价递推：每个 head 维护 $`d_v\times d_k`$ 的状态，单步更新与读出均为 $`O(d_kd_v)`$。因果掩码不能直接移到矩阵乘法外，因此训练时需要 chunkwise 分解，将块内计算组织为矩阵乘法，将块间依赖压缩到状态传递。
+- 上述并行表达式包含序列长度平方数量的成对权重。FlashAttention 可通过分块与融合避免完整权重矩阵的显存往返，但成对计算量仍随序列长度平方增长。线性注意力的优势来自其等价递推：每个 head 维护 $`d_v\times d_k`$ 的状态，单步更新与读出均为 $`O(d_kd_v)`$。因果掩码不能直接移到矩阵乘法外，训练时可通过 chunkwise 分解，将块内计算组织为矩阵乘法，将块间依赖压缩到状态传递。
 
 - 状态矩阵构成从 key 到 value 的线性关联记忆。外积叠加时，非正交 key 之间的交叉内积会耦合不同关联，形成检索干扰。GDN 以 $`\alpha_tS_{t-1}`$ 为衰减后的参考状态，以 $`v_t-\alpha_tS_{t-1}k_t`$ 为当前键值对的预测残差，沿 key 方向执行秩一校正。其中，$`\alpha_t`$ 调节历史状态的整体保留比例，$`\beta_t`$ 调节残差校正的步长，二者共同决定状态的遗忘与写入。输出门对状态读出结果进行逐通道调制，不参与状态递推。
 
@@ -18,7 +18,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
   <img src="../../assets/gdn-architecture.png" alt="Gated DeltaNet 模型结构与 token mixer" width="2058" height="1122">
 </figure>
 
-- Token mixer 的 Q/K/V 分支依次经过线性投影、逐通道短因果卷积和 SiLU，Q/K 再沿 head 维做 L2 归一化。短卷积提供局部时序特征，Gated Delta Rule 维护跨 token 的矩阵状态；两者在解码时分别保留卷积窗口与 recurrent state。
+- Token mixer 的 Q/K/V 分支依次经过线性投影、逐通道短因果卷积和 SiLU，Q/K 再沿每个 head 的特征维做 L2 归一化。短卷积提供局部时序特征，Gated Delta Rule 维护跨 token 的矩阵状态；两者在解码时分别保留卷积窗口与 recurrent state。
 
 - 衰减门与写入系数由独立投影生成，不经过 Q/K/V 的短卷积。状态输出先按 head 归一化，再与输出门逐元素相乘，最后投影回隐藏维度。
 
@@ -26,7 +26,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 
 ### 线性注意力与 Mamba2
 
-- 对单个注意力头，$`\boldsymbol q_t,\boldsymbol k_t\in\mathbb R^{d_k}`$、$`\boldsymbol v_t\in\mathbb R^{d_v}`$ 均为列向量，状态 $`\mathbf S_t\in\mathbb R^{d_v\times d_k}`$。论文 §2.1 的线性注意力通过外积累积键值关联，通过矩阵向量乘法读取状态：
+- 对单个注意力头，$`\boldsymbol q_t,\boldsymbol k_t\in\mathbb R^{d_k}`$、$`\boldsymbol v_t\in\mathbb R^{d_v}`$ 均为列向量，状态 $`\mathbf S_t\in\mathbb R^{d_v\times d_k}`$。下述论文推导取输出缩放 $`s=1`$，实现部分保留 $`s=d_k^{-1/2}`$。论文 §2.1 的线性注意力通过外积累积键值关联，通过矩阵向量乘法读取状态：
 
 ```math
 \mathbf S_t=\mathbf S_{t-1}+\boldsymbol v_t\boldsymbol k_t^\top,
@@ -53,7 +53,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 \end{aligned}
 ```
 
-- 分块训练将序列划分为长度 C 的 chunk。入口状态向块内位置 r 传播时乘 $`\gamma_{[t]}^r`$，当前位置的写入传播到块末时乘 $`\gamma_{[t]}^C/\gamma_{[t]}^r`$。将这些系数分别吸收到 Q、K 和入口状态中，得到论文 Eq. (2) 的分块形式：
+- 分块训练将序列划分为长度 C 的 chunk，块内累计衰减为 $`\gamma_{[t]}^r=\prod_{i=1}^{r}\alpha_{[t]}^i`$，$`\gamma_{[t]}^0=1`$。入口状态向块内位置 r 传播时乘 $`\gamma_{[t]}^r`$，当前位置的写入传播到块末时乘 $`\gamma_{[t]}^C/\gamma_{[t]}^r`$。将这些系数分别吸收到 Q、K 和入口状态中，得到论文 Eq. (2) 的分块形式：
 
 ```math
 \begin{aligned}
@@ -127,7 +127,7 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 =\mathbf I-\sum_{i=1}^{r}\boldsymbol w_{[t]}^i\boldsymbol k_{[t]}^{i\top}.
 ```
 
-- WY 系数按以下递推生成，对应论文 Eq. (4)。每个新 key 的写入系数需要扣除此前 key 内积带来的贡献：
+- 乘积按 token 顺序从左向右排列。WY 系数按以下递推生成，对应论文 Eq. (4)。每个新 key 的写入系数需要扣除此前 key 内积带来的贡献：
 
 ```math
 \boldsymbol w_{[t]}^r=\beta_{[t]}^r\left(
@@ -243,10 +243,33 @@ P=XW_{qkv}^{\top},\qquad a=XW_a^{\top},\quad b=XW_b^{\top},\qquad Z=XW_z^{\top}.
 
 ```python
 def __init__(self, config: Qwen3_5MoeConfig, layer_idx: int):
-    self.in_proj_qkv = nn.Linear(self.hidden_size, 2 * self.key_dim + self.value_dim, bias=False)
-    self.in_proj_a = nn.Linear(self.hidden_size, self.num_v_heads, bias=False)
-    self.in_proj_b = nn.Linear(self.hidden_size, self.num_v_heads, bias=False)
+    super().__init__()
+    self.hidden_size = config.hidden_size
+    self.num_v_heads = config.linear_num_value_heads
+    self.num_k_heads = config.linear_num_key_heads
+    self.head_k_dim = config.linear_key_head_dim
+    self.head_v_dim = config.linear_value_head_dim
+    self.key_dim = self.head_k_dim * self.num_k_heads
+    self.value_dim = self.head_v_dim * self.num_v_heads
+    self.conv_kernel_size = config.linear_conv_kernel_dim
+    self.layer_idx = layer_idx
+    self.activation = config.hidden_act
+    self.layer_norm_epsilon = config.rms_norm_eps
+    self.conv_dim = self.key_dim * 2 + self.value_dim
+    self.conv1d = nn.Conv1d(
+        in_channels=self.conv_dim, out_channels=self.conv_dim, bias=False,
+        kernel_size=self.conv_kernel_size, groups=self.conv_dim, padding=self.conv_kernel_size - 1,
+    )
+    self.dt_bias = nn.Parameter(torch.ones(self.num_v_heads))
+    A = torch.empty(self.num_v_heads).uniform_(0.01, 16)
+    self.A_log = nn.Parameter(torch.log(A))
+    self.norm = Qwen3_5MoeRMSNormGated(self.head_v_dim, eps=self.layer_norm_epsilon)
+    self.out_proj = nn.Linear(self.value_dim, self.hidden_size, bias=False)
+    self.layer_type = config.layer_types[layer_idx]
+    self.in_proj_qkv = nn.Linear(self.hidden_size, self.key_dim * 2 + self.value_dim, bias=False)
     self.in_proj_z = nn.Linear(self.hidden_size, self.value_dim, bias=False)
+    self.in_proj_b = nn.Linear(self.hidden_size, self.num_v_heads, bias=False)
+    self.in_proj_a = nn.Linear(self.hidden_size, self.num_v_heads, bias=False)
 ```
 
 ### Short Conv、门控与 Head 映射
@@ -301,13 +324,15 @@ g&=-\exp(A_{\log})\odot\operatorname{softplus}(a+d_{\mathrm{bias}}),
 
 - 短卷积沿时间维混合局部上下文，各通道之间不发生卷积混合。合并投影的输出在卷积时采用 `[batch, channels, time]` 排列，卷积后恢复时间优先布局，再拆分为多头 Q/K/V。
 
-- `A_log` 和 `dt_bias` 是每个 value head 的可学习参数。上述参数化保证 `g` 为负值，从而将历史衰减限制在 0 与 1 之间；`beta` 经 sigmoid 控制残差写入强度。Grouped Value Attention 通过 head 映射使多个 value head 共享 Q/K，模型代码使用 `repeat_interleave` 显式实现该映射。
+- `A_log` 和 `dt_bias` 是每个 value head 的可学习参数。上述参数化保证 `g` 为负值，从而将历史衰减限制在 0 与 1 之间；`beta` 经 sigmoid 控制残差写入强度。Grouped Value Attention 通过 head 映射使多个 value head 共享 Q/K，模型代码使用 `repeat_interleave` 显式实现该映射。下面展示无缓存输入的投影与卷积分支。
 
 ```python
 def forward(
     self, hidden_states: torch.Tensor, cache_params: Cache | None = None,
     attention_mask: torch.Tensor | None = None, **kwargs: Unpack[TransformersKwargs],
 ):
+    hidden_states = apply_mask_to_padding_states(hidden_states, attention_mask)
+    batch_size, seq_len, _ = hidden_states.shape
     mixed_qkv = self.in_proj_qkv(hidden_states).transpose(1, 2)
     mixed_qkv = causal_conv1d_fn(
         mixed_qkv,
@@ -356,7 +381,7 @@ def causal_conv1d_update(
 
 ### 状态算子与输出门控
 
-- Q/K 在进入状态更新前沿 head 维归一化。记 $`\mathcal D`$ 为 Gated Delta Rule 算子，则输入归一化、状态计算和输出映射可写为：
+- Q/K 在进入状态更新前沿每个 head 的特征维归一化。记 $`\mathcal D`$ 为 Gated Delta Rule 算子，则输入归一化、状态计算和输出映射可写为：
 
 ```math
 \begin{aligned}
@@ -369,7 +394,7 @@ Y&=\operatorname{Concat}_{h}\!\left[
 \end{aligned}
 ```
 
-- Chunk 与 recurrent 实现同一个状态算子。模型根据输入长度和已有状态选择计算方式：完整序列使用 chunk；存在缓存且输入长度为 1 时使用 recurrent。两者均返回当前输出和序列末态，末态回写缓存，供后续输入接续计算。
+- Chunk 与 recurrent 实现同一个状态算子。模型根据输入长度和已有状态选择计算方式：完整序列使用 chunk；存在缓存且输入长度为 1 时使用 recurrent。两者均返回当前输出；启用缓存时还返回序列末态并回写缓存，供后续输入接续计算。
 
 - 输出归一化独立作用于每个 value head。`self.norm` 先执行 RMSNorm，再乘 `SiLU(z)`；head 维合并后，`out_proj` 将结果映射回模型隐藏维度。以下代码合并了两条分支中相同的调用参数。
 
@@ -434,7 +459,7 @@ output = self.out_proj(core_attn_out.reshape(batch_size, seq_len, -1))
 
 - `chunk_gated_delta_rule_fwd_intra` 构造并求解块内系统，生成逆矩阵 `A`、`u` 和 `w`；`chunk_gated_delta_rule_fwd_h` 引入块入口状态，计算 `v_new` 及下一块状态；`chunk_fwd_o` 完成输出计算。这里 `h` 保存所有块的入口状态，`final_state` 保存各序列的最终状态。
 
-- 默认 64-token 路径将 KKT 构造与下三角求解融合执行，随后单独生成 W/U。块内变换可以跨 chunk 并行；状态更新仍按 chunk 顺序递推；入口状态生成后，各块输出又可以并行计算。下面保留固定长度、无 context parallelism 的调用主干。
+- 默认 64-token 路径将 KKT 构造与下三角求解融合执行，随后单独生成 W/U。块内变换可以跨 chunk 并行；状态更新仍按 chunk 顺序递推；入口状态生成后，各块输出又可以并行计算。下面给出前向入口，块内分析采用固定长度、无 context parallelism、外部已计算 gate 的默认分支。
 
 ```python
 def chunk_gated_delta_rule_fwd(
@@ -445,15 +470,38 @@ def chunk_gated_delta_rule_fwd(
     use_gate_in_kernel: bool = False, A_log: torch.Tensor | None = None,
     dt_bias: torch.Tensor | None = None, chunk_size: int = 64,
 ):
-    g = chunk_local_cumsum(g, chunk_size=64, scale=RCP_LN2)
-    w, u, A = chunk_gated_delta_rule_fwd_intra(k=k, v=v, g=g, beta=beta, chunk_size=64)
-    h, v_new, final_state = chunk_gated_delta_rule_fwd_h(
-        k=k, w=w, u=u, g=g,
-        initial_state=initial_state,
-        output_final_state=output_final_state,
-        chunk_size=64,
+    g_input = g if use_gate_in_kernel else None
+    if use_gate_in_kernel:
+        g = gdn_gate_chunk_cumsum(
+            g=g, A_log=A_log, chunk_size=chunk_size, scale=RCP_LN2, dt_bias=dt_bias,
+            cu_seqlens=cu_seqlens, chunk_indices=chunk_indices,
+        )
+    else:
+        g = chunk_local_cumsum(
+            g, chunk_size=chunk_size, scale=RCP_LN2, cu_seqlens=cu_seqlens,
+            chunk_indices=chunk_indices,
+        )
+    w, u, A = chunk_gated_delta_rule_fwd_intra(
+        k=k, v=v, g=g, beta=beta, cu_seqlens=cu_seqlens, chunk_indices=chunk_indices,
+        chunk_size=chunk_size,
     )
-    o = chunk_fwd_o(q=q, k=k, v=v_new, h=h, g=g, scale=scale, chunk_size=64)
+    if cp_context is not None:
+        initial_state = chunk_gated_delta_rule_fwd_h_pre_process(
+            k=k, w=w, u=u, g=g, cu_seqlens=cu_seqlens, initial_state=initial_state,
+            context=cp_context, state_v_first=state_v_first, chunk_size=chunk_size,
+        )
+    h, v_new, final_state = chunk_gated_delta_rule_fwd_h(
+        k=k, w=w, u=u, g=g, initial_state=initial_state, output_final_state=output_final_state,
+        cu_seqlens=cu_seqlens, chunk_indices=chunk_indices, state_v_first=state_v_first,
+        chunk_size=chunk_size,
+    )
+    if cp_context is not None:
+        initial_state = compress_h0(initial_state, context=cp_context)
+    o = chunk_fwd_o(
+        q=q, k=k, v=v_new, h=h, g=g, scale=scale, cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices, state_v_first=state_v_first, chunk_size=chunk_size,
+    )
+    return (g, o, A, final_state, initial_state, g_input)
 ```
 
 - **分块为什么仍与逐 token 递推等价。** 在一个 chunk 内省略块编号，令 $`\mathbf B_\beta=\operatorname{diag}(\beta)`$、$`\mathbf D=\operatorname{diag}(\gamma)`$、$`\mathbf H_0=\mathbf S_{[t]}^\top`$，把实际写入向量按行组成 $`\mathbf E=\mathbf V_{\mathrm{new},[t]}`$。位置 i 的残差必须扣除入口状态和此前写入在当前 key 上的预测：
@@ -608,6 +656,7 @@ def chunk_gated_delta_rule_fwd_kkt_solve_kernel(
     K: tl.constexpr, BT: tl.constexpr, BC: tl.constexpr, BK: tl.constexpr, USE_G: tl.constexpr,
     IS_VARLEN: tl.constexpr,
 ):
+    ...
     m_d = o_i[:, None] > o_i[None, :]
     m_I = o_i[:, None] == o_i[None, :]
     b_A00 *= tl.where(m_d & m_tc0[:, None] & m_tc0[None, :], exp2(b_g0[:, None] - b_g0[None, :]), 0.)
@@ -749,6 +798,7 @@ def recompute_w_u_fwd_kernel(
     K: tl.constexpr, V: tl.constexpr, BT: tl.constexpr, BK: tl.constexpr, BV: tl.constexpr,
     USE_G: tl.constexpr, IS_VARLEN: tl.constexpr,
 ):
+    ...
     o_t = i_t * BT + tl.arange(0, BT)
     o_A = tl.arange(0, BT)
     m_t = o_t < T
@@ -844,27 +894,29 @@ def chunk_gated_delta_rule_fwd_kernel_h_blockdim64(
     STORE_FINAL_STATE: tl.constexpr, SAVE_NEW_VALUE: tl.constexpr, STATE_V_FIRST: tl.constexpr,
     IS_VARLEN: tl.constexpr,
 ):
-    i_t_int64 = i_t.to(tl.int64)
-    o_t = i_t * BT + tl.arange(0, BT)
-    m_t = o_t < T
-    p_h1 = h + i_t_int64 * HV*K*V + o_k1[:, None] * V + o_v[None, :]
-    m_h1 = m_k1[:, None] & m_v[None, :]
-    tl.store(p_h1, b_h1.to(p_h1.dtype.element_ty), mask=m_h1)
-    p_h2 = h + i_t_int64 * HV*K*V + o_k2[:, None] * V + o_v[None, :]
-    m_h2 = m_k2[:, None] & m_v[None, :]
-    tl.store(p_h2, b_h2.to(p_h2.dtype.element_ty), mask=m_h2)
+    ...
+    for i_t in range(NT):
+        i_t_int64 = i_t.to(tl.int64)
+        o_t = i_t * BT + tl.arange(0, BT)
+        m_t = o_t < T
+        p_h1 = h + i_t_int64 * HV*K*V + o_k1[:, None] * V + o_v[None, :]
+        m_h1 = m_k1[:, None] & m_v[None, :]
+        tl.store(p_h1, b_h1.to(p_h1.dtype.element_ty), mask=m_h1)
+        p_h2 = h + i_t_int64 * HV*K*V + o_k2[:, None] * V + o_v[None, :]
+        m_h2 = m_k2[:, None] & m_v[None, :]
+        tl.store(p_h2, b_h2.to(p_h2.dtype.element_ty), mask=m_h2)
 
-    p_w = w + o_t[:, None] * (HV*K) + o_k1[None, :]
-    b_w = tl.load(p_w, mask=m_t[:, None] & m_k1[None, :], other=0.0)
-    b_v = tl.dot(b_w, b_h1.to(b_w.dtype))
-    p_w = w + o_t[:, None] * (HV*K) + o_k2[None, :]
-    b_w = tl.load(p_w, mask=m_t[:, None] & m_k2[None, :], other=0.0)
-    b_v += tl.dot(b_w, b_h2.to(b_w.dtype))
-    p_v = v + o_t[:, None] * (HV*V) + o_v[None, :]
-    b_v = tl.load(p_v, mask=m_t[:, None] & m_v[None, :], other=0.0) - b_v
+        p_w = w + o_t[:, None] * (HV*K) + o_k1[None, :]
+        b_w = tl.load(p_w, mask=m_t[:, None] & m_k1[None, :], other=0.0)
+        b_v = tl.dot(b_w, b_h1.to(b_w.dtype))
+        p_w = w + o_t[:, None] * (HV*K) + o_k2[None, :]
+        b_w = tl.load(p_w, mask=m_t[:, None] & m_k2[None, :], other=0.0)
+        b_v += tl.dot(b_w, b_h2.to(b_w.dtype))
+        p_v = v + o_t[:, None] * (HV*V) + o_v[None, :]
+        b_v = tl.load(p_v, mask=m_t[:, None] & m_v[None, :], other=0.0) - b_v
 
-    p_v = v_new + o_t[:, None] * (HV*V) + o_v[None, :]
-    tl.store(p_v, b_v.to(p_v.dtype.element_ty), mask=m_t[:, None] & m_v[None, :])
+        p_v = v_new + o_t[:, None] * (HV*V) + o_v[None, :]
+        tl.store(p_v, b_v.to(p_v.dtype.element_ty), mask=m_t[:, None] & m_v[None, :])
 ```
 
 - 开头两次 `tl.store` 保存当前块的入口状态，供输出 kernel 读取。两个 `tl.dot` 分别收缩 W 与状态的两片 K 通道，结果相加后才构成完整的 $`\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top`$。参数 `v` 在调用时传入的是 U，因此 `tl.load(p_v) - b_v` 正好得到上述残差，写入 `v_new`。
@@ -941,6 +993,7 @@ def chunk_fwd_kernel_o(
     BV: tl.constexpr, USE_G: tl.constexpr, USE_G_GAMMA: tl.constexpr, STATE_V_FIRST: tl.constexpr,
     IS_VARLEN: tl.constexpr,
 ):
+    ...
     b_o = tl.zeros([BT, BV], dtype=tl.float32)
     b_A = tl.zeros([BT, BT], dtype=tl.float32)
 
@@ -1033,6 +1086,7 @@ def chunk_gated_delta_rule_bwd_kernel_dhu_blockdim64(
     BV: tl.constexpr, USE_G: tl.constexpr, USE_GK: tl.constexpr, USE_INITIAL_STATE: tl.constexpr,
     USE_FINAL_STATE_GRADIENT: tl.constexpr, STATE_V_FIRST: tl.constexpr, IS_VARLEN: tl.constexpr,
 ):
+    ...
     b_dv *= tl.where(m_t, exp2(bg_last - b_g), 0)[:, None]
     b_dv += tl.load(p_dv, mask=m_t[:, None] & m_v[None, :], other=0.0)
     tl.store(p_dv2, b_dv.to(p_dv.dtype.element_ty), mask=m_t[:, None] & m_v[None, :])
@@ -1072,6 +1126,7 @@ def prepare_wy_repr_bwd_kernel(
     HV: tl.constexpr, K: tl.constexpr, V: tl.constexpr, BT: tl.constexpr, BK: tl.constexpr,
     BV: tl.constexpr, USE_G: tl.constexpr, IS_VARLEN: tl.constexpr,
 ):
+    ...
     m_A = (o_t[:, None] > o_t[None, :]) & (m_t[:, None] & m_t)
     b_dA = tl.where(m_A, b_dA, 0)
     b_dA = tl.dot(b_dA.to(b_A.dtype), b_A)
@@ -1105,27 +1160,54 @@ def prepare_wy_repr_bwd_kernel(
 ```python
 def chunk_gated_delta_rule_bwd(
     q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, g: torch.Tensor, beta: torch.Tensor,
-    A: torch.Tensor, scale: float, initial_state: torch.Tensor, do: torch.Tensor,
-    dht: torch.Tensor, state_v_first: bool = False, cu_seqlens: torch.LongTensor | None = None,
+    A: torch.Tensor, scale: float, initial_state: torch.Tensor, do: torch.Tensor, dht: torch.Tensor,
+    state_v_first: bool = False, cu_seqlens: torch.LongTensor | None = None,
     cp_context: FLACPContext | None = None, chunk_indices: torch.LongTensor | None = None,
     use_gate_in_kernel: bool = False, g_input: torch.Tensor | None = None,
     A_log: torch.Tensor | None = None, dt_bias: torch.Tensor | None = None, chunk_size: int = 64,
 ):
-    w, u = recompute_w_u_fwd(k=k, v=v, beta=beta, A=A, g=g)
+    w, u = recompute_w_u_fwd(
+        k=k, v=v, beta=beta, A=A, g=g, cu_seqlens=cu_seqlens, chunk_indices=chunk_indices
+    )
+    if cp_context is not None:
+        initial_state = expand_h0(initial_state, context=cp_context)
     h, v_new, _ = chunk_gated_delta_rule_fwd_h(
-        k=k, w=w, u=u, g=g, initial_state=initial_state,
-        output_final_state=False,
+        k=k, w=w, u=u, g=g, initial_state=initial_state, output_final_state=False,
+        cu_seqlens=cu_seqlens, chunk_indices=chunk_indices, state_v_first=state_v_first,
+        chunk_size=chunk_size,
     )
-    dv = chunk_bwd_dv_local(q=q, k=k, g=g, do=do, scale=scale)
+    dv = chunk_bwd_dv_local(
+        q=q, k=k, g=g, do=do, scale=scale, cu_seqlens=cu_seqlens, chunk_indices=chunk_indices,
+        chunk_size=chunk_size,
+    )
+    if cp_context is not None:
+        dht, initial_state = chunk_gated_delta_rule_bwd_dhu_pre_process(
+            q=q, k=k, w=w, do=do, dv=dv, g=g, scale=scale, cu_seqlens=cu_seqlens, dht=dht,
+            initial_state=initial_state, context=cp_context, state_v_first=state_v_first,
+            chunk_size=chunk_size,
+        )
     dh, dh0, dv = chunk_gated_delta_rule_bwd_dhu(
-        q=q, k=k, w=w, g=g, h0=initial_state,
-        dht=dht, do=do, dv=dv, scale=scale,
+        q=q, k=k, w=w, g=g, h0=initial_state, dht=dht, do=do, dv=dv, scale=scale,
+        cu_seqlens=cu_seqlens, chunk_indices=chunk_indices, state_v_first=state_v_first,
+        chunk_size=chunk_size,
     )
-    dq, dk, dw, dg = chunk_bwd_dqkwg(q=q, k=k, v=v_new, w=w, g=g, h=h, dv=dv, do=do, dh=dh, scale=scale)
-    dk2, dv, db, dg2 = prepare_wy_repr_bwd(k=k, v=v, beta=beta, g=g, A=A, dw=dw, du=dv)
+    dq, dk, dw, dg = chunk_bwd_dqkwg(
+        q=q, k=k, v=v_new, w=w, g=g, h=h, dv=dv, do=do, dh=dh, scale=scale, cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices, state_v_first=state_v_first, chunk_size=chunk_size,
+    )
+    dk2, dv, db, dg2 = prepare_wy_repr_bwd(
+        k=k, v=v, beta=beta, g=g, A=A, dw=dw, du=dv, cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices,
+    )
     dk.add_(dk2)
     dg.add_(dg2)
-    dg = chunk_local_cumsum(dg, chunk_size=64, reverse=True)
+    dg = chunk_local_cumsum(
+        dg, chunk_size=chunk_size, reverse=True, cu_seqlens=cu_seqlens, chunk_indices=chunk_indices
+    )
+    dA_log, ddt_bias = (None, None)
+    if use_gate_in_kernel:
+        dg, dA_log, ddt_bias = gdn_gate_bwd(g=g_input, A_log=A_log, dt_bias=dt_bias, dyg=dg)
+    return (dq, dk, dv, db, dg, dh0, dA_log, ddt_bias)
 ```
 
 - **并行化的代价。** 对单个 value head，块内 KKT 与三角变换的主要矩阵乘法开销随 $`T\,BT\,(d_k+d_v)`$ 增长，状态递推与读出随 $`T\,d_kd_v`$ 增长；固定 `BT` 后均随序列长度线性增长。显式三角求逆的分块计算还约有 $`(T/BT)\,BT^3`$ 的算术开销，`BT=64` 时是固定尺寸的块内工作。不同 chunk 的三角系统可并行求解，同一序列的状态仍顺序传递。
@@ -1160,18 +1242,37 @@ def fused_recurrent_gated_delta_rule_fwd(
     use_beta_sigmoid_in_kernel: bool = False, allow_neg_eigval: bool = False,
     state_v_first: bool = False, cu_seqlens: torch.LongTensor | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor]:
+    B, T, H, K, V = (*k.shape, v.shape[-1])
+    HV = v.shape[2]
+    N = B if cu_seqlens is None else len(cu_seqlens) - 1
     BK = triton.next_power_of_2(K)
-    BV = min(8, triton.next_power_of_2(V))
+    BV = min(8, triton.next_power_of_2(V)) if gv is None else triton.next_power_of_2(V)
     NV = triton.cdiv(V, BV)
-    final_state = q.new_empty(N, HV, K, V, dtype=torch.float32)
+    o = torch.empty_like(v)
+    if output_final_state:
+        if state_v_first:
+            final_state = q.new_empty(N, HV, V, K, dtype=torch.float32)
+        else:
+            final_state = q.new_empty(N, HV, K, V, dtype=torch.float32)
+    else:
+        final_state = None
     grid = (NV, N * HV)
+    fused_recurrent_gated_delta_rule_fwd_kernel[grid](
+        q=q, k=k, v=v, g=g, gk=gk, gv=gv, beta=beta, A_log=A_log, dt_bias=dt_bias, o=o,
+        h0=initial_state, ht=final_state, cu_seqlens=cu_seqlens, scale=scale, T=T, H=H, HV=HV, K=K,
+        V=V, BK=BK, BV=BV, IS_BETA_HEADWISE=beta.ndim != v.ndim,
+        USE_QK_L2NORM_IN_KERNEL=use_qk_l2norm_in_kernel,
+        APPLY_BETA_SIGMOID=use_beta_sigmoid_in_kernel, ALLOW_NEG_EIGVAL=allow_neg_eigval,
+        STATE_V_FIRST=state_v_first, num_warps=1, num_stages=3,
+    )
+    return (o, final_state)
 ```
 
 - 这里 N 为序列数，$`H_V`$ 为 value head 数。Q/K head 通过 `i_hv // (HV // H)` 映射，同一组 value head 共享 Q/K 输入，但各自维护独立的状态。prefill 写出的 chunk 末态与此处初始状态使用同一种缓冲区排列，二者之间不需要重新组织数学状态。
 
 ### 逐 Token 更新：衰减、残差与读出
 
-- 以代码中的状态矩阵 $`H_t=S_t^\top`$ 表示递推。完成 Q/K 归一化后，一步更新由以下算式组成：
+- 以代码中的状态矩阵 $`H_t=S_t^\top`$ 表示递推。包括 Q/K 归一化在内，一步更新由以下算式组成：
 
 ```math
 \begin{aligned}
@@ -1197,6 +1298,7 @@ def fused_recurrent_gated_delta_rule_fwd_kernel(
     IS_VARLEN: tl.constexpr, USE_GATE_IN_KERNEL: tl.constexpr, HAS_DT_BIAS: tl.constexpr,
     APPLY_BETA_SIGMOID: tl.constexpr, ALLOW_NEG_EIGVAL: tl.constexpr,
 ):
+    ...
     b_h = tl.zeros([BK, BV], dtype=tl.float32)
     if USE_INITIAL_STATE:
         b_h += tl.load(p_h0, mask=mask_h, other=0).to(tl.float32)
