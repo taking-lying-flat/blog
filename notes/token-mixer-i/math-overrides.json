@@ -1,0 +1,68 @@
+{
+  "uvJ3c": {
+    "from": "(\\Gamma_{[t]})_{ij} = \\frac{\\gamma_{[t]}^i}{\\gamma_{[t]}^j}, \\quad \\gamma_{[t]}^j = \\prod_{j=tC+1}^{tC+j} \\alpha_j.",
+    "to": "(\\Gamma_{[t]})_{ij} = \\begin{cases}\\gamma_{[t]}^i/\\gamma_{[t]}^j,&i\\ge j,\\\\0,&i<j,\\end{cases}\\qquad \\gamma_{[t]}^j = \\prod_{\\ell=tC+1}^{tC+j}\\alpha_\\ell.",
+    "reason": "补齐因果掩码的上三角零值；累计衰减的哑指标改为 ell，避免与自由指标 j 冲突。",
+    "reference": "https://proceedings.iclr.cc/paper_files/paper/2025/file/4904fad153f6434a7bcf04465d4be2cc-Paper-Conference.pdf"
+  },
+  "ANuyP": {
+    "from": "\\mathbf{S}_{[t]}^r = \\mathbf{S}_{[t]} \\underbrace{\\left( \\prod_{i=1}^r \\mathbf{I} - \\beta_{[t]}^i \\boldsymbol{k}_{[t]}^i {\\boldsymbol{k}_{[t]}^i}^\\top \\right)}_{:=\\mathbf{P}_{[t]}^r} + \\underbrace{\\sum_{i=1}^r \\left( \\beta_{[t]}^i \\boldsymbol{v}_{[t]}^i {\\boldsymbol{k}_{[t]}^i}^\\top \\prod_{j=i+1}^r \\left( \\mathbf{I} - \\beta_{[t]}^j \\boldsymbol{k}_{[t]}^j {\\boldsymbol{k}_{[t]}^j}^\\top \\right) \\right)}_{:=\\mathbf{H}_{[t]}^r}",
+    "to": "\\mathbf{S}_{[t]}^r = \\mathbf{S}_{[t]} \\underbrace{\\left( \\prod_{i=1}^r \\left(\\mathbf{I} - \\beta_{[t]}^i \\boldsymbol{k}_{[t]}^i {\\boldsymbol{k}_{[t]}^i}^\\top\\right) \\right)}_{:=\\mathbf{P}_{[t]}^r} + \\underbrace{\\sum_{i=1}^r \\left( \\beta_{[t]}^i \\boldsymbol{v}_{[t]}^i {\\boldsymbol{k}_{[t]}^i}^\\top \\prod_{j=i+1}^r \\left( \\mathbf{I} - \\beta_{[t]}^j \\boldsymbol{k}_{[t]}^j {\\boldsymbol{k}_{[t]}^j}^\\top \\right) \\right)}_{:=\\mathbf{H}_{[t]}^r}",
+    "reason": "补齐乘积因子的括号，使每一步的完整状态转移矩阵参与连乘。",
+    "reference": "https://proceedings.iclr.cc/paper_files/paper/2025/file/4904fad153f6434a7bcf04465d4be2cc-Paper-Conference.pdf"
+  },
+  "pc9Nl": {
+    "from": "\\begin{aligned}\n\\mathbf{S}_{[t+1]} &= {\\color{blue}\\overrightarrow{\\mathbf{S}_{[t]}}} + \\left( \\widetilde{\\mathbf{U}}_{[t]} - {\\color{blue}\\overleftarrow{\\mathbf{W}_{[t]}}} \\mathbf{S}_{[t]}^\\top \\right)^\\top {\\color{blue}\\overrightarrow{\\mathbf{K}_{[t]}}} &&\\in \\mathbb{R}^{d_v \\times d_k} \\\\\n\\mathbf{O}_{[t]} &= {\\color{blue}\\overleftarrow{\\mathbf{Q}_{[t]}}} \\mathbf{S}_{[t]}^\\top + (\\mathbf{Q}_{[t]} \\mathbf{K}_{[t]}^\\top \\odot \\mathbf{M}) \\left( \\widetilde{\\mathbf{U}}_{[t]} - {\\color{blue}\\overleftarrow{\\mathbf{W}_{[t]}}} \\mathbf{S}_{[t]}^\\top \\right) &&\\in \\mathbb{R}^{C \\times d_v}\n\\end{aligned}",
+    "to": "\\begin{aligned}\n\\mathbf{S}_{[t+1]} &= {\\color{blue}\\overrightarrow{\\mathbf{S}_{[t]}}} + \\left( \\widetilde{\\mathbf{U}}_{[t]} - {\\color{blue}\\overleftarrow{\\mathbf{W}_{[t]}}} \\mathbf{S}_{[t]}^\\top \\right)^\\top {\\color{blue}\\overrightarrow{\\mathbf{K}_{[t]}}} &&\\in \\mathbb{R}^{d_v \\times d_k} \\\\\n\\mathbf{O}_{[t]} &= {\\color{blue}\\overleftarrow{\\mathbf{Q}_{[t]}}} \\mathbf{S}_{[t]}^\\top + (\\mathbf{Q}_{[t]} \\mathbf{K}_{[t]}^\\top \\odot \\Gamma_{[t]}) \\left( \\widetilde{\\mathbf{U}}_{[t]} - {\\color{blue}\\overleftarrow{\\mathbf{W}_{[t]}}} \\mathbf{S}_{[t]}^\\top \\right) &&\\in \\mathbb{R}^{C \\times d_v}\n\\end{aligned}",
+    "reason": "块内输出需要带衰减的因果掩码 Gamma；仅使用零一掩码 M 会丢失历史写入到读取之间的衰减。依据逐步递推式核验；会议论文此处简写也有同样遗漏。",
+    "reference": "https://proceedings.iclr.cc/paper_files/paper/2025/file/4904fad153f6434a7bcf04465d4be2cc-Paper-Conference.pdf"
+  },
+  "b9LkU": {
+    "from": "\\mathbf{S}_{[t]}\n=\n\\underbrace{\n\\left(\n\\prod_{i=1}^{r}\n\\left(\n\\mathbf{I}\n-\n\\beta_{[t]}^{i}\n\\mathbf{k}_{[t]}^{i}\n\\mathbf{k}_{[t]}^{i\\top}\n\\right)\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\alpha_{[t]}^{i}\\right)\n}\n\\right)\n}_{:=\\mathbf{P}_{[t]}^{r}}\n\\mathbf{S}_{[t]}^{0}\n+\n\\sum_{i=1}^{r}\n\\underbrace{\n\\left(\n\\prod_{j=i+1}^{r}\n\\left(\n\\mathbf{I}\n-\n\\beta_{[t]}^{j}\n\\mathbf{k}_{[t]}^{j}\n\\mathbf{k}_{[t]}^{j\\top}\n\\right)\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\alpha_{[t]}^{j}\\right)\n}\n\\right)\n\\cdot\n\\beta_{[t]}^{i}\n\\mathbf{k}_{[t]}^{i}\n\\mathbf{v}_{[t]}^{i\\top}\n}_{:=\\mathbf{H}_{[t]}^{r}}",
+    "to": "\\mathbf{S}_{[t]}^r\n=\\underbrace{\\left(\\overleftarrow{\\prod}_{i=1}^r\n\\left[(\\mathbf I-\\beta_{[t]}^i\\mathbf k_{[t]}^i\\mathbf k_{[t]}^{i\\top})\n{\\color{red}\\operatorname{Diag}(\\alpha_{[t]}^i)}\\right]\\right)}_{:=\\mathbf P_{[t]}^r}\\mathbf S_{[t]}^0\n+\\underbrace{\\sum_{i=1}^r\\left(\\overleftarrow{\\prod}_{j=i+1}^r\n\\left[(\\mathbf I-\\beta_{[t]}^j\\mathbf k_{[t]}^j\\mathbf k_{[t]}^{j\\top})\n{\\color{red}\\operatorname{Diag}(\\alpha_{[t]}^j)}\\right]\\right)\n\\beta_{[t]}^i\\mathbf k_{[t]}^i\\mathbf v_{[t]}^{i\\top}}_{:=\\mathbf H_{[t]}^r}",
+    "reason": "补齐块内时刻 r，将 H 的下括号覆盖完整求和；明确左乘递推的乘积按时间逆序排列（较晚的转移在左）。",
+    "reference": "https://github.com/MoonshotAI/Kimi-Linear/blob/master/tech_report.pdf"
+  },
+  "rZg6k": {
+    "from": "\\mathbf{P}_{[t]}^{r}\n=\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\gamma_{[t]}^{r}\\right)\n}\n-\n\\sum_{i=1}^{r}\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\gamma_{[t]}^{i\\to r}\\right)\n}\n\\mathbf{k}_{[t]}^{i}\n\\mathbf{w}_{[t]}^{i\\top}\n\\qquad\n\\mathbf{H}_{[t]}^{r}\n=\n\\sum_{i=1}^{t}\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\gamma_{[t]}^{i\\to r}\\right)\n}\n\\mathbf{k}_{[t]}^{i}\n\\mathbf{u}_{[t]}^{i\\top}",
+    "to": "\\mathbf{P}_{[t]}^{r}\n=\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\gamma_{[t]}^{r}\\right)\n}\n-\n\\sum_{i=1}^{r}\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\gamma_{[t]}^{i\\to r}\\right)\n}\n\\mathbf{k}_{[t]}^{i}\n\\mathbf{w}_{[t]}^{i\\top}\n\\qquad\n\\mathbf{H}_{[t]}^{r}\n=\n\\sum_{i=1}^{r}\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\gamma_{[t]}^{i\\to r}\\right)\n}\n\\mathbf{k}_{[t]}^{i}\n\\mathbf{u}_{[t]}^{i\\top}",
+    "reason": "块内第 r 步的 H 应累加到 r；不能使用块编号 t 作为求和上界。",
+    "reference": "https://github.com/MoonshotAI/Kimi-Linear/blob/master/tech_report.pdf"
+  },
+  "Rl8ez": {
+    "from": "\\mathbf{w}_{[t]}^{r\\top}\n=\n\\beta_{[t]}^{r}\n\\left(\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\gamma_{[t]}^{r}\\right)\n}\n\\mathbf{k}_{[t]}^{r}\n-\n\\sum_{i=1}^{r-1}\n\\mathbf{w}_{[t]}^{i\\top}\n\\left(\n\\mathbf{k}_{[t]}^{i\\top}\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\gamma_{[t]}^{i\\to r}\\right)\n}\n\\mathbf{k}_{[t]}^{r}\n\\right)\n\\right)",
+    "to": "\\mathbf{w}_{[t]}^{r}\n=\n\\beta_{[t]}^{r}\n\\left(\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\gamma_{[t]}^{r}\\right)\n}\n\\mathbf{k}_{[t]}^{r}\n-\n\\sum_{i=1}^{r-1}\n\\mathbf{w}_{[t]}^{i}\n\\left(\n\\mathbf{k}_{[t]}^{i\\top}\n\\color{red}{\n\\operatorname{Diag}\\!\\left(\\gamma_{[t]}^{i\\to r}\\right)\n}\n\\mathbf{k}_{[t]}^{r}\n\\right)\n\\right)",
+    "reason": "辅助向量 w 的递推统一使用列向量，与 Diag(gamma) k 的维度一致。",
+    "reference": "https://github.com/MoonshotAI/Kimi-Linear/blob/master/tech_report.pdf"
+  },
+  "LpN7v": {
+    "from": "s_{t,i}\n=\n\\mathbf{q}_t^\\top\n\\left(\n\\prod_{j=i+1}^{t}\n\\mathbf{R}_j\n\\right)\n\\mathbf{k}_i",
+    "to": "s_{t,i}=\\mathbf q_t^\\top\\mathbf R_t^\\top\\mathbf R_i\\mathbf k_i\n=\\mathbf q_t^\\top\\left(\\prod_{j=i+1}^t(\\mathbf R_j^\\top\\mathbf R_{j-1})\\right)\\mathbf k_i",
+    "reason": "后文 R_j 定义为绝对位置 j 的旋转；其乘积须改为相邻位置的相对旋转，才能得到 R_t^T R_i。",
+    "reference": "https://github.com/MoonshotAI/Kimi-Linear/blob/master/tech_report.pdf"
+  },
+  "UqP7v": {
+    "from": "\\mathbf{R}_{t-i}=\\mathbf{R}_t^\\top\\mathbf{R}_i",
+    "to": "\\mathbf{R}_{i-t}=\\mathbf{R}_t^\\top\\mathbf{R}_i",
+    "reason": "按原文正角旋转矩阵的定义，R_t^T R_i 的旋转角为 (i-t) theta。",
+    "reference": "https://github.com/MoonshotAI/Kimi-Linear/blob/master/tech_report.pdf"
+  },
+  "YFcfg": {
+    "from": "\\prod_{j=i+1}^{t}\\mathbf{R}_j\n=\n\\begin{pmatrix}\n\\cos((t-i)\\theta_k) & -\\sin((t-i)\\theta_k) \\\\\n\\sin((t-i)\\theta_k) & \\cos((t-i)\\theta_k)\n\\end{pmatrix}",
+    "to": "\\prod_{j=i+1}^{t}\\left((\\mathbf R_j^k)^\\top\\mathbf R_{j-1}^k\\right)\n=(\\mathbf R_t^k)^\\top\\mathbf R_i^k\n=\\begin{pmatrix}\n\\cos((i-t)\\theta_k)&-\\sin((i-t)\\theta_k)\\\\\n\\sin((i-t)\\theta_k)&\\cos((i-t)\\theta_k)\n\\end{pmatrix}",
+    "reason": "使用二维旋转块的相邻相对旋转，统一矩阵维度及相对角度符号；绝对位置旋转的连乘不会得到相对位置。",
+    "reference": "https://github.com/MoonshotAI/Kimi-Linear/blob/master/tech_report.pdf"
+  },
+  "mlJrq": {
+    "from": "\\mathbf{o}_t\n=\n\\sum_{i=1}^{t}\n\\left(\n\\mathbf{q}_t^\\top\n\\left(\n\\prod_{j=i+1}^{t}\n\\color{red}{\\mathbf{A}_j}\n\\left(\n\\mathbf{I}\n-\n\\beta_j\n\\mathbf{k}_j\n\\mathbf{k}_j^\\top\n\\right)\n\\right)\n\\mathbf{k}_j\n\\right)\n\\mathbf{v}_j",
+    "to": "\\mathbf o_t=\\sum_{i=1}^t\\beta_i\\left(\\mathbf q_t^\\top\n\\left(\\overleftarrow{\\prod}_{j=i+1}^t\\left[(\\mathbf I-\\beta_j\\mathbf k_j\\mathbf k_j^\\top){\\color{red}\\mathbf A_j}\\right]\\right)\n\\mathbf k_i\\right)\\mathbf v_i,\\qquad \\mathbf S_0=\\mathbf 0",
+    "reason": "修正乘积外 k、v 的自由指标为 i，补齐写入门 beta_i；按左乘递推排列状态转移及时间次序，并明确零初始状态前提。",
+    "reference": "https://github.com/MoonshotAI/Kimi-Linear/blob/master/tech_report.pdf"
+  },
+  "pPvIQ": {
+    "from": "\\mathbf{S}_t\n=\n\\left(\n\\mathbf{D}\n-\n\\mathbf{a}_t\n\\mathbf{b}_t^\\top\n\\right)\n\\mathbf{S}_{t-1}\n+\n\\mathbf{k}_t\n\\mathbf{v}_t^\\top,\n\\qquad\n\\mathrm{s.t.},\n\\quad\n\\mathbf{D}\n=\n\\color{red}{\\operatorname{Diag}(\\boldsymbol{\\alpha}_t)},\n\\quad\n\\mathbf{a}_t\n=\n\\beta_t\\mathbf{k}_t,\n\\quad\n\\mathbf{b}_t\n=\n\\mathbf{k}_t\\odot\\boldsymbol{\\alpha}_t",
+    "to": "\\mathbf{S}_t\n=\n\\left(\n\\mathbf{D}\n-\n\\mathbf{a}_t\n\\mathbf{b}_t^\\top\n\\right)\n\\mathbf{S}_{t-1}\n+\n\\beta_t\\mathbf{k}_t\n\\mathbf{v}_t^\\top,\n\\qquad\n\\mathrm{s.t.},\n\\quad\n\\mathbf{D}\n=\n\\color{red}{\\operatorname{Diag}(\\boldsymbol{\\alpha}_t)},\n\\quad\n\\mathbf{a}_t\n=\n\\beta_t\\mathbf{k}_t,\n\\quad\n\\mathbf{b}_t\n=\n\\mathbf{k}_t\\odot\\boldsymbol{\\alpha}_t",
+    "reason": "在给定 a=beta k、b=k⊙alpha 且保持同一 k、v 定义时，KDA 的写入项仍须包含 beta。",
+    "reference": "https://github.com/MoonshotAI/Kimi-Linear/blob/master/tech_report.pdf"
+  }
+}

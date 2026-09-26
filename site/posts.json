@@ -1,5 +1,13 @@
 [
   {
+    "file": "../notes/token-mixer-i/source.lake",
+    "format": "lake",
+    "slug": "token-mixer-i",
+    "date": "2026-09-26",
+    "description": "Token Mixer 笔记：Gated DeltaNet、Kimi Linear 与 Gated DeltaNet-2。",
+    "tags": ["线性注意力", "Gated DeltaNet", "Kimi Linear"]
+  },
+  {
     "file": "../notes/flash-attn/source.lake",
     "format": "lake",
     "slug": "flash-attn",

@@ -1,0 +1,108 @@
+{
+  "source_byte_identical": true,
+  "source_sha256": "69b5db177fe548e77d3d6b169d0ddeb22385aec7213c86517db1ed32d3eab0dc",
+  "text_matches_source_exactly": true,
+  "original_structure_and_formatting_preserved": 797,
+  "math_occurrences": 267,
+  "image_occurrences": 11,
+  "headings": 16,
+  "verified_original_assets": 241,
+  "math_corrections": 11,
+  "text_corrections": 0,
+  "repaired_invalid_source_svg_cards": [
+    "P6Cze",
+    "PKAt2",
+    "hXvxu"
+  ],
+  "external_runtime_assets": 0,
+  "missing_assets": 0,
+  "invalid_displayed_svg_assets": 0,
+  "unchanged_existing_article_bodies": [
+    "packing-flash-attention",
+    "vllm-51593-persistent-topk-deadlock",
+    "ms-swift-model-runtime-failures",
+    "genai-flow-ii",
+    "flash-attn",
+    "ms-swift-chatml-rendering",
+    "genai-sakura-i",
+    "gemma-4-nvfp4-moe-missing-scales",
+    "rope",
+    "genai-sakura-ii",
+    "infra-quant-i",
+    "genai-flow-i",
+    "flashinfer-sm100-gdn-pipeline-deadlock",
+    "genai-sakura-iii"
+  ],
+  "numerical_checks": {
+    "chunk_cases": 32,
+    "rope_cases": 16,
+    "nonzero_incoming_states": true,
+    "maximum_absolute_errors": {
+      "gdn2_state": 6.661338147750939e-16,
+      "gdn2_output": 1.3322676295501878e-15,
+      "gdn2_reduces_to_kda_state": 5.551115123125783e-16,
+      "gdn2_reduces_to_kda_output": 1.3322676295501878e-15,
+      "kda_P": 2.220446049250313e-16,
+      "kda_H": 4.440892098500626e-16,
+      "kda_partial_state": 5.551115123125783e-16,
+      "kda_zero_state_output_expansion": 8.881784197001252e-16,
+      "constrained_dplr": 8.881784197001252e-16,
+      "kda_w_recursion": 1.1102230246251565e-16,
+      "kda_u_recursion": 4.440892098500626e-16,
+      "kda_chunk_state": 4.718447854656915e-16,
+      "kda_chunk_output": 1.7763568394002505e-15,
+      "gdn_chunk_state": 3.3306690738754696e-16,
+      "gdn_chunk_output": 1.3322676295501878e-15,
+      "rope_relative_product": 6.661338147750939e-16,
+      "rope_relative_sign": 1.817990202823694e-15,
+      "gdn2_inverse_gradient_finite_difference": 6.955547249276606e-12
+    }
+  },
+  "browser_checks": {
+    "base": "http://127.0.0.1:4177/",
+    "firstPost": "posts/token-mixer-i/",
+    "preservation": {
+      "textAndStructureMatch": true,
+      "originalElements": 797,
+      "formulaCount": 267,
+      "imageCount": 11,
+      "headingCount": 16
+    },
+    "results": [
+      {
+        "width": 1440,
+        "pageWidth": 1440,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "bodyFont": "\"Source Serif 4\", \"Noto Serif SC Variable\", \"Source Han Serif SC\", \"Songti SC\", SimSun, serif",
+        "mathFont": "\"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", \"Helvetica Neue\", Helvetica, Arial, sans-serif, \"Segoe UI\"",
+        "inline_math_spacing_verified": true
+      },
+      {
+        "width": 1280,
+        "pageWidth": 1280,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "bodyFont": "\"Source Serif 4\", \"Noto Serif SC Variable\", \"Source Han Serif SC\", \"Songti SC\", SimSun, serif",
+        "mathFont": "\"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", \"Helvetica Neue\", Helvetica, Arial, sans-serif, \"Segoe UI\"",
+        "inline_math_spacing_verified": true
+      },
+      {
+        "width": 1024,
+        "pageWidth": 1024,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "bodyFont": "\"Source Serif 4\", \"Noto Serif SC Variable\", \"Source Han Serif SC\", \"Songti SC\", SimSun, serif",
+        "mathFont": "\"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", \"Helvetica Neue\", Helvetica, Arial, sans-serif, \"Segoe UI\"",
+        "inline_math_spacing_verified": true
+      }
+    ],
+    "errors": []
+  }
+}

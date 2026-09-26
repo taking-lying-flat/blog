@@ -20,6 +20,7 @@ import '@mathjax/src/js/input/tex/base/BaseConfiguration.js';
 import '@mathjax/src/js/input/tex/ams/AmsConfiguration.js';
 import '@mathjax/src/js/input/tex/boldsymbol/BoldsymbolConfiguration.js';
 import '@mathjax/src/js/input/tex/newcommand/NewcommandConfiguration.js';
+import '@mathjax/src/js/input/tex/color/ColorConfiguration.js';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const output = path.join(root, 'dist');
@@ -52,7 +53,7 @@ RegisterHTMLHandler(adaptor);
 const svg = new SVG({ fontCache: 'local', displayOverflow: 'overflow', linebreaks: { inline: false } });
 const document = mathjax.document('', {
   InputJax: new TeX({
-    packages: ['base', 'ams', 'boldsymbol', 'newcommand'],
+    packages: ['base', 'ams', 'boldsymbol', 'newcommand', 'color'],
     formatError(_jax, error) { throw error; },
   }),
   OutputJax: svg,
@@ -76,7 +77,10 @@ async function renderLakeMath(code, original) {
   // Tagged equations use a percentage width; external images need the
   // concrete width from the export to retain their original alignment.
   if (adaptor.getAttribute(svgNode, 'width').endsWith('%')) adaptor.setAttribute(svgNode, 'width', original.width);
-  const content = adaptor.outerHTML(svgNode);
+  // MathJax's HTML serializer leaves '<' in data-latex attributes; standalone
+  // SVG images use XML, which requires those attribute characters to be escaped.
+  const content = adaptor.outerHTML(svgNode).replace(/="([^"]*)"/g,
+    (_attribute, value) => `="${value.replaceAll('<', '&lt;')}"`);
   if (/data-mjx-error|data-mml-node="merror"|\b(?:NaN|Infinity)\b/.test(content)) {
     throw new Error(`Invalid rendered Lake formula: ${code}`);
   }
