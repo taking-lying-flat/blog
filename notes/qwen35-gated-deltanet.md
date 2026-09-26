@@ -435,17 +435,7 @@ output = self.out_proj(core_attn_out.reshape(batch_size, seq_len, -1))
 
 ### 前向计算的矩阵分解
 
-- 以下对应 FLA v0.5.2 的 Triton 实现，采用 scalar gate、`state_v_first=False`。记 `H` 为 Q/K head 数、`HV` 为 value head 数，代码中的 `K/V` 分别对应数学维度 $`d_k/d_v`$，`BT=64` 为 chunk 长度。固定长度输入的中间张量如下；$`N_T=\lceil T/BT\rceil`$ 为每条序列的 chunk 数。
-
-| 代码变量 | 形状 | 含义 |
-| --- | --- | --- |
-| `q, k` | `[B, T, H, K]` | 进入状态算子前已完成可选的 L2 归一化 |
-| `v, u, v_new, o` | `[B, T, HV, V]` | 原始 value、三角变换结果、实际写入残差、输出 |
-| `g, beta` | `[B, T, HV]` | 逐 head 的衰减参数与写入步长 |
-| `A` | `[B, T, HV, BT]` | 每个 token 保存所在 chunk 的一行三角逆矩阵 |
-| `w` | `[B, T, HV, K]` | 用于扣除入口状态预测的变换后 key |
-| `h` | `[B, N_T, HV, K, V]` | 每个 chunk 更新前的入口状态 |
-| `initial_state, final_state` | `[N, HV, K, V]` | 每条逻辑序列的初态与末态；定长时 `N=B` |
+- 以下对应 FLA v0.5.2 的 Triton 实现，采用 scalar gate、`state_v_first=False`。记 `H` 为 Q/K head 数、`HV` 为 value head 数，代码中的 `K/V` 分别对应数学维度 $`d_k/d_v`$，`BT=64` 为 chunk 长度。
 
 - 论文状态 $`\mathbf S\in\mathbb R^{d_v\times d_k}`$ 在这一路径中按 $`\mathbf H=\mathbf S^\top\in\mathbb R^{d_k\times d_v}`$ 存放，所以代码中的读出是 `q @ h`，写入是 `k.T @ residual`。`state_v_first=True` 改变存储排列，不改变状态更新的数学定义。`HV/H` 个 value head 可共享同一个 Q/K head，但各自拥有 gate、beta 和状态。
 
