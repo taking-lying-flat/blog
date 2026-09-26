@@ -1,5 +1,11 @@
 [
   {
+    "file": "../notes/qwen35-gated-deltanet.md",
+    "slug": "qwen35-gated-deltanet",
+    "date": "2026-09-26",
+    "tags": ["Qwen3.5", "Gated DeltaNet", "FLA"]
+  },
+  {
     "file": "../notes/token-mixer-i/source.lake",
     "format": "lake",
     "slug": "token-mixer-i",
