@@ -241,7 +241,7 @@ P=XW_{qkv}^{\top},\qquad a=XW_a^{\top},\quad b=XW_b^{\top},\qquad Z=XW_z^{\top}.
 
 - `Qwen3_5MoeGatedDeltaNet` 将 Q/K/V 合并为一次投影，随后按通道拆分。衰减参数和写入参数只需要每个 value head 一个标量，因此 `in_proj_a`、`in_proj_b` 的输出维度为 `num_v_heads`；输出门需要逐通道调节读出结果，其投影维度与 V 相同。
 
-```python Qwen3_5MoeGatedDeltaNet.__init__ · 节选 | transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py
+```python
 def __init__(self, config: Qwen3_5MoeConfig, layer_idx: int):
     self.in_proj_qkv = nn.Linear(self.hidden_size, 2 * self.key_dim + self.value_dim, bias=False)
     self.in_proj_a = nn.Linear(self.hidden_size, self.num_v_heads, bias=False)
@@ -261,7 +261,7 @@ def __init__(self, config: Qwen3_5MoeConfig, layer_idx: int):
 
 - 序列起点之前补零；w=4 时，输出依赖当前 token 与之前三个 token。代码使用 `groups=hidden_size` 实现逐通道卷积，`padding=w-1` 后截取前 `seq_len` 个位置，保证不使用未来输入。以下是 Transformers 中 `causal_conv1d_fn` 的实际 PyTorch 后备实现；对应加速算子可用时由 kernel dispatch 替换。
 
-```python causal_conv1d_fn · 节选 | transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py
+```python
 def causal_conv1d_fn(
     hidden_states: torch.Tensor,
     weight: nn.Parameter,
@@ -303,7 +303,7 @@ g&=-\exp(A_{\log})\odot\operatorname{softplus}(a+d_{\mathrm{bias}}),
 
 - `A_log` 和 `dt_bias` 是每个 value head 的可学习参数。上述参数化保证 `g` 为负值，从而将历史衰减限制在 0 与 1 之间；`beta` 经 sigmoid 控制残差写入强度。Grouped Value Attention 通过 head 映射使多个 value head 共享 Q/K，模型代码使用 `repeat_interleave` 显式实现该映射。
 
-```python Qwen3_5MoeGatedDeltaNet.forward · 节选 | transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py
+```python
 def forward(
     self, hidden_states: torch.Tensor, cache_params: Cache | None = None,
     attention_mask: torch.Tensor | None = None, **kwargs: Unpack[TransformersKwargs],
@@ -334,7 +334,7 @@ def forward(
 
 - **解码时的卷积缓存。** 单 token 解码沿用相同的短卷积，只需接续缓存中的最近投影，按上述 Short Conv 公式计算当前位置。`conv_state` 保存短卷积输入，GDN 的 `recurrent_state` 保存矩阵状态；两份缓存分别对应局部窗口与长期递推。下面是 `causal_conv1d_update` 的实际后备实现：先拼接缓存与新输入，原位保留最近窗口，再取最后 `seq_len` 个卷积输出。
 
-```python causal_conv1d_update · 节选 | transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py
+```python
 def causal_conv1d_update(
     hidden_states: torch.Tensor,
     conv_state: torch.Tensor,
@@ -373,7 +373,7 @@ Y&=\operatorname{Concat}_{h}\!\left[
 
 - 输出归一化独立作用于每个 value head。`self.norm` 先执行 RMSNorm，再乘 `SiLU(z)`；head 维合并后，`out_proj` 将结果映射回模型隐藏维度。以下代码合并了两条分支中相同的调用参数。
 
-```python Qwen3_5MoeGatedDeltaNet.forward · 节选 | transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py
+```python
 use_precomputed_states = (
     cache_params is not None
     and cache_params.has_previous_state(self.layer_idx, state_idx=0)
@@ -436,7 +436,7 @@ output = self.out_proj(core_attn_out.reshape(batch_size, seq_len, -1))
 
 - 默认 64-token 路径将 KKT 构造与下三角求解融合执行，随后单独生成 W/U。块内变换可以跨 chunk 并行；状态更新仍按 chunk 顺序递推；入口状态生成后，各块输出又可以并行计算。下面保留固定长度、无 context parallelism 的调用主干。
 
-```python chunk_gated_delta_rule_fwd · 节选 | fla/ops/gated_delta_rule/chunk.py
+```python
 def chunk_gated_delta_rule_fwd(
     q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, g: torch.Tensor, beta: torch.Tensor,
     scale: float, initial_state: torch.Tensor, output_final_state: bool,
@@ -483,7 +483,7 @@ def chunk_gated_delta_rule_fwd(
 
 - 算子位于 `fla/ops/utils/cumsum.py`，标量 kernel 的网格为 `(NT, B * H)`：每个 program 负责一个 chunk 和一个 gate head。`o_t` 构造块内 token 索引，`m_t` 屏蔽尾块越界位置；按 `[B, T, H]` 布局加载后，`tl.cumsum` 沿时间轴执行前缀和。累积在 FP32 中完成，并通过 `RCP_LN2` 将自然对数转换为以 2 为底的对数。后续 kernel 使用 `exp2` 还原整体衰减和区间衰减，避免在各阶段重复计算连乘。
 
-```python chunk_local_cumsum_scalar_kernel · 节选 | fla/ops/utils/cumsum.py
+```python
 @triton.jit(do_not_specialize=['T'])
 def chunk_local_cumsum_scalar_kernel(
     s, o, scale, cu_seqlens, chunk_indices, T, B: tl.constexpr, H: tl.constexpr,
@@ -549,7 +549,7 @@ def chunk_local_cumsum_scalar_kernel(
 
 - **定位 chunk 并累计 Gram 矩阵。** `chunk_indices` 给出序列编号与序列内块编号，`cu_seqlens` 确定起点 `bos` 和有效长度 T；定长分支直接通过 batch 编号计算起点。K 维按 `BK` 分片，逐片累加 $`\mathbf K_{[t]}\mathbf K_{[t]}^\top`$。`i_h // (HV // H)` 将 value head 映射到共享的 key head；K 的时间步长为 `H * K`，beta 的时间步长为 `HV`。`m_t` 屏蔽尾块的无效 token。
 
-```python chunk_scaled_dot_kkt_fwd_kernel · 节选 | fla/ops/common/chunk_scaled_dot_kkt.py
+```python
 @triton.jit(do_not_specialize=['T'])
 def chunk_scaled_dot_kkt_fwd_kernel(
     k, g, beta, A, cu_seqlens, chunk_indices, T, H: tl.constexpr, HV: tl.constexpr,
@@ -583,7 +583,7 @@ def chunk_scaled_dot_kkt_fwd_kernel(
 
 - **施加区间衰减、写入系数和因果约束。** `exp2(b_g_diff)` 计算区间衰减 $`(\Gamma_{[t]})_{ij}=\gamma_{[t]}^i/\gamma_{[t]}^j`$ 并逐元素乘入 Gram 矩阵；`b_b[:, None]` 按行乘 beta，`m_A` 仅保留 $`i>j`$ 的系数。结果通过 `p_A` 按 `[B, T, HV, BT]` 写回，每个有效 token 保存所在块的一行系数。以下代码接续上一段的 kernel 函数体。
 
-```python chunk_scaled_dot_kkt_fwd_kernel · 节选 | fla/ops/common/chunk_scaled_dot_kkt.py
+```python
 if USE_G:
     p_g = g + bos*HV + i_h + o_t * HV
     b_g = tl.load(p_g, mask=m_t, other=0.0)
@@ -601,7 +601,7 @@ tl.store(p_A, b_A.to(p_A.dtype.element_ty), mask=m_t[:, None])
 
 - **融合路径的边界掩码。** 四个子块的起点为 `i_tc0` 至 `i_tc3`，`o_i=tl.arange(0, 16)`；`m_tc0` 至 `m_tc3` 分别判断位置是否有效。以对角块 (0,0) 和非对角块 (1,0) 为例，默认融合 kernel 的衰减与 beta 处理为：
 
-```python chunk_gated_delta_rule_fwd_kkt_solve_kernel · 节选 | fla/ops/gated_delta_rule/chunk_fwd.py
+```python
 @triton.jit(do_not_specialize=['T'])
 def chunk_gated_delta_rule_fwd_kkt_solve_kernel(
     k, g, beta, A, cu_seqlens, chunk_indices, T, H: tl.constexpr, HV: tl.constexpr,
@@ -644,7 +644,7 @@ def chunk_gated_delta_rule_fwd_kkt_solve_kernel(
 (\mathbf A^{\mathrm{inv}}_{00})_{kj}\quad(i>j).
 ```
 
-```python chunk_gated_delta_rule_fwd_kkt_solve_kernel · 节选 | fla/ops/gated_delta_rule/chunk_fwd.py
+```python
 b_Ai00 = -b_A00
 for i in range(2, min(BC, T - i_tc0)):
     b_a00 = tl.sum(tl.where((o_i == i)[:, None], -b_A00, 0.), 0)
@@ -662,7 +662,7 @@ b_Ai00 += m_I
 \mathbf A^{\mathrm{inv}}_{10}=-\mathbf A^{\mathrm{inv}}_{11}\mathbf A_{10}\mathbf A^{\mathrm{inv}}_{00},\quad \mathbf A^{\mathrm{inv}}_{21}=-\mathbf A^{\mathrm{inv}}_{22}\mathbf A_{21}\mathbf A^{\mathrm{inv}}_{11},\quad \mathbf A^{\mathrm{inv}}_{32}=-\mathbf A^{\mathrm{inv}}_{33}\mathbf A_{32}\mathbf A^{\mathrm{inv}}_{22}.
 ```
 
-```python chunk_gated_delta_rule_fwd_kkt_solve_kernel · 节选 | fla/ops/gated_delta_rule/chunk_fwd.py
+```python
 b_Ai10 = -tl.dot(
     tl.dot(b_Ai11, b_A10, input_precision=SOLVE_TRIL_DOT_PRECISION),
     b_Ai00,
@@ -699,7 +699,7 @@ b_Ai32 = -tl.dot(
 \end{aligned}
 ```
 
-```python chunk_gated_delta_rule_fwd_kkt_solve_kernel · 节选 | fla/ops/gated_delta_rule/chunk_fwd.py
+```python
 b_Ai20 = -tl.dot(
     b_Ai22,
     tl.dot(b_A20, b_Ai00, input_precision=SOLVE_TRIL_DOT_PRECISION) +
@@ -742,7 +742,7 @@ b_Ai30 = -tl.dot(
 \left(\operatorname{diag}(\beta_{[t]})\mathbf V_{[t]}\right).
 ```
 
-```python recompute_w_u_fwd_kernel · 节选 | fla/ops/gated_delta_rule/wy_fast.py
+```python
 @triton.jit(do_not_specialize=['T'])
 def recompute_w_u_fwd_kernel(
     k, v, beta, w, u, A, g, cu_seqlens, chunk_indices, T, H: tl.constexpr, HV: tl.constexpr,
@@ -782,7 +782,7 @@ def recompute_w_u_fwd_kernel(
 \operatorname{diag}(\gamma_{[t]})\mathbf K_{[t]}\right).
 ```
 
-```python recompute_w_u_fwd_kernel · 节选 | fla/ops/gated_delta_rule/wy_fast.py
+```python
 if USE_G:
     p_g = g + (bos*HV + i_h) + o_t * HV
     b_g = exp2(tl.load(p_g, mask=m_t, other=0.0))
@@ -835,7 +835,7 @@ for i_k in range(tl.cdiv(K, BK)):
 \overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top.
 ```
 
-```python chunk_gated_delta_rule_fwd_kernel_h_blockdim64 · 节选 | fla/ops/common/chunk_delta_h.py
+```python
 @triton.jit(do_not_specialize=['T'])
 def chunk_gated_delta_rule_fwd_kernel_h_blockdim64(
     k, v, w, v_new, g, gk, h, h0, ht, cu_seqlens, chunk_offsets, T, H: tl.constexpr,
@@ -880,7 +880,7 @@ def chunk_gated_delta_rule_fwd_kernel_h_blockdim64(
 \overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top\right).
 ```
 
-```python chunk_gated_delta_rule_fwd_kernel_h_blockdim64 · 节选 | fla/ops/common/chunk_delta_h.py
+```python
 last_idx = min((i_t + 1) * BT, T) - 1
 b_g_last = tl.load(g + (bos * HV + last_idx * HV + i_h).to(tl.int64)).to(tl.float32)
 p_g = g + (bos * HV + i_h).to(tl.int64) + o_t * HV
@@ -933,7 +933,7 @@ b_h2 += tl.dot(b_k, b_v)
 \mathbf Q_{[t]}\mathbf K_{[t]}^\top.
 ```
 
-```python chunk_fwd_kernel_o · 节选 | fla/ops/common/chunk_o.py
+```python
 @triton.jit(do_not_specialize=['T'])
 def chunk_fwd_kernel_o(
     q, k, v, h, g, g_gamma, o, cu_seqlens, chunk_indices, scale, T, H: tl.constexpr,
@@ -974,7 +974,7 @@ def chunk_fwd_kernel_o(
 \mathtt{b\_o}\leftarrow\overleftarrow{\mathbf Q}_{[t]}\mathbf S_{[t]}^\top,\qquad \mathtt{b\_A}\leftarrow\mathbf Q_{[t]}\mathbf K_{[t]}^\top\odot\Gamma_{[t]},\qquad \mathbf O_{[t]}=s(\mathtt{b\_o}+\mathtt{b\_A}\mathbf V_{\mathrm{new},[t]}).
 ```
 
-```python chunk_fwd_kernel_o · 节选 | fla/ops/common/chunk_o.py
+```python
 g += bos * HV + i_h
 p_g = g + o_t * HV
 b_g = tl.load(p_g, mask=m_t, other=0.0)
@@ -1025,7 +1025,7 @@ tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=m_t[:, None] & (o_v < V)[None, 
 
 - 在 `STATE_V_FIRST=False` 的源码分支中，K 的各片段先累加出 `b_dv`，再乘位置到块末的衰减。下面是残差梯度合并和第一片状态梯度的更新；其他 K 片段以同样方式累加：
 
-```python chunk_gated_delta_rule_bwd_kernel_dhu_blockdim64 · 节选 | fla/ops/common/chunk_delta_h.py
+```python
 @triton.jit(do_not_specialize=['T'])
 def chunk_gated_delta_rule_bwd_kernel_dhu_blockdim64(
     q, k, w, g, gk, dht, dh0, do, dh, dv, dv2, cu_seqlens, chunk_offsets, scale, T,
@@ -1065,7 +1065,7 @@ def chunk_gated_delta_rule_bwd_kernel_dhu_blockdim64(
 
 - `prepare_wy_repr_bwd_kernel` 通过交换行列地址将代码变量 `b_A` 加载为 $`\mathbf R^\top`$，先累加两个乘法对逆矩阵的梯度，再执行两次 `tl.dot`。单位对角线是常数，上三角恒为零；只有严格下三角系数需要回传。以下摘录中最后乘入的指数差把梯度继续传过 $`\Gamma\odot\mathbf K\mathbf K^\top`$ 的逐元素衰减：
 
-```python prepare_wy_repr_bwd_kernel · 节选 | fla/ops/gated_delta_rule/wy_fast.py
+```python
 @triton.jit(do_not_specialize=['T'])
 def prepare_wy_repr_bwd_kernel(
     k, v, beta, g, A, dw, du, dk, dv, db, dg, cu_seqlens, chunk_indices, T, H: tl.constexpr,
@@ -1102,7 +1102,7 @@ def prepare_wy_repr_bwd_kernel(
 
 - 前向保存归一化后的 Q/K、原始 V、累计 gate、beta、三角逆 A、初态和序列索引，反向重算 W/U、块入口状态和 `v_new`。若启用了 kernel 内 Q/K 归一化，最外层还要调用 `l2norm_bwd`；融合 beta sigmoid 时再经过 `fused_beta_sigmoid_bwd`，融合衰减门时则由 `gdn_gate_bwd` 回传到 gate 输入、`A_log` 和 `dt_bias`。状态算子的梯度到达这些外层变换后，才是模型投影输出所需的梯度。
 
-```python chunk_gated_delta_rule_bwd · 节选 | fla/ops/gated_delta_rule/chunk.py
+```python
 def chunk_gated_delta_rule_bwd(
     q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, g: torch.Tensor, beta: torch.Tensor,
     A: torch.Tensor, scale: float, initial_state: torch.Tensor, do: torch.Tensor,
@@ -1150,7 +1150,7 @@ N_V&=\left\lceil d_v/B_V\right\rceil,\qquad
 
 - 每个 program 维护一个 `[BK, BV]` 状态片段，并沿时间维串行更新。不同 value 片段可以独立推进，因为每个片段只需要完整 key 向量和对应的 value 子向量。较小的 BV 限制单个 program 的状态寄存器用量；最终状态使用 FP32 保存，供下一次调用接续。
 
-```python fused_recurrent_gated_delta_rule_fwd · 节选 | fla/ops/gated_delta_rule/fused_recurrent.py
+```python
 def fused_recurrent_gated_delta_rule_fwd(
     q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, g: torch.Tensor | None = None,
     gk: torch.Tensor | None = None, gv: torch.Tensor | None = None,
@@ -1186,7 +1186,7 @@ o_t&=sH_t^\top q_t.
 
 - 对 K 维的归约实现 $`\bar H_t^\top k_t`$，读出衰减后的旧 value；外积 $`k_te_t^\top`$ 将残差写入当前 key 方向；最后的归约实现状态对 query 的读出。完整 key 维包含在每个 program 内，因此这些归约不需要跨 program 通信。
 
-```python fused_recurrent_gated_delta_rule_fwd_kernel · 节选 | fla/ops/gated_delta_rule/fused_recurrent.py
+```python
 @triton.jit(do_not_specialize=['T'])
 def fused_recurrent_gated_delta_rule_fwd_kernel(
     q, k, v, g, gk, gv, beta, A_log, dt_bias, o, h0, ht, cu_seqlens, scale, T, H: tl.constexpr,
