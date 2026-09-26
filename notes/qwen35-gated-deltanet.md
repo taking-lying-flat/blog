@@ -12,10 +12,10 @@ O_{\mathrm{attn}}=\operatorname{softmax}(sQK^\top+\mathcal M)V,
 
 - 上述并行表达式包含序列长度平方数量的成对权重。FlashAttention 可通过分块与融合避免完整权重矩阵的显存往返，但成对计算量仍随序列长度平方增长。线性注意力的优势来自其等价递推：每个 head 维护 $`d_v\times d_k`$ 的状态，<span style="white-space: nowrap;">单步更新与读出均为 $`O(d_kd_v)`$。</span>因果掩码不能直接移到矩阵乘法外，因此训练时需要 chunkwise 分解，将块内计算组织为矩阵乘法，将块间依赖压缩到状态传递。
 
-- 状态通过外积将多组 key–value 关联叠加到同一个矩阵中。用某个 key 读取时，其他 key 对应的 value 也会按两者的内积参与结果：内积为零时没有这项干扰，内积非零时读出就会混入其他 value。GDN 先用 $`\alpha_t`$ 缩放整个旧状态，再用当前 key 读取旧 value 的预测；将新 value 与该预测作差，乘以 $`\beta_t`$ 后沿当前 key 方向写回。因此，$`\alpha_t`$ 控制历史信息的整体衰减，$`\beta_t`$ 控制本次预测误差的修正幅度。输出门则作用于状态读出之后，只调节传给下一层的结果，不改写状态。
+- 状态矩阵构成从 key 到 value 的线性关联记忆。外积叠加时，非正交 key 之间的交叉内积会耦合不同关联，形成检索干扰。GDN 以 $`\alpha_tS_{t-1}`$ 为衰减后的参考状态，以 $`v_t-\alpha_tS_{t-1}k_t`$ 为当前键值对的预测残差，沿 key 方向执行秩一校正。其中，$`\alpha_t`$ 调节历史状态的整体保留比例，$`\beta_t`$ 调节残差校正的步长，二者共同决定状态的遗忘与写入。输出门对状态读出结果进行逐通道调制，不参与状态递推。
 
 <figure style="width: 100%; max-width: 600px; margin: 20px auto;">
-  <a href="../../assets/gdn-architecture.png"><img src="../../assets/gdn-architecture.png" alt="Gated DeltaNet 模型结构与 token mixer" width="2058" height="1122"></a>
+  <img src="../../assets/gdn-architecture.png" alt="Gated DeltaNet 模型结构与 token mixer" width="2058" height="1122">
 </figure>
 
 - Token mixer 的 Q/K/V 分支依次经过线性投影、逐通道短因果卷积和 SiLU，Q/K 再沿 head 维做 L2 归一化。短卷积提供局部时序特征，Gated Delta Rule 维护跨 token 的矩阵状态；两者在解码时分别保留卷积窗口与 recurrent state。
@@ -59,6 +59,8 @@ S_t&=\alpha_tS_{t-1}(I-\beta_tk_tk_t^\top)+\beta_tv_tk_t^\top\\
 \end{aligned}
 ```
 
+- 对单位范数的 key，转移矩阵 $`I-\beta_tk_tk_t^\top`$ 是广义 Householder 矩阵：沿 $`k_t`$ 方向的特征值为 $`1-\beta_t`$，在其正交补空间上的特征值为 1。$`\beta_t=2`$ 时退化为标准 Householder 反射，$`\beta_t=1`$ 时为投影到 key 正交补空间的正交投影。当前 sigmoid 参数化使 $`\beta_t\in(0,1)`$，对应沿 key 方向的收缩；GDN 的 $`\alpha_t`$ 则进一步对所有方向施加统一衰减。
+
 - 当 $`\|k_t\|_2=1`$ 时，当前 key 上的读出是旧值与新值的插值；对任意正交方向 $`x\perp k_t`$，Delta 项为零，只保留整体衰减：
 
 ```math
@@ -92,7 +94,7 @@ S_t=\underset{S}{\arg\min}\;
 
 ### 3.1 DeltaNet 的 WY 表示与 UT 变换
 
-- 将序列划分为长度 C 的块，块内 Q/K/V 按 token 排成行。$`\mathbf S_{[t]}`$ 为第 t 块的入口状态，$`\mathbf S_{[t]}^r`$ 为处理块内前 r 个 token 后的状态。先考虑不含衰减的 DeltaNet，连续转移矩阵的乘积具有论文 Eq. (4) 的 WY 表示：
+- 将序列划分为长度 C 的块，块内 Q/K/V 按 token 排成行。$`\mathbf S_{[t]}`$ 为第 t 块的入口状态，$`\mathbf S_{[t]}^r`$ 为处理块内前 r 个 token 后的状态。不含衰减的 DeltaNet 在块内累积广义 Householder 转移矩阵；WY 表示将这一连乘写成单位矩阵减去低秩项，对应论文 Eq. (4)：
 
 ```math
 \mathbf P_{[t]}^r
@@ -181,7 +183,7 @@ S_t=\underset{S}{\arg\min}\;
 \overrightarrow{\mathbf K}_{[t]}.
 ```
 
-- 块内输出由历史读出与当前块内的残差贡献相加。[论文 §3.3](https://arxiv.org/html/2412.06464v3#S3.SS3) 将其写为：
+- 块内输出由历史读出与当前块内的残差贡献相加。论文 §3.3 将其写为：
 
 ```math
 \mathbf O_{[t]}=\overleftarrow{\mathbf Q}_{[t]}\mathbf S_{[t]}^\top+
@@ -429,7 +431,7 @@ def chunk_local_cumsum_scalar_kernel(
 
 - 这是 16/32-token 分步路径使用的 kernel；64-token 默认路径将相同计算与下一节的求解融合。先展开独立 KKT，能够直接对应“内积、衰减、beta、严格下三角”四个矩阵操作。
 
-- **代码作用：构造严格下三角系数。** 输入 K、累计 gate 和 beta，分片累计 key 内积并施加衰减与掩码，输出 `[B, T, HV, BT]` 系数缓冲区。
+- **第一段：定位 chunk 并累计 Gram 矩阵。** `chunk_indices` 给出序列编号与序列内块编号，`cu_seqlens` 确定起点 `bos` 和有效长度 T；定长分支直接通过 batch 编号计算起点。K 维按 `BK` 分片，逐片累加 $`\mathbf K_{[t]}\mathbf K_{[t]}^\top`$。`i_h // (HV // H)` 将 value head 映射到共享的 key head；K 的时间步长为 `H * K`，beta 的时间步长为 `HV`。`m_t` 屏蔽尾块的无效 token。
 
 ```python
 @triton.jit(do_not_specialize=['T'])
@@ -464,23 +466,23 @@ def chunk_scaled_dot_kkt_fwd_kernel(
         p_k = k + (bos*H + i_h // (HV // H)) * K + o_t[:, None] * (H*K) + o_k[None, :]
         b_k = tl.load(p_k, mask=m_t[:, None] & (o_k < K)[None, :], other=0.0)
         b_A += tl.dot(b_k, tl.trans(b_k))
-
-    if USE_G:
-        p_g = g + bos*HV + i_h + o_t * HV
-        b_g = tl.load(p_g, mask=m_t, other=0.0)
-        b_g_diff = b_g[:, None] - b_g[None, :]
-        b_A *= exp2(b_g_diff)
-    b_A *= b_b[:, None]
-
-    m_A = (o_t[:, None] > o_t[None, :]) & (m_t[:, None] & m_t)
-    b_A = tl.where(m_A, b_A, 0)
-    p_A = A + (bos*HV + i_h) * BT + o_t[:, None] * (BT*HV) + tl.arange(0, BT)[None, :]
-    tl.store(p_A, b_A.to(p_A.dtype.element_ty), mask=m_t[:, None])
 ```
 
-- `i_h // (HV // H)` 将 value head 映射到共享的 Q/K head。K 的时间步长为 `H * K`，gate 和 beta 的时间步长为 `HV`；因此 head 共享改变输入索引，但每个 value head 仍生成独立的块内系数。
+- **第二段：施加区间衰减、写入系数和因果约束。** `exp2(b_g_diff)` 计算区间衰减 $`(\Gamma_{[t]})_{ij}=\gamma_{[t]}^i/\gamma_{[t]}^j`$ 并逐元素乘入 Gram 矩阵；`b_b[:, None]` 按行乘 beta，`m_A` 仅保留 $`i>j`$ 的系数。结果通过 `p_A` 按 `[B, T, HV, BT]` 写回，每个有效 token 保存所在块的一行系数。以下代码接续上一段的 kernel 函数体。
 
-- 变长输入通过 `chunk_indices[i_t]` 取得“序列编号、序列内 chunk 编号”，再由 `cu_seqlens` 确定 `bos` 和当前序列长度。`o_t < T` 限制实际 token 范围，`o_t[:, None] > o_t[None, :]` 只保留此前位置对当前残差的影响。结果按 `[B, T, HV, BT]` 写回，每个 token 保存其所在块的一行系数。
+```python
+if USE_G:
+    p_g = g + bos*HV + i_h + o_t * HV
+    b_g = tl.load(p_g, mask=m_t, other=0.0)
+    b_g_diff = b_g[:, None] - b_g[None, :]
+    b_A *= exp2(b_g_diff)
+b_A *= b_b[:, None]
+
+m_A = (o_t[:, None] > o_t[None, :]) & (m_t[:, None] & m_t)
+b_A = tl.where(m_A, b_A, 0)
+p_A = A + (bos*HV + i_h) * BT + o_t[:, None] * (BT*HV) + tl.arange(0, BT)[None, :]
+tl.store(p_A, b_A.to(p_A.dtype.element_ty), mask=m_t[:, None])
+```
 
 - 64-token 融合 kernel 位于 `fla/ops/gated_delta_rule/chunk_fwd.py`，名称为 `chunk_gated_delta_rule_fwd_kkt_solve_kernel`。它将时间维拆成四个 16-token 子块，只计算四个对角块和六个非对角下三角块；对角块额外应用严格下三角掩码。这十个子矩阵保留在寄存器中，直接进入前代与合并阶段。
 

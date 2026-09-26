@@ -90,6 +90,11 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .equation { overflow-x: auto; overflow-y: hidden; margin: 26px 0 30px; padding: 10px 0 16px; max-width: 100%; font-size: 18px; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
 .equation mjx-container[jax="SVG"][display="true"] { display: block; width: max-content; min-width: 100%; margin: 0; text-align: center; }
 .equation svg { max-width: none; }
+@media screen {
+  [data-post="qwen35-gated-deltanet"] .equation { margin: 12px 0; padding: 4px 0 6px; }
+  [data-post="qwen35-gated-deltanet"] .prose :is(p, ul, ol):has(+ .equation) { margin-bottom: 10px; }
+  [data-post="qwen35-gated-deltanet"] .equation + .code-block { margin-top: 14px; }
+}
 .code-block {
   --code-bg: var(--page);
   --code-ink: var(--ink);

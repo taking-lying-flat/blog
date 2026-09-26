@@ -328,7 +328,7 @@ for (const [index, post] of posts.entries()) {
   const next = posts[index + 1];
   const article = page({
     title: `${post.title} · Blog`, description: post.description, route: post.route, type: 'article', pageClass: 'post-page',
-    body: `<article class="post-single">
+    body: `<article class="post-single" data-post="${escape(post.slug)}">
       <header class="post-header">
         <h1 id="${escape(post.titleId)}">${escape(post.title)}</h1>
         <div class="post-meta">${metadata(post)}<span>taking-lying-flat</span></div>
