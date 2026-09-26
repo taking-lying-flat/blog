@@ -1,0 +1,87 @@
+{
+  "source_byte_identical": true,
+  "source_sha256": "944356f7108a362399c3a6d6d7c20be9e9e62a6f088b6a047560d0dfe1262a9d",
+  "text_matches_source_exactly": true,
+  "original_structure_and_formatting_preserved": 582,
+  "math_occurrences": 151,
+  "image_occurrences": 9,
+  "headings": 13,
+  "verified_original_assets": 98,
+  "math_corrections": 3,
+  "text_corrections": 0,
+  "external_runtime_assets": 0,
+  "missing_assets": 0,
+  "invalid_svg_assets": 0,
+  "unchanged_existing_article_bodies": [
+    "packing-flash-attention",
+    "vllm-51593-persistent-topk-deadlock",
+    "ms-swift-model-runtime-failures",
+    "genai-flow-ii",
+    "ms-swift-chatml-rendering",
+    "genai-sakura-i",
+    "gemma-4-nvfp4-moe-missing-scales",
+    "rope",
+    "genai-sakura-ii",
+    "infra-quant-i",
+    "genai-flow-i",
+    "flashinfer-sm100-gdn-pipeline-deadlock",
+    "genai-sakura-iii"
+  ],
+  "numerical_checks": {
+    "normalized_output_max_error": 4.440892098500626e-16,
+    "unnormalized_output_max_error": 4.440892098500626e-16,
+    "dK_finite_difference_max_error": 3.044745185143416e-11,
+    "block_update_cases": 12,
+    "dK_shape": [
+      5,
+      3
+    ]
+  },
+  "browser_checks": {
+    "base": "http://127.0.0.1:4177/",
+    "firstPost": "posts/flash-attn/",
+    "preservation": {
+      "textAndStructureMatch": true,
+      "originalElements": 582,
+      "formulaCount": 151,
+      "imageCount": 9,
+      "headingCount": 13
+    },
+    "results": [
+      {
+        "width": 1440,
+        "pageWidth": 1440,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "bodyFont": "\"Source Serif 4\", \"Noto Serif SC Variable\", \"Source Han Serif SC\", \"Songti SC\", SimSun, serif",
+        "mathFont": "\"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", \"Helvetica Neue\", Helvetica, Arial, sans-serif, \"Segoe UI\"",
+        "inline_math_spacing_verified": true
+      },
+      {
+        "width": 1280,
+        "pageWidth": 1280,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "bodyFont": "\"Source Serif 4\", \"Noto Serif SC Variable\", \"Source Han Serif SC\", \"Songti SC\", SimSun, serif",
+        "mathFont": "\"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", \"Helvetica Neue\", Helvetica, Arial, sans-serif, \"Segoe UI\"",
+        "inline_math_spacing_verified": true
+      },
+      {
+        "width": 1024,
+        "pageWidth": 1024,
+        "brokenImages": [],
+        "externalImages": [],
+        "overflow": [],
+        "duplicateIDs": [],
+        "bodyFont": "\"Source Serif 4\", \"Noto Serif SC Variable\", \"Source Han Serif SC\", \"Songti SC\", SimSun, serif",
+        "mathFont": "\"PingFang SC\", \"Hiragino Sans GB\", \"Microsoft YaHei\", \"Helvetica Neue\", Helvetica, Arial, sans-serif, \"Segoe UI\"",
+        "inline_math_spacing_verified": true
+      }
+    ],
+    "errors": []
+  }
+}

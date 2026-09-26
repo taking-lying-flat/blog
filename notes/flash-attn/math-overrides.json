@@ -1,0 +1,20 @@
+{
+  "oUoLN": {
+    "from": "\\begin{align}\nd\\mathbf{V} &= \\mathbf{P}^{\\top} d\\mathbf{O} \\in \\mathbb{R}^{N \\times d} \\\\\nd\\mathbf{P} &= d\\mathbf{O}\\mathbf{V}^{\\top} \\in \\mathbb{R}^{N \\times N} \\\\\nd\\mathbf{S} &= \\text{dsoftmax}(d\\mathbf{P}) \\in \\mathbb{R}^{N \\times N} \\\\\nd\\mathbf{Q} &= d\\mathbf{S}\\mathbf{K} \\in \\mathbb{R}^{N \\times d} \\\\\nd\\mathbf{K} &= \\mathbf{Q}d\\mathbf{S}^{\\top} \\in \\mathbb{R}^{N \\times d}\n\\end{align}",
+    "to": "\\begin{align}\nd\\mathbf{V} &= \\mathbf{P}^{\\top} d\\mathbf{O} \\in \\mathbb{R}^{N \\times d} \\\\\nd\\mathbf{P} &= d\\mathbf{O}\\mathbf{V}^{\\top} \\in \\mathbb{R}^{N \\times N} \\\\\nd\\mathbf{S} &= \\text{dsoftmax}(d\\mathbf{P}) \\in \\mathbb{R}^{N \\times N} \\\\\nd\\mathbf{Q} &= d\\mathbf{S}\\mathbf{K} \\in \\mathbb{R}^{N \\times d} \\\\\nd\\mathbf{K} &= d\\mathbf{S}^{\\top}\\mathbf{Q} \\in \\mathbb{R}^{N \\times d}\n\\end{align}",
+    "reason": "修正 dK 的矩阵乘法顺序：dS^T Q 的维度为 (N×N)(N×d)，原式 Q dS^T 的内维度不匹配。参照会议版第 2.2 节。",
+    "reference": "https://openreview.net/notes/edits/attachment?id=AOJZxmW2Zt&name=pdf"
+  },
+  "fD9rR": {
+    "from": "\\mathbf O^{(2)}=\\operatorname{diag}\\big(\\ell^{(1)}/\\ell^{(2)}\\big)^{-1}\\mathbf O^{(1)} \\;+\\;\\operatorname{diag}\\big(\\ell^{(2)}\\big)^{-1}\\,e^{\\mathbf S^{(2)}-m^{(2)}}\\mathbf V^{(2)}",
+    "to": "\\mathbf O^{(2)}=\\operatorname{diag}\\!\\left(\\frac{\\ell^{(1)}}{\\ell^{(2)}}e^{m^{(1)}-m^{(2)}}\\right)\\mathbf O^{(1)} \\;+\\;\\operatorname{diag}\\big(\\ell^{(2)}\\big)^{-1}\\,e^{\\mathbf S^{(2)}-m^{(2)}}\\mathbf V^{(2)}",
+    "reason": "归一化输出的旧块系数应为 (ell^(1)/ell^(2)) exp(m^(1)-m^(2))；删除错误的逆幂并补上最大值变化的重缩放。按会议版 Algorithm 1 的稳定递推式推导，与前文完整在线 Softmax 公式一致；会议版正文的简写也漏写此指数项。",
+    "reference": "https://openreview.net/notes/edits/attachment?id=AOJZxmW2Zt&name=pdf"
+  },
+  "hr43S": {
+    "from": "\\widetilde{O}^{(2)}=\\operatorname{diag}\\!\\left(\\ell^{(1)}\\right)^{-1}O^{(1)}+e^{S^{(2)}-m^{(2)}}V^{(2)}.",
+    "to": "\\widetilde{O}^{(2)}=\\operatorname{diag}\\!\\left(e^{m^{(1)}-m^{(2)}}\\right)\\widetilde{O}^{(1)}+e^{S^{(2)}-m^{(2)}}V^{(2)}.",
+    "reason": "未归一化输出通过指数系数重缩放上一块未归一化输出，而不是除以上一块归一化因子。采用会议版 Algorithm 1 第 10 行及同页完整推导，与本文后续完整公式一致；会议版正文该简写本身也存在笔误。",
+    "reference": "https://openreview.net/notes/edits/attachment?id=AOJZxmW2Zt&name=pdf"
+  }
+}

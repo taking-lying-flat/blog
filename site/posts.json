@@ -1,5 +1,13 @@
 [
   {
+    "file": "../notes/flash-attn/source.lake",
+    "format": "lake",
+    "slug": "flash-attn",
+    "date": "2026-09-26",
+    "description": "FlashAttention 系列笔记：I/O 感知、分块与重计算、任务划分、异步流水线与 FP8。",
+    "tags": ["FlashAttention", "GPU", "Attention"]
+  },
+  {
     "file": "../notes/genai-flow-ii/source.lake",
     "format": "lake",
     "slug": "genai-flow-ii",
