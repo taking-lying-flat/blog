@@ -148,7 +148,9 @@
   "rope": {
     "17": {
       "caption": "RoPE 配置示例",
-      "sha256": "317ea1022aa824e3216ab7db3aeae1191894840e81f892d4747de57428fdc00d"
+      "sha256": "317ea1022aa824e3216ab7db3aeae1191894840e81f892d4747de57428fdc00d",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/configuration_qwen3_5.py#L29-L121",
+      "sourceLabel": "Transformers · 配置定义"
     },
     "38": {
       "caption": "Q/K 与旋转频率维度",
@@ -163,8 +165,116 @@
     "184": {
       "caption": "旋转 Q/K 特征",
       "sourceLabel": "Transformers",
-      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L668-L708",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L666-L709",
       "sha256": "488e0713a943dec6a66a990c5bc5a4a4b630a62eaed0bce67de40e2e27f8c876"
+    },
+    "233": {
+      "caption": "生成多模态 Token 类型",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/processing_utils.py#L925-L955",
+      "sourceLabel": "Transformers",
+      "sha256": "73413b610ef8f51ff98450c1171dfb26fd40d20e888f11d7b28bf53880eade3a"
+    },
+    "258": {
+      "caption": "调用三轴位置接口",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
+      "sourceLabel": "Transformers · 相关实现",
+      "sha256": "b5b5b1e1005552324bb69947b8d5f3fe880568eeee8f372c4b7d41918d25791a"
+    },
+    "268": {
+      "caption": "展开视频帧网格",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
+      "sourceLabel": "Transformers",
+      "sha256": "c4ec6ec24f982f2095ed9bd86b5ded1b5ed15c16a00544a7ffc871f6bb658283"
+    },
+    "288": {
+      "caption": "按模态分组 Token",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
+      "sourceLabel": "Transformers",
+      "sha256": "65b273c99c662b427582cb592b023292aaf4c0db8bfd121a137f425826580cac"
+    },
+    "311": {
+      "caption": "构造文本与视觉位置",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
+      "sourceLabel": "Transformers",
+      "sha256": "26d4fd15c5f972c274893fa8be6d44fc33f0ccbc3afa974258732ae386d217e1"
+    },
+    "335": {
+      "caption": "生成视觉网格坐标",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1326-L1376",
+      "sourceLabel": "Transformers",
+      "sha256": "cab9803fb5fca2d257c6bad3d7b2e8fc39b02bedc1e9b0cda19b3821059f8f70"
+    },
+    "356": {
+      "caption": "写回三轴位置与偏移",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
+      "sourceLabel": "Transformers",
+      "sha256": "be3bc0181f109b2900d7ae9cb84a168a88d1f226a47335ab86253e59e40d19d1"
+    },
+    "369": {
+      "caption": "返回位置表与偏移",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
+      "sourceLabel": "Transformers",
+      "sha256": "f863a857aa5ab3956794e31399477ffa1444b292620fba7e746f587f03c04298"
+    },
+    "409": {
+      "caption": "计算三轴旋转系数",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L188-L202",
+      "sourceLabel": "Transformers",
+      "sha256": "3662875a3a87ce67634c08699bc41daad35059262bf2be095ed283c97819686b"
+    },
+    "445": {
+      "caption": "交错选择 T/H/W 频率",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L204-L213",
+      "sourceLabel": "Transformers",
+      "sha256": "942d09ccea340aed6cd3c62448b4089cb973510dbdb0967a03cef12c8e980ba8"
+    },
+    "483": {
+      "caption": "传递位置与旋转系数",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1240-L1307",
+      "sourceLabel": "Transformers",
+      "sha256": "920ed0c7db2a03ca59c01cdda19ca1349cae27804097f7b5780b4370b7647c3e"
+    },
+    "507": {
+      "caption": "旋转 Attention 的 Q/K",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L776-L821",
+      "sourceLabel": "Transformers",
+      "sha256": "0f8dc2977054573155bfab92ae6e0690bbb420720c7070ba8e853f96f21a7ffa"
+    },
+    "518": {
+      "caption": "调用条件生成模型",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1801-L1888",
+      "sourceLabel": "Transformers",
+      "sha256": "babeaf8d20f56ee3419ef081dab2c1bbe27c5112d66218ef70f1f17e66a72bfc"
+    },
+    "536": {
+      "caption": "提取并拆分视觉特征",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1486-L1501",
+      "sourceLabel": "Transformers",
+      "sha256": "3d303f6cddead6df168e69bc10f0cb7e070ac2c6933131a4b864d9d2899be206"
+    },
+    "552": {
+      "caption": "定位与校验视觉占位符",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1503-L1542",
+      "sourceLabel": "Transformers",
+      "sha256": "35e7425c5d697ce3875daed6d1d874cdd82497902213dc92f07cc05f790bb6e4"
+    },
+    "569": {
+      "caption": "写入图像与视频特征",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1595-L1660",
+      "sourceLabel": "Transformers",
+      "sha256": "bc8b7229945b54542da41c28bc14a2edf0d926ae2608bfe1c1ccd4f1a688a7fd"
+    },
+    "602": {
+      "caption": "构造混合序列位置",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1544-L1591",
+      "sourceLabel": "Transformers",
+      "sha256": "b9cf06497dbaeb2866a5a2ef801c75a8ec18d0e799846a5d336eee13d9f69822"
+    },
+    "627": {
+      "caption": "调用文本模型并返回状态",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1595-L1660",
+      "sourceLabel": "Transformers",
+      "sha256": "d1fd806762fd8a8d2f9ffba55eded05763b78b4c4999469c2132cc4d95924824"
     }
   },
   "ms-swift-model-runtime-failures": {
@@ -274,7 +384,9 @@
     },
     "456": {
       "caption": "边界检查示例",
-      "sha256": "ac034dc717d425f6fdbe648d878958bde43b43f81898a7a849c613793833cf47"
+      "sha256": "ac034dc717d425f6fdbe648d878958bde43b43f81898a7a849c613793833cf47",
+      "url": "https://github.com/huggingface/transformers/blob/v5.3.0/src/transformers/modeling_flash_attention_utils.py#L362-L403",
+      "sourceLabel": "Transformers · 相关实现"
     },
     "469": {
       "caption": "二维文本位置修复",
@@ -300,11 +412,15 @@
     },
     "549": {
       "caption": "关闭音频输出示例",
-      "sha256": "10a6a4eed9f34277219d37ea7719b9f2739fb3422a0d6537a762af7948ea77ab"
+      "sha256": "10a6a4eed9f34277219d37ea7719b9f2739fb3422a0d6537a762af7948ea77ab",
+      "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/model/models/qwen.py#L2151-L2157",
+      "sourceLabel": "ms-swift · 参数实现"
     },
     "555": {
       "caption": "加载 Thinker 模型示例",
-      "sha256": "ed826639b38dee0bc554bd432a58cc892ad223e9164916a9c94afbb9a2f1e2de"
+      "sha256": "ed826639b38dee0bc554bd432a58cc892ad223e9164916a9c94afbb9a2f1e2de",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py#L3795-L3802",
+      "sourceLabel": "Transformers · 相关实现"
     }
   },
   "ms-swift-chatml-rendering": {
@@ -370,7 +486,9 @@
     },
     "241": {
       "caption": "截取生成 Token 示例",
-      "sha256": "84706d5a1a0c1634361f40e61e12eddde17c1e6e62bf1ea13dc3e83ea84f308c"
+      "sha256": "84706d5a1a0c1634361f40e61e12eddde17c1e6e62bf1ea13dc3e83ea84f308c",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/generation/utils.py#L2395-L2812",
+      "sourceLabel": "Transformers · 生成接口"
     },
     "252": {
       "caption": "累积引擎输出文本",
@@ -420,7 +538,9 @@
     },
     "417": {
       "caption": "空思考块正则配置",
-      "sha256": "cce1c385084589bb3a72911ea4fee1921dd0b7fa422e2607cbc853dd1203800f"
+      "sha256": "cce1c385084589bb3a72911ea4fee1921dd0b7fa422e2607cbc853dd1203800f",
+      "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/loss_scale/config/ignore_empty_think.json#L1-L7",
+      "sourceLabel": "ms-swift"
     },
     "425": {
       "caption": "将上下文编码为标签",
@@ -434,7 +554,9 @@
     },
     "455": {
       "caption": "非思考 SFT 参数示例",
-      "sha256": "3293de3a4e6ac29a4505e0fb441c5c5a5ff2095033d00e77f8d569c5f43fcf93"
+      "sha256": "3293de3a4e6ac29a4505e0fb441c5c5a5ff2095033d00e77f8d569c5f43fcf93",
+      "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/arguments/base_args/template_args.py#L171-L178",
+      "sourceLabel": "ms-swift · 参数实现"
     },
     "464": {
       "caption": "生成在线训练样本",
@@ -472,7 +594,9 @@
     },
     "575": {
       "caption": "混合思考模式样例",
-      "sha256": "df0f11608d8dad0e1d61bb7592758cc4fb890c7724dbf0bdf8505d4093540a4e"
+      "sha256": "df0f11608d8dad0e1d61bb7592758cc4fb890c7724dbf0bdf8505d4093540a4e",
+      "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L167-L171",
+      "sourceLabel": "ms-swift · 参数实现"
     },
     "600": {
       "caption": "ChatML 协议示例",
@@ -496,7 +620,9 @@
     },
     "678": {
       "caption": "标准多模态样本",
-      "sha256": "a9b83d6ccbd10fbbe3cf72b9eae1bcf0be18ef943c9501360d790bbadf906f9b"
+      "sha256": "a9b83d6ccbd10fbbe3cf72b9eae1bcf0be18ef943c9501360d790bbadf906f9b",
+      "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/template_inputs.py#L110-L159",
+      "sourceLabel": "ms-swift · 输入接口"
     },
     "699": {
       "caption": "标准化输入结果",
@@ -554,7 +680,15 @@
     },
     "909": {
       "caption": "媒体 Token 数计算示例",
-      "sha256": "86fcbb3cf3d3cf12e14e47fa5c4627ecaa77d6ed5c6e26d9a50ff161c9d06415"
+      "sha256": "86fcbb3cf3d3cf12e14e47fa5c4627ecaa77d6ed5c6e26d9a50ff161c9d06415",
+      "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L1035-L1127",
+      "sourceLabel": "ms-swift · 相关实现",
+      "additionalSources": [
+        {
+          "label": "音频长度",
+          "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L985-L991"
+        }
+      ]
     },
     "936": {
       "caption": "媒体 Token 扩展示意",
@@ -566,11 +700,15 @@
     },
     "960": {
       "caption": "构造媒体边界 Token 示例",
-      "sha256": "a663da521806a273de9138c1d296fe0cb57bd26215030af85cf539176acb35b1"
+      "sha256": "a663da521806a273de9138c1d296fe0cb57bd26215030af85cf539176acb35b1",
+      "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L924-L983",
+      "sourceLabel": "ms-swift · 相关实现"
     },
     "985": {
       "caption": "拼接媒体 Token 示例",
-      "sha256": "0037d8a2342786dea57f3cd8f4fff04eb8dfbd6c103d808579de3a3324ae4353"
+      "sha256": "0037d8a2342786dea57f3cd8f4fff04eb8dfbd6c103d808579de3a3324ae4353",
+      "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L508-L534",
+      "sourceLabel": "ms-swift · 相关实现"
     },
     "1012": {
       "caption": "同步扩展 Token 与标签",
@@ -946,7 +1084,9 @@
   "vllm-51593-persistent-topk-deadlock": {
     "25": {
       "caption": "复现启动命令",
-      "sha256": "87ef45093f9ee0de34b8417a15104cd53c180f2010d5f916dfe96ea33705d367"
+      "sha256": "87ef45093f9ee0de34b8417a15104cd53c180f2010d5f916dfe96ea33705d367",
+      "url": "https://github.com/vllm-project/vllm/issues/51593",
+      "sourceLabel": "vLLM · 问题记录"
     },
     "38": {
       "caption": "负长度传播链",
@@ -954,7 +1094,8 @@
     },
     "51": {
       "caption": "Padding 长度差异",
-      "sha256": "de2bc2d909d04f0a654ff4fb2f9ee0b44c75049e067d92c796b82434ecac6656"
+      "sha256": "de2bc2d909d04f0a654ff4fb2f9ee0b44c75049e067d92c796b82434ecac6656",
+      "kind": "diagram"
     },
     "191": {
       "caption": "修正 Padding 长度",
@@ -964,17 +1105,49 @@
     },
     "202": {
       "caption": "Kernel 边界修复示例",
-      "sha256": "63d213b82affba511630c051e13fc9cae6ccfb2000d362a463c45fa2da5705cc"
+      "sha256": "63d213b82affba511630c051e13fc9cae6ccfb2000d362a463c45fa2da5705cc",
+      "url": "https://github.com/vllm-project/vllm/blob/b21757555ac5f853a8eff02a687d2777437e055b/csrc/libtorch_stable/persistent_topk.cuh#L924-L929",
+      "sourceLabel": "vLLM · 相关实现"
     },
     "287": {
-      "caption": "Persistent Top-K 参数",
+      "caption": "Persistent Top-K 参数与状态",
       "sourceLabel": "vLLM",
-      "url": "https://github.com/vllm-project/vllm/blob/b21757555ac5f853a8eff02a687d2777437e055b/csrc/libtorch_stable/persistent_topk.cuh#L118-L130",
+      "url": "https://github.com/vllm-project/vllm/blob/ac2ae8798c7ef59c1924d5c0447a4279fa645770/csrc/libtorch_stable/persistent_topk.cuh#L118-L143",
       "sha256": "68d39506ceb99ce555d540574917234eb6d58e6fb3b1549493380ef5aeaf77fa"
     },
     "317": {
       "caption": "CTA 共享内存布局",
       "sha256": "22f3c9651caf1edaef3b7efb72d764149d6cad0f1428961bb98def7f1c0033f6"
+    },
+    "88": {
+      "caption": "展开 MTP 序列长度",
+      "url": "https://github.com/vllm-project/vllm/blob/ac2ae8798c7ef59c1924d5c0447a4279fa645770/vllm/v1/attention/backends/mla/indexer.py#L744-L759",
+      "sourceLabel": "vLLM",
+      "sha256": "82faebfe3c16bf3c84b61664c2aec10b040c469659f5c76c23cedb1e0076ecf0"
+    },
+    "222": {
+      "caption": "非 Leader CTA 提前退出",
+      "url": "https://github.com/vllm-project/vllm/blob/ac2ae8798c7ef59c1924d5c0447a4279fa645770/csrc/libtorch_stable/persistent_topk.cuh#L875-L884",
+      "sourceLabel": "vLLM",
+      "sha256": "58c20943ea551205e1ef569f4ad621b7c2f28945de3694638f0509c1e5e36cdc"
+    },
+    "238": {
+      "caption": "按序列长度选择计算路径",
+      "url": "https://github.com/vllm-project/vllm/blob/ac2ae8798c7ef59c1924d5c0447a4279fa645770/csrc/libtorch_stable/persistent_topk.cuh#L909-L947",
+      "sourceLabel": "vLLM",
+      "sha256": "efd3fd0e9567ff6bc615df91d36b75e2ecc3776838ab7cd45f5fc795d2329ed5"
+    },
+    "253": {
+      "caption": "读取当前行序列长度",
+      "url": "https://github.com/vllm-project/vllm/blob/ac2ae8798c7ef59c1924d5c0447a4279fa645770/csrc/libtorch_stable/persistent_topk.cuh#L909-L909",
+      "sourceLabel": "vLLM",
+      "sha256": "d9ec87bb618be11ff3a123e3a74b0f1ad55f7807b6ed4c29a1872d43d8a0ebeb"
+    },
+    "265": {
+      "caption": "跨 CTA 屏障同步",
+      "url": "https://github.com/vllm-project/vllm/blob/ac2ae8798c7ef59c1924d5c0447a4279fa645770/csrc/libtorch_stable/persistent_topk.cuh#L707-L712",
+      "sourceLabel": "vLLM",
+      "sha256": "3b3348b1130e0e53a7dfdd3d340893a5ea997d09c9cbd3d90b1169bc35e1af1b"
     }
   }
 }

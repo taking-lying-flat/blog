@@ -173,12 +173,16 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
   const label = languageNames[language] ?? language;
   const [declaredCaption = '', declaredSource = ''] = token.info.trim().replace(/^\S+\s*/, '').split('|').map((part) => part.trim());
   const details = codeCaptions[env.slug]?.[token.map?.[0]];
+  const isDiagram = language === 'text' || details?.kind === 'diagram';
+  if (codeCaptions[env.slug] && !isDiagram && (!details?.caption || !details?.url)) {
+    throw new Error(`Missing code source: ${env.slug}:${token.map[0] + 1}`);
+  }
   if (details && createHash('sha256').update(token.content).digest('hex') !== details.sha256) {
     throw new Error(`Code caption needs updating: ${env.slug}:${token.map[0] + 1}`);
   }
   const caption = details?.caption ?? declaredCaption;
-  const source = details?.sourceLabel ?? declaredSource;
-  const sourceUrl = details?.url ?? env.codeSourceUrl;
+  const source = isDiagram ? '' : (details?.sourceLabel ?? declaredSource);
+  const sourceUrl = isDiagram ? undefined : (details?.url ?? env.codeSourceUrl);
   const name = caption || (env.slug === 'rope'
     ? (language === 'json' ? 'config.json · text_config' : language === 'text' ? '张量维度'
       : token.content.includes('def rotate_half') ? 'rotate_half / apply_rotary_pos_emb'
