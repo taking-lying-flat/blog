@@ -3202,6 +3202,12 @@
       "file": "assets/licenses/OpenRLHF-LICENSE.txt",
       "bytes": 11356,
       "sha256": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
+    },
+    {
+      "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/LICENSE",
+      "file": "assets/licenses/SpinningUp-LICENSE.txt",
+      "bytes": 1087,
+      "sha256": "f0f761bec044b403bafbc7c373b2267072926dabd123ed4edb78ce4f2c214703"
     }
   ],
   "cards": [

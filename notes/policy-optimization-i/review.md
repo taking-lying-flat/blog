@@ -45,3 +45,7 @@
 ## GAE 函数
 
 在 GAE 定义公式后补入一个完整的 OpenRLHF PyTorch 函数，仅代码框标题注明用途和来源。独立使用时删除未使用的 `self`，省略文档字符串，保留计算主体；来源与 Apache 2.0 许可见 `code-provenance.json`。正文、原排版及 17 个标题保持不变。已核对代码显示、复制及 6 组带掩码／无掩码的 λ 边界和递推结果。
+
+## 官方 PPO 与 bootstrap 函数
+
+新增 OpenAI Spinning Up 的 PyTorch 原函数 `compute_loss_pi`、`compute_loss_v`、`update`、`PPOBuffer.finish_path`，只移除外层缩进，未改写函数。GAE 移除导入、类型标注和文档字符串，保留原方法参数及计算主体。标题改为一行；删除指定 γ-just 段落后图片周围的留白。按用户要求，此次只构建发布，不运行额外检查。

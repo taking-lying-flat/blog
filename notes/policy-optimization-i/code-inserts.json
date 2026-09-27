@@ -4,5 +4,23 @@
     "after": "u177a99f0",
     "file": "gae-source.md",
     "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/trainer/ppo_utils/experience_maker.py#L342-L387"
+  },
+  {
+    "id": "ppo-policy-source",
+    "after": "u7c175980",
+    "file": "ppo-policy-source.md",
+    "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/pytorch/ppo/ppo.py#L227-L243"
+  },
+  {
+    "id": "ppo-value-source",
+    "after": "uc919fb1a",
+    "file": "ppo-value-source.md",
+    "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/pytorch/ppo/ppo.py#L246-L248"
+  },
+  {
+    "id": "bootstrap-source",
+    "after": "u7d0cf8b8",
+    "file": "bootstrap-source.md",
+    "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/pytorch/ppo/ppo.py#L42-L69"
   }
 ]

@@ -1,17 +1,13 @@
 ```python GAE · 计算优势与回报 | OpenRLHF · PyTorch
-from typing import Tuple
-
-import torch
-
-
 @torch.no_grad()
 def get_advantages_and_returns(
-    values: torch.Tensor,
-    rewards: torch.Tensor,
-    action_mask: torch.Tensor,
-    gamma: float,
-    lambd: float,
-) -> Tuple[torch.Tensor, torch.Tensor]:
+    self,
+    values,
+    rewards,
+    action_mask,
+    gamma,
+    lambd,
+):
     lastgaelam = 0
     advantages_reversed = []
     response_length = rewards.size(1)
