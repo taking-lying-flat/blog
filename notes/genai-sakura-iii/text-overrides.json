@@ -73,5 +73,25 @@
     "to": "VP SDE 的扰动核在初始时刻也退化为给定初值；由于",
     "reason": "与本节明确区分精确连续 SDE 和实际训练初始加噪约定的说明一致，避免继续将初始噪声约定的差异说成 SDE 本身的间断。",
     "reference": "https://proceedings.neurips.cc/paper_files/paper/2022/file/a98846e9d9cc01cfb87eb694d946ce6b-Supplemental-Conference.pdf#page=21"
+  },
+  "u41a3bb72": {
+    "from": " 求解器需要预先指定时间步序列",
+    "to": [
+      "当 ",
+      {
+        "math": "\\sigma(0)=0"
+      },
+      " 时，",
+      {
+        "math": "\\lambda(0)"
+      },
+      " 发散，不能直接代入有限步长公式；实际求解取正的终止时间 ",
+      {
+        "math": "t_{\\min}"
+      },
+      "，并与同一终点的 ODE 精确解比较。需要零噪声输出时，再执行单独的最终去噪。求解器需要预先指定时间步序列"
+    ],
+    "reason": "说明有限 log-SNR 终点及数值误差界的适用范围。",
+    "reference": "https://github.com/LuChengTHU/dpm-solver/blob/main/dpm_solver_pytorch.py"
   }
 }

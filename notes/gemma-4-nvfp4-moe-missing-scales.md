@@ -26,7 +26,7 @@
 | 复现模型 | `bg-digitalservices/Gemma-4-26B-A4B-it-NVFP4` |
 | 已确认环境 | `RTX 5090 / SM120`，`vLLM` `0.24.0` |
 | 失败路径 | 显式选择 `VLLM_CUTLASS` `NVFP4 MoE`，执行 `W4A4 expert computation` |
-| `checkpoint` 缺陷 | 12 个 `layer` 中共有 25 个 `expert activation scale` 条目缺失 |
+| `checkpoint` 缺陷 | 12 个 `layer` 中共有 25 个 `expert` 存在 `activation scale` 缺项 |
 | `loader` 缺陷 | `per-expert scale` 由 `torch.empty` 分配，加载结束后没有验证 `checkpoint coverage` |
 | 外部症状 | 请求耗尽 `max_tokens`，返回 `PAD token`、`content: null` 或空字符串 |
 

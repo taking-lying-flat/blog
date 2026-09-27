@@ -251,27 +251,62 @@ response = tokenizer.decode(generated_tokens[0])
 **原生 `vLLM`**：真正决定返回文本的是 `vllm/v1/engine/detokenizer.py`。它将输出缓冲区初始化为空，并且只向其中追加引擎新产生的 `token`：
 
 ```python
-class BaseIncrementalDetokenizer:
-    def __init__(self, request):
-        self.output_text = ''
+def update(self, new_token_ids: list[int], stop_terminated: bool) -> str | None:
+    """Update RequestState for the request_id by:
+        1) Detokenize the new token ids incrementally.
+        2) Evaluate stop criteria.
 
-    def update(self, new_token_ids, stop_terminated):
-        for new_token_id in new_token_ids:
-            self.token_ids.append(new_token_id)
-            self.output_text += self.decode_next(new_token_id)
+    Return matched stop string or None.
+    """
+    if not new_token_ids:
+        return None
+
+    if stop_terminated and not self.include_stop_str_in_output:
+        skipped_stop_token_id = new_token_ids[-1]
+        new_token_ids = new_token_ids[:-1]
+    else:
+        skipped_stop_token_id = None
+
+    stop_check_offset = len(self.output_text)
+    for new_token_id in new_token_ids:
+        self.token_ids.append(new_token_id)
+        self.output_text += self.decode_next(new_token_id)
+        if self.min_tokens and self.num_output_tokens() <= self.min_tokens:
+            stop_check_offset = len(self.output_text)
+
+    if skipped_stop_token_id is not None:
+        self.token_ids.append(skipped_stop_token_id)
+
+    stop_string = None
+    if self.stop and self.num_output_tokens() > self.min_tokens:
+        stop = check_stop_strings(
+            output_text=self.output_text,
+            new_char_count=len(self.output_text) - stop_check_offset,
+            stop=self.stop,
+            include_in_output=self.include_stop_str_in_output,
+        )
+        if stop is not None:
+            stop_string, truncate_to = stop
+            if truncate_to != -1:
+                self.output_text = self.output_text[:truncate_to]
+
+    return stop_string
 ```
 
 `vllm/v1/engine/output_processor.py` 随后直接用这个缓冲区构造 `CompletionOutput`：
 
 ```python
-text = self.detokenizer.get_next_output_text(finished, delta)
-if not delta:
-    token_ids = self.detokenizer.output_token_ids
-
 return CompletionOutput(
+    index=self.request_index,
     text=text,
     token_ids=token_ids,
-    ...,
+    routed_experts=routed_experts,
+    sampling_mask=sampling_mask,
+    logprobs=logprobs,
+    cumulative_logprob=self.logprobs_processor.cumulative_logprob,
+    finish_reason=str(finish_reason) if finished else None,
+    stop_reason=stop_reason if finished else None,
+    spec_decode_metrics=self.spec_decode_metrics if finished else None,
 )
 ```
 
@@ -280,20 +315,22 @@ return CompletionOutput(
 **`ms-swift`**：`swift/template/base.py` 先截取新增 `token`，再在解码阶段恢复模板前缀
 
 ```python
-def get_generate_ids(self, generate_ids, num_prompt_tokens):
+def get_generate_ids(self, generate_ids: Union[torch.Tensor, List[int]],
+                     num_prompt_tokens: int) -> Union[torch.Tensor, List[int]]:
     if self.skip_prompt:
         generate_ids = generate_ids[..., num_prompt_tokens:]
     return generate_ids
 
-def decode_generate_ids(
-    self,
-    generate_ids,
-    *,
-    first_token=True,
-    template_inputs=None,
-    **kwargs,
-):
-    generate_ids = self.skip_stop_tokens(generate_ids)
+def decode_generate_ids(self,
+                        generate_ids: List[int],
+                        *,
+                        is_finished: bool = True,
+                        first_token=True,
+                        template_inputs=None,
+                        **kwargs) -> Any:
+    if kwargs.get('spaces_between_special_tokens') is None:
+        kwargs['spaces_between_special_tokens'] = False
+    generate_ids = self.skip_stop_tokens(generate_ids, is_finished)
     response = self.tokenizer.decode(generate_ids, **kwargs)
     response_prefix = self._get_response_prefix(template_inputs)
     if first_token and response_prefix:
@@ -463,16 +500,19 @@ labels:    [-100 ...      | 答案 token]
 普通 `SFT` 使用已有标签，所以 `enable_thinking` 不选择数据类型；`OPD / on-policy GKD` 在训练内部先让学生模型在线生成，因此其中包含一段真正的推理路径。`swift/rlhf_trainers/rollout_mixin.py` 的 `_generate_completions()` 先预处理样本，再进入 `template.generate_context()`：
 
 ```python
-def _generate_completions(self, samples):
+def _generate_completions(self, samples: List[OnPolicySample]) -> List[OnPolicySample]:
     samples = self._preprocess_inputs(samples)
 
-    with unwrap_model_for_generation(...), \
-            self.template.generate_context(), \
-            self.multi_turn_completion_length_context():
-        samples = self._infer_single_or_multi_turn(
-            samples,
-            self.request_config,
-        )
+    mode = 'train' if self.model.training else 'eval'
+    if self.use_fast_infer:
+        samples = self._fast_infer(samples)
+    else:
+        with unwrap_model_for_generation(
+                self.model_wrapped, self.accelerator, gather_deepspeed3_params=self.args.ds3_gather_for_generation
+        ), self.template.generate_context(), self.multi_turn_completion_length_context():
+            samples = self._infer_single_or_multi_turn(samples, self.request_config)
+            if mode == 'train':
+                self.model.train()
 
     return samples
 ```
@@ -480,11 +520,12 @@ def _generate_completions(self, samples):
 预处理的关键操作是删除已有 `response`：
 
 ```python
-def _preprocess_inputs(self, samples):
+def _preprocess_inputs(self, samples: List[OnPolicySample]) -> List[OnPolicySample]:
+    """Preprocess samples before inference"""
     samples = self._set_inputs_system(samples)
     samples = self._add_prompt_id_to_inputs(samples)
-    for sample in samples:
-        remove_response(sample.messages)
+    for s in samples:
+        remove_response(s.messages)
     return samples
 ```
 
@@ -503,46 +544,54 @@ enable_thinking=False → non-thinking rollout
 
 “`enable_thinking` 只在推理阶段生效”与“`OPD` 训练中它会改变样本格式”并不矛盾：`OPD` 训练内部会执行一次学生推理。`rollout` 完成后还存在一个 `token` 对齐问题。`response prefix` 属于 `prompt`，学生返回的 `response_token_ids` 通常只包含新增 `completion`；重新编码训练序列时，必须把生成时使用的前缀补回，否则 `rollout` 与训练使用的 `token` 上下文不一致
 
-`swift/rlhf_trainers/utils.py` 先按逐样本或全局 `enable_thinking` 取得相同的 `prefix ids`：
+`swift/rlhf_trainers/utils.py` 将逐样本模板参数交给 `_get_response_prefix()`，沿用 rollout 的优先级和模型专用规则，再生成 `prefix ids`：
 
 ```python
-def get_response_prefix_ids(
-    template,
-    sample_enable_thinking=None,
-):
-    effective = (
-        sample_enable_thinking
-        if sample_enable_thinking is not None
-        else template.enable_thinking
-    )
-    if effective is True:
-        prefix_str = template.template_meta.thinking_prefix
-    elif effective is False:
-        prefix_str = template.template_meta.non_thinking_prefix
-    else:
-        return None
-    return template.tokenizer.encode(
-        prefix_str,
-        add_special_tokens=False,
-    )
+def get_response_prefix_ids(template: Template,
+                            sample_enable_thinking: Optional[bool] = None,
+                            *,
+                            chat_template_kwargs: Optional[Dict[str, Any]] = None) -> Optional[List[int]]:
+    kwargs = dict(chat_template_kwargs or {})
+    if sample_enable_thinking is not None:
+        kwargs['enable_thinking'] = sample_enable_thinking
+    inputs = StdTemplateInputs(messages=[], chat_template_kwargs=kwargs)
+    prefix_str = template._get_response_prefix(inputs)
+    if prefix_str:
+        return template.tokenizer.encode(prefix_str, add_special_tokens=False)
+    return None
 ```
 
-`encode_sample()` 从 `sample.extra['chat_template_kwargs']` 读取逐样本值，并把 `prefix ids` 与 `rollout ids` 一起交给 `replace_assistant_response_with_ids()`：
+`encode_sample()` 传递整组 `chat_template_kwargs`，并把返回的 `prefix ids` 与 rollout token 一起交给 `replace_assistant_response_with_ids()`：
 
 ```python
-ctk = sample.extra.get('chat_template_kwargs') or {}
-sample_et = ctk.get('enable_thinking')
-prefix_ids = get_response_prefix_ids(
-    template,
-    sample_enable_thinking=sample_et,
-)
+def encode_sample(sample: OnPolicySample, template: Template, *, encode_prompt_only: bool = False) -> Dict[str, Any]:
+    """Encode a sample into a template.encode output dict.
 
-data['messages'] = replace_assistant_response_with_ids(
-    messages,
-    sample.response_token_ids,
-    loss_mask,
-    non_thinking_prefix_ids=prefix_ids,
-)
+    Does NOT mutate ``sample.messages`` — works on a copy from
+    ``to_template_dict()`` so the sample's original messages are preserved
+    for logging / reward computation / reuse across steps_per_generation.
+
+    Resolve the response prefix with the same per-sample chat template
+    settings as rollout, and exclude the injected prefix from the loss.
+    """
+    data = sample.to_template_dict()
+    if sample.response_token_ids:
+        loss_mask = sample.response_loss_mask or None
+        msgs = data.get('messages')
+        if msgs is not None:
+            msgs = [m.copy() for m in msgs]
+        ctk = sample.extra.get('chat_template_kwargs') or {}
+        prefix_ids = get_response_prefix_ids(template, chat_template_kwargs=ctk)
+        data['messages'] = replace_assistant_response_with_ids(
+            msgs, sample.response_token_ids, loss_mask, non_thinking_prefix_ids=prefix_ids)
+
+    if encode_prompt_only:
+        messages = data.get('messages', [])
+        if messages and messages[-1].get('role') == 'assistant':
+            data = {**data, 'messages': messages[:-1] + [{**messages[-1], 'content': None}]}
+
+    encoded = template.encode(data, return_length=True)
+    return encoded
 ```
 
 虽然参数名仍叫 `non_thinking_prefix_ids`，当前调用传入的实际是本条样本所选择的 `prefix`：`thinking` 时为 `<think>\n`，`non-thinking` 时为空思考块。辅助函数在 `completion` 尚未包含该前缀时将其补到最后一轮，并把前缀对应的 `loss mask` 设为 `0`：
@@ -573,9 +622,8 @@ if non_thinking_prefix_ids:
 
 逐样本混合 `rollout` 只需要设置：
 
-```json
+```jsonl
 {"chat_template_kwargs": {"enable_thinking": true}}
-
 {"chat_template_kwargs": {"enable_thinking": false}}
 ```
 
@@ -741,12 +789,8 @@ StdTemplateInputs(
 `Template._simplify_context_list()` 先通过 `_split_special_tokens()` 把 `<image>`、`<video>` 和 `<audio>` 从相邻文本中分离，再由 `_pre_tokenize()` 逐个调用模板的 `replace_tag()`：
 
 ```python
-def _simplify_context_list(self, context_list, loss_scale_list, inputs):
-    context_list, loss_scale_list = self._split_special_tokens(
-        context_list, loss_scale_list)
-    context_list, loss_scale_list = self._pre_tokenize(
-        context_list, loss_scale_list, inputs)
-    ...
+context_list, loss_scale_list = self._split_special_tokens(context_list, loss_scale_list)
+context_list, loss_scale_list = self._pre_tokenize(context_list, loss_scale_list, inputs)
 ```
 
 `Qwen3-Omni` 继承 `swift/template/templates/qwen.py` 中的 `Qwen2_5OmniTemplate.replace_tag()`，并以 `version='omni_v3'` 选择相应分支：
@@ -815,84 +859,85 @@ loss_scale = encoded.get('loss_scale')
 config = self.config.thinker_config
 ```
 
-`image placeholder` 的长度来自 `image_grid_thw`：
+图片与视频共用官方展开循环；独立图片的长度来自 `image_grid_thw`，视频携带音频时进入专门的交错分支：
 
 ```python
-image_token_id = [config.image_token_id]
-image_idx_list = findall(input_ids, image_token_id)
-image_grid_thw = media_inputs['image_grid_thw']
-merge_size = self.processor.image_processor.merge_size
+for media_type in ['image', 'video']:
+    if self.version == 'omni_v3':
+        token_id = [getattr(config, f'{media_type}_token_id')]
+    else:
+        token = f'<|{media_type.upper()}|>'
+        token_id = self._tokenize(token)
+    idx_list = findall(input_ids, token_id)
+    if idx_list:
+        merge_size = processor.image_processor.merge_size
+        media_grid_thw = media_inputs.get(f'{media_type}_grid_thw')
+        if media_type == 'video' and self.use_audio_in_video:
+            audio_lengths = audio_lengths_origin[video_audios_mask]
+            video_second_per_grid = media_inputs['video_second_per_grid']
+            _get_new_tokens_use_audio_in_video = partial(
+                self._get_new_tokens_use_audio_in_video,
+                video_grid_thw=media_grid_thw,
+                video_second_per_grid=video_second_per_grid,
+                audio_lengths=audio_lengths,
+                video_token_id=token_id,
+                audio_token_id=audio_token_id)
+            input_ids, labels, loss_scale = self._extend_tokens(input_ids, labels, loss_scale, idx_list,
+                                                                _get_new_tokens_use_audio_in_video)
 
-def _get_new_image_tokens(i):
-    image_token_len = (
-        image_grid_thw[i].prod()
-        // (merge_size**2)
-    )
-    return image_token_id * image_token_len
+        else:
 
-input_ids, labels, loss_scale = self._extend_tokens(
-    input_ids,
-    labels,
-    loss_scale,
-    image_idx_list,
-    _get_new_image_tokens,
-)
+            def _get_new_tokens(i):
+                token_len = (media_grid_thw[i].prod() // (merge_size**2))
+                return token_id * token_len
+
+            input_ids, labels, loss_scale = self._extend_tokens(input_ids, labels, loss_scale, idx_list,
+                                                                _get_new_tokens)
 ```
 
-`video placeholder` 的长度来自 `video_grid_thw`：
+不含音频交错的独立视频同样调用 `_get_new_tokens()`，长度来自 `video_grid_thw`：
 
 ```python
-video_token_id = [config.video_token_id]
-video_idx_list = findall(input_ids, video_token_id)
-video_grid_thw = media_inputs['video_grid_thw']
-merge_size = self.processor.image_processor.merge_size
+def _get_new_tokens(i):
+    token_len = (media_grid_thw[i].prod() // (merge_size**2))
+    return token_id * token_len
 
-def _get_new_video_tokens(i):
-    video_token_len = (
-        video_grid_thw[i].prod()
-        // (merge_size**2)
-    )
-    return video_token_id * video_token_len
-
-input_ids, labels, loss_scale = self._extend_tokens(
-    input_ids,
-    labels,
-    loss_scale,
-    video_idx_list,
-    _get_new_video_tokens,
-)
+input_ids, labels, loss_scale = self._extend_tokens(input_ids, labels, loss_scale, idx_list,
+                                                    _get_new_tokens)
 ```
 
 `audio placeholder` 的长度来自 `feature_attention_mask`。`_get_feat_extract_output_lengths()` 将有效声学帧数转换为 `audio encoder` 的输出长度：
 
 ```python
 def _get_feat_extract_output_lengths(self, input_lengths):
-    input_lengths_leave = input_lengths % 100
-    feat_lengths = (input_lengths_leave - 1) // 2 + 1
-    return (
-        ((feat_lengths - 1) // 2 + 1 - 1) // 2 + 1
-        + (input_lengths // 100) * 13
-    )
+    if self.version == 'omni_v2_5':
+        return ((input_lengths - 1) // 2 + 1 - 2) // 2 + 1
+    elif self.version == 'omni_v3':
+        input_lengths_leave = input_lengths % 100
+        feat_lengths = (input_lengths_leave - 1) // 2 + 1
+        return ((feat_lengths - 1) // 2 + 1 - 1) // 2 + 1 + (input_lengths // 100) * 13
 
+if self.version == 'omni_v3':
+    audio_token_id = [config.audio_token_id]
+else:
+    audio_token_id = self._tokenize('<|AUDIO|>')
+idx_list = findall(input_ids, audio_token_id)
+feature_attention_mask = media_inputs.get('feature_attention_mask')
+if feature_attention_mask is not None:
+    audio_feature_lengths = torch.sum(feature_attention_mask, dim=1)
+    audio_lengths = self._get_feat_extract_output_lengths(audio_feature_lengths)
+else:
+    audio_lengths = None
+audio_lengths_origin = audio_lengths
+if idx_list:
+    if self.use_audio_in_video:
+        audio_lengths = audio_lengths[~video_audios_mask]
 
-audio_token_id = [config.audio_token_id]
-audio_idx_list = findall(input_ids, audio_token_id)
-feature_attention_mask = media_inputs['feature_attention_mask']
-audio_feature_lengths = torch.sum(
-    feature_attention_mask, dim=1)
-audio_lengths = self._get_feat_extract_output_lengths(
-    audio_feature_lengths)
+    def _get_new_audio_tokens(i):
+        return audio_token_id * audio_lengths[i]
 
-def _get_new_audio_tokens(i):
-    return audio_token_id * audio_lengths[i]
-
-input_ids, labels, loss_scale = self._extend_tokens(
-    input_ids,
-    labels,
-    loss_scale,
-    audio_idx_list,
-    _get_new_audio_tokens,
-)
+    input_ids, labels, loss_scale = self._extend_tokens(input_ids, labels, loss_scale, idx_list,
+                                                        _get_new_audio_tokens)
 ```
 
 三类 `placeholder` 扩展完成后，媒体张量与更新后的 `token` 序列共同写入编码结果：

@@ -328,37 +328,117 @@ g&=-\exp(A_{\log})\odot\operatorname{softplus}(a+d_{\mathrm{bias}}),
 
 - 合并投影的输出在卷积时采用 `[batch, channels, time]` 排列，卷积后恢复时间优先布局，再拆分为多头 Q/K/V。
 
-- `A_log` 和 `dt_bias` 是每个 value head 的可学习参数。上述参数化保证 `g` 为负值，从而将历史衰减限制在 0 与 1 之间；`beta` 经 sigmoid 控制残差写入强度。Grouped Value Attention 通过 head 映射使多个 value head 共享 Q/K，模型代码使用 `repeat_interleave` 显式实现该映射。下面展示无缓存输入的投影与卷积分支。
+- `A_log` 和 `dt_bias` 是每个 value head 的可学习参数。上述参数化保证 `g` 为负值，从而将历史衰减限制在 0 与 1 之间；`beta` 经 sigmoid 控制残差写入强度。Grouped Value Attention 通过 head 映射使多个 value head 共享 Q/K，模型代码使用 `repeat_interleave` 显式实现该映射。下面保留官方 `forward()`，包括无缓存计算与缓存接续分支。
 
 ```python
 def forward(
-    self, hidden_states: torch.Tensor, cache_params: Cache | None = None,
-    attention_mask: torch.Tensor | None = None, **kwargs: Unpack[TransformersKwargs],
+    self,
+    hidden_states: torch.Tensor,
+    cache_params: Cache | None = None,
+    attention_mask: torch.Tensor | None = None,
+    **kwargs: Unpack[TransformersKwargs],
 ):
     hidden_states = apply_mask_to_padding_states(hidden_states, attention_mask)
+
     batch_size, seq_len, _ = hidden_states.shape
-    mixed_qkv = self.in_proj_qkv(hidden_states).transpose(1, 2)
-    mixed_qkv = causal_conv1d_fn(
-        mixed_qkv,
-        self.conv1d.weight.squeeze(1),
-        self.conv1d.bias,
-        activation=self.activation,
-    ).transpose(1, 2)
-    query, key, value = torch.split(
-        mixed_qkv, [self.key_dim, self.key_dim, self.value_dim], dim=-1,
+    use_precomputed_states = cache_params is not None and cache_params.has_previous_state(
+        self.layer_idx, state_idx=0
     )
+
+    mixed_qkv = self.in_proj_qkv(hidden_states)
+    mixed_qkv = mixed_qkv.transpose(1, 2)
+
+    z = self.in_proj_z(hidden_states)
+    z = z.reshape(batch_size, seq_len, -1, self.head_v_dim)
+
+    b = self.in_proj_b(hidden_states)
+    a = self.in_proj_a(hidden_states)
+
+    if use_precomputed_states and seq_len == 1 and not cache_params.layers[self.layer_idx].record_past:
+        conv_state = cache_params.layers[self.layer_idx].conv_states[0]
+        mixed_qkv = causal_conv1d_update(
+            mixed_qkv,
+            conv_state,
+            self.conv1d.weight.squeeze(1),
+            self.conv1d.bias,
+            self.activation,
+        )
+    else:
+        if cache_params is not None:
+            mixed_qkv = cache_params.update_conv_state(
+                mixed_qkv, self.layer_idx, conv_kernel_size=self.conv_kernel_size
+            )
+
+        mixed_qkv = causal_conv1d_fn(
+            mixed_qkv,
+            self.conv1d.weight.squeeze(1),
+            self.conv1d.bias,
+            activation=self.activation,
+            **kwargs,
+        )
+
+        if cache_params is not None:
+            mixed_qkv = mixed_qkv[:, :, -seq_len:]
+
+    mixed_qkv = mixed_qkv.transpose(1, 2)
+    query, key, value = torch.split(
+        mixed_qkv,
+        [
+            self.key_dim,
+            self.key_dim,
+            self.value_dim,
+        ],
+        dim=-1,
+    )
+
     query = query.reshape(batch_size, seq_len, -1, self.head_k_dim)
     key = key.reshape(batch_size, seq_len, -1, self.head_k_dim)
     value = value.reshape(batch_size, seq_len, -1, self.head_v_dim)
 
-    beta = self.in_proj_b(hidden_states).sigmoid()
-    a = self.in_proj_a(hidden_states)
+    beta = b.sigmoid()
     g = -self.A_log.float().exp() * F.softplus(a.float() + self.dt_bias)
-    z = self.in_proj_z(hidden_states).reshape(batch_size, seq_len, -1, self.head_v_dim)
-
     if self.num_v_heads // self.num_k_heads > 1:
         query = query.repeat_interleave(self.num_v_heads // self.num_k_heads, dim=2)
         key = key.repeat_interleave(self.num_v_heads // self.num_k_heads, dim=2)
+
+    recurrent_state = cache_params.layers[self.layer_idx].recurrent_states[0] if use_precomputed_states else None
+    if use_precomputed_states and seq_len == 1:
+        core_attn_out, last_recurrent_state = torch_recurrent_gated_delta_rule(
+            query,
+            key,
+            value,
+            g=g,
+            beta=beta,
+            initial_state=recurrent_state,
+            output_final_state=cache_params is not None,
+            use_qk_l2norm_in_kernel=True,
+            cu_seqlens=kwargs.pop("cu_seq_lens_q", None),
+            **kwargs,
+        )
+    else:
+        core_attn_out, last_recurrent_state = torch_chunk_gated_delta_rule(
+            query,
+            key,
+            value,
+            g=g,
+            beta=beta,
+            initial_state=recurrent_state,
+            output_final_state=cache_params is not None,
+            use_qk_l2norm_in_kernel=True,
+            cu_seqlens=kwargs.pop("cu_seq_lens_q", None),
+            **kwargs,
+        )
+
+    if cache_params is not None:
+        cache_params.update_recurrent_state(last_recurrent_state, self.layer_idx)
+
+    core_attn_out = core_attn_out.reshape(-1, self.head_v_dim)
+    z = z.reshape(-1, self.head_v_dim)
+    core_attn_out = self.norm(core_attn_out, z)
+    core_attn_out = core_attn_out.reshape(batch_size, seq_len, -1)
+
+    output = self.out_proj(core_attn_out)
+    return output
 ```
 
 - **解码时的卷积缓存。** 单 token 解码沿用相同的短卷积，只需接续缓存中的最近投影，按上述 Short Conv 公式计算当前位置。`conv_state` 保存短卷积输入，GDN 的 `recurrent_state` 保存矩阵状态；两份缓存分别对应局部窗口与长期递推。下面是 `causal_conv1d_update` 的实际后备实现：先拼接缓存与新输入，原位保留最近窗口，再取最后 `seq_len` 个卷积输出。
@@ -400,39 +480,47 @@ Y&=\operatorname{Concat}_{h}\!\left[
 
 - Chunk 与 recurrent 实现同一个状态算子。模型根据输入长度和已有状态选择计算方式：完整序列使用 chunk；存在缓存且输入长度为 1 时使用 recurrent。两者均返回当前输出；启用缓存时还返回序列末态并回写缓存，供后续输入接续计算。
 
-- 输出归一化独立作用于每个 value head。`self.norm` 先执行 RMSNorm，再乘 `SiLU(z)`；head 维合并后，`out_proj` 将结果映射回模型隐藏维度。以下代码合并了两条分支中相同的调用参数。
+- 输出归一化独立作用于每个 value head。`self.norm` 先执行 RMSNorm，再乘 `SiLU(z)`；head 维合并后，`out_proj` 将结果映射回模型隐藏维度。以下摘录官方状态计算与输出分支。
 
 ```python
-use_precomputed_states = (
-    cache_params is not None
-    and cache_params.has_previous_state(self.layer_idx, state_idx=0)
-)
-recurrent_state = (
-    cache_params.layers[self.layer_idx].recurrent_states[0]
-    if use_precomputed_states else None
-)
+recurrent_state = cache_params.layers[self.layer_idx].recurrent_states[0] if use_precomputed_states else None
 if use_precomputed_states and seq_len == 1:
-    delta_rule = torch_recurrent_gated_delta_rule
+    core_attn_out, last_recurrent_state = torch_recurrent_gated_delta_rule(
+        query,
+        key,
+        value,
+        g=g,
+        beta=beta,
+        initial_state=recurrent_state,
+        output_final_state=cache_params is not None,
+        use_qk_l2norm_in_kernel=True,
+        cu_seqlens=kwargs.pop("cu_seq_lens_q", None),
+        **kwargs,
+    )
 else:
-    delta_rule = torch_chunk_gated_delta_rule
+    core_attn_out, last_recurrent_state = torch_chunk_gated_delta_rule(
+        query,
+        key,
+        value,
+        g=g,
+        beta=beta,
+        initial_state=recurrent_state,
+        output_final_state=cache_params is not None,
+        use_qk_l2norm_in_kernel=True,
+        cu_seqlens=kwargs.pop("cu_seq_lens_q", None),
+        **kwargs,
+    )
 
-core_attn_out, last_recurrent_state = delta_rule(
-    query, key, value,
-    g=g, beta=beta,
-    initial_state=recurrent_state,
-    output_final_state=cache_params is not None,
-    use_qk_l2norm_in_kernel=True,
-    cu_seqlens=kwargs.pop("cu_seq_lens_q", None),
-    **kwargs,
-)
 if cache_params is not None:
     cache_params.update_recurrent_state(last_recurrent_state, self.layer_idx)
 
-core_attn_out = self.norm(
-    core_attn_out.reshape(-1, self.head_v_dim),
-    z.reshape(-1, self.head_v_dim),
-)
-output = self.out_proj(core_attn_out.reshape(batch_size, seq_len, -1))
+core_attn_out = core_attn_out.reshape(-1, self.head_v_dim)
+z = z.reshape(-1, self.head_v_dim)
+core_attn_out = self.norm(core_attn_out, z)
+core_attn_out = core_attn_out.reshape(batch_size, seq_len, -1)
+
+output = self.out_proj(core_attn_out)
+return output
 ```
 
 ## Chunk-wise 算法代码解析
@@ -644,19 +732,12 @@ tl.store(p_A, b_A.to(p_A.dtype.element_ty), mask=m_t[:, None])
 - **融合路径的边界掩码。** 四个子块的起点为 `i_tc0` 至 `i_tc3`，`o_i=tl.arange(0, 16)`；`m_tc0` 至 `m_tc3` 分别判断位置是否有效。以对角块 (0,0) 和非对角块 (1,0) 为例，默认融合 kernel 的衰减与 beta 处理为：
 
 ```python
-@triton.jit(do_not_specialize=['T'])
-def chunk_gated_delta_rule_fwd_kkt_solve_kernel(
-    k, g, beta, A, cu_seqlens, chunk_indices, T, H: tl.constexpr, HV: tl.constexpr,
-    K: tl.constexpr, BT: tl.constexpr, BC: tl.constexpr, BK: tl.constexpr, USE_G: tl.constexpr,
-    IS_VARLEN: tl.constexpr,
-):
-    ...
-    m_d = o_i[:, None] > o_i[None, :]
-    m_I = o_i[:, None] == o_i[None, :]
-    b_A00 *= tl.where(m_d & m_tc0[:, None] & m_tc0[None, :], exp2(b_g0[:, None] - b_g0[None, :]), 0.)
-    b_A10 *= tl.where(m_tc1[:, None] & m_tc0[None, :], exp2(b_g1[:, None] - b_g0[None, :]), 0.)
-    b_A00 = b_A00 * b_b0[:, None]
-    b_A10 = b_A10 * b_b1[:, None]
+m_d = o_i[:, None] > o_i[None, :]
+m_I = o_i[:, None] == o_i[None, :]
+b_A00 *= tl.where(m_d & m_tc0[:, None] & m_tc0[None, :], exp2(b_g0[:, None] - b_g0[None, :]), 0.)
+b_A10 *= tl.where(m_tc1[:, None] & m_tc0[None, :], exp2(b_g1[:, None] - b_g0[None, :]), 0.)
+b_A00 = b_A00 * b_b0[:, None]
+b_A10 = b_A10 * b_b1[:, None]
 ```
 
 - 非对角块 (1,0) 的所有有效元素都满足行位置晚于列位置，因而不需要额外的局部三角掩码。beta 总取行所属子块；gate 则用行子块减列子块。尾块无效位置的 gate 会以 0 加载，若直接乘其指数差，可能出现 `0 * inf`；融合实现先用 `tl.where` 把无效衰减置零，再与 Gram 矩阵相乘。
@@ -786,32 +867,25 @@ b_Ai30 = -tl.dot(
 ```
 
 ```python
-@triton.jit(do_not_specialize=['T'])
-def recompute_w_u_fwd_kernel(
-    k, v, beta, w, u, A, g, cu_seqlens, chunk_indices, T, H: tl.constexpr, HV: tl.constexpr,
-    K: tl.constexpr, V: tl.constexpr, BT: tl.constexpr, BK: tl.constexpr, BV: tl.constexpr,
-    USE_G: tl.constexpr, IS_VARLEN: tl.constexpr,
-):
-    ...
-    o_t = i_t * BT + tl.arange(0, BT)
-    o_A = tl.arange(0, BT)
-    m_t = o_t < T
-    m_A = m_t[:, None] & (o_A[None, :] < BT)
-    p_b = beta + bos*HV + i_h + o_t * HV
-    b_b = tl.load(p_b, mask=m_t, other=0.0)
+o_t = i_t * BT + tl.arange(0, BT)
+o_A = tl.arange(0, BT)
+m_t = o_t < T
+m_A = m_t[:, None] & (o_A[None, :] < BT)
+p_b = beta + bos*HV + i_h + o_t * HV
+b_b = tl.load(p_b, mask=m_t, other=0.0)
 
-    p_A = A + (bos*HV + i_h) * BT + o_t[:, None] * (HV*BT) + o_A[None, :]
-    b_A = tl.load(p_A, mask=m_A, other=0.0)
+p_A = A + (bos*HV + i_h) * BT + o_t[:, None] * (HV*BT) + o_A[None, :]
+b_A = tl.load(p_A, mask=m_A, other=0.0)
 
-    for i_v in range(tl.cdiv(V, BV)):
-        o_v = i_v * BV + tl.arange(0, BV)
-        m_v = m_t[:, None] & (o_v[None, :] < V)
-        p_v = v + (bos*HV + i_h) * V + o_t[:, None] * (HV*V) + o_v[None, :]
-        p_u = u + (bos*HV + i_h) * V + o_t[:, None] * (HV*V) + o_v[None, :]
-        b_v = tl.load(p_v, mask=m_v, other=0.0)
-        b_vb = (b_v * b_b[:, None]).to(b_v.dtype)
-        b_u = tl.dot(b_A, b_vb, allow_tf32=False)
-        tl.store(p_u, b_u.to(p_u.dtype.element_ty), mask=m_v)
+for i_v in range(tl.cdiv(V, BV)):
+    o_v = i_v * BV + tl.arange(0, BV)
+    m_v = m_t[:, None] & (o_v[None, :] < V)
+    p_v = v + (bos*HV + i_h) * V + o_t[:, None] * (HV*V) + o_v[None, :]
+    p_u = u + (bos*HV + i_h) * V + o_t[:, None] * (HV*V) + o_v[None, :]
+    b_v = tl.load(p_v, mask=m_v, other=0.0)
+    b_vb = (b_v * b_b[:, None]).to(b_v.dtype)
+    b_u = tl.dot(b_A, b_vb, allow_tf32=False)
+    tl.store(p_u, b_u.to(p_u.dtype.element_ty), mask=m_v)
 ```
 
 - `b_b` 为逐 token 的 beta，`b_A` 为整个 chunk 的逆矩阵。V 维按 `BV` 划分：先通过 `b_v * b_b[:, None]` 按行缩放 V，再用 `tl.dot(b_A, b_vb)` 应用三角逆变换。计算结果按 `[B, T, HV, V]` 写入 `u`；此时尚未扣除块入口状态的预测。
@@ -880,37 +954,28 @@ for i_k in range(tl.cdiv(K, BK)):
 ```
 
 ```python
-@triton.jit(do_not_specialize=['T'])
-def chunk_gated_delta_rule_fwd_kernel_h_blockdim64(
-    k, v, w, v_new, g, gk, h, h0, ht, cu_seqlens, chunk_offsets, T, H: tl.constexpr,
-    HV: tl.constexpr, K: tl.constexpr, V: tl.constexpr, BT: tl.constexpr, BV: tl.constexpr,
-    USE_G: tl.constexpr, USE_GK: tl.constexpr, USE_INITIAL_STATE: tl.constexpr,
-    STORE_FINAL_STATE: tl.constexpr, SAVE_NEW_VALUE: tl.constexpr, STATE_V_FIRST: tl.constexpr,
-    IS_VARLEN: tl.constexpr,
-):
-    ...
-    for i_t in range(NT):
-        i_t_int64 = i_t.to(tl.int64)
-        o_t = i_t * BT + tl.arange(0, BT)
-        m_t = o_t < T
-        p_h1 = h + i_t_int64 * HV*K*V + o_k1[:, None] * V + o_v[None, :]
-        m_h1 = m_k1[:, None] & m_v[None, :]
-        tl.store(p_h1, b_h1.to(p_h1.dtype.element_ty), mask=m_h1)
-        p_h2 = h + i_t_int64 * HV*K*V + o_k2[:, None] * V + o_v[None, :]
-        m_h2 = m_k2[:, None] & m_v[None, :]
-        tl.store(p_h2, b_h2.to(p_h2.dtype.element_ty), mask=m_h2)
+for i_t in range(NT):
+    i_t_int64 = i_t.to(tl.int64)
+    o_t = i_t * BT + tl.arange(0, BT)
+    m_t = o_t < T
+    p_h1 = h + i_t_int64 * HV*K*V + o_k1[:, None] * V + o_v[None, :]
+    m_h1 = m_k1[:, None] & m_v[None, :]
+    tl.store(p_h1, b_h1.to(p_h1.dtype.element_ty), mask=m_h1)
+    p_h2 = h + i_t_int64 * HV*K*V + o_k2[:, None] * V + o_v[None, :]
+    m_h2 = m_k2[:, None] & m_v[None, :]
+    tl.store(p_h2, b_h2.to(p_h2.dtype.element_ty), mask=m_h2)
 
-        p_w = w + o_t[:, None] * (HV*K) + o_k1[None, :]
-        b_w = tl.load(p_w, mask=m_t[:, None] & m_k1[None, :], other=0.0)
-        b_v = tl.dot(b_w, b_h1.to(b_w.dtype))
-        p_w = w + o_t[:, None] * (HV*K) + o_k2[None, :]
-        b_w = tl.load(p_w, mask=m_t[:, None] & m_k2[None, :], other=0.0)
-        b_v += tl.dot(b_w, b_h2.to(b_w.dtype))
-        p_v = v + o_t[:, None] * (HV*V) + o_v[None, :]
-        b_v = tl.load(p_v, mask=m_t[:, None] & m_v[None, :], other=0.0) - b_v
+    p_w = w + o_t[:, None] * (HV*K) + o_k1[None, :]
+    b_w = tl.load(p_w, mask=m_t[:, None] & m_k1[None, :], other=0.0)
+    b_v = tl.dot(b_w, b_h1.to(b_w.dtype))
+    p_w = w + o_t[:, None] * (HV*K) + o_k2[None, :]
+    b_w = tl.load(p_w, mask=m_t[:, None] & m_k2[None, :], other=0.0)
+    b_v += tl.dot(b_w, b_h2.to(b_w.dtype))
+    p_v = v + o_t[:, None] * (HV*V) + o_v[None, :]
+    b_v = tl.load(p_v, mask=m_t[:, None] & m_v[None, :], other=0.0) - b_v
 
-        p_v = v_new + o_t[:, None] * (HV*V) + o_v[None, :]
-        tl.store(p_v, b_v.to(p_v.dtype.element_ty), mask=m_t[:, None] & m_v[None, :])
+    p_v = v_new + o_t[:, None] * (HV*V) + o_v[None, :]
+    tl.store(p_v, b_v.to(p_v.dtype.element_ty), mask=m_t[:, None] & m_v[None, :])
 ```
 
 - 开头两次 `tl.store` 保存当前块的入口状态，供输出 kernel 读取。两个 `tl.dot` 分别收缩 W 与状态的两片 K 通道，结果相加后才构成完整的 $`\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top`$。参数 `v` 在调用时传入的是 U，因此 `tl.load(p_v) - b_v` 正好得到上述残差，写入 `v_new`。
@@ -980,37 +1045,29 @@ b_h2 += tl.dot(b_k, b_v)
 ```
 
 ```python
-@triton.jit(do_not_specialize=['T'])
-def chunk_fwd_kernel_o(
-    q, k, v, h, g, g_gamma, o, cu_seqlens, chunk_indices, scale, T, H: tl.constexpr,
-    HV: tl.constexpr, K: tl.constexpr, V: tl.constexpr, BT: tl.constexpr, BK: tl.constexpr,
-    BV: tl.constexpr, USE_G: tl.constexpr, USE_G_GAMMA: tl.constexpr, STATE_V_FIRST: tl.constexpr,
-    IS_VARLEN: tl.constexpr,
-):
-    ...
-    b_o = tl.zeros([BT, BV], dtype=tl.float32)
-    b_A = tl.zeros([BT, BT], dtype=tl.float32)
+b_o = tl.zeros([BT, BV], dtype=tl.float32)
+b_A = tl.zeros([BT, BT], dtype=tl.float32)
 
-    o_t = i_t * BT + tl.arange(0, BT)
-    m_t = o_t < T
-    o_v = i_v * BV + tl.arange(0, BV)
-    for i_k in range(tl.cdiv(K, BK)):
-        o_k = i_k * BK + tl.arange(0, BK)
-        m_k = o_k < K
-        p_q = q + o_t[:, None] * (H*K) + o_k[None, :]
-        p_k = k + o_k[:, None] + o_t[None, :] * (H*K)
-        p_h = h + o_k[:, None] * V + o_v[None, :]
-        m_h = m_k[:, None] & (o_v[None, :] < V)
-        # [BT, BK]
-        b_q = tl.load(p_q, mask=m_t[:, None] & m_k[None, :], other=0.0)
-        # [BK, BT]
-        b_k = tl.load(p_k, mask=m_k[:, None] & m_t[None, :], other=0.0)
-        b_h = tl.load(p_h, mask=m_h, other=0.0)
+o_t = i_t * BT + tl.arange(0, BT)
+m_t = o_t < T
+o_v = i_v * BV + tl.arange(0, BV)
+for i_k in range(tl.cdiv(K, BK)):
+    o_k = i_k * BK + tl.arange(0, BK)
+    m_k = o_k < K
+    p_q = q + o_t[:, None] * (H*K) + o_k[None, :]
+    p_k = k + o_k[:, None] + o_t[None, :] * (H*K)
+    p_h = h + o_k[:, None] * V + o_v[None, :]
+    m_h = m_k[:, None] & (o_v[None, :] < V)
+    # [BT, BK]
+    b_q = tl.load(p_q, mask=m_t[:, None] & m_k[None, :], other=0.0)
+    # [BK, BT]
+    b_k = tl.load(p_k, mask=m_k[:, None] & m_t[None, :], other=0.0)
+    b_h = tl.load(p_h, mask=m_h, other=0.0)
 
-        # [BT, BK] @ [BK, BV] -> [BT, BV]
-        b_o += tl.dot(b_q, b_h)
-        # [BT, BK] @ [BK, BT] -> [BT, BT]
-        b_A += tl.dot(b_q, b_k)
+    # [BT, BK] @ [BK, BV] -> [BT, BV]
+    b_o += tl.dot(b_q, b_h)
+    # [BT, BK] @ [BK, BT] -> [BT, BT]
+    b_A += tl.dot(b_q, b_k)
 ```
 
 - Q 的片段为 `[BT, BK]`，K 按 `[BK, BT]` 读取，入口状态片段为 `[BK, BV]`。同一份 `b_q` 同时参与两个 `tl.dot`；沿 K 维累加后，分别得到 `[BT, BV]` 的历史项与 `[BT, BT]` 的局部权重。这里的 `b_A` 是 QK 权重，与三角求解中的 A 无关。
@@ -1073,20 +1130,12 @@ tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=m_t[:, None] & (o_v < V)[None, 
 - 在 `STATE_V_FIRST=False` 的源码分支中，K 的各片段先累加出 `b_dv`，再乘位置到块末的衰减。下面是残差梯度合并和第一片状态梯度的更新；其他 K 片段以同样方式累加：
 
 ```python
-@triton.jit(do_not_specialize=['T'])
-def chunk_gated_delta_rule_bwd_kernel_dhu_blockdim64(
-    q, k, w, g, gk, dht, dh0, do, dh, dv, dv2, cu_seqlens, chunk_offsets, scale, T,
-    H: tl.constexpr, HV: tl.constexpr, K: tl.constexpr, V: tl.constexpr, BT: tl.constexpr,
-    BV: tl.constexpr, USE_G: tl.constexpr, USE_GK: tl.constexpr, USE_INITIAL_STATE: tl.constexpr,
-    USE_FINAL_STATE_GRADIENT: tl.constexpr, STATE_V_FIRST: tl.constexpr, IS_VARLEN: tl.constexpr,
-):
-    ...
-    b_dv *= tl.where(m_t, exp2(bg_last - b_g), 0)[:, None]
-    b_dv += tl.load(p_dv, mask=m_t[:, None] & m_v[None, :], other=0.0)
-    tl.store(p_dv2, b_dv.to(p_dv.dtype.element_ty), mask=m_t[:, None] & m_v[None, :])
-    b_dh1 *= bg_last_exp
-    b_q = b_q * b_g_exp[None, :]
-    b_dh1 += tl.dot(b_q.to(b_q.dtype), b_do.to(b_q.dtype)) * scale - tl.dot(b_w, b_dv.to(b_w.dtype))
+b_dv *= tl.where(m_t, exp2(bg_last - b_g), 0)[:, None]
+b_dv += tl.load(p_dv, mask=m_t[:, None] & m_v[None, :], other=0.0)
+tl.store(p_dv2, b_dv.to(p_dv.dtype.element_ty), mask=m_t[:, None] & m_v[None, :])
+b_dh1 *= bg_last_exp
+b_q = b_q * b_g_exp[None, :]
+b_dh1 += tl.dot(b_q.to(b_q.dtype), b_do.to(b_q.dtype)) * scale - tl.dot(b_w, b_dv.to(b_w.dtype))
 ```
 
 - **Q/K 梯度的直接路径与间接路径。** 暂时固定 U、W 和 gate，输出与状态更新直接产生的 Q/K 梯度为：
@@ -1114,19 +1163,12 @@ def chunk_gated_delta_rule_bwd_kernel_dhu_blockdim64(
 - `prepare_wy_repr_bwd_kernel` 通过交换行列地址将代码变量 `b_A` 加载为 $`\mathbf R^\top`$，先累加两个乘法对逆矩阵的梯度，再执行两次 `tl.dot`。单位对角线是常数，上三角恒为零；只有严格下三角系数需要回传。以下摘录中最后乘入的指数差把梯度继续传过 $`\Gamma\odot\mathbf K\mathbf K^\top`$ 的逐元素衰减：
 
 ```python
-@triton.jit(do_not_specialize=['T'])
-def prepare_wy_repr_bwd_kernel(
-    k, v, beta, g, A, dw, du, dk, dv, db, dg, cu_seqlens, chunk_indices, T, H: tl.constexpr,
-    HV: tl.constexpr, K: tl.constexpr, V: tl.constexpr, BT: tl.constexpr, BK: tl.constexpr,
-    BV: tl.constexpr, USE_G: tl.constexpr, IS_VARLEN: tl.constexpr,
-):
-    ...
-    m_A = (o_t[:, None] > o_t[None, :]) & (m_t[:, None] & m_t)
-    b_dA = tl.where(m_A, b_dA, 0)
-    b_dA = tl.dot(b_dA.to(b_A.dtype), b_A)
-    b_dA = tl.dot(b_A, b_dA.to(b_A.dtype))
-    b_dA *= exp2(b_g[:, None] - b_g[None, :])
-    b_dA = tl.where(m_A, -b_dA, 0).to(k.dtype.element_ty)
+m_A = (o_t[:, None] > o_t[None, :]) & (m_t[:, None] & m_t)
+b_dA = tl.where(m_A, b_dA, 0)
+b_dA = tl.dot(b_dA.to(b_A.dtype), b_A)
+b_dA = tl.dot(b_A, b_dA.to(b_A.dtype))
+b_dA *= exp2(b_g[:, None] - b_g[None, :])
+b_dA = tl.where(m_A, -b_dA, 0).to(k.dtype.element_ty)
 ```
 
 - **beta、原始 V 和 K 的梯度。** 记 $`\mathbf J=\mathbf K\mathbf K^\top`$、$`\mathbf F=\mathbf B_\beta(\overline{\mathbf A}\odot\Gamma)`$，$`\langle\cdot,\cdot\rangle`$ 表示同一行向量的内积。右端项与三角系数共同贡献：
@@ -1282,47 +1324,85 @@ o_t&=sH_t^\top q_t.
 - 对 K 维的归约实现 $`\bar H_t^\top k_t`$，读出衰减后的旧 value；外积 $`k_te_t^\top`$ 将残差写入当前 key 方向；最后的归约实现状态对 query 的读出。完整 key 维包含在每个 program 内，因此这些归约不需要跨 program 通信。
 
 ```python
-@triton.jit(do_not_specialize=['T'])
-def fused_recurrent_gated_delta_rule_fwd_kernel(
-    q, k, v, g, gk, gv, beta, A_log, dt_bias, o, h0, ht, cu_seqlens, scale, T, H: tl.constexpr,
-    HV: tl.constexpr, K: tl.constexpr, V: tl.constexpr, BK: tl.constexpr, BV: tl.constexpr,
-    USE_G: tl.constexpr, USE_GK: tl.constexpr, USE_GV: tl.constexpr,
-    USE_QK_L2NORM_IN_KERNEL: tl.constexpr, IS_BETA_HEADWISE: tl.constexpr,
-    USE_INITIAL_STATE: tl.constexpr, STORE_FINAL_STATE: tl.constexpr, STATE_V_FIRST: tl.constexpr,
-    IS_VARLEN: tl.constexpr, USE_GATE_IN_KERNEL: tl.constexpr, HAS_DT_BIAS: tl.constexpr,
-    APPLY_BETA_SIGMOID: tl.constexpr, ALLOW_NEG_EIGVAL: tl.constexpr,
-):
-    ...
+if STATE_V_FIRST:
+    b_h = tl.zeros([BV, BK], dtype=tl.float32)
+else:
     b_h = tl.zeros([BK, BV], dtype=tl.float32)
-    if USE_INITIAL_STATE:
-        b_h += tl.load(p_h0, mask=mask_h, other=0).to(tl.float32)
+if USE_INITIAL_STATE:
+    if STATE_V_FIRST:
+        p_h0 = h0 + i_nh * K*V + o_v[:, None] * K + o_k[None, :]
+    else:
+        p_h0 = h0 + i_nh * K*V + o_k[:, None] * V + o_v[None, :]
+    b_h += tl.load(p_h0, mask=mask_h, other=0).to(tl.float32)
 
-    for _ in tl.range(0, T):
-        b_q = tl.load(p_q, mask=mask_k, other=0).to(tl.float32)
-        b_k = tl.load(p_k, mask=mask_k, other=0).to(tl.float32)
-        b_v = tl.load(p_v, mask=mask_v, other=0).to(tl.float32)
-        if USE_QK_L2NORM_IN_KERNEL:
-            b_q /= tl.sqrt(tl.sum(b_q * b_q) + 1e-6)
-            b_k /= tl.sqrt(tl.sum(b_k * b_k) + 1e-6)
-        b_q *= scale
+for _ in tl.range(0, T):
+    b_q = tl.load(p_q, mask=mask_k, other=0).to(tl.float32)
+    b_k = tl.load(p_k, mask=mask_k, other=0).to(tl.float32)
+    b_v = tl.load(p_v, mask=mask_v, other=0).to(tl.float32)
+    if USE_QK_L2NORM_IN_KERNEL:
+        b_q = b_q / tl.sqrt(tl.sum(b_q * b_q) + 1e-6)
+        b_k = b_k / tl.sqrt(tl.sum(b_k * b_k) + 1e-6)
+    b_q = b_q * scale
+    if IS_BETA_HEADWISE:
         b_beta = tl.load(p_beta).to(tl.float32)
-        b_g = tl.load(p_g).to(tl.float32)
+    else:
+        b_beta = tl.load(p_beta, mask=mask_v, other=0).to(tl.float32)
+    if APPLY_BETA_SIGMOID:
+        b_beta = tl.sigmoid(b_beta)
+        if ALLOW_NEG_EIGVAL:
+            b_beta = b_beta * 2
 
+    if USE_G:
+        b_g = tl.load(p_g).to(tl.float32)
+        if USE_GATE_IN_KERNEL:
+            b_A = tl.load(A_log + i_hv).to(tl.float32)
+            if HAS_DT_BIAS:
+                b_g = b_g + tl.load(dt_bias + i_hv).to(tl.float32)
+            b_g = -exp(b_A) * softplus(b_g)
         b_h *= exp(b_g)
+
+    if USE_GK:
+        b_gk = tl.load(p_gk).to(tl.float32)
+        if STATE_V_FIRST:
+            b_h *= exp(b_gk[None, :])
+        else:
+            b_h *= exp(b_gk[:, None])
+
+    if USE_GV:
+        b_gv = tl.load(p_gv).to(tl.float32)
+        if STATE_V_FIRST:
+            b_h *= exp(b_gv[:, None])
+        else:
+            b_h *= exp(b_gv[None, :])
+
+    if STATE_V_FIRST:
+        b_v = b_beta * (b_v - tl.sum(b_h * b_k[None, :], 1))
+        b_h += b_v[:, None] * b_k[None, :]
+        b_o = tl.sum(b_h * b_q[None, :], 1)
+    else:
         b_v = b_beta * (b_v - tl.sum(b_h * b_k[:, None], 0))
         b_h += b_k[:, None] * b_v
         b_o = tl.sum(b_h * b_q[:, None], 0)
-        tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=mask_v)
+    tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=mask_v)
 
-        p_q += H * K
-        p_k += H * K
-        p_v += HV * V
-        p_o += HV * V
+    p_q += H*K
+    p_k += H*K
+    p_v += HV*V
+    if USE_G:
         p_g += HV
-        p_beta += HV
+    if USE_GK:
+        p_gk += HV*K
+    if USE_GV:
+        p_gv += HV*V
+    p_beta += HV * (1 if IS_BETA_HEADWISE else V)
+    p_o += HV*V
 
-    if STORE_FINAL_STATE:
-        tl.store(p_ht, b_h.to(p_ht.dtype.element_ty), mask=mask_h)
+if STORE_FINAL_STATE:
+    if STATE_V_FIRST:
+        p_ht = ht + i_nh * K*V + o_v[:, None] * K + o_k[None, :]
+    else:
+        p_ht = ht + i_nh * K*V + o_k[:, None] * V + o_v[None, :]
+    tl.store(p_ht, b_h.to(p_ht.dtype.element_ty), mask=mask_h)
 ```
 
 - 代码在循环前加载初始状态，在循环后写回末态。逐 token 解码时通常只有一次迭代，Q/K/V 指针按各自的 head 数前进，gate 和 beta 则按 value head 前进。状态更新发生在寄存器中，输出与末态分别写回对应缓冲区。

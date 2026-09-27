@@ -226,5 +226,11 @@
     "reason": "使用标准 LaTeX 命令，避免裸 Unicode 希腊字母渲染差异。",
     "reference": "https://arxiv.org/html/1810.01367v2",
     "from": " θ"
+  },
+  "myLT0": {
+    "from": "\\mathbf{z}(t+\\varepsilon) = \\int_t^{t+\\varepsilon} f(\\mathbf{z}(t), t, \\theta)dt + \\mathbf{z}(t) = T_\\varepsilon(\\mathbf{z}(t), t)",
+    "to": "\\mathbf{z}(t+\\varepsilon)=\\mathbf{z}(t)+\\int_t^{t+\\varepsilon} f(\\mathbf{z}(\\tau),\\tau,\\theta)\\,d\\tau=T_\\varepsilon(\\mathbf{z}(t),t)",
+    "reason": "积分使用独立哑变量 tau，避免将积分上限中的 t 与积分变量混用。",
+    "reference": "https://arxiv.org/abs/1806.07366"
   }
 }

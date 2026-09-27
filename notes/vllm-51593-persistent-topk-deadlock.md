@@ -195,21 +195,19 @@ seq_lens_buffer[:] = (
     - max_decode_len
     + 1
     + self.offsets_buffer[:max_decode_len]
-).clamp_min_(0)
+).clamp_(min=0)
 ```
 
 **`Consumer`：加固 `persistent_topk`**：第二层应该 `harden` `persistent_topk`。`kernel` 不应该假设所有 `caller` 永远传入合法 `length`，尤其这个 `length` 会直接决定内存访问范围和 `cooperative topology`。不能先把它读进 `uint32_t` 再 `clamp`，因为 -1 此时已经变成 `UINT_MAX`；应该先保持 `signed` 类型判断下界，再把合法正数限制到实际 `row width`
 
 ```cpp
-const int32_t raw_seq_len = params.lengths[row_idx];
-const uint32_t max_valid_len =
-    min(params.stride, params.max_seq_len);
-
+const int32_t raw_len = params.lengths[row_idx];
+const uint32_t row_bound =
+    params.stride < params.max_seq_len ? params.stride : params.max_seq_len;
+const uint32_t non_negative_len =
+    raw_len > 0 ? static_cast<uint32_t>(raw_len) : 0u;
 const uint32_t seq_len =
-    raw_seq_len <= 0
-        ? 0u
-        : min(static_cast<uint32_t>(raw_seq_len),
-              max_valid_len);
+    non_negative_len < row_bound ? non_negative_len : row_bound;
 ```
 
 - `kernel invariant`：每个`row`都满足 0 ≤ `seq_len` ≤ `min(stride, max_seq_len)`。这样一旦 `host` 侧确认 `max_seq_len <= RADIX_THRESHOLD`，任何具体 `row` 也不可能突然大于 `RADIX_THRESHOLD`，从结构上消除`peer CTA early return、leader CTA 进入 radix`这一整类 `deadlock`。同时 `upper bound` 还能防止未来其他 `caller` 传入超过 `logits row width` 的错误 `length` 后产生潜在 `OOB read`
@@ -238,15 +236,31 @@ const uint32_t seq_len =
 
     ```cpp
     const uint32_t seq_len = params.lengths[row_idx];
+    int32_t* row_output = params.output + row_idx * params.top_k;
+    const float* row_input = params.input + row_idx * params.stride;
 
     if (seq_len <= RADIX_THRESHOLD) {
-        // 只有 CTA0 处理 short / medium row
-        ...
-        continue;
+      if (cta_in_group == 0) {
+        if (seq_len <= static_cast<uint32_t>(TopK)) {
+          for (uint32_t i = tx; i < static_cast<uint32_t>(TopK);
+               i += kThreadsPerBlock) {
+            row_output[i] = (i < seq_len) ? static_cast<int32_t>(i) : -1;
+          }
+        } else if (seq_len <= static_cast<uint32_t>(HIST2048_THRESHOLD)) {
+          histogram_2048_topk<TopK>(row_input, row_output, seq_len);
+        } else {
+          histogram_256_topk<TopK>(row_input, row_output, 0, seq_len);
+        }
+      }
+      continue;
     }
 
-    // 否则认为是 large row
-    radix_topk(...);
+    const uint32_t my_chunk_start = cta_in_group * chunk_size;
+    radix_topk<TopK, VEC_SIZE>(
+        row_input, row_output, seq_len, my_chunk_start, chunk_size,
+        local_histogram, suffix_sum, shared_scalars, shared_ordered, state,
+        cta_in_group, ctas_per_group, barrier_phase, radix_iter, tx);
+    radix_iter++;
     ```
 
 - `padding MTP row`的实际 `lengths[row_idx]` 是 `int32` 的 `-1`，但代码却直接用 `uint32_t`

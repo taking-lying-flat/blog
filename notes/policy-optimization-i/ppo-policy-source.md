@@ -1,4 +1,4 @@
-```python PPO · 策略梯度目标 | verl · 节选
+```python PPO · 策略梯度目标（含 Dual-clip） | verl · 节选
 def compute_policy_loss_vanilla(
     old_log_prob,
     log_prob,

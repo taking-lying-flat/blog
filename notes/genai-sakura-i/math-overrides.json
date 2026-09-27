@@ -20,5 +20,23 @@
     "to": "q_{\\phi}(z\\mid x)\\,\\prod_i\\lvert dz_i\\rvert = p(\\epsilon)\\,\\prod_i\\lvert d\\epsilon_i\\rvert .",
     "reason": "多维联合密度对应全体坐标的体积元，不能只乘一个坐标的微分。",
     "from": "q_{\\phi}(z\\mid x)\\, \\lvert dz_i \\rvert = p(\\epsilon)\\, \\lvert d\\epsilon_i \\rvert ."
+  },
+  "cLeZW": {
+    "from": "\\int q_{\\phi}(z\\mid x)\\, f(z)\\, dz \\approx \\frac{1}{L}\\sum_{l=1}^{L} f\\!\\bigl(g_{\\phi}(x,\\epsilon^{(l)})\\bigr), \\quad \\epsilon^{(l)} \\sim p(\\epsilon).",
+    "to": "\\int q_{\\phi}(z\\mid x)\\, f(z)\\, dz \\approx \\frac{1}{L}\\sum_{l=1}^{L} f\\!\\bigl(g_{\\phi}(\\epsilon^{(l)},x)\\bigr), \\quad \\epsilon^{(l)} \\sim p(\\epsilon).",
+    "reason": "统一本文重参数化映射 g_phi(epsilon,x) 的参数顺序。",
+    "reference": "https://arxiv.org/abs/1312.6114"
+  },
+  "AiFiw": {
+    "from": "z^{(i,l)} = g_{\\phi}(x^{(i)},\\epsilon^{(l)}) = \\mu^{(i)}+\\sigma^{(i)}\\odot \\epsilon^{(l)}, \\epsilon^{(l)}\\sim \\mathcal{N}(0,I).",
+    "to": "z^{(i,l)} = g_{\\phi}(\\epsilon^{(l)},x^{(i)}) = \\mu^{(i)}+\\sigma^{(i)}\\odot \\epsilon^{(l)}, \\epsilon^{(l)}\\sim \\mathcal{N}(0,I).",
+    "reason": "统一本文重参数化映射 g_phi(epsilon,x) 的参数顺序。",
+    "reference": "https://arxiv.org/abs/1312.6114"
+  },
+  "ufuy7": {
+    "from": "\\log q_{\\phi}(z\\mid x^{(i)}) = \\log \\mathcal{N}\\!\\bigl(z;\\mu^{(i)},(\\sigma^{(i)})^{2}I\\bigr).",
+    "to": "\\log q_{\\phi}(z\\mid x^{(i)}) = \\log \\mathcal{N}\\!\\bigl(z;\\mu^{(i)},\\operatorname{diag}((\\sigma^{(i)})^{2})\\bigr).",
+    "reason": "标准差为逐维向量；对角高斯的协方差应为 diag(sigma²)，与下文逐维 KL 和采样一致。",
+    "reference": "https://arxiv.org/abs/1312.6114"
   }
 }

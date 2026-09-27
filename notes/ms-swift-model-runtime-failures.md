@@ -97,7 +97,7 @@ SinusoidsPositionEmbedding.__init__()
         ↓
 在 meta device 上按公式构造 positional_embedding 的 shape/dtype
         ↓
-register_buffer(..., persistent=False)
+nn.Buffer(..., persistent=False)
         ↓
 to_empty() / empty materialization 分配未初始化 storage
         ↓
@@ -115,28 +115,19 @@ class SinusoidsPositionEmbedding(nn.Module):
         self.length = length
         self.channels = channels
         self.max_timescale = max_timescale
-        position_embedding = (
-            self.compute_default_singular_positional_embedding()
-        )
-        self.register_buffer(
-            "positional_embedding",
-            position_embedding,
-            persistent=False,
-        )
+        if channels % 2 != 0:
+            raise ValueError("SinusoidsPositionEmbedding needs even channels input")
+        position_embedding = self.compute_default_singular_positional_embedding()
+        self.positional_embedding = nn.Buffer(position_embedding, persistent=False)
 
     def compute_default_singular_positional_embedding(self):
-        log_increment = np.log(self.max_timescale) / (self.channels // 2 - 1)
-        inv_timescales = torch.exp(
-            -log_increment * torch.arange(self.channels // 2).float()
-        )
-        scaled_time = (
-            torch.arange(self.length)[:, np.newaxis]
-            * inv_timescales[np.newaxis, :]
-        )
-        return torch.cat(
-            [torch.sin(scaled_time), torch.cos(scaled_time)],
-            dim=1,
-        )
+        log_timescale_increment = np.log(self.max_timescale) / (self.channels // 2 - 1)
+        inv_timescales = torch.exp(-log_timescale_increment * torch.arange(self.channels // 2).float())
+        scaled_time = torch.arange(self.length)[:, np.newaxis] * inv_timescales[np.newaxis, :]
+        return torch.cat([torch.sin(scaled_time), torch.cos(scaled_time)], dim=1)
+
+    def forward(self, seqlen: int):
+        return self.positional_embedding[:seqlen, :]
 ```
 
 该 `buffer` 在 `AudioEncoder` 中不是用于旋转 `Q/K`，而是在卷积特征进入 `encoder layer` 前直接执行逐元素加法：
@@ -468,20 +459,14 @@ if cu_seqlens_q is not None:
 **上游修复。** `Qwen3.5 TextModel` 在进入 `DecoderLayer` 前已经分别持有三维 `M-RoPE` `position_ids` 与二维 `text_position_ids`。`5.2.0` 和 `5.3.0` 错误地继续传递前者；`5.4.0` 起改为传递后者：
 
 ```python
-# Transformers 5.2.0 / 5.3.0
 hidden_states = decoder_layer(
     hidden_states,
     position_embeddings=position_embeddings,
-    position_ids=position_ids,       # [3, B, S]
-    ...,
-)
-
-# Transformers >= 5.4.0
-hidden_states = decoder_layer(
-    hidden_states,
-    position_embeddings=position_embeddings,
-    position_ids=text_position_ids,  # [B, S]
-    ...,
+    attention_mask=causal_mask_mapping[self.config.layer_types[i]],
+    position_ids=text_position_ids,
+    past_key_values=past_key_values,
+    use_cache=use_cache,
+    **kwargs,
 )
 ```
 

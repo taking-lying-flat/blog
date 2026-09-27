@@ -170,9 +170,11 @@ tail()
 
 ```python
 o_store_producer, o_store_consumer = pipeline.PipelineAsync.create(
-    producer_group=cg_cg1,  # CG1
-    consumer_group=cg_epi,  # warp 11
-    ...
+    num_stages=self.smem_o_stages,
+    producer_group=cg_cg1,
+    consumer_group=cg_epi,
+    barrier_storage=storage.o_store_mbar_ptr.data_ptr(),
+    defer_sync=True,
 ).make_participants()
 ```
 

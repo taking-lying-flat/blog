@@ -34,5 +34,29 @@
     "to": "p_{0t}(x(t)\\mid x(0)) = \\mathcal N\\!\\left( x(t);x(0),\\, \\sigma_{\\min}^2\\left[\\left(\\frac{\\sigma_{\\max}}{\\sigma_{\\min}}\\right)^{2t}-1\\right]I \\right),\\quad t\\in[0,1].",
     "reason": "从给定初值出发积分扩散系数平方，方差为 sigma_min²[(sigma_max/sigma_min)^(2t)−1]。与前文 VE 通式一致，且 t=0 条件方差为零。EDM 会议补充材料 C.2.1 式 (194)–(199) 明确推导并指出其与原实现几何噪声约定的差异。",
     "reference": "https://proceedings.neurips.cc/paper_files/paper/2022/file/a98846e9d9cc01cfb87eb694d946ce6b-Supplemental-Conference.pdf#page=21"
+  },
+  "t9haZ": {
+    "from": "t_M=0",
+    "to": "t_M=t_{\\min}>0",
+    "reason": "当 sigma(0)=0 时 lambda(0) 发散，实际求解使用有限噪声终点。",
+    "reference": "https://github.com/LuChengTHU/dpm-solver/blob/main/dpm_solver_pytorch.py"
+  },
+  "RAD1J": {
+    "from": "\\boxed{ \\tilde{\\boldsymbol{x}}_{t_M} - \\boldsymbol{x}_0 = \\mathcal{O}(h_{\\max}^k), \\text{ where } h_{max} = \\max_{1 \\le i \\le M}(\\lambda_{t_i} - \\lambda_{t_{i-1}}). }",
+    "to": "\\boxed{ \\tilde{\\boldsymbol{x}}_{t_M} - \\boldsymbol{x}_{t_{\\min}} = \\mathcal{O}(h_{\\max}^k), \\text{ where } h_{max} = \\max_{1 \\le i \\le M}(\\lambda_{t_i} - \\lambda_{t_{i-1}}). }",
+    "reason": "数值收敛误差比较相同有限终点的 ODE 精确解，不包含模型误差、初始分布近似和最终去噪误差。",
+    "reference": "https://github.com/LuChengTHU/dpm-solver/blob/main/dpm_solver_pytorch.py"
+  },
+  "eV1Wy": {
+    "from": "\\lambda_{t_i}=\\lambda_T+\\frac{i}{M}(\\lambda_0-\\lambda_T),\\quad i=0,\\dots,M.",
+    "to": "\\lambda_{t_i}=\\lambda_T+\\frac{i}{M}(\\lambda_{t_{\\min}}-\\lambda_T),\\quad i=0,\\dots,M.",
+    "reason": "等 log-SNR 网格须使用有限终点，不能在 lambda(0)=infinity 时均匀划分。",
+    "reference": "https://github.com/LuChengTHU/dpm-solver/blob/main/dpm_solver_pytorch.py"
+  },
+  "quXbC": {
+    "from": "[\\lambda_T,\\lambda_0]",
+    "to": "[\\lambda_T,\\lambda_{t_{\\min}}]",
+    "reason": "与正的求解终点一致，避免将无穷 log-SNR 作为均匀采样区间端点。",
+    "reference": "https://github.com/LuChengTHU/dpm-solver/blob/main/dpm_solver_pytorch.py"
   }
 }

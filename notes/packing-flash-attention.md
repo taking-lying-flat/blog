@@ -80,22 +80,19 @@ def _check_padding_free(self):
 
 ```python
 if not args.streaming and args.truncation_strategy != 'split':
-    dataset = LazyLLMDataset(
-        dataset,
-        template.encode,
-        strict=args.strict,
-        random_state=args.data_seed,
-    )
-
+    dataset = LazyLLMDataset(dataset, template.encode, strict=args.strict, random_state=args.data_seed)
 if args.packing:
-    dataset = PackingDataset(
+    packing_dataset_cls = IterablePackingDataset if args.streaming else PackingDataset
+    dataset = packing_dataset_cls(
         template,
         dataset,
+        num_proc=args.dataset_num_proc,
         packing_length=args.packing_length,
         packing_num_proc=args.packing_num_proc,
         packing_strategy=args.packing_strategy,
-        ...
-    )
+        strict=args.strict,
+        load_from_cache_file=args.load_from_cache_file,
+        multiprocessing_context=getattr(args, 'dataloader_multiprocessing_context', None))
 ```
 
 `PackingDataset` 只解决“哪些完整 `sample` 放在一起”。它从 `dataset['lengths']` 建立 `(sample_index, encoded_length)`，在 `packing_length` 预算内生成 `packed_idx`，但不会在 `dataset` 层拼接 `input_ids`、构造 `position_ids` 或生成 `Q/K/V`
@@ -301,30 +298,10 @@ max_length_q = cu_seq_lens_q.diff().max()
 `Transformers` 用 `all(...)` 检查四个显式 `varlen` 参数是否同时存在。只传 `cu_seq_lens_q/k` 而缺少 `max_length_q/k` 不会构成完整的显式 `varlen contract`
 
 ```python
-is_fa_with_position_ids = _is_packed_sequence(
-    position_ids,
-    batch_size=query_states.size(0),
-)
+is_fa_with_position_ids = _is_packed_sequence(position_ids, batch_size=query_states.size(0))
 is_fa_with_varlen_kwargs = all(
-    kwarg is not None
-    for kwarg in (
-        cu_seq_lens_q,
-        cu_seq_lens_k,
-        max_length_q,
-        max_length_k,
-    )
+    kwarg is not None for kwarg in (cu_seq_lens_q, cu_seq_lens_k, max_length_q, max_length_k)
 )
-
-if attention_mask is not None:
-    q, k, v, indices_q, cu_lens, max_lens = _upad_input(...)
-    out_unpad = flash_varlen_fn(q, k, v, ...)
-    out = pad_fn(out_unpad, indices_q, batch_size, query_length)
-
-elif is_fa_with_varlen_kwargs or is_fa_with_position_ids:
-    ...
-
-else:
-    out = flash_fn(query_states, key_states, value_states, ...)
 ```
 
 `ms-swift padding-free` 输入通常仍保留外层 `shape` `[1, T, H, D]`。当显式边界已经由 `collator` 准备好时，`Transformers` 只移除这个长度为 1 的伪 `batch dimension`，把三组状态变成原生 `varlen API` 需要的 `[T, H, D]`
@@ -346,18 +323,16 @@ output             [1, T_q, H_q, D] ◄─── view ─── [T_q, H_q, D]
 ```python
 elif is_fa_with_varlen_kwargs or is_fa_with_position_ids:
     if cu_seq_lens_q is None or cu_seq_lens_k is None:
-        q, k, v, cu_lens, max_lens = _prepare_from_posids(
-            query_states,
-            key_states,
-            value_states,
-            position_ids,
+        q, k, v, (cu_seq_lens_q, cu_seq_lens_k), (max_length_q, max_length_k) = _prepare_from_posids(
+            query_states, key_states, value_states, position_ids
         )
-        (cu_seq_lens_q, cu_seq_lens_k) = cu_lens
-        (max_length_q, max_length_k) = max_lens
     else:
         q = query_states.reshape(-1, query_states.size(-2), query_states.size(-1))
         k = key_states.reshape(-1, key_states.size(-2), key_states.size(-1))
         v = value_states.reshape(-1, value_states.size(-2), value_states.size(-1))
+
+    if "mps" in str(q.device):
+        cu_seq_lens_k = cu_seq_lens_k.clone()
 
     out = flash_varlen_fn(
         q,
@@ -365,17 +340,14 @@ elif is_fa_with_varlen_kwargs or is_fa_with_position_ids:
         v,
         cu_seqlens_q=cu_seq_lens_q,
         cu_seqlens_k=cu_seq_lens_k,
-        **flash_kwargs(
-            max_seqlen_q=max_length_q,
-            max_seqlen_k=max_length_k,
-        ),
+        max_seqlen_q=max_length_q,
+        max_seqlen_k=max_length_k,
+        **flash_kwargs,
     )
-    out = out.view(
-        query_states.size(0),
-        -1,
-        out.size(-2),
-        out.size(-1),
-    )
+    if isinstance(out, tuple):
+        out = out[0]
+
+    out = out.view(query_states.size(0), -1, out.size(-2), out.size(-1))
 ```
 
 > [!NOTE]
@@ -388,35 +360,39 @@ elif is_fa_with_varlen_kwargs or is_fa_with_position_ids:
 > [!IMPORTANT]
 > `varlen` 的第一层隔离是重新定位 `Q/K/V` 指针与张量长度，不是在全局 `attention matrix` 上补一层 `mask`
 
-对 `grid` 中的 `logical batch index` `bidb`，`BlockInfo` 分别读取 `Q` 与 `K` 的累计起点，并通过相邻边界之差得到当前序列的实际长度。下面展开的是本文对应的训练分支，即 `Q/K` 使用 `cumulative boundary`，且没有 `left padding` 与 `KV cache`
+对 `grid` 中的 `logical batch index` `bidb`，`BlockInfo` 分别读取 `Q` 与 `K` 的累计起点，并通过相邻边界之差得到当前序列的实际长度。以下保留官方结构体；本文对应其中 `Q/K` 使用 `cumulative boundary`、没有 `left padding` 与 `KV cache` 的训练分支
 
 ```cpp
-template<bool Varlen = true>
+template<bool Varlen=true>
 struct BlockInfo {
+
     template<typename Params>
-    __device__ BlockInfo(const Params& params, const int bidb)
-        : sum_s_q(params.cu_seqlens_q[bidb])
-        , sum_s_k(params.cu_seqlens_k[bidb])
-        , actual_seqlen_q(
-              params.cu_seqlens_q[bidb + 1] - sum_s_q)
-        , actual_seqlen_k(
-              params.cu_seqlens_k[bidb + 1] - sum_s_k) {}
+    __device__ BlockInfo(const Params &params, const int bidb)
+        : sum_s_q(!Varlen || params.cu_seqlens_q == nullptr ? -1 : params.cu_seqlens_q[bidb])
+        , sum_s_k(!Varlen || params.cu_seqlens_k == nullptr || !params.is_seqlens_k_cumulative ? -1 : params.cu_seqlens_k[bidb])
+        , actual_seqlen_q(!Varlen || params.cu_seqlens_q == nullptr ? params.seqlen_q : params.cu_seqlens_q[bidb + 1] - sum_s_q)
+        , leftpad_k(params.leftpad_k == nullptr ? 0 : params.leftpad_k[bidb])
+        , seqlen_k_cache((!Varlen || params.cu_seqlens_k == nullptr ? params.seqlen_k : (params.is_seqlens_k_cumulative ? params.cu_seqlens_k[bidb + 1] - sum_s_k : params.cu_seqlens_k[bidb])) - leftpad_k)
+        , actual_seqlen_k(params.seqused_k ? params.seqused_k[bidb] - leftpad_k : seqlen_k_cache + (params.knew_ptr == nullptr ? 0 : params.seqlen_knew))
+        {
+        }
 
-    template<typename index_t>
-    __device__ index_t q_offset(
-            index_t batch_stride,
-            index_t row_stride,
-            int bidb) const {
-        return uint32_t(sum_s_q) * row_stride;
+    template <typename index_t>
+    __forceinline__ __device__ index_t q_offset(const index_t batch_stride, const index_t row_stride, const int bidb) const {
+        return sum_s_q == -1 ? bidb * batch_stride : uint32_t(sum_s_q) * row_stride;
     }
 
-    template<typename index_t>
-    __device__ index_t k_offset(
-            index_t batch_stride,
-            index_t row_stride,
-            int bidb) const {
-        return uint32_t(sum_s_k) * row_stride;
+    template <typename index_t>
+    __forceinline__ __device__ index_t k_offset(const index_t batch_stride, const index_t row_stride, const int bidb) const {
+        return sum_s_k == -1 ? bidb * batch_stride + leftpad_k * row_stride : uint32_t(sum_s_k + leftpad_k) * row_stride;
     }
+
+    const int sum_s_q;
+    const int sum_s_k;
+    const int actual_seqlen_q;
+    const int leftpad_k;
+    const int seqlen_k_cache;
+    const int actual_seqlen_k;
 };
 ```
 
@@ -521,21 +497,19 @@ Tensor mO = make_tensor(
 
 ```python
 if not args.streaming and args.truncation_strategy != 'split':
-    dataset = LazyLLMDataset(
-        dataset,
-        template.encode,
-        strict=args.strict,
-        random_state=args.data_seed,
-    )
-
+    dataset = LazyLLMDataset(dataset, template.encode, strict=args.strict, random_state=args.data_seed)
 if args.packing:
-    dataset = PackingDataset(
+    packing_dataset_cls = IterablePackingDataset if args.streaming else PackingDataset
+    dataset = packing_dataset_cls(
         template,
         dataset,
+        num_proc=args.dataset_num_proc,
         packing_length=args.packing_length,
+        packing_num_proc=args.packing_num_proc,
         packing_strategy=args.packing_strategy,
-        ...
-    )
+        strict=args.strict,
+        load_from_cache_file=args.load_from_cache_file,
+        multiprocessing_context=getattr(args, 'dataloader_multiprocessing_context', None))
 ```
 
 因此，`PackingDataset` 读取的 `lengths` 已经是模板编码后的长度。对 `Qwen3.5`，`Qwen3_5Template` 继承 `Qwen3VLTemplate._encode()`。图像处理器先产生 `image_grid_thw`，模板再根据 `spatial merge` 后的网格大小计算图像在 `LLM` 序列中应占多少个位置：
@@ -594,16 +568,17 @@ mm_mask = (
 - `LLM token` 序列；模板根据 `grid metadata` 预留视觉 `token` 槽位；`packing` 只处理这一层；视觉 `embedding` 在 `forward` 前计算并写回槽位
 
 ```python
-input_ids = inputs['input_ids']
-inputs_embeds = base_model.model.embed_tokens(input_ids)
-
-inputs_embeds = self._get_inputs_embeds_hf(
-    inputs_embeds,
-    inputs,
-    model.visual,
-    self.processor,
-    model.config,
-)
+def _post_encode(self, model, inputs: Dict[str, Any]) -> Dict[str, Any]:
+    if not self.is_training:
+        return inputs
+    input_ids = inputs['input_ids']
+    base_model = self.get_base_model(model)
+    if hasattr(base_model.model, 'embed_tokens'):
+        inputs_embeds = base_model.model.embed_tokens(input_ids)
+    else:
+        inputs_embeds = base_model.model.language_model.embed_tokens(input_ids)
+    inputs_embeds = self._get_inputs_embeds_hf(inputs_embeds, inputs, model.visual, self.processor, model.config)
+    return {'inputs_embeds': inputs_embeds}
 ```
 
 `_get_inputs_embeds_hf()` 运行视觉模块后，根据 `image/video token mask` 执行 `masked_scatter`：
@@ -629,21 +604,15 @@ inputs_embeds = inputs_embeds.masked_scatter(
 视觉位置展开后，每条样本仍需独立计算 `mRoPE`。`Qwen` 模板覆盖 `packing_row()`，先对 `pack` 中的每条 `sample` 调用模型的 `get_rope_index()`，然后才交给父类沿 `sequence` 维拼接：
 
 ```python
-def packing_row(self, row):
-    for sample in row:
-        sample_copy = sample.copy()
-        sample_copy['input_ids'] = torch.tensor(
-            sample_copy['input_ids']
-        )[None]
-
-        if 'mm_token_type_ids' in sample_copy:
-            sample_copy['mm_token_type_ids'] = (
-                sample_copy['mm_token_type_ids'][None]
-            )
-
-        sample.update(self._get_position_ids(sample_copy))
-
-    return super().packing_row(row)
+def packing_row(self, row: List[Dict[str, Any]]) -> Dict[str, Any]:
+    for r in row:
+        r_copy = r.copy()
+        r_copy['input_ids'] = torch.tensor(r_copy['input_ids'])[None]
+        if 'mm_token_type_ids' in r_copy:
+            r_copy['mm_token_type_ids'] = r_copy['mm_token_type_ids'][None]
+        r.update(self._get_position_ids(r_copy))
+    packed = super().packing_row(row)
+    return packed
 ```
 
 `get_rope_index()` 返回 `temporal`、`height` 和 `width` 三层 `mRoPE` 坐标；这些坐标服务于 `Q/K` 的旋转位置编码，却不适合作为 `sample boundary`：视觉网格中的坐标可以重复，多个合法位置也可能同时等于 0；若直接查找 `reset` 点，会把样本内部的视觉区域误切成多段。因此，`ms-swift` 在每条样本的三层 `mRoPE` 前额外增加一层严格递增的文本顺序坐标：
@@ -671,16 +640,21 @@ def _concat_text_position_ids(position_ids):
 因为 `_concat_text_position_ids()` 在拼接前逐 `sample` 执行，`plane 0` 会在每条样本开头重新从 0 计数；父类 `packing_row()` 沿最后一维拼接后，它自然成为完整的 `boundary carrier`；`collator` 随后将顺序坐标与 `mRoPE` 坐标重新拆开：
 
 ```python
-position_ids = result['position_ids']
-
-result['position_ids'] = position_ids[1:]
-result['text_position_ids'] = (
-    text_position_ids
-) = position_ids[0]
-
-result.update(
-    get_packed_seq_params(text_position_ids)
-)
+def _data_collator(self, batch: List[Dict[str, Any]], *, padding_to: Optional[int] = None) -> Dict[str, Any]:
+    if self.requires_mm_token_type_ids:
+        for b in batch:
+            if 'input_ids' in b and 'mm_token_type_ids' not in b:
+                b['mm_token_type_ids'] = torch.zeros(len(b['input_ids']), dtype=torch.int64)
+    res = super()._data_collator(batch, padding_to=padding_to)
+    if not self.padding_free:
+        res.update(self._get_position_ids(res))
+    if 'position_ids' in res and self.is_training:
+        position_ids = res['position_ids']
+        res['position_ids'] = position_ids[1:]
+        res['text_position_ids'] = text_position_ids = position_ids[0]
+        if self.transformers_version >= version.parse('4.53.0.dev') and text_position_ids.shape[0] == 1:
+            res.update(get_packed_seq_params(text_position_ids))
+    return res
 ```
 
 最终，`position_ids` 只保留三层 `mRoPE`，交给语言模型计算旋转位置；独立的 `text_position_ids` 用于生成 `cu_seq_lens_q/k` 与 `max_length_q/k`。几何位置与 `attention boundary` 因而具有不同的数据来源和消费者，不会因为视觉坐标的重复而互相干扰
@@ -708,20 +682,17 @@ elif self.block_type == 'full_attention':
 `full-attention` 层将 `cu_seq_lens_q/k` 传给 `FlashAttention varlen`；`Gated DeltaNet` 路径同样消费累计边界，并把它传给 `recurrent/chunk kernel`：
 
 ```python
-core_attn_out, last_recurrent_state = (
-    torch_chunk_gated_delta_rule(
-        query,
-        key,
-        value,
-        g=g,
-        beta=beta,
-        initial_state=recurrent_state,
-        cu_seqlens=kwargs.pop(
-            'cu_seq_lens_q',
-            None,
-        ),
-        ...
-    )
+core_attn_out, last_recurrent_state = torch_chunk_gated_delta_rule(
+    query,
+    key,
+    value,
+    g=g,
+    beta=beta,
+    initial_state=recurrent_state,
+    output_final_state=cache_params is not None,
+    use_qk_l2norm_in_kernel=True,
+    cu_seqlens=kwargs.pop("cu_seq_lens_q", None),
+    **kwargs,
 )
 ```
 
