@@ -1,0 +1,8 @@
+[
+  {
+    "id": "gae-source",
+    "after": "u177a99f0",
+    "file": "gae-source.md",
+    "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/trainer/ppo_utils/experience_maker.py#L342-L387"
+  }
+]

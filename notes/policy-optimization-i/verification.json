@@ -2,7 +2,7 @@
   "checkedAt": "2026-09-27",
   "sourceSha256": "56f482722b7be5be2780a71ecb85ec9be6ac7ca6da72c1649bb0d95b23523e1c",
   "sourceByteIdentical": true,
-  "archivedAssets": 322,
+  "archivedAssets": 321,
   "assetHashesVerified": true,
   "mathCorrections": 18,
   "textCorrections": 12,
@@ -16,17 +16,7 @@
       "originalElements": 842,
       "formulaCount": 412,
       "imageCount": 6,
-      "headingCount": 22,
-      "sourceSections": 3,
-      "codeBlocks": 6
-    },
-    "spacing": {
-      "fullHeight": 20436.265625,
-      "originalContentHeight": 16637.1875,
-      "headerGap": 20,
-      "emptyParagraphsHidden": true,
-      "headingTopMargin": "20px",
-      "imageMargin": "6px"
+      "headingCount": 17
     },
     "results": [
       {
@@ -66,18 +56,6 @@
         "allInlineMathSpaced": true
       }
     ],
-    "sourceCodeMatches": true,
-    "copyVerified": true,
-    "licenseChecks": [
-      {
-        "name": "SpinningUp",
-        "status": 200
-      },
-      {
-        "name": "OpenRLHF",
-        "status": 200
-      }
-    ],
     "errors": []
   },
   "numerics": {
@@ -102,242 +80,15 @@
     "contentAndStylingUnchanged": true,
     "allowedGeneratedDifferences": [
       "MathJax internal IDs and dependent SVG hashes",
-      "site asset cache version"
+      "previous-article link to the newly published post"
     ]
   },
-  "sourceExcerpts": {
-    "excerptCount": 6,
-    "allExcerptsSyntaxChecked": true,
-    "numpyConjugateGradientMaxError": 1.9123661201825293e-07,
-    "openrlhfGAEMaxError": 1.7763568394002505e-15,
-    "gaeLambda0And1AndRightPadding": true,
-    "ppoBothAdvantageSignsAndMask": true,
-    "tensorflow1GraphExecuted": false,
-    "note": "Spinning Up TF1 source is checked against pinned official files; its NumPy CG routine is executed. No full distributed training run."
-  },
-  "spacingComparison": {
-    "viewportWidth": 1440,
-    "before": {
-      "height": 17599.3125,
-      "headerGap": 84,
-      "paragraphs": 173,
-      "empty": [
-        {
-          "id": "ub85cdaa4",
-          "height": 27.828125
-        },
-        {
-          "id": "u7a18e1e3",
-          "height": 27.828125
-        }
-      ],
-      "gaps": [
-        {
-          "before": "ucc957efb",
-          "previous": "JH6ct",
-          "gap": 19
-        },
-        {
-          "before": "Sirty",
-          "previous": "uabec2946",
-          "gap": 34
-        },
-        {
-          "before": "u7f448890",
-          "previous": "Sirty",
-          "gap": 17
-        },
-        {
-          "before": "lDP4Y",
-          "previous": "u97611695",
-          "gap": 34
-        },
-        {
-          "before": "u201d3682",
-          "previous": "lDP4Y",
-          "gap": 17
-        },
-        {
-          "before": "Bi0an",
-          "previous": "udacbffa6",
-          "gap": 34
-        },
-        {
-          "before": "udb1b8466",
-          "previous": "Bi0an",
-          "gap": 17
-        },
-        {
-          "before": "MVojt",
-          "previous": "u0320fc99",
-          "gap": 34
-        },
-        {
-          "before": "u33a8f7ca",
-          "previous": "MVojt",
-          "gap": 17
-        },
-        {
-          "before": "d0Hlv",
-          "previous": "ue4ba2168",
-          "gap": 34
-        },
-        {
-          "before": "u3e9a68f0",
-          "previous": "d0Hlv",
-          "gap": 17
-        },
-        {
-          "before": "OeIHc",
-          "previous": "",
-          "gap": 34
-        },
-        {
-          "before": "uaceb1425",
-          "previous": "OeIHc",
-          "gap": 17
-        },
-        {
-          "before": "mAQOn",
-          "previous": "u072ab04b",
-          "gap": 38
-        },
-        {
-          "before": "u44fe57fd",
-          "previous": "mAQOn",
-          "gap": 19
-        },
-        {
-          "before": "gVqRW",
-          "previous": "",
-          "gap": 34
-        },
-        {
-          "before": "u81d4c47c",
-          "previous": "gVqRW",
-          "gap": 17
-        },
-        {
-          "before": "UuPGw",
-          "previous": "ud23a2193",
-          "gap": 34
-        },
-        {
-          "before": "u475d09d4",
-          "previous": "UuPGw",
-          "gap": 17
-        },
-        {
-          "before": "d29b4",
-          "previous": "u3c8c853f",
-          "gap": 34
-        },
-        {
-          "before": "u9b31dac9",
-          "previous": "d29b4",
-          "gap": 17
-        },
-        {
-          "before": "eH8VG",
-          "previous": "",
-          "gap": 34
-        },
-        {
-          "before": "ufef64aff",
-          "previous": "eH8VG",
-          "gap": 17
-        },
-        {
-          "before": "Tm8yn",
-          "previous": "",
-          "gap": 38
-        },
-        {
-          "before": "uf2b928f9",
-          "previous": "Tm8yn",
-          "gap": 19
-        },
-        {
-          "before": "MkQaM",
-          "previous": "",
-          "gap": 34
-        },
-        {
-          "before": "u5de4c162",
-          "previous": "MkQaM",
-          "gap": 17
-        },
-        {
-          "before": "zH4LV",
-          "previous": "u5bef552a",
-          "gap": 34
-        },
-        {
-          "before": "ubee1a2f3",
-          "previous": "zH4LV",
-          "gap": 17
-        },
-        {
-          "before": "jTkQW",
-          "previous": "u583a70e3",
-          "gap": 34
-        },
-        {
-          "before": "ue009aea4",
-          "previous": "jTkQW",
-          "gap": 17
-        },
-        {
-          "before": "kV9ok",
-          "previous": "u134e7d1b",
-          "gap": 34
-        },
-        {
-          "before": "u78070928",
-          "previous": "kV9ok",
-          "gap": 17
-        }
-      ],
-      "images": [
-        {
-          "id": "ue91aece3",
-          "marginTop": "16px",
-          "marginBottom": "16px"
-        },
-        {
-          "id": "ufbe84a18",
-          "marginTop": "16px",
-          "marginBottom": "16px"
-        },
-        {
-          "id": "u8d7d8c7d",
-          "marginTop": "16px",
-          "marginBottom": "16px"
-        },
-        {
-          "id": "ud402250a",
-          "marginTop": "16px",
-          "marginBottom": "16px"
-        },
-        {
-          "id": "u3483ce6b",
-          "marginTop": "16px",
-          "marginBottom": "16px"
-        },
-        {
-          "id": "ueba7e7d7",
-          "marginTop": "16px",
-          "marginBottom": "16px"
-        }
-      ]
-    },
-    "after": {
-      "fullHeight": 20436.265625,
-      "originalContentHeight": 16637.1875,
-      "headerGap": 20,
-      "emptyParagraphsHidden": true,
-      "headingTopMargin": "20px",
-      "imageMargin": "6px"
-    }
+  "gaeCode": {
+    "completeStandaloneFunction": true,
+    "formulaAnchor": "u177a99f0",
+    "displayedCodeMatchesSource": true,
+    "copyVerified": true,
+    "maskedAndUnmaskedLambdaCasesPassed": 6,
+    "additionalProseOrHeadings": false
   }
 }

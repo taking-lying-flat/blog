@@ -183,9 +183,11 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
   const numbers = language === 'text' ? '' : `<span class="line-numbers" aria-hidden="true">${
     Array.from({ length: lineCount }, (_, line) => line + 1).join('\n')
   }</span>`;
+  const sourceLabel = env.codeSourceUrl
+    ? `<a href="${escape(env.codeSourceUrl)}">${escape(source)}</a>` : escape(source);
   return `<figure class="code-block"${id ? ` id="${escape(id)}"` : ''}>
     <figcaption class="code-caption">
-      <span class="code-caption-text">${escape(name)}${source ? `<span class="code-source">${escape(source)}</span>` : ''}</span>
+      <span class="code-caption-text">${escape(name)}${source ? `<span class="code-source">${sourceLabel}</span>` : ''}</span>
       <span class="code-actions">${name !== label ? `<span class="code-language">${escape(label)}</span>` : ''}<button type="button" class="copy-button" hidden>复制</button></span>
     </figcaption>
     <pre tabindex="0">${numbers}<code class="language-${escape(language)}">${code}</code></pre>
@@ -206,28 +208,23 @@ for (const post of posts) {
   if (post.format === 'lake') {
     Object.assign(post, await readLake(path.join(root, post.file), escape, renderLakeMath));
     post.titleId = slugify(post.title);
-    const supplements = JSON.parse(await readFile(path.join(post.directory, 'supplements.json'), 'utf8')
+    const inserts = JSON.parse(await readFile(path.join(post.directory, 'code-inserts.json'), 'utf8')
       .catch((error) => { if (error.code === 'ENOENT') return '[]'; throw error; }));
-    for (const supplement of supplements) {
-      if (!/^[\w-]+$/.test(supplement.id) || !/^[\w-]+$/.test(supplement.before)) {
-        throw new Error(`Invalid Lake supplement anchor: ${post.slug}`);
+    for (const insert of inserts) {
+      if (!/^[\w-]+$/.test(insert.id) || !/^[\w-]+$/.test(insert.after)) {
+        throw new Error(`Invalid Lake code anchor: ${post.slug}`);
       }
-      const source = await readFile(path.join(post.directory, supplement.file), 'utf8');
+      const source = await readFile(path.join(post.directory, insert.file), 'utf8');
       const tokens = markdown.parse(source, {});
-      for (const token of tokens) {
-        if (token.type === 'fence' && token.info.trim() === 'math') await renderMath(token, true);
-        for (const child of token.children ?? []) {
-          if (child.type === 'math_inline') await renderMath(child, false);
-        }
+      if (tokens.length !== 1 || tokens[0].type !== 'fence') {
+        throw new Error(`Expected one code block: ${insert.file}`);
       }
-      const content = `<section class="lake-supplement prose" id="${escape(supplement.id)}">${
-        markdown.renderer.render(tokens, markdown.options, { slug: post.slug })}</section>`;
-      const anchor = new RegExp(`<h[12]\\b[^>]*\\sid="${supplement.before}"[^>]*>`, 'g');
+      tokens[0].attrSet('id', insert.id);
+      const content = markdown.renderer.render(tokens, markdown.options, { slug: post.slug, codeSourceUrl: insert.source });
+      const anchor = new RegExp(`<p\\b[^>]*\\sid="${insert.after}"[^>]*>[\\s\\S]*?</p>`, 'g');
       let matches = 0;
-      post.content = post.content.replace(anchor, (heading) => { matches++; return content + heading; });
-      if (matches !== 1) throw new Error(`Missing or repeated Lake supplement anchor: ${supplement.before}`);
-      const proseText = tokens.filter((token) => token.type === 'inline').map(inlineText).join(' ');
-      post.readingMinutes += Math.ceil((proseText.match(/\p{Script=Han}/gu)?.length ?? 0) / 300);
+      post.content = post.content.replace(anchor, (paragraph) => { matches++; return paragraph + content.trim(); });
+      if (matches !== 1) throw new Error(`Missing or repeated Lake code anchor: ${insert.after}`);
     }
     continue;
   }
