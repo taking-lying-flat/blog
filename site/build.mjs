@@ -157,6 +157,29 @@ function cleanProsePunctuation(tokens) {
 }
 
 const tableWrapper = '<div class="table-scroll" role="region" aria-label="表格" tabindex="0">';
+function renderCodeLines(highlighted, source) {
+  const openSpans = [];
+  const lines = [];
+  let line = '';
+  // Close and reopen highlighting spans so multiline strings retain their colors.
+  for (const part of highlighted.replace(/\n$/, '').split(/(\n|<span\b[^>]*>|<\/span>)/)) {
+    if (part === '\n') {
+      lines.push(line + '</span>'.repeat(openSpans.length));
+      line = openSpans.join('');
+    } else {
+      if (part.startsWith('<span')) openSpans.push(part);
+      else if (part === '</span>') openSpans.pop();
+      line += part;
+    }
+  }
+  lines.push(line);
+  const sourceLines = source.replace(/\n$/, '').split('\n');
+  return lines.map((html, index) => {
+    const indent = Math.min(sourceLines[index].match(/^ */)[0].length + 4, 16);
+    return `<span class="code-line" data-line="${index + 1}" style="--wrap-indent:${indent}ch">${html}</span>`;
+  }).join('\n') + (source.endsWith('\n') ? '\n' : '');
+}
+
 markdown.renderer.rules.table_open = () => `${tableWrapper}<table>\n`;
 markdown.renderer.rules.table_close = () => '</table></div>\n';
 markdown.renderer.rules.html_block = (items, i) => items[i].content.includes('<table')
@@ -191,20 +214,17 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
     : label);
   const code = hljs.getLanguage(language)
     ? hljs.highlight(token.content, { language, ignoreIllegals: true }).value : escape(token.content);
-  const lineCount = token.content.replace(/\n$/, '').split('\n').length;
-  const numbers = language === 'text' ? '' : `<span class="line-numbers" aria-hidden="true">${
-    Array.from({ length: lineCount }, (_, line) => line + 1).join('\n')
-  }</span>`;
+  const displayedCode = isDiagram ? code : renderCodeLines(code, token.content);
   const primarySource = sourceUrl
     ? `<a href="${escape(sourceUrl)}">${escape(source === 'GitHub' ? source : `${source} · GitHub`)}</a>` : escape(source);
   const sourceLabel = [primarySource, ...(details?.additionalSources ?? []).map((item) =>
     `<a href="${escape(item.url)}">${escape(item.label)}</a>`)].join(' · ');
-  return `<figure class="code-block"${id ? ` id="${escape(id)}"` : ''}>
+  return `<figure class="code-block${isDiagram ? ' code-diagram' : ''}"${id ? ` id="${escape(id)}"` : ''}>
     <figcaption class="code-caption">
       <span class="code-caption-text">${escape(name)}${source ? `<span class="code-source">${sourceLabel}</span>` : ''}</span>
       <span class="code-actions"><button type="button" class="copy-button" hidden>复制</button></span>
     </figcaption>
-    <pre tabindex="0">${numbers}<code class="language-${escape(language)}">${code}</code></pre>
+    <pre tabindex="0"><code class="language-${escape(language)}">${displayedCode}</code></pre>
   </figure>\n`;
 };
 

@@ -9,11 +9,17 @@ def compute_policy_loss_vanilla(
     rollout_is_weights=None,
 ):
     clip_ratio = config.clip_ratio
-    clip_ratio_low = config.clip_ratio_low if config.clip_ratio_low is not None else clip_ratio
-    clip_ratio_high = config.clip_ratio_high if config.clip_ratio_high is not None else clip_ratio
-    clip_ratio_c = config.get(
-        "clip_ratio_c", 3.0
+    clip_ratio_low = (
+        config.clip_ratio_low
+        if config.clip_ratio_low is not None
+        else clip_ratio
     )
+    clip_ratio_high = (
+        config.clip_ratio_high
+        if config.clip_ratio_high is not None
+        else clip_ratio
+    )
+    clip_ratio_c = config.get("clip_ratio_c", 3.0)
 
     negative_approx_kl = log_prob - old_log_prob
 
@@ -24,9 +30,7 @@ def compute_policy_loss_vanilla(
     pg_losses2 = -advantages * torch.clamp(
         ratio, 1 - clip_ratio_low, 1 + clip_ratio_high
     )
-    clip_pg_losses1 = torch.maximum(
-        pg_losses1, pg_losses2
-    )
+    clip_pg_losses1 = torch.maximum(pg_losses1, pg_losses2)
 
     pg_losses3 = -advantages * clip_ratio_c
     clip_pg_losses2 = torch.min(pg_losses3, clip_pg_losses1)
@@ -37,7 +41,10 @@ def compute_policy_loss_vanilla(
         pg_losses = pg_losses * rollout_is_weights
 
     pg_loss = agg_loss(
-        loss_mat=pg_losses, loss_mask=response_mask, loss_agg_mode=loss_agg_mode, **config.global_batch_info
+        loss_mat=pg_losses,
+        loss_mask=response_mask,
+        loss_agg_mode=loss_agg_mode,
+        **config.global_batch_info,
     )
 
     return pg_loss

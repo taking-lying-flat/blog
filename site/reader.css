@@ -132,16 +132,18 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
   background: var(--code-bg);
 }
 .code-caption { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; min-height: 43px; padding: 7px 18px; background: var(--surface); color: var(--muted); }
-.code-caption-text { display: flex; align-items: baseline; gap: 10px; min-width: 0; overflow-x: auto; white-space: nowrap; font: 500 12px/1.6 var(--mono); }
-.code-source { display: inline; flex-shrink: 0; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
+.code-caption-text { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; min-width: 0; font: 500 12px/1.6 var(--mono); }
+.code-source { display: inline; min-width: 0; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
 .code-actions { display: flex; align-items: center; gap: 10px; }
 .code-language { padding: 2px 6px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font: 11px/1.6 var(--mono); }
 .copy-button { border: 1px solid var(--line); border-radius: 5px; background: var(--button-default-bgColor-rest); font: 12px var(--sans); padding: 5px 10px; min-height: 28px; white-space: nowrap; color: var(--ink); }
 .copy-button:hover { background: var(--button-default-bgColor-hover); }
 .code-block :focus-visible { outline-color: var(--accent); outline-offset: -3px; }
-.code-block pre { display: flex; align-items: flex-start; gap: 18px; margin: 0; padding: 20px 22px 22px; overflow-x: auto; font: 14px/1.75 var(--mono); font-variant-ligatures: none; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
-.line-numbers { flex: none; min-width: 2ch; padding-right: 16px; border-right: 1px solid var(--borderColor-muted); text-align: right; color: var(--code-muted); user-select: none; -webkit-user-select: none; }
-.code-block code { display: block; flex: 1 0 auto; min-width: max-content; font: inherit; color: var(--code-ink); tab-size: 4; white-space: pre; }
+.code-block pre { margin: 0; padding: 18px 20px 20px; overflow-x: auto; font: 14px/1.65 var(--mono); font-variant-ligatures: none; scrollbar-width: thin; scrollbar-color: var(--line) transparent; white-space: normal; }
+.code-block code { display: block; min-width: 0; padding-left: 4.5ch; font: inherit; color: var(--code-ink); tab-size: 4; white-space: normal; }
+.code-line { position: relative; display: block; min-height: 1lh; padding-left: var(--wrap-indent); text-indent: calc(-1 * var(--wrap-indent)); white-space: pre-wrap; overflow-wrap: anywhere; word-break: normal; }
+.code-line::before { content: attr(data-line); position: absolute; right: calc(100% + 1.5ch); width: 3ch; color: var(--code-muted); text-align: right; text-indent: 0; user-select: none; -webkit-user-select: none; }
+.code-diagram code { min-width: max-content; padding-left: 0; white-space: pre; }
 /* Highlight.js GitHub scope mapping, using the active Tritanopia palette. */
 .code-block .hljs-keyword, .code-block .hljs-doctag, .code-block .hljs-type,
 .code-block .hljs-template-tag, .code-block .hljs-template-variable,
@@ -248,7 +250,6 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
   .code-language { display: none; }
   .copy-button { padding-inline: 7px; }
   .code-block pre { gap: 12px; padding: 18px 14px 20px; font-size: 13px; }
-  .line-numbers { padding-right: 12px; }
   .home-page { padding-top: 26px; padding-bottom: 40px; }
   .post-list { gap: 14px; }
   .post-list-heading { margin-bottom: 18px; }
@@ -281,7 +282,7 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 @media print {
   @page { size: A4; margin: 17mm 15mm; }
   :root, :root[data-color-mode] { color-scheme: light; --page: #fff; --card: #fff; --ink: #1f2328; --muted: #59636e; --line: #d1d9e0; --surface: #f6f8fa; --accent: #0969da; }
-  .site-header, .site-footer, .copy-button, .line-numbers, .post-footer, .skip-link { display: none !important; }
+  .site-header, .site-footer, .copy-button, .post-footer, .skip-link { display: none !important; }
   .main { max-width: none; min-height: 0; margin: 0; padding: 0; }
   .post-header { margin: 0 0 20px; padding-bottom: 16px; }
   h1 { font-size: 28pt; }
@@ -295,6 +296,8 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
   .code-caption-text { font-size: 7pt; }
   .code-actions { display: none; }
   .code-block pre { display: block; padding: 8pt 9pt; overflow: visible; font-size: 7.5pt; line-height: 1.6; }
-  .code-block code { min-width: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .code-block code { min-width: 0; padding-left: 0; }
+  .code-line::before { display: none; }
+  .code-diagram code { white-space: pre-wrap; overflow-wrap: anywhere; }
   .code-block, code { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }

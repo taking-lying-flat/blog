@@ -11,7 +11,9 @@ def compute_value_loss(
     global_batch_size=None,
     loss_scale_factor=None,
 ):
-    vpredclipped = verl_F.clip_by_value(vpreds, values - cliprange_value, values + cliprange_value)
+    vpredclipped = verl_F.clip_by_value(
+        vpreds, values - cliprange_value, values + cliprange_value
+    )
     vf_losses1 = (vpreds - returns) ** 2
     vf_losses2 = (vpredclipped - returns) ** 2
     clipped_vf_losses = torch.max(vf_losses1, vf_losses2)

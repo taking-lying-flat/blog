@@ -196,7 +196,7 @@ o_store_producer, o_store_consumer = pipeline.PipelineAsync.create(
 work = scheduler.get_current_work()
 a_inv_ready_producer.tail()
 qk_ready_producer.tail()
-o_store_producer.tail()       # 错误：CG0 不是 owner
+o_store_producer.tail()  # 错误：CG0 不是 owner
 group_order_producer.tail()
 ```
 

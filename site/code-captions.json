@@ -4,145 +4,145 @@
       "caption": "初始化投影与门控",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L507-L549",
-      "sha256": "3aedd02d914cfcd89e3e9083b6ace1463252ef7e7a41b3724f56b3be784045e7"
+      "sha256": "3142287a2440862cd5340ae288a46b8d8344745aa1ea409749e02551855ac5b5"
     },
-    "290": {
+    "298": {
       "caption": "因果短卷积",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L272-L291",
       "sha256": "f2a6aa13183e46eab72c6f746e32bba58decc220040e89163e95a0a892e71f4f"
     },
-    "332": {
+    "340": {
       "caption": "投影、门控与 Head 映射",
       "sourceLabel": "Transformers · 节选",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L552-L665",
-      "sha256": "c0897717501d8429a23ecead1fd3968276ae2cab117c7c35d1cc9ad3a4b1a27d"
+      "sha256": "4fb7bf1f40f0fcce0aa3c369f1e6325b39ce2e63632c5a6f481a7548a3194596"
     },
-    "445": {
+    "468": {
       "caption": "更新卷积缓存",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L252-L268",
-      "sha256": "8603a72ee54b2ca0d3fcd53d13514546f9bf3648369dbb567eaaee75fb87679b"
+      "sha256": "0877adb1ca7772ddd6a73a9efed59e9ce24a2cbfb13b98b5579d771f021bb990"
     },
-    "484": {
+    "515": {
       "caption": "状态读出与输出门控",
       "sourceLabel": "Transformers · 节选",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L626-L665",
-      "sha256": "ba42d52ea02b1dfe84b0f6449f7067559279325b9a84d46fbfbeec3ec1e78218"
+      "sha256": "883d4a73d673d4cb9422c44492cac1aee1c144070a7de2e3128a2a1fe2815e10"
     },
-    "545": {
+    "580": {
       "caption": "Chunk 前向计算",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L33-L123",
-      "sha256": "74747222ab95c6b627d70be98f5718b18a2e38d3e9bb74ea59fb777b0022e932"
+      "sha256": "119b24a9842409ef99e2021785fe89dd7301745b527fb26a1ae1079de1bbbb1a"
     },
-    "615": {
+    "695": {
       "caption": "计算累计对数门控",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/utils/cumsum.py#L33-L73",
-      "sha256": "b936fe89a4d066a5a85af3241a39fcded20ae6389073f0d600af9848734b79c7"
+      "sha256": "9fd023a1f08f70ede745624713b747d89e02e769a454c0ac451a2e5eeada2d84"
     },
-    "681": {
+    "774": {
       "caption": "计算块内 Gram 矩阵",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_scaled_dot_kkt.py#L33-L80",
-      "sha256": "9061b58ceeeda088c6fe96c16343ae69b2e2f1abfc8e966154b86e917eced4d4"
+      "sha256": "486daec84c769f06ace748a5b256d4d5b938ed32ab3097baad0888e46931451c"
     },
-    "715": {
+    "827": {
       "caption": "施加衰减与因果约束",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_scaled_dot_kkt.py#L33-L80",
-      "sha256": "0c26f80803461e2366aa09929a4261222caeaa60b3994dd0c6df06849d14281a"
+      "sha256": "cbd75e5f06dee30c70e96067594d6fb2bcc3b6f32911e30b80d2e4b6e9e3a36b"
     },
-    "733": {
+    "850": {
       "caption": "融合 KKT 与三角求解",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L40-L328",
-      "sha256": "6738fc25038242e147668dffdffb89f6de1aa1f68f08079f4b12ca99d6443d46"
+      "sha256": "b8f3e466b3f1487ee94fbe90010578a646a56845cadb490da2f207bed48ab8aa"
     },
-    "770": {
+    "893": {
       "caption": "对角子块前代",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L40-L328",
-      "sha256": "c65301bf9274a5bd9ffa575ae6b596cebc311e302a9b656725555f722c1f55d3"
+      "sha256": "7a0ec0971a35e31b47491339c8cc5aeec67ed4b78f1d770d4641000b21da2f3c"
     },
-    "788": {
+    "911": {
       "caption": "合并相邻子块",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L40-L328",
-      "sha256": "141178ad94a0e44e621e42f66933b82be4b81b0463c2950379eeb092d8979060"
+      "sha256": "3dfbe91170a74280457be9d2f8c18f5879630abaa88ddde3132729848973d5c3"
     },
-    "825": {
+    "948": {
       "caption": "合并四个子块",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L40-L328",
-      "sha256": "80b696e5fa2d57e0909e99daffa16d9b5c3872e7370107c342e612af3e8b0cd2"
+      "sha256": "e9957a8114f2e97e28fcdb1c2e95c0ac9dfe56a79b76f9b0e759926c237723e0"
     },
-    "868": {
+    "991": {
       "caption": "计算变换后的 V",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/wy_fast.py#L39-L102",
-      "sha256": "27af54e2878cbafa9df915977a8a29e745cc169927c3fbbe3879a266f93107f8"
+      "sha256": "d144e565bc16e1f68e027097bc6ff6ef1ddeb08fc8398322f325199154c92e3d"
     },
-    "902": {
+    "1025": {
       "caption": "计算衰减后的 W",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/wy_fast.py#L39-L102",
-      "sha256": "09a36ab05eab387c532b0069dd4cfaf04a7d583ae918f2500bb35dbb140a6459"
+      "sha256": "7189086dd18c4ba91c44fa12223d917302b540abb258517c5f95bbb6e6200da5"
     },
-    "955": {
+    "1083": {
       "caption": "计算块内残差",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_delta_h.py#L50-L338",
-      "sha256": "c64759af9e22e4bc2b1484156aff265059cc1c4a257ca34598e626544d865656"
+      "sha256": "0f2f3018017574cb129d1701bfb7c09781c613b5664780b5ca9e66c8910d4c9d"
     },
-    "993": {
+    "1123": {
       "caption": "更新块间状态",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_delta_h.py#L50-L338",
-      "sha256": "6e7d956bde0af41d060d92370ba9c731deb89082a8628490e18d62a631cd3e1f"
+      "sha256": "bab7dc0c4cae549904330a0663f8bfce4b16002e6df4bf22eeec4b0af4da5201"
     },
-    "1046": {
+    "1178": {
       "caption": "计算历史项与局部项",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_o.py#L43-L140",
-      "sha256": "bc45b336559d21b9b0357456a93ae7f271e3cff3e7279bb218385db7e2043fb7"
+      "sha256": "8fa82ae294edba107632c379e6bbe71d4f055484ae750ca7ef3cd35220a6baa7"
     },
-    "1080": {
+    "1212": {
       "caption": "合并衰减与输出",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_o.py#L43-L140",
-      "sha256": "09d2727e690b5df5393e19bb93770d9e0d415e958ea2e9fb2861dde73ea4dc56"
+      "sha256": "c54224e5ec4308bec411c047078a7e67f392351e010aee920c1ee89e4aad21da"
     },
-    "1131": {
+    "1265": {
       "caption": "传播状态梯度",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_delta_h.py#L359-L671",
-      "sha256": "ba674e6c58da5faf48a0ce11cd88b1f0f912ceee2d9abffac79719c4566ad960"
+      "sha256": "6fc94fa9263889b1faf195cf471e90f168b99cf851b662f78594684adb198c6c"
     },
-    "1164": {
+    "1302": {
       "caption": "反传三角变换梯度",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/wy_fast.py#L119-L247",
       "sha256": "be7af434f4e37f580fe0fb937152eb951bf9c95de7f495aa79a73e8056f4cafe"
     },
-    "1195": {
+    "1333": {
       "caption": "组织 Chunk 反向传播",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L126-L250",
-      "sha256": "76155e20bd20b9194f13f406d29d63a2d90474e5ecac69d9fb1bd06e15ba9b4e"
+      "sha256": "9e5dd0fa45b5beee11ead136e252c092a45df179c081201acf958ddcc81813a1"
     },
-    "1270": {
+    "1485": {
       "caption": "启动 Recurrent 内核",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L182-L248",
-      "sha256": "c8665e59f2b6956392a8aba9032b8e3728961ffded5205a734d28acf08099c82"
+      "sha256": "6efa4b05409aefcebcb6ae4a701e6b73168ee179d3342132a9f1c3a1a1c65f30"
     },
-    "1325": {
+    "1576": {
       "caption": "逐 Token 更新状态",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L100-L179",
-      "sha256": "3649cac0deb3bcf337ad7dd97d40d00a6c6bfb0cbd0a01b0f0433cf1626139fc"
+      "sha256": "040a03f37d3ba7eb1a5ca77b0639bd966e449554ddc6c97984587c1b33842f6a"
     }
   },
   "rope": {
@@ -178,99 +178,99 @@
       "caption": "调用三轴位置接口",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
       "sourceLabel": "Transformers · 相关实现",
-      "sha256": "b5b5b1e1005552324bb69947b8d5f3fe880568eeee8f372c4b7d41918d25791a"
+      "sha256": "4a40706a95e79b7706beab42a2e7ce58267fee26ddcd865ed7d005c46c09c8a5"
     },
-    "268": {
+    "270": {
       "caption": "展开视频帧网格",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
       "sourceLabel": "Transformers",
-      "sha256": "c4ec6ec24f982f2095ed9bd86b5ded1b5ed15c16a00544a7ffc871f6bb658283"
+      "sha256": "a01e7fb00637ae001022baaa8eb3957bda478fc4f14572ae6dd61b6a533321c4"
     },
-    "288": {
+    "293": {
       "caption": "按模态分组 Token",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
       "sourceLabel": "Transformers",
-      "sha256": "65b273c99c662b427582cb592b023292aaf4c0db8bfd121a137f425826580cac"
+      "sha256": "7b82aeff0c50ee938fbc0f9692fa77c802fb7ca62f2809afb8bae6531bad7cd6"
     },
-    "311": {
+    "312": {
       "caption": "构造文本与视觉位置",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
       "sourceLabel": "Transformers",
-      "sha256": "26d4fd15c5f972c274893fa8be6d44fc33f0ccbc3afa974258732ae386d217e1"
+      "sha256": "cd5de2c01277cd1ad6c53947933bcc4ff5f0308dafe8fd63342e754cff95154e"
     },
-    "335": {
+    "340": {
       "caption": "生成视觉网格坐标",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1326-L1376",
       "sourceLabel": "Transformers",
-      "sha256": "cab9803fb5fca2d257c6bad3d7b2e8fc39b02bedc1e9b0cda19b3821059f8f70"
+      "sha256": "fb91bddca3acc27428c80810058c12dcfe58d8be3902932598c0fb211ecbf455"
     },
-    "356": {
+    "365": {
       "caption": "写回三轴位置与偏移",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
       "sourceLabel": "Transformers",
       "sha256": "be3bc0181f109b2900d7ae9cb84a168a88d1f226a47335ab86253e59e40d19d1"
     },
-    "369": {
+    "378": {
       "caption": "返回位置表与偏移",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1378-L1469",
       "sourceLabel": "Transformers",
       "sha256": "f863a857aa5ab3956794e31399477ffa1444b292620fba7e746f587f03c04298"
     },
-    "409": {
+    "418": {
       "caption": "计算三轴旋转系数",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L188-L202",
       "sourceLabel": "Transformers",
-      "sha256": "3662875a3a87ce67634c08699bc41daad35059262bf2be095ed283c97819686b"
+      "sha256": "61f69fd51afec3c91d47325e40ba62f981afba8548751d188a44266ffefab785"
     },
-    "445": {
+    "454": {
       "caption": "交错选择 T/H/W 频率",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L204-L213",
       "sourceLabel": "Transformers",
       "sha256": "942d09ccea340aed6cd3c62448b4089cb973510dbdb0967a03cef12c8e980ba8"
     },
-    "483": {
+    "492": {
       "caption": "传递位置与旋转系数",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1240-L1307",
       "sourceLabel": "Transformers",
       "sha256": "920ed0c7db2a03ca59c01cdda19ca1349cae27804097f7b5780b4370b7647c3e"
     },
-    "507": {
+    "516": {
       "caption": "旋转 Attention 的 Q/K",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L776-L821",
       "sourceLabel": "Transformers",
       "sha256": "0f8dc2977054573155bfab92ae6e0690bbb420720c7070ba8e853f96f21a7ffa"
     },
-    "518": {
+    "527": {
       "caption": "调用条件生成模型",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1801-L1888",
       "sourceLabel": "Transformers",
       "sha256": "babeaf8d20f56ee3419ef081dab2c1bbe27c5112d66218ef70f1f17e66a72bfc"
     },
-    "536": {
+    "545": {
       "caption": "提取并拆分视觉特征",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1486-L1501",
       "sourceLabel": "Transformers",
       "sha256": "3d303f6cddead6df168e69bc10f0cb7e070ac2c6933131a4b864d9d2899be206"
     },
-    "552": {
+    "561": {
       "caption": "定位与校验视觉占位符",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1503-L1542",
       "sourceLabel": "Transformers",
       "sha256": "35e7425c5d697ce3875daed6d1d874cdd82497902213dc92f07cc05f790bb6e4"
     },
-    "569": {
+    "578": {
       "caption": "写入图像与视频特征",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1595-L1660",
       "sourceLabel": "Transformers",
       "sha256": "bc8b7229945b54542da41c28bc14a2edf0d926ae2608bfe1c1ccd4f1a688a7fd"
     },
-    "602": {
+    "611": {
       "caption": "构造混合序列位置",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1595-L1660",
       "sourceLabel": "Transformers",
       "sha256": "b9cf06497dbaeb2866a5a2ef801c75a8ec18d0e799846a5d336eee13d9f69822"
     },
-    "627": {
+    "636": {
       "caption": "调用文本模型并返回状态",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1595-L1660",
       "sourceLabel": "Transformers",
@@ -296,127 +296,127 @@
       "caption": "生成非持久位置 Buffer",
       "sourceLabel": "Transformers · 节选",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py#L94-L112",
-      "sha256": "3f5689afe2b859f452765f22a1719eb3e0911db59a4c57006ec786edbe80feef"
+      "sha256": "ff205c0963302a53384834035beac7185d69a8c6e262d8e255319f78968259f4"
     },
-    "134": {
+    "149": {
       "caption": "叠加音频位置编码",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py#L806-L854",
       "sha256": "534a15326b2d14121a117f225e437dc283e585add22a8f80e716d18999185c15"
     },
-    "151": {
+    "166": {
       "caption": "未初始化 Buffer 故障链",
       "sha256": "f418c3722668cc46e0ee43768aae2c77f1b224955e4b3c4e09faa815888c947f"
     },
-    "181": {
+    "196": {
       "caption": "重建非持久 Buffer",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py#L135-L149",
       "sha256": "5314c73a9f7982f400d14910d36a802fb605338e8d4b9da67dd2330d8f28daa4"
     },
-    "201": {
+    "216": {
       "caption": "模型状态初始化协议",
       "sha256": "2af4210d920ae02c24a26131b5a4ab0dffb009dbc47d741e896b08723fef578c"
     },
-    "221": {
+    "236": {
       "caption": "Padding 开销对比",
       "sha256": "e59a505cb90bba6ea2d607413ac528fb3652af9e3ef8707a6e752875fc56b48d"
     },
-    "238": {
+    "253": {
       "caption": "GDN 显存增长路径",
       "sha256": "20fcf4c6d866a7c72898aaffa7cabe61d515c563a5e266c365a964fcf4fa9417"
     },
-    "253": {
+    "268": {
       "caption": "传入 GDN 序列边界",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/model/models/qwen.py#L1330-L1444",
-      "sha256": "618157f251d19cf97b7b7664a5a5122b0226010fc14b709e8b295973a6d495f8"
+      "sha256": "ef66dc6185d59e06b5c5783fdab94e22615d86c76566680fea366aed0cf435ef"
     },
-    "280": {
+    "293": {
       "caption": "检查 Packed GDN 后端",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/model/models/qwen.py",
-      "sha256": "53b0fe29ae168f5fed462c8065c1ed1c6b50c4d1af6c02b4c5da6bc4a8624363"
+      "sha256": "304bcb39981d93c632dcf39f022f4f1b27a40c57fe8a742a5a6c91159829a30c"
     },
-    "293": {
+    "305": {
       "caption": "检查 Attention 兼容性",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/megatron/model/utils.py#L16-L29",
       "sha256": "48bb5f3d1a1c36dcdc4766549f443b2a10dbaa4a72f2666eb2a62727b70ceae5"
     },
-    "309": {
+    "321": {
       "caption": "GDN 张量分配顺序",
       "sha256": "d908e3dd2079256c523fdf1112f4ece51248d5f1a2421455681c80f227aa3a3e"
     },
-    "331": {
+    "343": {
       "caption": "传递 Attention 位置参数",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.3.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py",
       "sha256": "c29eb6ed8ec1368c1147e2c65333e275a78d76754b652a72da7daa1fd59f5c00"
     },
-    "344": {
+    "356": {
       "caption": "识别 Packed Sequence",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.3.0/src/transformers/modeling_flash_attention_utils.py#L444-L457",
-      "sha256": "f312a4d732c0df245ac6d77a0db55434d22e2ce58b0c04dfb760ff964c683cd3"
+      "sha256": "49f836de8bd660f151f77f39e0c0103e715f55bbda39c81c62d5108ed9c3b6ee"
     },
-    "363": {
+    "376": {
       "caption": "完整 Batch 的检测分支",
       "sha256": "149cf3e11e9527387d41b7fc1fba69ba8713a72ef7a67de23871fd357a36388e"
     },
-    "374": {
+    "387": {
       "caption": "尾批的错误检测分支",
       "sha256": "f06d381d2f7b91e368aa6eb6effbeff32115f5fb73c7d0edf10acfe94b387cdf"
     },
-    "385": {
+    "398": {
       "caption": "生成 FA2 元数据",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.3.0/src/transformers/modeling_flash_attention_utils.py#L362-L403",
       "sha256": "f86a3bd4ea697cd8a0bab1d993632b00e40815b946ee7f4e2b1fd58fa0aaedb5"
     },
-    "404": {
+    "417": {
       "caption": "Token 与元数据长度对比",
       "sha256": "4b19a57a858469e15b76ebdb090734777d5e357af4f15a1f94ea0f4322444c73"
     },
-    "421": {
+    "434": {
       "caption": "错误边界传播链",
       "sha256": "279bf208246eacb0b5465cacfc1b8a53b61547327c33ea2878c5e8cd848bc58f"
     },
-    "447": {
+    "460": {
       "caption": "边界检查示例",
       "sha256": "ac034dc717d425f6fdbe648d878958bde43b43f81898a7a849c613793833cf47",
       "url": "https://github.com/huggingface/transformers/blob/v5.3.0/src/transformers/modeling_flash_attention_utils.py#L362-L403",
       "sourceLabel": "Transformers · 相关实现"
     },
-    "460": {
+    "473": {
       "caption": "传递文本位置与序列边界",
       "sourceLabel": "Transformers · 节选",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L1292-L1300",
       "sha256": "342a6a1cf34b176d990c8d925addafde9af033ecb3b199607d540d9667dc2b88"
     },
-    "476": {
+    "489": {
       "caption": "构造 Thinker 与 Talker",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py#L3791-L4148",
-      "sha256": "4fc5af362e9893f26affe6fe1337344acc04b2b7ec579b148fdb634cf338a7d7"
+      "sha256": "53dedf839d70686f179ae3dbffd4c61609373a211add75ff95b8665fd4961e37"
     },
-    "504": {
+    "515": {
       "caption": "音频输出模块拓扑",
       "sha256": "264d4135f58ad3e5cdef2fc83009f327d6282bb43959bb64e681e19bef4351e7"
     },
-    "519": {
+    "530": {
       "caption": "读取音频输出配置",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/model/models/qwen.py#L2151-L2157",
-      "sha256": "23d5cccab1075d4bf65af1b930a317d62e10c6af1aeea72b13ac192413c6d35d"
+      "sha256": "288b9c76d762a774d5d5d6cfef3f9ba5b332646888c8b77622b3937a4de627e4"
     },
-    "534": {
+    "543": {
       "caption": "关闭音频输出示例",
       "sha256": "10a6a4eed9f34277219d37ea7719b9f2739fb3422a0d6537a762af7948ea77ab",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/model/models/qwen.py#L2151-L2157",
       "sourceLabel": "ms-swift · 参数实现"
     },
-    "540": {
+    "549": {
       "caption": "加载 Thinker 模型示例",
       "sha256": "ed826639b38dee0bc554bd432a58cc892ad223e9164916a9c94afbb9a2f1e2de",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py#L3795-L3802",
@@ -444,69 +444,69 @@
       "caption": "初始化模板参数",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L82-L165",
-      "sha256": "c8db32831828e4c0242a8234eb7321bfe69212bfa2096a7a402f5648010b88eb"
+      "sha256": "945283f40cbe80fd8f165c459768cfd3f1fa2c80b2ae992a348b8865a2eb04b2"
     },
-    "85": {
+    "84": {
       "caption": "解析默认思考模式",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L127-L139",
-      "sha256": "9c9a5ccffd4050b9769279f4e59def33c119b72225fa6a86240b8f4f761ce8e9"
+      "sha256": "3275447389e23157345550d33ee659204afbf0168197044d88c673a3bbdb371a"
     },
-    "111": {
+    "109": {
       "caption": "默认模式计算结果",
       "sha256": "5a45a1069b0f0f7eb6174ff1b4d87c2d1248b3f5f7b3d540b37c1aff038380db"
     },
-    "127": {
+    "125": {
       "caption": "选择响应前缀",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py",
-      "sha256": "c28e8783bffb852a0ff50026192a0faf5db9d47ae3fc5a3dab629738cdf01f69"
+      "sha256": "2c10e910d86f872efff86d2362595c5b56b5e02ffd9a56eb15cc149d1e1244bb"
     },
-    "158": {
+    "157": {
       "caption": "前缀选择优先级",
       "sha256": "85b6f2b5e91f5463b325ed50a7e93e9eb92aba82b8dacb5e6d97d6764dc65175"
     },
-    "187": {
+    "186": {
       "caption": "ChatML 编码调用链",
       "sha256": "5c9077b0c9c7accdaa164a03456314e7371c8569c430535fb7b395571957d0ff"
     },
-    "203": {
+    "202": {
       "caption": "拼接 Assistant 前缀",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L1419-L1454",
       "sha256": "fff4b2d3a2ade37385b95f6a0d9daf96fa57f94c86fed06be2392b89aa4a73c4"
     },
-    "216": {
+    "215": {
       "caption": "思考模式输出示例",
       "sha256": "77e86abe5a0e443dec1a1c5764625e3ea156e97126b4328dd26c1c6f384365b5"
     },
-    "225": {
+    "224": {
       "caption": "非思考模式输出示例",
       "sha256": "55a4de9d8289b8701d87f2fd4a613affa911915e3330051fbf93191148387821"
     },
-    "241": {
+    "240": {
       "caption": "截取生成 Token 示例",
       "sha256": "84706d5a1a0c1634361f40e61e12eddde17c1e6e62bf1ea13dc3e83ea84f308c",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/generation/utils.py#L2395-L2812",
       "sourceLabel": "Transformers · 生成接口"
     },
-    "252": {
+    "251": {
       "caption": "解码新增 token",
       "sourceLabel": "vLLM · 原方法",
       "url": "https://github.com/vllm-project/vllm/blob/b21757555ac5f853a8eff02a687d2777437e055b/vllm/v1/engine/detokenizer.py#L96-L142",
       "sha256": "86871220dcc681871ba2ee9aaf26f4630a5d3bafa2fbd9b4365dbdfe5b2c1008"
     },
-    "297": {
+    "296": {
       "caption": "构造 CompletionOutput",
       "sourceLabel": "vLLM · 节选",
       "url": "https://github.com/vllm-project/vllm/blob/b21757555ac5f853a8eff02a687d2777437e055b/vllm/v1/engine/output_processor.py#L447-L458",
       "sha256": "dc0c618a353f98c6a87542acd3d036dc2e998f45ef09db0b0bb0584729636d93"
     },
-    "316": {
+    "315": {
       "caption": "恢复模板前缀",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L796-L810",
-      "sha256": "d2f161ffa7118984504b3646cdf8f48636e1c98c9991935745aa4c6d4927e2b1",
+      "sha256": "aa41e711c77d4e2271f5dbcd25551e3da425375f019dcc205c672e64190f22c4",
       "additionalSources": [
         {
           "label": "get_generate_ids",
@@ -514,109 +514,109 @@
         }
       ]
     },
-    "344": {
+    "347": {
       "caption": "解码 vLLM 生成结果",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/infer_engine/vllm_engine.py#L711-L770",
       "sha256": "821dd8cc9950ae641368ab12d5db075a67cdbb57c61c5a99ce32fcf74b1aec2c"
     },
-    "361": {
+    "364": {
       "caption": "规范 Assistant 消息",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L627-L653",
-      "sha256": "1bd7bd400648f87305fcc5a89bd99e3b08fe66354f07567dfcee4d2813d966bb"
+      "sha256": "04ac2b3a1d8d9cf69b77b635c12cfa49eac030872c2effff2c7896569b6d4fa2"
     },
-    "382": {
+    "380": {
       "caption": "补入非思考前缀",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L1266-L1290",
-      "sha256": "633052331f662617ea51038fe3c3c0a6ac38b990fe0c8107b254f918eb2b667d"
+      "sha256": "36abbe316ecd31d5d23247a9f5182f7d76e876c75a8175cb80c1cc6676c28a82"
     },
-    "413": {
+    "408": {
       "caption": "训练样本格式对比",
       "sha256": "3c11e1d91e6155e6d5d271bc3d1dcb19feb6097ac257e0ea5b8efb59342dbdfa"
     },
-    "440": {
+    "435": {
       "caption": "配置空思考块 Loss Mask",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/arguments/base_args/template_args.py",
-      "sha256": "f47a8722067596611ecfe274cbedbdbf77bfbad96b3271ee726ea45aaabffd80"
+      "sha256": "ffcc60585e41067226f88b9b475f8ca541e51deae63ab6f764d6489d723c4dda"
     },
-    "454": {
+    "446": {
       "caption": "空思考块正则配置",
       "sha256": "cce1c385084589bb3a72911ea4fee1921dd0b7fa422e2607cbc853dd1203800f",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/loss_scale/config/ignore_empty_think.json#L1-L7",
       "sourceLabel": "ms-swift"
     },
-    "462": {
+    "454": {
       "caption": "将上下文编码为标签",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L1185-L1192",
       "sha256": "c31e736a3d9c0e88194ae529f5520b1ea917c13654f12c19e8172c40a362b6dc"
     },
-    "478": {
+    "470": {
       "caption": "Loss Mask 数据流",
       "sha256": "5a9c21b88696def8f42277251198af5633bcb24d9dfaec592ed10f826da6f6a0"
     },
-    "492": {
+    "484": {
       "caption": "非思考 SFT 参数示例",
       "sha256": "3293de3a4e6ac29a4505e0fb441c5c5a5ff2095033d00e77f8d569c5f43fcf93",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/arguments/base_args/template_args.py#L171-L178",
       "sourceLabel": "ms-swift · 参数实现"
     },
-    "501": {
+    "493": {
       "caption": "生成在线训练样本",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/rlhf_trainers/rollout_mixin.py#L1163-L1180",
-      "sha256": "f7fffd8d4d55f7d77f21aecbe932851d4a0286d964c398883748692fa856a3ba"
+      "sha256": "3f3dcf47b9921d0e3baa3fd2db98e58b0287197854c1635170091555c8c8db11"
     },
-    "521": {
+    "523": {
       "caption": "清除已有回复",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/rlhf_trainers/rollout_mixin.py#L1246-L1252",
-      "sha256": "c68cb91ff73b1e2747d5ec64721dfb5d4d49e9f2710bc55f7c8ce69f6f41ca0a"
+      "sha256": "b7eae23df6539b4854013f5f19349b747bbf8107d9192ea063a0e7a4f99f82b5"
     },
-    "533": {
+    "537": {
       "caption": "在线生成前缀选择",
       "sha256": "d58777d428d146267dfdaf5468d177660d185847ab3e62e585cad39a0c378253"
     },
-    "548": {
+    "552": {
       "caption": "解析响应前缀",
       "sourceLabel": "ms-swift · 原函数",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/rlhf_trainers/utils.py#L692-L704",
-      "sha256": "b5c07162ecd39cc4cb73d9adb72d1599b0c18363e6b6afca09c1658fb93bca1e"
+      "sha256": "b36a710220615b7bb7c7978f0e2a8a08d7e78b4647c13ebb2d03102688355a10"
     },
-    "565": {
+    "571": {
       "caption": "回填 rollout token",
       "sourceLabel": "ms-swift · 原函数",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/rlhf_trainers/utils.py#L707-L734",
-      "sha256": "7970ef74b4ebc9983ac1092b1087fc8e1e57c019ec0dfb7e2c430d6ea4633946"
+      "sha256": "58973c7790b1b8a18cfd4e894bda43c228962969e676df4efac16b5e95e34e1e"
     },
-    "598": {
+    "616": {
       "caption": "对齐前缀与生成序列",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/rlhf_trainers/utils.py#L796-L800",
-      "sha256": "01f078313c7b3986b969109335ccbb76ee3827e711cbf1b5ef38aaad2158d484"
+      "sha256": "fb52265782c3ffda2e817d0630eec44016d914012b68f086e6831a213198d44f"
     },
-    "624": {
+    "635": {
       "caption": "混合思考模式样例",
       "sha256": "170d57b2419c3c3d6a1fb8a1c719837515f3ee2b6fc0f514d28f244e1dedc47e",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L167-L171",
       "sourceLabel": "ms-swift · 参数实现"
     },
-    "648": {
+    "659": {
       "caption": "ChatML 协议示例",
       "sha256": "ed7908caeebb3f5f033ca31104984140a0c396c9e47eed1d756d7fd6b6885a04"
     },
-    "684": {
+    "695": {
       "caption": "媒体占位符格式",
       "sha256": "d6094fd05ddc37944428007fc9cd1993dda1b5f2e78cf7c528fd70ee5732cbf0"
     },
-    "697": {
+    "708": {
       "caption": "定义角色与媒体标记",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/utils.py#L13-L19",
-      "sha256": "1d1b9b0fba8c3ce4367a3a72d022968807ddbc0e31161a864e91409f12a09a47",
+      "sha256": "1ccb3aad047dd2c93cb25eb3074aec3a2feaf3d67bd0aceda876d936b444c72c",
       "additionalSources": [
         {
           "label": "Qwen 模板",
@@ -624,59 +624,59 @@
         }
       ]
     },
-    "726": {
+    "736": {
       "caption": "标准多模态样本",
       "sha256": "a9b83d6ccbd10fbbe3cf72b9eae1bcf0be18ef943c9501360d790bbadf906f9b",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/template_inputs.py#L110-L159",
       "sourceLabel": "ms-swift · 输入接口"
     },
-    "747": {
+    "757": {
       "caption": "标准化输入结果",
       "sha256": "0438f2f861712dc0f0e99a1f20a2c4cd4fa15ff7c6e686a76e4294ac848f1474"
     },
-    "779": {
+    "789": {
       "caption": "初始 ChatML 上下文",
       "sha256": "ff3ec72d00cd990f2c466048b1a531dba25dbdc08b4e05d98cb19c414f16acd1"
     },
-    "790": {
+    "800": {
       "caption": "拆分媒体特殊标记",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L928-L929",
-      "sha256": "46f873a02a50e1d4965fbc7313503ec74711a64c242fb70eef899d8a76b1e2d5"
+      "sha256": "fbce8f52339aa452ac033c88cf6d0fd39b800c3c2b54d1b761abc62467c83e4c"
     },
-    "797": {
+    "811": {
       "caption": "替换 Omni 媒体标记",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py",
-      "sha256": "0624ef58de6fb79271e04571a33d883d4ff4a072a08bcfbdc0ca6818181d2561"
+      "sha256": "e31c587d68e09d8d6be4cc9b5b5bc11e95df989ce0d6444ebd1f7f0b560f496c"
     },
-    "827": {
+    "842": {
       "caption": "替换后的上下文",
       "sha256": "1d0ebb92e69cfdcfaefad6cd99d58a2519bf0ca076b081e3fc3ad6ba9aa44cda"
     },
-    "840": {
+    "855": {
       "caption": "预处理多模态数据",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L1035-L1127",
       "sha256": "6f3c779099e46abf0e9d8800c5099fc4ab9ab9b986b4a7455ea3c0a040850afb"
     },
-    "863": {
+    "878": {
       "caption": "展开图片与视频占位",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L1091-L1122",
-      "sha256": "92c0b178b065f4051285c27db61b1e2a4f8eca6698adc0b075676a231c69289a"
+      "sha256": "1779972768f0d3c816edd5ce1dbaf3b350186b120273b706026e674da710ef6f"
     },
-    "899": {
+    "921": {
       "caption": "计算独立视频占位长度",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L1116-L1122",
-      "sha256": "686ac7ae339c1dd72a36836df2a3505f7db7653d8de9b0869b2eb13041763e0a"
+      "sha256": "ff8109cca213f83c79c7b9aad7393e8a6c9395e6c686969efd2eaf8958b66f5b"
     },
-    "910": {
+    "934": {
       "caption": "展开音频占位",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L1068-L1089",
-      "sha256": "8a477ff971e6b071e8f4af1356a8c1ad7756246b7bbaa399568fcd28a90f1ee1",
+      "sha256": "e7aba9541f987a3ef477bc67fb07a98e0b8e879f0c7e24499d4379574f8ad226",
       "additionalSources": [
         {
           "label": "声学长度",
@@ -684,15 +684,15 @@
         }
       ]
     },
-    "944": {
+    "974": {
       "caption": "写回编码结果",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L1035-L1127",
       "sha256": "6210a9e3e0d45632dd6ecc04edcb955970393546741d69e7ea5f13a112326571"
     },
-    "954": {
+    "984": {
       "caption": "媒体 Token 数计算示例",
-      "sha256": "86fcbb3cf3d3cf12e14e47fa5c4627ecaa77d6ed5c6e26d9a50ff161c9d06415",
+      "sha256": "56c4ce2fd99ef346b37662128757641087295185353a2d1c6dbfa043f70a6839",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L1035-L1127",
       "sourceLabel": "ms-swift · 相关实现",
       "additionalSources": [
@@ -702,113 +702,113 @@
         }
       ]
     },
-    "981": {
+    "1004": {
       "caption": "媒体 Token 扩展示意",
       "sha256": "e88dafcd022059562d1d0d1c63e1a9c352587bb5f1cff591561173165f4e3ee5"
     },
-    "997": {
+    "1020": {
       "caption": "媒体 Token 数示例",
       "sha256": "73184877beb3818bc7af95d1a6841e66493468892a4feb7fb8130b095c65d46c"
     },
-    "1005": {
+    "1028": {
       "caption": "构造媒体边界 Token 示例",
       "sha256": "a663da521806a273de9138c1d296fe0cb57bd26215030af85cf539176acb35b1",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L924-L983",
       "sourceLabel": "ms-swift · 相关实现"
     },
-    "1030": {
+    "1053": {
       "caption": "拼接媒体 Token 示例",
       "sha256": "0037d8a2342786dea57f3cd8f4fff04eb8dfbd6c103d808579de3a3324ae4353",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L508-L534",
       "sourceLabel": "ms-swift · 相关实现"
     },
-    "1057": {
+    "1080": {
       "caption": "同步扩展 Token 与标签",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py",
-      "sha256": "9eeee5db1711d18cb78ca4b3f2e70d4eb553c132b6dfc934dc94753df478a8b7"
+      "sha256": "dc3deff09c4f007170059d55448180eda119bfd7efffe8c19553997d55e84dc7"
     },
-    "1081": {
+    "1104": {
       "caption": "生成 Batch 掩码",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py",
-      "sha256": "634001fa00f0bde5ae47e90796490f9af065585ccf604a275270571d97cccdf8"
+      "sha256": "d9e7bc2a03b65b2fd92eb2f3fc6800bf512a8340fa1093f8478b4da78405e2a7"
     },
-    "1098": {
+    "1120": {
       "caption": "拼接视觉张量",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L2125-L2133",
-      "sha256": "996516028ca4ed14454e24ea47496b36ab3e2c23e755e54f54b60d7899687a1b"
+      "sha256": "e84c2cccd3c90af6c05076c8d00c00eeb7a120c0633662e969bf068ca72fdc80"
     },
-    "1119": {
+    "1139": {
       "caption": "补齐音频特征",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L1196-L1214",
-      "sha256": "1e04b138534684b4f9adcc444921fac725862578a477cbf0a58f0dd5e0296387"
+      "sha256": "745640a3bd0ef2250fb59a59f207684157ed2a9fccea73fd5be60b2889e4c477"
     },
-    "1152": {
+    "1171": {
       "caption": "生成 Omni 多模态位置",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L1168-L1194",
-      "sha256": "4b92c225332e20d3fd7f73348b358fd3d5ff2737638509c087c468ce6ba61d6b"
+      "sha256": "aef382af290a3ef81cc196b48ee1fb7e3408f8500f056542c3098a0634c59df4"
     },
-    "1170": {
+    "1188": {
       "caption": "组合文本位置与 M-RoPE",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L2389-L2392",
-      "sha256": "7486e5ae2cbd288f67a1e28fcaa2caaccc4bc1b0fbbc5542aa91b4e77a1120e5"
+      "sha256": "952db1551a36e797180485ef6402af3a77a7ff1c99d4b13077d4009d8adfd4bf"
     },
-    "1185": {
+    "1202": {
       "caption": "选择模型内 Embedding 路径",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L1225-L1231",
       "sha256": "19795549f4e5628319828fe5a5a11075fd1206ded858bc388025f59baffdddaf"
     },
-    "1204": {
+    "1221": {
       "caption": "初始化词嵌入",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py",
       "sha256": "1ae93ab2198ef3a23db485025aceac95c763d4c19cd046234bac3a55fab6e34b"
     },
-    "1211": {
+    "1228": {
       "caption": "词嵌入张量维度",
       "sha256": "8cb66b70ccd8da89cbc39f58d67489831e6c726aeabe1cad08119abb7842991f"
     },
-    "1218": {
+    "1235": {
       "caption": "写入音频特征",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py",
       "sha256": "cff53690ed15ca12b45509e16da82923df9d44aaab7c7855eb3f3dbafd8943b1"
     },
-    "1239": {
+    "1256": {
       "caption": "写入图像特征",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py",
       "sha256": "c092fcbab5e5942f39cfb13475a12c32bffcddc1c50e6cfa1b99ac347ae733e2"
     },
-    "1275": {
+    "1292": {
       "caption": "构造媒体占位掩码",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py#L1974-L1986",
       "sha256": "84d7b1c7cb8fbcadbdd09d95e3928e5b6ae193474afb83406e45018e86eb2127"
     },
-    "1292": {
+    "1309": {
       "caption": "检查媒体特征数量",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py",
-      "sha256": "b3a69403cdea07229469d96f57999120144c6b2d31c0d8a064298881841c7e1e"
+      "sha256": "b6dc2324e3f422282e69591a97e23e492639d6d32ad61ee466127e0c798ba85d"
     },
-    "1302": {
+    "1318": {
       "caption": "多模态特征替换示意",
       "sha256": "6b15472855bfb3285a8cc7ff1900816c138882a6638299ca02e0a28ce62ee75a"
     },
-    "1322": {
+    "1338": {
       "caption": "融合 DeepStack 视觉特征",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py",
-      "sha256": "f1ddf100cd032a250683d5f487525439e60716450c069f9a6b6677f7d4975909"
+      "sha256": "7751adf7aac251ed18d9437253e517b82e456c9eaba423970fde47a3928ca07b"
     },
-    "1340": {
+    "1355": {
       "caption": "多模态输入完整链路",
       "sha256": "8a7b1c83e0a9a4015a1544ec4180e55fa20a7a3b19afc585c768e64304226eb2"
     }
@@ -828,149 +828,149 @@
       "caption": "构造训练数据集",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/pipelines/train/sft.py#L139-L152",
-      "sha256": "797f2c833ebf6f6213adbc293d662cea8f969b210034a791079ac6a8c18ac2cc"
+      "sha256": "b0596afd2f2235600ddb5fc76ad501f664b3bcb0841f184ab4276e98780b3a38"
     },
-    "102": {
+    "112": {
       "caption": "按长度组合样本",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/dataset/packing.py#L162-L176",
-      "sha256": "8d97e192d3839033ff038062e50f6208784e056e23df49327c9061c038ccffe7"
+      "sha256": "aeaa7c0688985ae3373daa57f4830092120a9c419dcc9f1e12d3af36676a6f20"
     },
-    "125": {
+    "136": {
       "caption": "Packing 数据流",
       "sha256": "87dc12d295294970e61cd1bfae950fa1e9e176e8844afb4e76f1ce76170bce93"
     },
-    "142": {
+    "153": {
       "caption": "拼接无填充 Batch",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L1756-L1784",
-      "sha256": "9c279b4bedcf5053b50aa9997fc67d9942a1d5134008fdd2ddd2d47e1bb48f4e"
+      "sha256": "81c4fe1bfedad681b5a6a938f9d0ecd97beedd6f3017b4913d9ba859eb0f5c88"
     },
-    "157": {
+    "169": {
       "caption": "合并样本与位置",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py",
-      "sha256": "19b46c6d69fdcd786c947a79e5d51e0f9797eebcd3b521f9d2a8482d04ce2098"
+      "sha256": "1d2ac81a8c1da026d7e3c1df70b8d4ce5fcc7c46c6c903e11fe60045b360e56b"
     },
-    "201": {
+    "219": {
       "caption": "Token 与位置对齐示例",
       "sha256": "d3dba8b0e88da6fdad49a33d7019f666b92da4ee6b7fccfa21508c7503944e6f"
     },
-    "219": {
+    "237": {
       "caption": "累计长度边界示例",
       "sha256": "dcc3d6bfdd8cc7b5804aff4c12c8b1fade6d89cabfad4b333ecd89b428181831"
     },
-    "231": {
+    "249": {
       "caption": "构造 Packed Sequence 参数",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/utils/transformers_utils.py#L354-L367",
-      "sha256": "de3b513cbb63f711d69cefad1b79a599fbf7486738c4047bc11efdac2d8a1d35"
+      "sha256": "a5a96ae6f401117856d09893e0803f1492c00e8847b406c63b7f9eb73e94399e"
     },
-    "261": {
+    "281": {
       "caption": "从位置生成累计长度",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.3.0/src/transformers/modeling_flash_attention_utils.py#L380-L394",
-      "sha256": "67884d03874cdd72406254e4cf512ce989aa76fc56e03cb308d4f2c3075aaf16"
+      "sha256": "a02c8be5156a5cdb34b1b9cd9b67ba525ae7216b45b965317570ed39a9121269"
     },
-    "299": {
+    "321": {
       "caption": "识别变长 attention 元数据",
       "sourceLabel": "Transformers · 节选",
       "url": "https://github.com/huggingface/transformers/blob/v5.3.0/src/transformers/modeling_flash_attention_utils.py#L645-L648",
-      "sha256": "85b437cdb1ebaca9c44d1d500a3f8ed22f10e82bb8705e68ac087473c91f9224"
+      "sha256": "52ac0d5f7b098c0fcc4a0c0cacc91835b176a067a3b5ab8f36c140146cc17262"
     },
-    "308": {
+    "333": {
       "caption": "Q/K/V 展平维度",
       "sha256": "d5e90257cb9725a2d826c931b5127078efc14adc619499a282b0b2fd61bb3166"
     },
-    "322": {
+    "347": {
       "caption": "调用变长 attention",
       "sourceLabel": "Transformers · 节选",
       "url": "https://github.com/huggingface/transformers/blob/v5.3.0/src/transformers/modeling_flash_attention_utils.py#L677-L705",
-      "sha256": "b298cbba029015cd79e9fe30fb2f8d7271e338a39c5d4b9f4c49ae7efaeb5944"
+      "sha256": "8040c7a0d9dbc7b2eb73ea63259a7253ba0693282d7ebf4201eea6e5c48085ca"
     },
-    "364": {
+    "399": {
       "caption": "计算样本的地址边界",
       "sourceLabel": "FlashAttention · 节选",
       "url": "https://github.com/Dao-AILab/flash-attention/blob/v2.8.3/csrc/flash_attn/src/block_info.h#L12-L45",
-      "sha256": "784ee41260811d96f1789ee68fae51a34ca1dc8674332ec0a9967574b834efbc"
+      "sha256": "3f6464780bf964c7afe12450b8ddc46271d6406986f8240520f5364820ce1ff6"
     },
-    "400": {
+    "454": {
       "caption": "序列内存布局",
       "sha256": "4e16355fcd227dafd09085347fda218973a03565da9ae1c404a262d00b14ead2"
     },
-    "412": {
+    "466": {
       "caption": "定位 Q/K/V 内存",
       "sourceLabel": "FlashAttention",
       "url": "https://github.com/Dao-AILab/flash-attention/blob/v2.8.3/csrc/flash_attn/src/flash_fwd_kernel.h",
       "sha256": "f6d3c324d2993cc1bd5c6d7c91cde0b3afcf42f74c163bdd0d5680458fb1cb84"
     },
-    "443": {
+    "497": {
       "caption": "计算因果块边界",
       "sourceLabel": "FlashAttention",
       "url": "https://github.com/Dao-AILab/flash-attention/blob/v2.8.3/csrc/flash_attn/src/flash_fwd_kernel.h",
       "sha256": "e063b582e57206a49f06a13082b263a93cdce5c65a7a657724d41f7f2be1d7d7"
     },
-    "473": {
+    "527": {
       "caption": "写回输出张量",
       "sourceLabel": "FlashAttention",
       "url": "https://github.com/Dao-AILab/flash-attention/blob/v2.8.3/csrc/flash_attn/src/flash_fwd_kernel.h",
       "sha256": "4ec2bee9123353d7ea3c548cf5232effaba3345dcfd2d88eb848e47e9e805755"
     },
-    "497": {
+    "551": {
       "caption": "多模态样本编码",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/pipelines/train/sft.py#L139-L152",
-      "sha256": "797f2c833ebf6f6213adbc293d662cea8f969b210034a791079ac6a8c18ac2cc"
+      "sha256": "b0596afd2f2235600ddb5fc76ad501f664b3bcb0841f184ab4276e98780b3a38"
     },
-    "516": {
+    "580": {
       "caption": "计算视觉 Token 数",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L560-L606",
-      "sha256": "edb6ea2728eaf64f5de8d99c62fb2fb29e2cc3ba2fda6174fb6eef52e36e236f"
+      "sha256": "923518115944048de7391d4f21ed029019d8d9068722cd5a3ec930dab01bfc62"
     },
-    "538": {
+    "604": {
       "caption": "扩展媒体占位符",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py",
-      "sha256": "8a8617a1bf3f40a0831fcf8d845d178e86bd60f38ade8e169e3e0a1d701ffe80"
+      "sha256": "994b3cd9fb7b4dad1db40debee5fd756c714437e764f23ae421c0b7cf499460a"
     },
-    "569": {
+    "635": {
       "caption": "生成图文输入嵌入",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L457-L467",
-      "sha256": "14b7d012bbc9fd450945e3053ebae919eff602c3cd55518d7768f48792159819"
+      "sha256": "ad7ad756b74d5ba0c4ffeae6f2a3fc680e69b809170f9211e5145429eebdeda3"
     },
-    "585": {
+    "653": {
       "caption": "写入视觉特征",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py",
-      "sha256": "618a99e05731afd895e7ac03e85aaf6560686f4db0d32a164b8f3d2d061b1acb"
+      "sha256": "ee0b0604f93a28dfedeb58091ef7b0ab0f42e6aae8d0be21b8a81857312af0d9"
     },
-    "605": {
+    "673": {
       "caption": "合并多模态样本",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L476-L484",
       "sha256": "63558b99ee71583332c73bf0ea3d02528c064ab57786c051815438459edeed0f"
     },
-    "619": {
+    "687": {
       "caption": "拼接 Packed 位置",
       "sourceLabel": "ms-swift",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/base.py#L43-L2392",
       "sha256": "89cb72972a3c6dac7abe17ec49495cf129af56627ee79ba675f6a243dd5a94b9"
     },
-    "641": {
+    "709": {
       "caption": "分离位置与样本边界",
       "sourceLabel": "ms-swift · 节选",
       "url": "https://github.com/modelscope/ms-swift/blob/be11a273f43dcc99f4e5d9b44e556f05dec85b39/swift/template/templates/qwen.py#L514-L529",
-      "sha256": "49cca5e4c05d79e35139d48af509a1d9a2ba5301fb41c72e234b9fd7761b584b"
+      "sha256": "71e26b1534a332ca6adc23c8d6c57a39e3564ac3d885b194a596c100e9aeaa7e"
     },
-    "666": {
+    "741": {
       "caption": "选择 GDN 或 Attention",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L874-L914",
       "sha256": "f77baf1688295d8bad840811511021dcf5ba677882c22fdc293968a76265b419"
     },
-    "683": {
+    "758": {
       "caption": "传入独立序列边界",
       "sourceLabel": "Transformers · 节选",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L639-L650",
@@ -1012,7 +1012,7 @@
       "caption": "融合 Gate 与 Up 投影",
       "sourceLabel": "vLLM",
       "url": "https://github.com/vllm-project/vllm/blob/b21757555ac5f853a8eff02a687d2777437e055b/vllm/model_executor/models/gemma4.py#L284-L284",
-      "sha256": "24d344d1c9f89f7a95db88541e40434b8dee1eecc0880f7f022668365de33b70"
+      "sha256": "999132b9bcc02dcd5137851cc10418dc41d0a91c8ae338673337be5d1e3488e5"
     },
     "240": {
       "caption": "MoE 量化计算路径",
@@ -1072,7 +1072,7 @@
       "caption": "等待输出存储完成",
       "sourceLabel": "FlashInfer",
       "url": "https://github.com/flashinfer-ai/flashinfer/blob/6ce937c62cfb417564db0477531f18e1ae5b2678/flashinfer/gdn_kernels/blackwell/gated_delta_net_chunked.py",
-      "sha256": "3d71358c197757fc66a4448966d1a5061049d60c8ac6f698ae1d87730eafa0ed"
+      "sha256": "e1af2342418bd26fe9af5613419818713e8a66fc65f980b81628ce3e466f76df"
     },
     "204": {
       "caption": "Pipeline Owner 修复",

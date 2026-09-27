@@ -230,8 +230,8 @@ q, k, v = qkv.split([self.q_size, self.kv_size, self.kv_size], dim=-1)
 
 ```python
 gate_up, _ = self.gate_up_proj(x)  # GEMM 1：同时生成 gate 和 up
-x = self.act_fn(gate_up)           # activation(gate) × up
-x, _ = self.down_proj(x)           # GEMM 2：down projection
+x = self.act_fn(gate_up)  # activation(gate) × up
+x, _ = self.down_proj(x)  # GEMM 2：down projection
 ```
 
 **`MoE FFN`：** 每个 `expert` 使用同样的 `w13/w2` 结构，但接收的 `token` 行数 `M_e` 不同。`Backend` 根据 `routing` 结果重排输入，把不同 `expert` 的矩阵乘组成 `Grouped GEMM`，减少逐 `expert launch` 的开销。

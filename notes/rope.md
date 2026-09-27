@@ -258,8 +258,10 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
 
   ```python
   position_ids, rope_deltas = model.model.get_rope_index(
-      input_ids=input_ids, mm_token_type_ids=mm_token_type_ids,
-      image_grid_thw=image_grid_thw, video_grid_thw=video_grid_thw,
+      input_ids=input_ids,
+      mm_token_type_ids=mm_token_type_ids,
+      image_grid_thw=image_grid_thw,
+      video_grid_thw=video_grid_thw,
       attention_mask=attention_mask,
   )
   ```
@@ -275,8 +277,11 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   spatial_merge_size = self.config.vision_config.spatial_merge_size
   mrope_position_deltas = []
   position_ids = torch.zeros(
-      3, input_ids.shape[0], input_ids.shape[1],
-      dtype=input_ids.dtype, device=input_ids.device,
+      3,
+      input_ids.shape[0],
+      input_ids.shape[1],
+      dtype=input_ids.dtype,
+      device=input_ids.device,
   )
   grid_iters = {
       1: iter(image_grid_thw) if image_grid_thw is not None else None,
@@ -290,12 +295,8 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
   for batch_idx, current_input_ids in enumerate(input_ids):
       input_token_type = mm_token_type_ids[batch_idx]
       if attention_mask is not None:
-          current_input_ids = current_input_ids[
-              attention_mask[batch_idx].bool()
-          ]
-          input_token_type = input_token_type[
-              attention_mask[batch_idx].bool()
-          ]
+          current_input_ids = current_input_ids[attention_mask[batch_idx].bool()]
+          input_token_type = input_token_type[attention_mask[batch_idx].bool()]
 
       input_type_group = []
       for key, group in itertools.groupby(
@@ -325,7 +326,11 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
       else:
           grid_thw = next(grid_iters[modality_type])
           vision_position_ids = self.get_vision_position_ids(
-              current_pos, grid_thw, 1, spatial_merge_size, device=input_ids.device
+              current_pos,
+              grid_thw,
+              1,
+              spatial_merge_size,
+              device=input_ids.device,
           )
           llm_pos_ids_list.append(vision_position_ids)
           current_pos += max(grid_thw[1], grid_thw[2]) // spatial_merge_size
@@ -339,13 +344,17 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
       grid_thw[1].item() // spatial_merge_size,
       grid_thw[2].item() // spatial_merge_size,
   )
-  position_temporal = (torch.arange(llm_grid_t, device=device) * time_interval).long()
+  position_temporal = (
+      torch.arange(llm_grid_t, device=device) * time_interval
+  ).long()
   position_height = torch.arange(llm_grid_h, device=device) + start_position
   position_width = torch.arange(llm_grid_w, device=device) + start_position
   T_grid, H_grid, W_grid = torch.meshgrid(
       position_temporal, position_height, position_width, indexing="ij"
   )
-  vision_position_ids = torch.stack([T_grid, H_grid, W_grid], dim=0).reshape(3, -1)
+  vision_position_ids = torch.stack([T_grid, H_grid, W_grid], dim=0).reshape(
+      3, -1
+  )
   vision_position_ids[0] += start_position
   return vision_position_ids
   ```
@@ -414,9 +423,9 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
       .expand(3, position_ids.shape[1], -1, 1)
   )
   position_ids_expanded = position_ids[:, :, None, :].float()
-  freqs = (
-      inv_freq_expanded.float() @ position_ids_expanded.float()
-  ).transpose(2, 3)
+  freqs = (inv_freq_expanded.float() @ position_ids_expanded.float()).transpose(
+      2, 3
+  )
   cos = freqs.cos() * self.attention_scaling
   sin = freqs.sin() * self.attention_scaling
   sin = self.recomposition_frequencies(sin)

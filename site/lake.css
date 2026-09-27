@@ -38,7 +38,6 @@
 .lake-document ul[data-lake-indent="1"] { margin-left: 2em; list-style-type: circle; }
 .lake-document li { margin: 0 0 4.176px; padding: 0; }
 .lake-document .code-block { white-space: normal; }
-.lake-document .code-block :is(pre, code, .line-numbers) { white-space: pre; }
 [data-post="policy-optimization-i"] .lake-document #u29c5ea7c { margin-bottom: 0; }
 [data-post="policy-optimization-i"] .lake-document #u049fde79 { margin: 0; min-height: 0; line-height: 0; }
 [data-post="policy-optimization-i"] .lake-document #u049fde79 .lake-image { display: block; margin: 0 auto; }

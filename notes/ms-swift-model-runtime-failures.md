@@ -116,15 +116,30 @@ class SinusoidsPositionEmbedding(nn.Module):
         self.channels = channels
         self.max_timescale = max_timescale
         if channels % 2 != 0:
-            raise ValueError("SinusoidsPositionEmbedding needs even channels input")
-        position_embedding = self.compute_default_singular_positional_embedding()
-        self.positional_embedding = nn.Buffer(position_embedding, persistent=False)
+            raise ValueError(
+                "SinusoidsPositionEmbedding needs even channels input"
+            )
+        position_embedding = (
+            self.compute_default_singular_positional_embedding()
+        )
+        self.positional_embedding = nn.Buffer(
+            position_embedding, persistent=False
+        )
 
     def compute_default_singular_positional_embedding(self):
-        log_timescale_increment = np.log(self.max_timescale) / (self.channels // 2 - 1)
-        inv_timescales = torch.exp(-log_timescale_increment * torch.arange(self.channels // 2).float())
-        scaled_time = torch.arange(self.length)[:, np.newaxis] * inv_timescales[np.newaxis, :]
-        return torch.cat([torch.sin(scaled_time), torch.cos(scaled_time)], dim=1)
+        log_timescale_increment = np.log(self.max_timescale) / (
+            self.channels // 2 - 1
+        )
+        inv_timescales = torch.exp(
+            -log_timescale_increment * torch.arange(self.channels // 2).float()
+        )
+        scaled_time = (
+            torch.arange(self.length)[:, np.newaxis]
+            * inv_timescales[np.newaxis, :]
+        )
+        return torch.cat(
+            [torch.sin(scaled_time), torch.cos(scaled_time)], dim=1
+        )
 
     def forward(self, seqlen: int):
         return self.positional_embedding[:seqlen, :]
@@ -266,22 +281,19 @@ if (
 ):
     chunk_kwargs["cu_seqlens"] = cu_seqlens
 
-core_attn_out, last_recurrent_state = (
-    selected_chunk_gated_delta_rule(
-        query,
-        key,
-        value,
-        **chunk_kwargs,
-    )
+core_attn_out, last_recurrent_state = selected_chunk_gated_delta_rule(
+    query,
+    key,
+    value,
+    **chunk_kwargs,
 )
 ```
 
 相邻 `offset` 确定每条样本的独立边界，`kernel` 不需要把不同样本的 `recurrent state` 串联起来。当前 `ms-swift` 还会在 `packed batch` 包含多条序列、但 `FLA/causal-conv kernel` 不可用时直接拒绝执行，而不是静默使用不理解 `cu_seqlens` 的 `fallback`：
 
 ```python
-if (
-    _has_multiple_sequences(cu_seqlens)
-    and (causal_conv1d is None or chunk_gated_delta_rule is None)
+if _has_multiple_sequences(cu_seqlens) and (
+    causal_conv1d is None or chunk_gated_delta_rule is None
 ):
     raise ImportError(
         "Qwen3.5 linear attention packing/padding-free with "
@@ -354,9 +366,10 @@ def _is_packed_sequence(position_ids, batch_size):
         )
         + position_ids.min()
     )
-    return batch_size == 1 and (
-        increasing_position_sequences - position_ids
-    ).abs().sum().bool()
+    return (
+        batch_size == 1
+        and (increasing_position_sequences - position_ids).abs().sum().bool()
+    )
 ```
 
 前面的完整 `batch` 即使携带错误维度，也会被第一个条件挡住：
@@ -481,9 +494,8 @@ class Qwen3OmniMoeForConditionalGeneration(
 ):
     def __init__(self, config):
         super().__init__(config)
-        self.thinker = (
-            Qwen3OmniMoeThinkerForConditionalGeneration
-            ._from_config(config.thinker_config)
+        self.thinker = Qwen3OmniMoeThinkerForConditionalGeneration._from_config(
+            config.thinker_config
         )
         self.has_talker = config.enable_audio_output
         if self.has_talker:
@@ -491,9 +503,8 @@ class Qwen3OmniMoeForConditionalGeneration(
         self.post_init()
 
     def enable_talker(self):
-        self.talker = (
-            Qwen3OmniMoeTalkerForConditionalGeneration
-            ._from_config(self.config.talker_config)
+        self.talker = Qwen3OmniMoeTalkerForConditionalGeneration._from_config(
+            self.config.talker_config
         )
         self.code2wav = Qwen3OmniMoeCode2Wav._from_config(
             self.config.code2wav_config
@@ -522,9 +533,7 @@ class Qwen3OmniLoader(ModelLoader):
     def get_config(self, model_dir: str):
         self._check_qwen_omni_utils()
         config = super().get_config(model_dir)
-        enable_audio_output = get_env_args(
-            "ENABLE_AUDIO_OUTPUT", bool, None
-        )
+        enable_audio_output = get_env_args("ENABLE_AUDIO_OUTPUT", bool, None)
         if enable_audio_output is not None:
             config.enable_audio_output = enable_audio_output
         return config

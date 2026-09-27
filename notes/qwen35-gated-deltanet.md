@@ -261,16 +261,24 @@ def __init__(self, config: Qwen3_5MoeConfig, layer_idx: int):
     self.layer_norm_epsilon = config.rms_norm_eps
     self.conv_dim = self.key_dim * 2 + self.value_dim
     self.conv1d = nn.Conv1d(
-        in_channels=self.conv_dim, out_channels=self.conv_dim, bias=False,
-        kernel_size=self.conv_kernel_size, groups=self.conv_dim, padding=self.conv_kernel_size - 1,
+        in_channels=self.conv_dim,
+        out_channels=self.conv_dim,
+        bias=False,
+        kernel_size=self.conv_kernel_size,
+        groups=self.conv_dim,
+        padding=self.conv_kernel_size - 1,
     )
     self.dt_bias = nn.Parameter(torch.ones(self.num_v_heads))
     A = torch.empty(self.num_v_heads).uniform_(0.01, 16)
     self.A_log = nn.Parameter(torch.log(A))
-    self.norm = Qwen3_5MoeRMSNormGated(self.head_v_dim, eps=self.layer_norm_epsilon)
+    self.norm = Qwen3_5MoeRMSNormGated(
+        self.head_v_dim, eps=self.layer_norm_epsilon
+    )
     self.out_proj = nn.Linear(self.value_dim, self.hidden_size, bias=False)
     self.layer_type = config.layer_types[layer_idx]
-    self.in_proj_qkv = nn.Linear(self.hidden_size, self.key_dim * 2 + self.value_dim, bias=False)
+    self.in_proj_qkv = nn.Linear(
+        self.hidden_size, self.key_dim * 2 + self.value_dim, bias=False
+    )
     self.in_proj_z = nn.Linear(self.hidden_size, self.value_dim, bias=False)
     self.in_proj_b = nn.Linear(self.hidden_size, self.num_v_heads, bias=False)
     self.in_proj_a = nn.Linear(self.hidden_size, self.num_v_heads, bias=False)
@@ -341,8 +349,9 @@ def forward(
     hidden_states = apply_mask_to_padding_states(hidden_states, attention_mask)
 
     batch_size, seq_len, _ = hidden_states.shape
-    use_precomputed_states = cache_params is not None and cache_params.has_previous_state(
-        self.layer_idx, state_idx=0
+    use_precomputed_states = (
+        cache_params is not None
+        and cache_params.has_previous_state(self.layer_idx, state_idx=0)
     )
 
     mixed_qkv = self.in_proj_qkv(hidden_states)
@@ -354,7 +363,11 @@ def forward(
     b = self.in_proj_b(hidden_states)
     a = self.in_proj_a(hidden_states)
 
-    if use_precomputed_states and seq_len == 1 and not cache_params.layers[self.layer_idx].record_past:
+    if (
+        use_precomputed_states
+        and seq_len == 1
+        and not cache_params.layers[self.layer_idx].record_past
+    ):
         conv_state = cache_params.layers[self.layer_idx].conv_states[0]
         mixed_qkv = causal_conv1d_update(
             mixed_qkv,
@@ -366,7 +379,9 @@ def forward(
     else:
         if cache_params is not None:
             mixed_qkv = cache_params.update_conv_state(
-                mixed_qkv, self.layer_idx, conv_kernel_size=self.conv_kernel_size
+                mixed_qkv,
+                self.layer_idx,
+                conv_kernel_size=self.conv_kernel_size,
             )
 
         mixed_qkv = causal_conv1d_fn(
@@ -398,10 +413,16 @@ def forward(
     beta = b.sigmoid()
     g = -self.A_log.float().exp() * F.softplus(a.float() + self.dt_bias)
     if self.num_v_heads // self.num_k_heads > 1:
-        query = query.repeat_interleave(self.num_v_heads // self.num_k_heads, dim=2)
+        query = query.repeat_interleave(
+            self.num_v_heads // self.num_k_heads, dim=2
+        )
         key = key.repeat_interleave(self.num_v_heads // self.num_k_heads, dim=2)
 
-    recurrent_state = cache_params.layers[self.layer_idx].recurrent_states[0] if use_precomputed_states else None
+    recurrent_state = (
+        cache_params.layers[self.layer_idx].recurrent_states[0]
+        if use_precomputed_states
+        else None
+    )
     if use_precomputed_states and seq_len == 1:
         core_attn_out, last_recurrent_state = torch_recurrent_gated_delta_rule(
             query,
@@ -430,7 +451,9 @@ def forward(
         )
 
     if cache_params is not None:
-        cache_params.update_recurrent_state(last_recurrent_state, self.layer_idx)
+        cache_params.update_recurrent_state(
+            last_recurrent_state, self.layer_idx
+        )
 
     core_attn_out = core_attn_out.reshape(-1, self.head_v_dim)
     z = z.reshape(-1, self.head_v_dim)
@@ -454,9 +477,17 @@ def causal_conv1d_update(
     _, hidden_size, seq_len = hidden_states.shape
     state_len = conv_state.shape[-1]
 
-    hidden_states_new = torch.cat([conv_state, hidden_states], dim=-1).to(weight.dtype)
+    hidden_states_new = torch.cat([conv_state, hidden_states], dim=-1).to(
+        weight.dtype
+    )
     conv_state.copy_(hidden_states_new[:, :, -state_len:])
-    out = F.conv1d(hidden_states_new, weight.unsqueeze(1), bias, padding=0, groups=hidden_size)
+    out = F.conv1d(
+        hidden_states_new,
+        weight.unsqueeze(1),
+        bias,
+        padding=0,
+        groups=hidden_size,
+    )
     out = out[:, :, -seq_len:]
     if activation is not None:
         out = ACT2FN[activation](out)
@@ -483,7 +514,11 @@ Y&=\operatorname{Concat}_{h}\!\left[
 - 输出归一化独立作用于每个 value head。`self.norm` 先执行 RMSNorm，再乘 `SiLU(z)`；head 维合并后，`out_proj` 将结果映射回模型隐藏维度。以下摘录官方状态计算与输出分支。
 
 ```python
-recurrent_state = cache_params.layers[self.layer_idx].recurrent_states[0] if use_precomputed_states else None
+recurrent_state = (
+    cache_params.layers[self.layer_idx].recurrent_states[0]
+    if use_precomputed_states
+    else None
+)
 if use_precomputed_states and seq_len == 1:
     core_attn_out, last_recurrent_state = torch_recurrent_gated_delta_rule(
         query,
@@ -545,43 +580,88 @@ return output
 
 ```python
 def chunk_gated_delta_rule_fwd(
-    q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, g: torch.Tensor, beta: torch.Tensor,
-    scale: float, initial_state: torch.Tensor, output_final_state: bool,
-    state_v_first: bool = False, cu_seqlens: torch.LongTensor | None = None,
-    cp_context: FLACPContext | None = None, chunk_indices: torch.LongTensor | None = None,
-    use_gate_in_kernel: bool = False, A_log: torch.Tensor | None = None,
-    dt_bias: torch.Tensor | None = None, chunk_size: int = 64,
+    q: torch.Tensor,
+    k: torch.Tensor,
+    v: torch.Tensor,
+    g: torch.Tensor,
+    beta: torch.Tensor,
+    scale: float,
+    initial_state: torch.Tensor,
+    output_final_state: bool,
+    state_v_first: bool = False,
+    cu_seqlens: torch.LongTensor | None = None,
+    cp_context: FLACPContext | None = None,
+    chunk_indices: torch.LongTensor | None = None,
+    use_gate_in_kernel: bool = False,
+    A_log: torch.Tensor | None = None,
+    dt_bias: torch.Tensor | None = None,
+    chunk_size: int = 64,
 ):
     g_input = g if use_gate_in_kernel else None
     if use_gate_in_kernel:
         g = gdn_gate_chunk_cumsum(
-            g=g, A_log=A_log, chunk_size=chunk_size, scale=RCP_LN2, dt_bias=dt_bias,
-            cu_seqlens=cu_seqlens, chunk_indices=chunk_indices,
+            g=g,
+            A_log=A_log,
+            chunk_size=chunk_size,
+            scale=RCP_LN2,
+            dt_bias=dt_bias,
+            cu_seqlens=cu_seqlens,
+            chunk_indices=chunk_indices,
         )
     else:
         g = chunk_local_cumsum(
-            g, chunk_size=chunk_size, scale=RCP_LN2, cu_seqlens=cu_seqlens,
+            g,
+            chunk_size=chunk_size,
+            scale=RCP_LN2,
+            cu_seqlens=cu_seqlens,
             chunk_indices=chunk_indices,
         )
     w, u, A = chunk_gated_delta_rule_fwd_intra(
-        k=k, v=v, g=g, beta=beta, cu_seqlens=cu_seqlens, chunk_indices=chunk_indices,
+        k=k,
+        v=v,
+        g=g,
+        beta=beta,
+        cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices,
         chunk_size=chunk_size,
     )
     if cp_context is not None:
         initial_state = chunk_gated_delta_rule_fwd_h_pre_process(
-            k=k, w=w, u=u, g=g, cu_seqlens=cu_seqlens, initial_state=initial_state,
-            context=cp_context, state_v_first=state_v_first, chunk_size=chunk_size,
+            k=k,
+            w=w,
+            u=u,
+            g=g,
+            cu_seqlens=cu_seqlens,
+            initial_state=initial_state,
+            context=cp_context,
+            state_v_first=state_v_first,
+            chunk_size=chunk_size,
         )
     h, v_new, final_state = chunk_gated_delta_rule_fwd_h(
-        k=k, w=w, u=u, g=g, initial_state=initial_state, output_final_state=output_final_state,
-        cu_seqlens=cu_seqlens, chunk_indices=chunk_indices, state_v_first=state_v_first,
+        k=k,
+        w=w,
+        u=u,
+        g=g,
+        initial_state=initial_state,
+        output_final_state=output_final_state,
+        cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices,
+        state_v_first=state_v_first,
         chunk_size=chunk_size,
     )
     if cp_context is not None:
         initial_state = compress_h0(initial_state, context=cp_context)
     o = chunk_fwd_o(
-        q=q, k=k, v=v_new, h=h, g=g, scale=scale, cu_seqlens=cu_seqlens,
-        chunk_indices=chunk_indices, state_v_first=state_v_first, chunk_size=chunk_size,
+        q=q,
+        k=k,
+        v=v_new,
+        h=h,
+        g=g,
+        scale=scale,
+        cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices,
+        state_v_first=state_v_first,
+        chunk_size=chunk_size,
     )
     return (g, o, A, final_state, initial_state, g_input)
 ```
@@ -616,9 +696,19 @@ def chunk_gated_delta_rule_fwd(
 ```python
 @triton.jit(do_not_specialize=['T'])
 def chunk_local_cumsum_scalar_kernel(
-    s, o, scale, cu_seqlens, chunk_indices, T, B: tl.constexpr, H: tl.constexpr,
-    BT: tl.constexpr, REVERSE: tl.constexpr, HAS_SCALE: tl.constexpr,
-    IS_VARLEN: tl.constexpr, HEAD_FIRST: tl.constexpr,
+    s,
+    o,
+    scale,
+    cu_seqlens,
+    chunk_indices,
+    T,
+    B: tl.constexpr,
+    H: tl.constexpr,
+    BT: tl.constexpr,
+    REVERSE: tl.constexpr,
+    HAS_SCALE: tl.constexpr,
+    IS_VARLEN: tl.constexpr,
+    HEAD_FIRST: tl.constexpr,
 ):
     i_t, i_bh = tl.program_id(0).to(tl.int64), tl.program_id(1)
     i_b, i_h = i_bh // H, i_bh % H
@@ -627,15 +717,18 @@ def chunk_local_cumsum_scalar_kernel(
             tl.load(chunk_indices + i_t * 2).to(tl.int32),
             tl.load(chunk_indices + i_t * 2 + 1).to(tl.int64),
         )
-        bos, eos = (tl.load(cu_seqlens + i_n).to(tl.int32), tl.load(cu_seqlens + i_n + 1).to(tl.int32))
+        bos, eos = (
+            tl.load(cu_seqlens + i_n).to(tl.int32),
+            tl.load(cu_seqlens + i_n + 1).to(tl.int32),
+        )
         T = eos - bos
     else:
         bos, eos = i_b * T, i_b * T + T
 
     o_t = i_t * BT + tl.arange(0, BT)
     m_t = o_t < T
-    p_s = s + bos*H + i_h + o_t * H
-    p_o = o + bos*H + i_h + o_t * H
+    p_s = s + bos * H + i_h + o_t * H
+    p_o = o + bos * H + i_h + o_t * H
     # [BT]
     b_s = tl.load(p_s, mask=m_t, other=0.0).to(tl.float32)
     b_o = tl.cumsum(b_s, axis=0)
@@ -682,8 +775,19 @@ def chunk_local_cumsum_scalar_kernel(
 ```python
 @triton.jit(do_not_specialize=['T'])
 def chunk_scaled_dot_kkt_fwd_kernel(
-    k, g, beta, A, cu_seqlens, chunk_indices, T, H: tl.constexpr, HV: tl.constexpr,
-    K: tl.constexpr, BT: tl.constexpr, BK: tl.constexpr, IS_VARLEN: tl.constexpr,
+    k,
+    g,
+    beta,
+    A,
+    cu_seqlens,
+    chunk_indices,
+    T,
+    H: tl.constexpr,
+    HV: tl.constexpr,
+    K: tl.constexpr,
+    BT: tl.constexpr,
+    BK: tl.constexpr,
+    IS_VARLEN: tl.constexpr,
     USE_G: tl.constexpr,
 ):
     i_t, i_bh = tl.program_id(0).to(tl.int64), tl.program_id(1).to(tl.int64)
@@ -693,20 +797,28 @@ def chunk_scaled_dot_kkt_fwd_kernel(
             tl.load(chunk_indices + i_t * 2).to(tl.int32),
             tl.load(chunk_indices + i_t * 2 + 1).to(tl.int64),
         )
-        bos, eos = (tl.load(cu_seqlens + i_n).to(tl.int32), tl.load(cu_seqlens + i_n + 1).to(tl.int32))
+        bos, eos = (
+            tl.load(cu_seqlens + i_n).to(tl.int32),
+            tl.load(cu_seqlens + i_n + 1).to(tl.int32),
+        )
         T = eos - bos
     else:
         bos, eos = i_b * T, i_b * T + T
     o_t = i_t * BT + tl.arange(0, BT)
     m_t = o_t < T
 
-    p_b = beta + bos*HV + i_h + o_t * HV
+    p_b = beta + bos * HV + i_h + o_t * HV
     b_b = tl.load(p_b, mask=m_t, other=0.0)
 
     b_A = tl.zeros([BT, BT], dtype=tl.float32)
     for i_k in range(tl.cdiv(K, BK)):
         o_k = i_k * BK + tl.arange(0, BK)
-        p_k = k + (bos*H + i_h // (HV // H)) * K + o_t[:, None] * (H*K) + o_k[None, :]
+        p_k = (
+            k
+            + (bos * H + i_h // (HV // H)) * K
+            + o_t[:, None] * (H * K)
+            + o_k[None, :]
+        )
         b_k = tl.load(p_k, mask=m_t[:, None] & (o_k < K)[None, :], other=0.0)
         b_A += tl.dot(b_k, tl.trans(b_k))
 ```
@@ -715,7 +827,7 @@ def chunk_scaled_dot_kkt_fwd_kernel(
 
 ```python
 if USE_G:
-    p_g = g + bos*HV + i_h + o_t * HV
+    p_g = g + bos * HV + i_h + o_t * HV
     b_g = tl.load(p_g, mask=m_t, other=0.0)
     b_g_diff = b_g[:, None] - b_g[None, :]
     b_A *= exp2(b_g_diff)
@@ -723,7 +835,12 @@ b_A *= b_b[:, None]
 
 m_A = (o_t[:, None] > o_t[None, :]) & (m_t[:, None] & m_t)
 b_A = tl.where(m_A, b_A, 0)
-p_A = A + (bos*HV + i_h) * BT + o_t[:, None] * (BT*HV) + tl.arange(0, BT)[None, :]
+p_A = (
+    A
+    + (bos * HV + i_h) * BT
+    + o_t[:, None] * (BT * HV)
+    + tl.arange(0, BT)[None, :]
+)
 tl.store(p_A, b_A.to(p_A.dtype.element_ty), mask=m_t[:, None])
 ```
 
@@ -734,8 +851,14 @@ tl.store(p_A, b_A.to(p_A.dtype.element_ty), mask=m_t[:, None])
 ```python
 m_d = o_i[:, None] > o_i[None, :]
 m_I = o_i[:, None] == o_i[None, :]
-b_A00 *= tl.where(m_d & m_tc0[:, None] & m_tc0[None, :], exp2(b_g0[:, None] - b_g0[None, :]), 0.)
-b_A10 *= tl.where(m_tc1[:, None] & m_tc0[None, :], exp2(b_g1[:, None] - b_g0[None, :]), 0.)
+b_A00 *= tl.where(
+    m_d & m_tc0[:, None] & m_tc0[None, :],
+    exp2(b_g0[:, None] - b_g0[None, :]),
+    0.0,
+)
+b_A10 *= tl.where(
+    m_tc1[:, None] & m_tc0[None, :], exp2(b_g1[:, None] - b_g0[None, :]), 0.0
+)
 b_A00 = b_A00 * b_b0[:, None]
 b_A10 = b_A10 * b_b1[:, None]
 ```
@@ -771,8 +894,8 @@ b_A10 = b_A10 * b_b1[:, None]
 ```python
 b_Ai00 = -b_A00
 for i in range(2, min(BC, T - i_tc0)):
-    b_a00 = tl.sum(tl.where((o_i == i)[:, None], -b_A00, 0.), 0)
-    b_a00 = tl.where(o_i < i, b_a00, 0.)
+    b_a00 = tl.sum(tl.where((o_i == i)[:, None], -b_A00, 0.0), 0)
+    b_a00 = tl.where(o_i < i, b_a00, 0.0)
     b_a00 = b_a00 + tl.sum(b_a00[:, None] * b_Ai00, 0)
     b_Ai00 = tl.where((o_i == i)[:, None], b_a00, b_Ai00)
 b_Ai00 += m_I
@@ -790,17 +913,17 @@ b_Ai00 += m_I
 b_Ai10 = -tl.dot(
     tl.dot(b_Ai11, b_A10, input_precision=SOLVE_TRIL_DOT_PRECISION),
     b_Ai00,
-    input_precision=SOLVE_TRIL_DOT_PRECISION
+    input_precision=SOLVE_TRIL_DOT_PRECISION,
 )
 b_Ai21 = -tl.dot(
     tl.dot(b_Ai22, b_A21, input_precision=SOLVE_TRIL_DOT_PRECISION),
     b_Ai11,
-    input_precision=SOLVE_TRIL_DOT_PRECISION
+    input_precision=SOLVE_TRIL_DOT_PRECISION,
 )
 b_Ai32 = -tl.dot(
     tl.dot(b_Ai33, b_A32, input_precision=SOLVE_TRIL_DOT_PRECISION),
     b_Ai22,
-    input_precision=SOLVE_TRIL_DOT_PRECISION
+    input_precision=SOLVE_TRIL_DOT_PRECISION,
 )
 ```
 
@@ -826,21 +949,21 @@ b_Ai32 = -tl.dot(
 ```python
 b_Ai20 = -tl.dot(
     b_Ai22,
-    tl.dot(b_A20, b_Ai00, input_precision=SOLVE_TRIL_DOT_PRECISION) +
-    tl.dot(b_A21, b_Ai10, input_precision=SOLVE_TRIL_DOT_PRECISION),
+    tl.dot(b_A20, b_Ai00, input_precision=SOLVE_TRIL_DOT_PRECISION)
+    + tl.dot(b_A21, b_Ai10, input_precision=SOLVE_TRIL_DOT_PRECISION),
     input_precision=SOLVE_TRIL_DOT_PRECISION,
 )
 b_Ai31 = -tl.dot(
     b_Ai33,
-    tl.dot(b_A31, b_Ai11, input_precision=SOLVE_TRIL_DOT_PRECISION) +
-    tl.dot(b_A32, b_Ai21, input_precision=SOLVE_TRIL_DOT_PRECISION),
+    tl.dot(b_A31, b_Ai11, input_precision=SOLVE_TRIL_DOT_PRECISION)
+    + tl.dot(b_A32, b_Ai21, input_precision=SOLVE_TRIL_DOT_PRECISION),
     input_precision=SOLVE_TRIL_DOT_PRECISION,
 )
 b_Ai30 = -tl.dot(
     b_Ai33,
-    tl.dot(b_A30, b_Ai00, input_precision=SOLVE_TRIL_DOT_PRECISION) +
-    tl.dot(b_A31, b_Ai10, input_precision=SOLVE_TRIL_DOT_PRECISION) +
-    tl.dot(b_A32, b_Ai20, input_precision=SOLVE_TRIL_DOT_PRECISION),
+    tl.dot(b_A30, b_Ai00, input_precision=SOLVE_TRIL_DOT_PRECISION)
+    + tl.dot(b_A31, b_Ai10, input_precision=SOLVE_TRIL_DOT_PRECISION)
+    + tl.dot(b_A32, b_Ai20, input_precision=SOLVE_TRIL_DOT_PRECISION),
     input_precision=SOLVE_TRIL_DOT_PRECISION,
 )
 ```
@@ -871,17 +994,17 @@ o_t = i_t * BT + tl.arange(0, BT)
 o_A = tl.arange(0, BT)
 m_t = o_t < T
 m_A = m_t[:, None] & (o_A[None, :] < BT)
-p_b = beta + bos*HV + i_h + o_t * HV
+p_b = beta + bos * HV + i_h + o_t * HV
 b_b = tl.load(p_b, mask=m_t, other=0.0)
 
-p_A = A + (bos*HV + i_h) * BT + o_t[:, None] * (HV*BT) + o_A[None, :]
+p_A = A + (bos * HV + i_h) * BT + o_t[:, None] * (HV * BT) + o_A[None, :]
 b_A = tl.load(p_A, mask=m_A, other=0.0)
 
 for i_v in range(tl.cdiv(V, BV)):
     o_v = i_v * BV + tl.arange(0, BV)
     m_v = m_t[:, None] & (o_v[None, :] < V)
-    p_v = v + (bos*HV + i_h) * V + o_t[:, None] * (HV*V) + o_v[None, :]
-    p_u = u + (bos*HV + i_h) * V + o_t[:, None] * (HV*V) + o_v[None, :]
+    p_v = v + (bos * HV + i_h) * V + o_t[:, None] * (HV * V) + o_v[None, :]
+    p_u = u + (bos * HV + i_h) * V + o_t[:, None] * (HV * V) + o_v[None, :]
     b_v = tl.load(p_v, mask=m_v, other=0.0)
     b_vb = (b_v * b_b[:, None]).to(b_v.dtype)
     b_u = tl.dot(b_A, b_vb, allow_tf32=False)
@@ -902,14 +1025,19 @@ for i_v in range(tl.cdiv(V, BV)):
 
 ```python
 if USE_G:
-    p_g = g + (bos*HV + i_h) + o_t * HV
+    p_g = g + (bos * HV + i_h) + o_t * HV
     b_g = exp2(tl.load(p_g, mask=m_t, other=0.0))
 
 for i_k in range(tl.cdiv(K, BK)):
     o_k = i_k * BK + tl.arange(0, BK)
     m_k = m_t[:, None] & (o_k[None, :] < K)
-    p_k = k + (bos*H + i_h // (HV // H)) * K + o_t[:, None] * (H*K) + o_k[None, :]
-    p_w = w + (bos*HV + i_h) * K + o_t[:, None] * (HV*K) + o_k[None, :]
+    p_k = (
+        k
+        + (bos * H + i_h // (HV // H)) * K
+        + o_t[:, None] * (H * K)
+        + o_k[None, :]
+    )
+    p_w = w + (bos * HV + i_h) * K + o_t[:, None] * (HV * K) + o_k[None, :]
     b_k = tl.load(p_k, mask=m_k, other=0.0)
     b_kb = b_k * b_b[:, None]
     if USE_G:
@@ -958,24 +1086,26 @@ for i_t in range(NT):
     i_t_int64 = i_t.to(tl.int64)
     o_t = i_t * BT + tl.arange(0, BT)
     m_t = o_t < T
-    p_h1 = h + i_t_int64 * HV*K*V + o_k1[:, None] * V + o_v[None, :]
+    p_h1 = h + i_t_int64 * HV * K * V + o_k1[:, None] * V + o_v[None, :]
     m_h1 = m_k1[:, None] & m_v[None, :]
     tl.store(p_h1, b_h1.to(p_h1.dtype.element_ty), mask=m_h1)
-    p_h2 = h + i_t_int64 * HV*K*V + o_k2[:, None] * V + o_v[None, :]
+    p_h2 = h + i_t_int64 * HV * K * V + o_k2[:, None] * V + o_v[None, :]
     m_h2 = m_k2[:, None] & m_v[None, :]
     tl.store(p_h2, b_h2.to(p_h2.dtype.element_ty), mask=m_h2)
 
-    p_w = w + o_t[:, None] * (HV*K) + o_k1[None, :]
+    p_w = w + o_t[:, None] * (HV * K) + o_k1[None, :]
     b_w = tl.load(p_w, mask=m_t[:, None] & m_k1[None, :], other=0.0)
     b_v = tl.dot(b_w, b_h1.to(b_w.dtype))
-    p_w = w + o_t[:, None] * (HV*K) + o_k2[None, :]
+    p_w = w + o_t[:, None] * (HV * K) + o_k2[None, :]
     b_w = tl.load(p_w, mask=m_t[:, None] & m_k2[None, :], other=0.0)
     b_v += tl.dot(b_w, b_h2.to(b_w.dtype))
-    p_v = v + o_t[:, None] * (HV*V) + o_v[None, :]
+    p_v = v + o_t[:, None] * (HV * V) + o_v[None, :]
     b_v = tl.load(p_v, mask=m_t[:, None] & m_v[None, :], other=0.0) - b_v
 
-    p_v = v_new + o_t[:, None] * (HV*V) + o_v[None, :]
-    tl.store(p_v, b_v.to(p_v.dtype.element_ty), mask=m_t[:, None] & m_v[None, :])
+    p_v = v_new + o_t[:, None] * (HV * V) + o_v[None, :]
+    tl.store(
+        p_v, b_v.to(p_v.dtype.element_ty), mask=m_t[:, None] & m_v[None, :]
+    )
 ```
 
 - 开头两次 `tl.store` 保存当前块的入口状态，供输出 kernel 读取。两个 `tl.dot` 分别收缩 W 与状态的两片 K 通道，结果相加后才构成完整的 $`\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^\top`$。参数 `v` 在调用时传入的是 U，因此 `tl.load(p_v) - b_v` 正好得到上述残差，写入 `v_new`。
@@ -993,7 +1123,9 @@ for i_t in range(NT):
 
 ```python
 last_idx = min((i_t + 1) * BT, T) - 1
-b_g_last = tl.load(g + (bos * HV + last_idx * HV + i_h).to(tl.int64)).to(tl.float32)
+b_g_last = tl.load(g + (bos * HV + last_idx * HV + i_h).to(tl.int64)).to(
+    tl.float32
+)
 p_g = g + (bos * HV + i_h).to(tl.int64) + o_t * HV
 b_g = tl.load(p_g, mask=m_t, other=0.0).to(tl.float32)
 b_v = b_v * tl.where(m_t, exp2(b_g_last - b_g), 0)[:, None]
@@ -1003,10 +1135,10 @@ b_h2 *= b_g_last
 
 b_v = b_v.to(k.dtype.element_ty)
 
-p_k = k + o_k1[:, None] + o_t[None, :] * (H*K)
+p_k = k + o_k1[:, None] + o_t[None, :] * (H * K)
 b_k = tl.load(p_k, mask=m_k1[:, None] & m_t[None, :], other=0.0)
 b_h1 += tl.dot(b_k, b_v)
-p_k = k + o_k2[:, None] + o_t[None, :] * (H*K)
+p_k = k + o_k2[:, None] + o_t[None, :] * (H * K)
 b_k = tl.load(p_k, mask=m_k2[:, None] & m_t[None, :], other=0.0)
 b_h2 += tl.dot(b_k, b_v)
 ```
@@ -1054,8 +1186,8 @@ o_v = i_v * BV + tl.arange(0, BV)
 for i_k in range(tl.cdiv(K, BK)):
     o_k = i_k * BK + tl.arange(0, BK)
     m_k = o_k < K
-    p_q = q + o_t[:, None] * (H*K) + o_k[None, :]
-    p_k = k + o_k[:, None] + o_t[None, :] * (H*K)
+    p_q = q + o_t[:, None] * (H * K) + o_k[None, :]
+    p_k = k + o_k[:, None] + o_t[None, :] * (H * K)
     p_h = h + o_k[:, None] * V + o_v[None, :]
     m_h = m_k[:, None] & (o_v[None, :] < V)
     # [BT, BK]
@@ -1087,14 +1219,16 @@ b_A = b_A * exp2(b_g[:, None] - b_g[None, :])
 m_A = (o_t[:, None] >= o_t[None, :]) & (m_t[:, None] & m_t)
 b_A = tl.where(m_A, b_A, 0)
 
-p_v = v + o_t[:, None] * (HV*V) + o_v[None, :]
-p_o = o + o_t[:, None] * (HV*V) + o_v[None, :]
+p_v = v + o_t[:, None] * (HV * V) + o_v[None, :]
+p_o = o + o_t[:, None] * (HV * V) + o_v[None, :]
 
 b_v = tl.load(p_v, mask=m_t[:, None] & (o_v < V)[None, :], other=0.0)
 # to fix mma -> mma layout conversion
 # already solved by triton v3.2 or higher
 b_o = b_o * scale + tl.dot(b_A.to(b_v.dtype), b_v) * scale
-tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=m_t[:, None] & (o_v < V)[None, :])
+tl.store(
+    p_o, b_o.to(p_o.dtype.element_ty), mask=m_t[:, None] & (o_v < V)[None, :]
+)
 ```
 
 - `exp2(b_g)` 将历史读出衰减到各 query 位置；`exp2(b_g[:, None] - b_g[None, :])` 对应 $`\Gamma_{[t]}`$ 的非零元素。这里的掩码使用 `>=`，包含对角线，使当前 token 读到本步写入；KKT 的掩码使用 `>`，只表示此前写入对当前残差的影响。
@@ -1132,10 +1266,14 @@ tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=m_t[:, None] & (o_v < V)[None, 
 ```python
 b_dv *= tl.where(m_t, exp2(bg_last - b_g), 0)[:, None]
 b_dv += tl.load(p_dv, mask=m_t[:, None] & m_v[None, :], other=0.0)
-tl.store(p_dv2, b_dv.to(p_dv.dtype.element_ty), mask=m_t[:, None] & m_v[None, :])
+tl.store(
+    p_dv2, b_dv.to(p_dv.dtype.element_ty), mask=m_t[:, None] & m_v[None, :]
+)
 b_dh1 *= bg_last_exp
 b_q = b_q * b_g_exp[None, :]
-b_dh1 += tl.dot(b_q.to(b_q.dtype), b_do.to(b_q.dtype)) * scale - tl.dot(b_w, b_dv.to(b_w.dtype))
+b_dh1 += tl.dot(b_q.to(b_q.dtype), b_do.to(b_q.dtype)) * scale - tl.dot(
+    b_w, b_dv.to(b_w.dtype)
+)
 ```
 
 - **Q/K 梯度的直接路径与间接路径。** 暂时固定 U、W 和 gate，输出与状态更新直接产生的 Q/K 梯度为：
@@ -1195,54 +1333,131 @@ b_dA = tl.where(m_A, -b_dA, 0).to(k.dtype.element_ty)
 
 ```python
 def chunk_gated_delta_rule_bwd(
-    q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, g: torch.Tensor, beta: torch.Tensor,
-    A: torch.Tensor, scale: float, initial_state: torch.Tensor, do: torch.Tensor, dht: torch.Tensor,
-    state_v_first: bool = False, cu_seqlens: torch.LongTensor | None = None,
-    cp_context: FLACPContext | None = None, chunk_indices: torch.LongTensor | None = None,
-    use_gate_in_kernel: bool = False, g_input: torch.Tensor | None = None,
-    A_log: torch.Tensor | None = None, dt_bias: torch.Tensor | None = None, chunk_size: int = 64,
+    q: torch.Tensor,
+    k: torch.Tensor,
+    v: torch.Tensor,
+    g: torch.Tensor,
+    beta: torch.Tensor,
+    A: torch.Tensor,
+    scale: float,
+    initial_state: torch.Tensor,
+    do: torch.Tensor,
+    dht: torch.Tensor,
+    state_v_first: bool = False,
+    cu_seqlens: torch.LongTensor | None = None,
+    cp_context: FLACPContext | None = None,
+    chunk_indices: torch.LongTensor | None = None,
+    use_gate_in_kernel: bool = False,
+    g_input: torch.Tensor | None = None,
+    A_log: torch.Tensor | None = None,
+    dt_bias: torch.Tensor | None = None,
+    chunk_size: int = 64,
 ):
     w, u = recompute_w_u_fwd(
-        k=k, v=v, beta=beta, A=A, g=g, cu_seqlens=cu_seqlens, chunk_indices=chunk_indices
+        k=k,
+        v=v,
+        beta=beta,
+        A=A,
+        g=g,
+        cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices,
     )
     if cp_context is not None:
         initial_state = expand_h0(initial_state, context=cp_context)
     h, v_new, _ = chunk_gated_delta_rule_fwd_h(
-        k=k, w=w, u=u, g=g, initial_state=initial_state, output_final_state=False,
-        cu_seqlens=cu_seqlens, chunk_indices=chunk_indices, state_v_first=state_v_first,
+        k=k,
+        w=w,
+        u=u,
+        g=g,
+        initial_state=initial_state,
+        output_final_state=False,
+        cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices,
+        state_v_first=state_v_first,
         chunk_size=chunk_size,
     )
     dv = chunk_bwd_dv_local(
-        q=q, k=k, g=g, do=do, scale=scale, cu_seqlens=cu_seqlens, chunk_indices=chunk_indices,
+        q=q,
+        k=k,
+        g=g,
+        do=do,
+        scale=scale,
+        cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices,
         chunk_size=chunk_size,
     )
     if cp_context is not None:
         dht, initial_state = chunk_gated_delta_rule_bwd_dhu_pre_process(
-            q=q, k=k, w=w, do=do, dv=dv, g=g, scale=scale, cu_seqlens=cu_seqlens, dht=dht,
-            initial_state=initial_state, context=cp_context, state_v_first=state_v_first,
+            q=q,
+            k=k,
+            w=w,
+            do=do,
+            dv=dv,
+            g=g,
+            scale=scale,
+            cu_seqlens=cu_seqlens,
+            dht=dht,
+            initial_state=initial_state,
+            context=cp_context,
+            state_v_first=state_v_first,
             chunk_size=chunk_size,
         )
     dh, dh0, dv = chunk_gated_delta_rule_bwd_dhu(
-        q=q, k=k, w=w, g=g, h0=initial_state, dht=dht, do=do, dv=dv, scale=scale,
-        cu_seqlens=cu_seqlens, chunk_indices=chunk_indices, state_v_first=state_v_first,
+        q=q,
+        k=k,
+        w=w,
+        g=g,
+        h0=initial_state,
+        dht=dht,
+        do=do,
+        dv=dv,
+        scale=scale,
+        cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices,
+        state_v_first=state_v_first,
         chunk_size=chunk_size,
     )
     dq, dk, dw, dg = chunk_bwd_dqkwg(
-        q=q, k=k, v=v_new, w=w, g=g, h=h, dv=dv, do=do, dh=dh, scale=scale, cu_seqlens=cu_seqlens,
-        chunk_indices=chunk_indices, state_v_first=state_v_first, chunk_size=chunk_size,
+        q=q,
+        k=k,
+        v=v_new,
+        w=w,
+        g=g,
+        h=h,
+        dv=dv,
+        do=do,
+        dh=dh,
+        scale=scale,
+        cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices,
+        state_v_first=state_v_first,
+        chunk_size=chunk_size,
     )
     dk2, dv, db, dg2 = prepare_wy_repr_bwd(
-        k=k, v=v, beta=beta, g=g, A=A, dw=dw, du=dv, cu_seqlens=cu_seqlens,
+        k=k,
+        v=v,
+        beta=beta,
+        g=g,
+        A=A,
+        dw=dw,
+        du=dv,
+        cu_seqlens=cu_seqlens,
         chunk_indices=chunk_indices,
     )
     dk.add_(dk2)
     dg.add_(dg2)
     dg = chunk_local_cumsum(
-        dg, chunk_size=chunk_size, reverse=True, cu_seqlens=cu_seqlens, chunk_indices=chunk_indices
+        dg,
+        chunk_size=chunk_size,
+        reverse=True,
+        cu_seqlens=cu_seqlens,
+        chunk_indices=chunk_indices,
     )
     dA_log, ddt_bias = (None, None)
     if use_gate_in_kernel:
-        dg, dA_log, ddt_bias = gdn_gate_bwd(g=g_input, A_log=A_log, dt_bias=dt_bias, dyg=dg)
+        dg, dA_log, ddt_bias = gdn_gate_bwd(
+            g=g_input, A_log=A_log, dt_bias=dt_bias, dyg=dg
+        )
     return (dq, dk, dv, db, dg, dh0, dA_log, ddt_bias)
 ```
 
@@ -1270,19 +1485,33 @@ N_V&=\left\lceil d_v/B_V\right\rceil,\qquad
 
 ```python
 def fused_recurrent_gated_delta_rule_fwd(
-    q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, g: torch.Tensor | None = None,
-    gk: torch.Tensor | None = None, gv: torch.Tensor | None = None,
-    beta: torch.Tensor | None = None, A_log: torch.Tensor | None = None,
-    dt_bias: torch.Tensor | None = None, scale: float = None, initial_state: torch.Tensor = None,
-    output_final_state: bool = False, use_qk_l2norm_in_kernel: bool = False,
-    use_beta_sigmoid_in_kernel: bool = False, allow_neg_eigval: bool = False,
-    state_v_first: bool = False, cu_seqlens: torch.LongTensor | None = None,
+    q: torch.Tensor,
+    k: torch.Tensor,
+    v: torch.Tensor,
+    g: torch.Tensor | None = None,
+    gk: torch.Tensor | None = None,
+    gv: torch.Tensor | None = None,
+    beta: torch.Tensor | None = None,
+    A_log: torch.Tensor | None = None,
+    dt_bias: torch.Tensor | None = None,
+    scale: float = None,
+    initial_state: torch.Tensor = None,
+    output_final_state: bool = False,
+    use_qk_l2norm_in_kernel: bool = False,
+    use_beta_sigmoid_in_kernel: bool = False,
+    allow_neg_eigval: bool = False,
+    state_v_first: bool = False,
+    cu_seqlens: torch.LongTensor | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     B, T, H, K, V = (*k.shape, v.shape[-1])
     HV = v.shape[2]
     N = B if cu_seqlens is None else len(cu_seqlens) - 1
     BK = triton.next_power_of_2(K)
-    BV = min(8, triton.next_power_of_2(V)) if gv is None else triton.next_power_of_2(V)
+    BV = (
+        min(8, triton.next_power_of_2(V))
+        if gv is None
+        else triton.next_power_of_2(V)
+    )
     NV = triton.cdiv(V, BV)
     o = torch.empty_like(v)
     if output_final_state:
@@ -1294,12 +1523,34 @@ def fused_recurrent_gated_delta_rule_fwd(
         final_state = None
     grid = (NV, N * HV)
     fused_recurrent_gated_delta_rule_fwd_kernel[grid](
-        q=q, k=k, v=v, g=g, gk=gk, gv=gv, beta=beta, A_log=A_log, dt_bias=dt_bias, o=o,
-        h0=initial_state, ht=final_state, cu_seqlens=cu_seqlens, scale=scale, T=T, H=H, HV=HV, K=K,
-        V=V, BK=BK, BV=BV, IS_BETA_HEADWISE=beta.ndim != v.ndim,
+        q=q,
+        k=k,
+        v=v,
+        g=g,
+        gk=gk,
+        gv=gv,
+        beta=beta,
+        A_log=A_log,
+        dt_bias=dt_bias,
+        o=o,
+        h0=initial_state,
+        ht=final_state,
+        cu_seqlens=cu_seqlens,
+        scale=scale,
+        T=T,
+        H=H,
+        HV=HV,
+        K=K,
+        V=V,
+        BK=BK,
+        BV=BV,
+        IS_BETA_HEADWISE=beta.ndim != v.ndim,
         USE_QK_L2NORM_IN_KERNEL=use_qk_l2norm_in_kernel,
-        APPLY_BETA_SIGMOID=use_beta_sigmoid_in_kernel, ALLOW_NEG_EIGVAL=allow_neg_eigval,
-        STATE_V_FIRST=state_v_first, num_warps=1, num_stages=3,
+        APPLY_BETA_SIGMOID=use_beta_sigmoid_in_kernel,
+        ALLOW_NEG_EIGVAL=allow_neg_eigval,
+        STATE_V_FIRST=state_v_first,
+        num_warps=1,
+        num_stages=3,
     )
     return (o, final_state)
 ```
@@ -1330,9 +1581,9 @@ else:
     b_h = tl.zeros([BK, BV], dtype=tl.float32)
 if USE_INITIAL_STATE:
     if STATE_V_FIRST:
-        p_h0 = h0 + i_nh * K*V + o_v[:, None] * K + o_k[None, :]
+        p_h0 = h0 + i_nh * K * V + o_v[:, None] * K + o_k[None, :]
     else:
-        p_h0 = h0 + i_nh * K*V + o_k[:, None] * V + o_v[None, :]
+        p_h0 = h0 + i_nh * K * V + o_k[:, None] * V + o_v[None, :]
     b_h += tl.load(p_h0, mask=mask_h, other=0).to(tl.float32)
 
 for _ in tl.range(0, T):
@@ -1385,23 +1636,23 @@ for _ in tl.range(0, T):
         b_o = tl.sum(b_h * b_q[:, None], 0)
     tl.store(p_o, b_o.to(p_o.dtype.element_ty), mask=mask_v)
 
-    p_q += H*K
-    p_k += H*K
-    p_v += HV*V
+    p_q += H * K
+    p_k += H * K
+    p_v += HV * V
     if USE_G:
         p_g += HV
     if USE_GK:
-        p_gk += HV*K
+        p_gk += HV * K
     if USE_GV:
-        p_gv += HV*V
+        p_gv += HV * V
     p_beta += HV * (1 if IS_BETA_HEADWISE else V)
-    p_o += HV*V
+    p_o += HV * V
 
 if STORE_FINAL_STATE:
     if STATE_V_FIRST:
-        p_ht = ht + i_nh * K*V + o_v[:, None] * K + o_k[None, :]
+        p_ht = ht + i_nh * K * V + o_v[:, None] * K + o_k[None, :]
     else:
-        p_ht = ht + i_nh * K*V + o_k[:, None] * V + o_v[None, :]
+        p_ht = ht + i_nh * K * V + o_k[:, None] * V + o_v[None, :]
     tl.store(p_ht, b_h.to(p_ht.dtype.element_ty), mask=mask_h)
 ```
 

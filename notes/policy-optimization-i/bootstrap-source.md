@@ -13,11 +13,19 @@ def compute_gae_advantage_return(
         gen_len = token_level_rewards.shape[-1]
 
         for t in reversed(range(gen_len)):
-            delta = token_level_rewards[:, t] + gamma * nextvalues - values[:, t]
+            delta = (
+                token_level_rewards[:, t] + gamma * nextvalues - values[:, t]
+            )
             lastgaelam_ = delta + gamma * lam * lastgaelam
 
-            nextvalues = values[:, t] * response_mask[:, t] + (1 - response_mask[:, t]) * nextvalues
-            lastgaelam = lastgaelam_ * response_mask[:, t] + (1 - response_mask[:, t]) * lastgaelam
+            nextvalues = (
+                values[:, t] * response_mask[:, t]
+                + (1 - response_mask[:, t]) * nextvalues
+            )
+            lastgaelam = (
+                lastgaelam_ * response_mask[:, t]
+                + (1 - response_mask[:, t]) * lastgaelam
+            )
 
             advantages_reversed.append(lastgaelam)
         advantages = torch.stack(advantages_reversed[::-1], dim=1)

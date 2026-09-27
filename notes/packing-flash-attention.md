@@ -80,9 +80,16 @@ def _check_padding_free(self):
 
 ```python
 if not args.streaming and args.truncation_strategy != 'split':
-    dataset = LazyLLMDataset(dataset, template.encode, strict=args.strict, random_state=args.data_seed)
+    dataset = LazyLLMDataset(
+        dataset,
+        template.encode,
+        strict=args.strict,
+        random_state=args.data_seed,
+    )
 if args.packing:
-    packing_dataset_cls = IterablePackingDataset if args.streaming else PackingDataset
+    packing_dataset_cls = (
+        IterablePackingDataset if args.streaming else PackingDataset
+    )
     dataset = packing_dataset_cls(
         template,
         dataset,
@@ -92,7 +99,10 @@ if args.packing:
         packing_strategy=args.packing_strategy,
         strict=args.strict,
         load_from_cache_file=args.load_from_cache_file,
-        multiprocessing_context=getattr(args, 'dataloader_multiprocessing_context', None))
+        multiprocessing_context=getattr(
+            args, 'dataloader_multiprocessing_context', None
+        ),
+    )
 ```
 
 `PackingDataset` 只解决“哪些完整 `sample` 放在一起”。它从 `dataset['lengths']` 建立 `(sample_index, encoded_length)`，在 `packing_length` 预算内生成 `packed_idx`，但不会在 `dataset` 层拼接 `input_ids`、构造 `position_ids` 或生成 `Q/K/V`
@@ -112,6 +122,7 @@ sequences, input_data = calculate_matched_group(
     is_finished=is_finished,
     strategy=packing_strategy,
 )
+
 
 def __getitem__(self, index):
     sequence = self.packed_idx[index]
@@ -147,6 +158,7 @@ def data_collator(self, batch, *, padding_to=None):
 
     return self._data_collator(batch, padding_to=padding_to)
 
+
 def _data_collator(self, batch, *, padding_to=None):
     if self.padding_free:
         batch[:] = [self.packing_row(batch)]
@@ -161,15 +173,21 @@ def packing_row(self, row):
     length = [sample['length'] for sample in row]
 
     for key in keys:
-        if key == 'position_ids' and is_3d_position_ids \
-                or key == 'mm_token_type_ids':
+        if (
+            key == 'position_ids'
+            and is_3d_position_ids
+            or key == 'mm_token_type_ids'
+        ):
             packed[key] = torch.cat(
                 [sample.get(key) for sample in row],
                 dim=-1,
             )
         elif key in {
-            'input_ids', 'labels', 'loss_scale',
-            'position_ids', 'token_type_ids',
+            'input_ids',
+            'labels',
+            'loss_scale',
+            'position_ids',
+            'token_type_ids',
         }:
             packed[key] = sum(
                 (sample.get(key) or [] for sample in row),
@@ -239,14 +257,16 @@ def get_packed_seq_params(position_ids):
         dtype=torch.int32,
     )
 
-    cu_seqlens = torch.cat([
-        indices_q[position_ids_f == 0],
-        torch.tensor(
-            position_ids_f.shape,
-            device=position_ids_f.device,
-            dtype=torch.int32,
-        ),
-    ])
+    cu_seqlens = torch.cat(
+        [
+            indices_q[position_ids_f == 0],
+            torch.tensor(
+                position_ids_f.shape,
+                device=position_ids_f.device,
+                dtype=torch.int32,
+            ),
+        ]
+    )
     max_length = cu_seqlens.diff().max()
 
     return {
@@ -263,14 +283,16 @@ def get_packed_seq_params(position_ids):
 position_ids = position_ids.reshape(-1)
 indices_q = (position_ids == position_ids.min()).nonzero().view(-1)
 
-cu_seq_lens_q = torch.cat((
-    indices_q.to(dtype=torch.int32, device=position_ids.device),
-    torch.tensor(
-        position_ids.size(),
-        dtype=torch.int32,
-        device=position_ids.device,
-    ),
-))
+cu_seq_lens_q = torch.cat(
+    (
+        indices_q.to(dtype=torch.int32, device=position_ids.device),
+        torch.tensor(
+            position_ids.size(),
+            dtype=torch.int32,
+            device=position_ids.device,
+        ),
+    )
+)
 
 max_length_q = cu_seq_lens_q.diff().max()
 ```
@@ -298,9 +320,12 @@ max_length_q = cu_seq_lens_q.diff().max()
 `Transformers` 用 `all(...)` 检查四个显式 `varlen` 参数是否同时存在。只传 `cu_seq_lens_q/k` 而缺少 `max_length_q/k` 不会构成完整的显式 `varlen contract`
 
 ```python
-is_fa_with_position_ids = _is_packed_sequence(position_ids, batch_size=query_states.size(0))
+is_fa_with_position_ids = _is_packed_sequence(
+    position_ids, batch_size=query_states.size(0)
+)
 is_fa_with_varlen_kwargs = all(
-    kwarg is not None for kwarg in (cu_seq_lens_q, cu_seq_lens_k, max_length_q, max_length_k)
+    kwarg is not None
+    for kwarg in (cu_seq_lens_q, cu_seq_lens_k, max_length_q, max_length_k)
 )
 ```
 
@@ -323,13 +348,23 @@ output             [1, T_q, H_q, D] ◄─── view ─── [T_q, H_q, D]
 ```python
 elif is_fa_with_varlen_kwargs or is_fa_with_position_ids:
     if cu_seq_lens_q is None or cu_seq_lens_k is None:
-        q, k, v, (cu_seq_lens_q, cu_seq_lens_k), (max_length_q, max_length_k) = _prepare_from_posids(
+        (
+            q,
+            k,
+            v,
+            (cu_seq_lens_q, cu_seq_lens_k),
+            (max_length_q, max_length_k),
+        ) = _prepare_from_posids(
             query_states, key_states, value_states, position_ids
         )
     else:
-        q = query_states.reshape(-1, query_states.size(-2), query_states.size(-1))
+        q = query_states.reshape(
+            -1, query_states.size(-2), query_states.size(-1)
+        )
         k = key_states.reshape(-1, key_states.size(-2), key_states.size(-1))
-        v = value_states.reshape(-1, value_states.size(-2), value_states.size(-1))
+        v = value_states.reshape(
+            -1, value_states.size(-2), value_states.size(-1)
+        )
 
     if "mps" in str(q.device):
         cu_seq_lens_k = cu_seq_lens_k.clone()
@@ -363,28 +398,47 @@ elif is_fa_with_varlen_kwargs or is_fa_with_position_ids:
 对 `grid` 中的 `logical batch index` `bidb`，`BlockInfo` 分别读取 `Q` 与 `K` 的累计起点，并通过相邻边界之差得到当前序列的实际长度。以下保留官方结构体；本文对应其中 `Q/K` 使用 `cumulative boundary`、没有 `left padding` 与 `KV cache` 的训练分支
 
 ```cpp
-template<bool Varlen=true>
-struct BlockInfo {
+template <bool Varlen = true> struct BlockInfo {
 
-    template<typename Params>
+    template <typename Params>
     __device__ BlockInfo(const Params &params, const int bidb)
-        : sum_s_q(!Varlen || params.cu_seqlens_q == nullptr ? -1 : params.cu_seqlens_q[bidb])
-        , sum_s_k(!Varlen || params.cu_seqlens_k == nullptr || !params.is_seqlens_k_cumulative ? -1 : params.cu_seqlens_k[bidb])
-        , actual_seqlen_q(!Varlen || params.cu_seqlens_q == nullptr ? params.seqlen_q : params.cu_seqlens_q[bidb + 1] - sum_s_q)
-        , leftpad_k(params.leftpad_k == nullptr ? 0 : params.leftpad_k[bidb])
-        , seqlen_k_cache((!Varlen || params.cu_seqlens_k == nullptr ? params.seqlen_k : (params.is_seqlens_k_cumulative ? params.cu_seqlens_k[bidb + 1] - sum_s_k : params.cu_seqlens_k[bidb])) - leftpad_k)
-        , actual_seqlen_k(params.seqused_k ? params.seqused_k[bidb] - leftpad_k : seqlen_k_cache + (params.knew_ptr == nullptr ? 0 : params.seqlen_knew))
-        {
-        }
+        : sum_s_q(!Varlen || params.cu_seqlens_q == nullptr
+                      ? -1
+                      : params.cu_seqlens_q[bidb]),
+          sum_s_k(!Varlen || params.cu_seqlens_k == nullptr ||
+                          !params.is_seqlens_k_cumulative
+                      ? -1
+                      : params.cu_seqlens_k[bidb]),
+          actual_seqlen_q(!Varlen || params.cu_seqlens_q == nullptr
+                              ? params.seqlen_q
+                              : params.cu_seqlens_q[bidb + 1] - sum_s_q),
+          leftpad_k(params.leftpad_k == nullptr ? 0 : params.leftpad_k[bidb]),
+          seqlen_k_cache((!Varlen || params.cu_seqlens_k == nullptr
+                              ? params.seqlen_k
+                              : (params.is_seqlens_k_cumulative
+                                     ? params.cu_seqlens_k[bidb + 1] - sum_s_k
+                                     : params.cu_seqlens_k[bidb])) -
+                         leftpad_k),
+          actual_seqlen_k(params.seqused_k
+                              ? params.seqused_k[bidb] - leftpad_k
+                              : seqlen_k_cache + (params.knew_ptr == nullptr
+                                                      ? 0
+                                                      : params.seqlen_knew)) {}
 
     template <typename index_t>
-    __forceinline__ __device__ index_t q_offset(const index_t batch_stride, const index_t row_stride, const int bidb) const {
-        return sum_s_q == -1 ? bidb * batch_stride : uint32_t(sum_s_q) * row_stride;
+    __forceinline__ __device__ index_t q_offset(const index_t batch_stride,
+                                                const index_t row_stride,
+                                                const int bidb) const {
+        return sum_s_q == -1 ? bidb * batch_stride
+                             : uint32_t(sum_s_q) * row_stride;
     }
 
     template <typename index_t>
-    __forceinline__ __device__ index_t k_offset(const index_t batch_stride, const index_t row_stride, const int bidb) const {
-        return sum_s_k == -1 ? bidb * batch_stride + leftpad_k * row_stride : uint32_t(sum_s_k + leftpad_k) * row_stride;
+    __forceinline__ __device__ index_t k_offset(const index_t batch_stride,
+                                                const index_t row_stride,
+                                                const int bidb) const {
+        return sum_s_k == -1 ? bidb * batch_stride + leftpad_k * row_stride
+                             : uint32_t(sum_s_k + leftpad_k) * row_stride;
     }
 
     const int sum_s_q;
@@ -497,9 +551,16 @@ Tensor mO = make_tensor(
 
 ```python
 if not args.streaming and args.truncation_strategy != 'split':
-    dataset = LazyLLMDataset(dataset, template.encode, strict=args.strict, random_state=args.data_seed)
+    dataset = LazyLLMDataset(
+        dataset,
+        template.encode,
+        strict=args.strict,
+        random_state=args.data_seed,
+    )
 if args.packing:
-    packing_dataset_cls = IterablePackingDataset if args.streaming else PackingDataset
+    packing_dataset_cls = (
+        IterablePackingDataset if args.streaming else PackingDataset
+    )
     dataset = packing_dataset_cls(
         template,
         dataset,
@@ -509,7 +570,10 @@ if args.packing:
         packing_strategy=args.packing_strategy,
         strict=args.strict,
         load_from_cache_file=args.load_from_cache_file,
-        multiprocessing_context=getattr(args, 'dataloader_multiprocessing_context', None))
+        multiprocessing_context=getattr(
+            args, 'dataloader_multiprocessing_context', None
+        ),
+    )
 ```
 
 因此，`PackingDataset` 读取的 `lengths` 已经是模板编码后的长度。对 `Qwen3.5`，`Qwen3_5Template` 继承 `Qwen3VLTemplate._encode()`。图像处理器先产生 `image_grid_thw`，模板再根据 `spatial merge` 后的网格大小计算图像在 `LLM` 序列中应占多少个位置：
@@ -517,12 +581,14 @@ if args.packing:
 ```python
 merge_length = processor.image_processor.merge_size**2
 
+
 def _get_new_tokens(i):
     if media_type == 'images':
         token_len = media_grid_thw[i].prod() // merge_length
         return [media_token] * token_len
     else:
         return splited_tokens[i]
+
 
 input_ids, labels, loss_scale, mm_mask = self._extend_tokens(
     input_ids,
@@ -541,19 +607,19 @@ new_tokens = get_new_tokens(i)
 token_len = len(new_tokens)
 
 input_ids = (
-    input_ids[:idx + added_tokens_len]
+    input_ids[: idx + added_tokens_len]
     + new_tokens
-    + input_ids[added_tokens_len + idx + 1:]
+    + input_ids[added_tokens_len + idx + 1 :]
 )
 labels = (
-    labels[:idx + added_tokens_len]
+    labels[: idx + added_tokens_len]
     + [-100] * token_len
-    + labels[added_tokens_len + idx + 1:]
+    + labels[added_tokens_len + idx + 1 :]
 )
 mm_mask = (
-    mm_mask[:idx + added_tokens_len]
+    mm_mask[: idx + added_tokens_len]
     + [True] * token_len
-    + mm_mask[added_tokens_len + idx + 1:]
+    + mm_mask[added_tokens_len + idx + 1 :]
 )
 ```
 
@@ -577,7 +643,9 @@ def _post_encode(self, model, inputs: Dict[str, Any]) -> Dict[str, Any]:
         inputs_embeds = base_model.model.embed_tokens(input_ids)
     else:
         inputs_embeds = base_model.model.language_model.embed_tokens(input_ids)
-    inputs_embeds = self._get_inputs_embeds_hf(inputs_embeds, inputs, model.visual, self.processor, model.config)
+    inputs_embeds = self._get_inputs_embeds_hf(
+        inputs_embeds, inputs, model.visual, self.processor, model.config
+    )
     return {'inputs_embeds': inputs_embeds}
 ```
 
@@ -587,8 +655,8 @@ def _post_encode(self, model, inputs: Dict[str, Any]) -> Dict[str, Any]:
 image_embeds = visual(pixel_values, grid_thw=image_grid_thw)
 
 image_mask = (
-    input_ids == config.image_token_id
-).unsqueeze(-1).expand_as(inputs_embeds)
+    (input_ids == config.image_token_id).unsqueeze(-1).expand_as(inputs_embeds)
+)
 
 inputs_embeds = inputs_embeds.masked_scatter(
     image_mask,
@@ -640,11 +708,15 @@ def _concat_text_position_ids(position_ids):
 因为 `_concat_text_position_ids()` 在拼接前逐 `sample` 执行，`plane 0` 会在每条样本开头重新从 0 计数；父类 `packing_row()` 沿最后一维拼接后，它自然成为完整的 `boundary carrier`；`collator` 随后将顺序坐标与 `mRoPE` 坐标重新拆开：
 
 ```python
-def _data_collator(self, batch: List[Dict[str, Any]], *, padding_to: Optional[int] = None) -> Dict[str, Any]:
+def _data_collator(
+    self, batch: List[Dict[str, Any]], *, padding_to: Optional[int] = None
+) -> Dict[str, Any]:
     if self.requires_mm_token_type_ids:
         for b in batch:
             if 'input_ids' in b and 'mm_token_type_ids' not in b:
-                b['mm_token_type_ids'] = torch.zeros(len(b['input_ids']), dtype=torch.int64)
+                b['mm_token_type_ids'] = torch.zeros(
+                    len(b['input_ids']), dtype=torch.int64
+                )
     res = super()._data_collator(batch, padding_to=padding_to)
     if not self.padding_free:
         res.update(self._get_position_ids(res))
@@ -652,7 +724,10 @@ def _data_collator(self, batch: List[Dict[str, Any]], *, padding_to: Optional[in
         position_ids = res['position_ids']
         res['position_ids'] = position_ids[1:]
         res['text_position_ids'] = text_position_ids = position_ids[0]
-        if self.transformers_version >= version.parse('4.53.0.dev') and text_position_ids.shape[0] == 1:
+        if (
+            self.transformers_version >= version.parse('4.53.0.dev')
+            and text_position_ids.shape[0] == 1
+        ):
             res.update(get_packed_seq_params(text_position_ids))
     return res
 ```
