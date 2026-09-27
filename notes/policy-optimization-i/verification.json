@@ -104,6 +104,7 @@
       "ppo-update-source",
       "ppo-value-source",
       "bootstrap-source"
-    ]
+    ],
+    "presentationOnlyPruning": true
   }
 }

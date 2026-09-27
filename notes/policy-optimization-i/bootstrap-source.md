@@ -1,5 +1,4 @@
 ```python Bootstrap · TD 递推，终点价值为 0 | verl
-@register_adv_est(AdvantageEstimator.GAE)
 def compute_gae_advantage_return(
     token_level_rewards,
     values,

@@ -27,6 +27,7 @@ const output = path.join(root, 'dist');
 const siteUrl = 'https://taking-lying-flat.github.io/blog/';
 const posts = JSON.parse(await readFile(path.join(root, 'posts.json'), 'utf8'))
   .sort((a, b) => b.date.localeCompare(a.date));
+const codeCaptions = JSON.parse(await readFile(path.join(root, 'code-captions.json'), 'utf8'));
 // Render article headings as written; code captions belong to the code block.
 // Repository-authored HTML tables are rendered alongside Markdown.
 const markdown = new MarkdownIt({ html: true, typographer: false });
@@ -170,7 +171,14 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
   }
   const id = token.attrGet('id');
   const label = languageNames[language] ?? language;
-  const [caption = '', source = ''] = token.info.trim().replace(/^\S+\s*/, '').split('|').map((part) => part.trim());
+  const [declaredCaption = '', declaredSource = ''] = token.info.trim().replace(/^\S+\s*/, '').split('|').map((part) => part.trim());
+  const details = codeCaptions[env.slug]?.[token.map?.[0]];
+  if (details && createHash('sha256').update(token.content).digest('hex') !== details.sha256) {
+    throw new Error(`Code caption needs updating: ${env.slug}:${token.map[0] + 1}`);
+  }
+  const caption = details?.caption ?? declaredCaption;
+  const source = details?.sourceLabel ?? declaredSource;
+  const sourceUrl = details?.url ?? env.codeSourceUrl;
   const name = caption || (env.slug === 'rope'
     ? (language === 'json' ? 'config.json · text_config' : language === 'text' ? '张量维度'
       : token.content.includes('def rotate_half') ? 'rotate_half / apply_rotary_pos_emb'
@@ -183,12 +191,14 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
   const numbers = language === 'text' ? '' : `<span class="line-numbers" aria-hidden="true">${
     Array.from({ length: lineCount }, (_, line) => line + 1).join('\n')
   }</span>`;
-  const sourceLabel = env.codeSourceUrl
-    ? `<a href="${escape(env.codeSourceUrl)}">${escape(source)}</a>` : escape(source);
+  const primarySource = sourceUrl
+    ? `<a href="${escape(sourceUrl)}">${escape(source === 'GitHub' ? source : `${source} · GitHub`)}</a>` : escape(source);
+  const sourceLabel = [primarySource, ...(details?.additionalSources ?? []).map((item) =>
+    `<a href="${escape(item.url)}">${escape(item.label)}</a>`)].join(' · ');
   return `<figure class="code-block"${id ? ` id="${escape(id)}"` : ''}>
     <figcaption class="code-caption">
       <span class="code-caption-text">${escape(name)}${source ? `<span class="code-source">${sourceLabel}</span>` : ''}</span>
-      <span class="code-actions">${name !== label ? `<span class="code-language">${escape(label)}</span>` : ''}<button type="button" class="copy-button" hidden>复制</button></span>
+      <span class="code-actions"><button type="button" class="copy-button" hidden>复制</button></span>
     </figcaption>
     <pre tabindex="0">${numbers}<code class="language-${escape(language)}">${code}</code></pre>
   </figure>\n`;

@@ -39,9 +39,6 @@
 .lake-document li { margin: 0 0 4.176px; padding: 0; }
 .lake-document .code-block { white-space: normal; }
 .lake-document .code-block :is(pre, code, .line-numbers) { white-space: pre; }
-[data-post="policy-optimization-i"] .code-caption-text { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
-[data-post="policy-optimization-i"] .code-source { display: inline; margin: 0; }
-[data-post="policy-optimization-i"] .code-language { display: none; }
 [data-post="policy-optimization-i"] .lake-document #u29c5ea7c { margin-bottom: 0; }
 [data-post="policy-optimization-i"] .lake-document #u049fde79 { margin: 0; min-height: 0; line-height: 0; }
 [data-post="policy-optimization-i"] .lake-document #u049fde79 .lake-image { display: block; margin: 0 auto; }

@@ -53,3 +53,7 @@
 ## 统一 PPO 源码
 
 PPO 部分全部替换为同一 verl 提交 `6093e007cc341973c9d9a6fb3867a85976c7c458`：`compute_policy_loss_vanilla`、`compute_value_loss`、`BaseEngine.train_batch`、`compute_gae_advantage_return`。仅删注释、文档字符串、类型标注和外层缩进，计算逻辑保留。GAE 区域保留 OpenRLHF 原方法并删除注释。Bootstrap 框标题注明终点价值为 0。移除 Spinning Up 代码与许可；本轮只构建发布，不运行额外检查。
+
+## 精简 PPO 展示
+
+按用户要求删除断言、异常提示、KL/clip fraction/梯度范数统计、统计返回值和非核心训练适配，保留损失公式、权重聚合、反向传播和优化器更新。源码框标记为节选，并继续指向同一 verl 提交。

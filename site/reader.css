@@ -132,8 +132,8 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
   background: var(--code-bg);
 }
 .code-caption { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; min-height: 43px; padding: 7px 18px; background: var(--surface); color: var(--muted); }
-.code-caption-text { min-width: 0; font: 500 12px/1.6 var(--mono); overflow-wrap: anywhere; }
-.code-source { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; line-height: 1.4; }
+.code-caption-text { display: flex; align-items: baseline; gap: 10px; min-width: 0; overflow-x: auto; white-space: nowrap; font: 500 12px/1.6 var(--mono); }
+.code-source { display: inline; flex-shrink: 0; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
 .code-actions { display: flex; align-items: center; gap: 10px; }
 .code-language { padding: 2px 6px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font: 11px/1.6 var(--mono); }
 .copy-button { border: 1px solid var(--line); border-radius: 5px; background: var(--button-default-bgColor-rest); font: 12px var(--sans); padding: 5px 10px; min-height: 28px; white-space: nowrap; color: var(--ink); }

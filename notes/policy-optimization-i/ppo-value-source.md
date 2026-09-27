@@ -1,15 +1,15 @@
-```python PPO · 价值函数目标 | verl
+```python PPO · 价值函数目标 | verl · 节选
 def compute_value_loss(
     vpreds,
     returns,
     values,
     response_mask,
     cliprange_value,
-    loss_agg_mode = "token-mean",
-    dp_size = 1,
-    batch_num_tokens = None,
-    global_batch_size = None,
-    loss_scale_factor = None,
+    loss_agg_mode="token-mean",
+    dp_size=1,
+    batch_num_tokens=None,
+    global_batch_size=None,
+    loss_scale_factor=None,
 ):
     vpredclipped = verl_F.clip_by_value(vpreds, values - cliprange_value, values + cliprange_value)
     vf_losses1 = (vpreds - returns) ** 2
@@ -24,6 +24,5 @@ def compute_value_loss(
         global_batch_size=global_batch_size,
         loss_scale_factor=loss_scale_factor,
     )
-    vf_clipfrac = verl_F.masked_mean(torch.gt(vf_losses2, vf_losses1).float(), response_mask)
-    return vf_loss, vf_clipfrac
+    return vf_loss
 ```

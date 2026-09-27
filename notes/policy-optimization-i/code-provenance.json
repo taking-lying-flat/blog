@@ -13,9 +13,12 @@
     "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
     "license": "assets/licenses/verl-LICENSE.txt",
     "changes": [
-      "Removed comments, docstrings, type annotations and enclosing indentation."
+      "Removed comments, docstrings, type annotations and enclosing indentation.",
+      "Removed assertions, diagnostic metrics, metric returns and nonessential training plumbing at user request."
     ],
-    "computationUnchanged": true
+    "computationUnchanged": false,
+    "trainingMathPreserved": true,
+    "excerpt": true
   },
   "ppo-value-source": {
     "function": "compute_value_loss",
@@ -23,9 +26,12 @@
     "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
     "license": "assets/licenses/verl-LICENSE.txt",
     "changes": [
-      "Removed comments, docstrings, type annotations and enclosing indentation."
+      "Removed comments, docstrings, type annotations and enclosing indentation.",
+      "Removed assertions, diagnostic metrics, metric returns and nonessential training plumbing at user request."
     ],
-    "computationUnchanged": true
+    "computationUnchanged": false,
+    "trainingMathPreserved": true,
+    "excerpt": true
   },
   "bootstrap-source": {
     "function": "compute_gae_advantage_return",
@@ -33,7 +39,8 @@
     "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
     "license": "assets/licenses/verl-LICENSE.txt",
     "changes": [
-      "Removed comments, docstrings, type annotations and enclosing indentation."
+      "Removed comments, docstrings, type annotations and enclosing indentation.",
+      "Omitted advantage-estimator registration decorator."
     ],
     "computationUnchanged": true
   },
@@ -43,8 +50,11 @@
     "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
     "license": "assets/licenses/verl-LICENSE.txt",
     "changes": [
-      "Removed comments, docstrings, type annotations and enclosing indentation."
+      "Removed comments, docstrings, type annotations and enclosing indentation.",
+      "Removed assertions, diagnostic metrics, metric returns and nonessential training plumbing at user request."
     ],
-    "computationUnchanged": true
+    "computationUnchanged": false,
+    "trainingMathPreserved": true,
+    "excerpt": true
   }
 }
