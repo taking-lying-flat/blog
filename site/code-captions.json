@@ -148,14 +148,10 @@
   "rope": {
     "17": {
       "caption": "RoPE 配置示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/rope.md#L18-L35",
       "sha256": "317ea1022aa824e3216ab7db3aeae1191894840e81f892d4747de57428fdc00d"
     },
     "38": {
       "caption": "Q/K 与旋转频率维度",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/rope.md#L39-L45",
       "sha256": "23606874c3ef6c185d84a146c6d59e9df4b6c09dc697ac5e9bcb0b85679ac2e3"
     },
     "48": {
@@ -174,8 +170,6 @@
   "ms-swift-model-runtime-failures": {
     "12": {
       "caption": "模型运行时流程",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L13-L39",
       "sha256": "daf963b872ce303949edfa57519e8eea56d7ca3903bd357ca62fecfc7c3c79df"
     },
     "73": {
@@ -186,8 +180,6 @@
     },
     "86": {
       "caption": "多模态模型初始化流程",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L87-L107",
       "sha256": "1f7c6b8a78ab0f47f4213677653cb0c0145b278539e12e7ab2a9329c7d23c62d"
     },
     "110": {
@@ -204,8 +196,6 @@
     },
     "160": {
       "caption": "未初始化 Buffer 故障链",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L161-L171",
       "sha256": "f418c3722668cc46e0ee43768aae2c77f1b224955e4b3c4e09faa815888c947f"
     },
     "190": {
@@ -216,20 +206,14 @@
     },
     "210": {
       "caption": "模型状态初始化协议",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L211-L221",
       "sha256": "2af4210d920ae02c24a26131b5a4ab0dffb009dbc47d741e896b08723fef578c"
     },
     "230": {
       "caption": "Padding 开销对比",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L231-L244",
       "sha256": "e59a505cb90bba6ea2d607413ac528fb3652af9e3ef8707a6e752875fc56b48d"
     },
     "247": {
       "caption": "GDN 显存增长路径",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L248-L259",
       "sha256": "20fcf4c6d866a7c72898aaffa7cabe61d515c563a5e266c365a964fcf4fa9417"
     },
     "262": {
@@ -252,8 +236,6 @@
     },
     "318": {
       "caption": "GDN 张量分配顺序",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L319-L327",
       "sha256": "d908e3dd2079256c523fdf1112f4ece51248d5f1a2421455681c80f227aa3a3e"
     },
     "340": {
@@ -270,14 +252,10 @@
     },
     "372": {
       "caption": "完整 Batch 的检测分支",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L373-L380",
       "sha256": "149cf3e11e9527387d41b7fc1fba69ba8713a72ef7a67de23871fd357a36388e"
     },
     "383": {
       "caption": "尾批的错误检测分支",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L384-L391",
       "sha256": "f06d381d2f7b91e368aa6eb6effbeff32115f5fb73c7d0edf10acfe94b387cdf"
     },
     "394": {
@@ -288,20 +266,14 @@
     },
     "413": {
       "caption": "Token 与元数据长度对比",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L414-L427",
       "sha256": "4b19a57a858469e15b76ebdb090734777d5e357af4f15a1f94ea0f4322444c73"
     },
     "430": {
       "caption": "错误边界传播链",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L431-L445",
       "sha256": "279bf208246eacb0b5465cacfc1b8a53b61547327c33ea2878c5e8cd848bc58f"
     },
     "456": {
       "caption": "边界检查示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L457-L466",
       "sha256": "ac034dc717d425f6fdbe648d878958bde43b43f81898a7a849c613793833cf47"
     },
     "469": {
@@ -318,8 +290,6 @@
     },
     "519": {
       "caption": "音频输出模块拓扑",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L520-L531",
       "sha256": "264d4135f58ad3e5cdef2fc83009f327d6282bb43959bb64e681e19bef4351e7"
     },
     "534": {
@@ -330,22 +300,16 @@
     },
     "549": {
       "caption": "关闭音频输出示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L550-L552",
       "sha256": "10a6a4eed9f34277219d37ea7719b9f2739fb3422a0d6537a762af7948ea77ab"
     },
     "555": {
       "caption": "加载 Thinker 模型示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-model-runtime-failures.md#L556-L561",
       "sha256": "ed826639b38dee0bc554bd432a58cc892ad223e9164916a9c94afbb9a2f1e2de"
     }
   },
   "ms-swift-chatml-rendering": {
     "6": {
       "caption": "思考模式前缀对比",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L7-L20",
       "sha256": "6ebcba2e1a90701b447d3817e4042d99d8676e6b6abd0cda1d22cec31c3d9a47"
     },
     "28": {
@@ -374,8 +338,6 @@
     },
     "111": {
       "caption": "默认模式计算结果",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L112-L119",
       "sha256": "5a45a1069b0f0f7eb6174ff1b4d87c2d1248b3f5f7b3d540b37c1aff038380db"
     },
     "127": {
@@ -386,14 +348,10 @@
     },
     "158": {
       "caption": "前缀选择优先级",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L159-L180",
       "sha256": "85b6f2b5e91f5463b325ed50a7e93e9eb92aba82b8dacb5e6d97d6764dc65175"
     },
     "187": {
       "caption": "ChatML 编码调用链",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L188-L200",
       "sha256": "5c9077b0c9c7accdaa164a03456314e7371c8569c430535fb7b395571957d0ff"
     },
     "203": {
@@ -404,20 +362,14 @@
     },
     "216": {
       "caption": "思考模式输出示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L217-L220",
       "sha256": "77e86abe5a0e443dec1a1c5764625e3ea156e97126b4328dd26c1c6f384365b5"
     },
     "225": {
       "caption": "非思考模式输出示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L226-L232",
       "sha256": "55a4de9d8289b8701d87f2fd4a613affa911915e3330051fbf93191148387821"
     },
     "241": {
       "caption": "截取生成 Token 示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L242-L247",
       "sha256": "84706d5a1a0c1634361f40e61e12eddde17c1e6e62bf1ea13dc3e83ea84f308c"
     },
     "252": {
@@ -458,8 +410,6 @@
     },
     "376": {
       "caption": "训练样本格式对比",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L377-L391",
       "sha256": "3c11e1d91e6155e6d5d271bc3d1dcb19feb6097ac257e0ea5b8efb59342dbdfa"
     },
     "403": {
@@ -470,8 +420,6 @@
     },
     "417": {
       "caption": "空思考块正则配置",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L418-L422",
       "sha256": "cce1c385084589bb3a72911ea4fee1921dd0b7fa422e2607cbc853dd1203800f"
     },
     "425": {
@@ -482,14 +430,10 @@
     },
     "441": {
       "caption": "Loss Mask 数据流",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L442-L452",
       "sha256": "5a9c21b88696def8f42277251198af5633bcb24d9dfaec592ed10f826da6f6a0"
     },
     "455": {
       "caption": "非思考 SFT 参数示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L456-L459",
       "sha256": "3293de3a4e6ac29a4505e0fb441c5c5a5ff2095033d00e77f8d569c5f43fcf93"
     },
     "464": {
@@ -506,8 +450,6 @@
     },
     "492": {
       "caption": "在线生成前缀选择",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L493-L502",
       "sha256": "d58777d428d146267dfdaf5468d177660d185847ab3e62e585cad39a0c378253"
     },
     "507": {
@@ -530,20 +472,14 @@
     },
     "575": {
       "caption": "混合思考模式样例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L576-L580",
       "sha256": "df0f11608d8dad0e1d61bb7592758cc4fb890c7724dbf0bdf8505d4093540a4e"
     },
     "600": {
       "caption": "ChatML 协议示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L601-L633",
       "sha256": "ed7908caeebb3f5f033ca31104984140a0c396c9e47eed1d756d7fd6b6885a04"
     },
     "636": {
       "caption": "媒体占位符格式",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L637-L641",
       "sha256": "d6094fd05ddc37944428007fc9cd1993dda1b5f2e78cf7c528fd70ee5732cbf0"
     },
     "649": {
@@ -560,20 +496,14 @@
     },
     "678": {
       "caption": "标准多模态样本",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L679-L696",
       "sha256": "a9b83d6ccbd10fbbe3cf72b9eae1bcf0be18ef943c9501360d790bbadf906f9b"
     },
     "699": {
       "caption": "标准化输入结果",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L700-L724",
       "sha256": "0438f2f861712dc0f0e99a1f20a2c4cd4fa15ff7c6e686a76e4294ac848f1474"
     },
     "731": {
       "caption": "初始 ChatML 上下文",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L732-L739",
       "sha256": "ff3ec72d00cd990f2c466048b1a531dba25dbdc08b4e05d98cb19c414f16acd1"
     },
     "742": {
@@ -590,8 +520,6 @@
     },
     "783": {
       "caption": "替换后的上下文",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L784-L789",
       "sha256": "1d0ebb92e69cfdcfaefad6cd99d58a2519bf0ca076b081e3fc3ad6ba9aa44cda"
     },
     "796": {
@@ -626,32 +554,22 @@
     },
     "909": {
       "caption": "媒体 Token 数计算示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L910-L933",
       "sha256": "86fcbb3cf3d3cf12e14e47fa5c4627ecaa77d6ed5c6e26d9a50ff161c9d06415"
     },
     "936": {
       "caption": "媒体 Token 扩展示意",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L937-L949",
       "sha256": "e88dafcd022059562d1d0d1c63e1a9c352587bb5f1cff591561173165f4e3ee5"
     },
     "952": {
       "caption": "媒体 Token 数示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L953-L957",
       "sha256": "73184877beb3818bc7af95d1a6841e66493468892a4feb7fb8130b095c65d46c"
     },
     "960": {
       "caption": "构造媒体边界 Token 示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L961-L982",
       "sha256": "a663da521806a273de9138c1d296fe0cb57bd26215030af85cf539176acb35b1"
     },
     "985": {
       "caption": "拼接媒体 Token 示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L986-L1006",
       "sha256": "0037d8a2342786dea57f3cd8f4fff04eb8dfbd6c103d808579de3a3324ae4353"
     },
     "1012": {
@@ -704,8 +622,6 @@
     },
     "1166": {
       "caption": "词嵌入张量维度",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L1167-L1170",
       "sha256": "8cb66b70ccd8da89cbc39f58d67489831e6c726aeabe1cad08119abb7842991f"
     },
     "1173": {
@@ -734,8 +650,6 @@
     },
     "1257": {
       "caption": "多模态特征替换示意",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L1258-L1274",
       "sha256": "6b15472855bfb3285a8cc7ff1900816c138882a6638299ca02e0a28ce62ee75a"
     },
     "1277": {
@@ -746,16 +660,12 @@
     },
     "1295": {
       "caption": "多模态输入完整链路",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/ms-swift-chatml-rendering.md#L1296-L1317",
       "sha256": "8a7b1c83e0a9a4015a1544ec4180e55fa20a7a3b19afc585c768e64304226eb2"
     }
   },
   "packing-flash-attention": {
     "15": {
       "caption": "样本布局与序列边界",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/packing-flash-attention.md#L16-L31",
       "sha256": "182329b8703e2978ebafe4e8b077b906d0afe6e6151bb6cff004202eab686806"
     },
     "54": {
@@ -778,8 +688,6 @@
     },
     "128": {
       "caption": "Packing 数据流",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/packing-flash-attention.md#L129-L144",
       "sha256": "87dc12d295294970e61cd1bfae950fa1e9e176e8844afb4e76f1ce76170bce93"
     },
     "145": {
@@ -796,14 +704,10 @@
     },
     "204": {
       "caption": "Token 与位置对齐示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/packing-flash-attention.md#L205-L211",
       "sha256": "d3dba8b0e88da6fdad49a33d7019f666b92da4ee6b7fccfa21508c7503944e6f"
     },
     "222": {
       "caption": "累计长度边界示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/packing-flash-attention.md#L223-L231",
       "sha256": "dcc3d6bfdd8cc7b5804aff4c12c8b1fade6d89cabfad4b333ecd89b428181831"
     },
     "234": {
@@ -826,8 +730,6 @@
     },
     "331": {
       "caption": "Q/K/V 展平维度",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/packing-flash-attention.md#L332-L344",
       "sha256": "d5e90257cb9725a2d826c931b5127078efc14adc619499a282b0b2fd61bb3166"
     },
     "345": {
@@ -844,8 +746,6 @@
     },
     "424": {
       "caption": "序列内存布局",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/packing-flash-attention.md#L425-L435",
       "sha256": "4e16355fcd227dafd09085347fda218973a03565da9ae1c404a262d00b14ead2"
     },
     "436": {
@@ -930,14 +830,10 @@
   "gemma-4-nvfp4-moe-missing-scales": {
     "54": {
       "caption": "NVFP4 权重加载链",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/gemma-4-nvfp4-moe-missing-scales.md#L55-L70",
       "sha256": "e1eb48b150b8dc68f8e5b35e2310f0b32e6ad46016c8447ea98f0156887629d7"
     },
     "97": {
       "caption": "E2M1 数值编码",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/gemma-4-nvfp4-moe-missing-scales.md#L98-L103",
       "sha256": "84649937005748c31f685046731d6e02ff062641dcf2544bfe87ea9d65a7a785"
     },
     "106": {
@@ -948,8 +844,6 @@
     },
     "157": {
       "caption": "NVFP4 量化数据流",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/gemma-4-nvfp4-moe-missing-scales.md#L158-L178",
       "sha256": "0d1721a15c3f5ff5c8ce0f4fec0cbb4a84104ee0ad50ea6d257189d1a43b0ca1"
     },
     "183": {
@@ -972,8 +866,6 @@
     },
     "240": {
       "caption": "MoE 量化计算路径",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/gemma-4-nvfp4-moe-missing-scales.md#L241-L245",
       "sha256": "98bfbaec4dc6d7e8d37ab504926e4fc126eacb26efe45cf193713cf2223d6d9c"
     },
     "257": {
@@ -984,8 +876,6 @@
     },
     "281": {
       "caption": "选择量化 Kernel 后端",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/gemma-4-nvfp4-moe-missing-scales.md#L282-L284",
       "sha256": "391cffc97a653585d9528ceb561f9a0bc44a18411104b10e1b3b4ae12ce73208"
     }
   },
@@ -1004,32 +894,22 @@
     },
     "64": {
       "caption": "梯度依赖方向",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/flashinfer-sm100-gdn-pipeline-deadlock.md#L65-L71",
       "sha256": "a40befd61704db1df4a86cfb25995e3551a05417bb5640813a224133d1a4e4a2"
     },
     "74": {
       "caption": "跨 Stream 竞态时序",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/flashinfer-sm100-gdn-pipeline-deadlock.md#L75-L85",
       "sha256": "c22df166e60d241dbc3013d66a08574815565fa520079c89b85c3c0ce4b80403"
     },
     "91": {
       "caption": "梯度生命周期",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/flashinfer-sm100-gdn-pipeline-deadlock.md#L92-L98",
       "sha256": "89ea96e446ec2f485e0fb9c1c3200a7dde6311dda225d057317960f9f102c61f"
     },
     "101": {
       "caption": "CUDA Event 同步关系",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/flashinfer-sm100-gdn-pipeline-deadlock.md#L102-L109",
       "sha256": "a07fec4962e2a4ad9fce3b893f641b24a93d069b06828743b6fedb0494c12ed5"
     },
     "146": {
       "caption": "GDN 生产者消费者关系",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/flashinfer-sm100-gdn-pipeline-deadlock.md#L147-L167",
       "sha256": "194c1f4547eb116b37fe49cc0a269b2796b9c24c0268f762e9effe56a968ec75"
     },
     "170": {
@@ -1052,40 +932,28 @@
     },
     "212": {
       "caption": "错误 Owner 等待关系",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/flashinfer-sm100-gdn-pipeline-deadlock.md#L213-L219",
       "sha256": "5756085d44f59013c71919732d076b177ec235100616e91151a5cdf243d52c01"
     },
     "222": {
       "caption": "CTA Warp 职责划分",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/flashinfer-sm100-gdn-pipeline-deadlock.md#L223-L239",
       "sha256": "e33c0743158930ce4b705f3d1095e5ab70f12a9223360295b7db4c82f0db7b15"
     },
     "242": {
       "caption": "Pipeline 死锁链路",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/flashinfer-sm100-gdn-pipeline-deadlock.md#L243-L251",
       "sha256": "a87d2e0eb80875e6a542201b0e6779c940979e6d9b99cb67df34e80a23f8bf34"
     }
   },
   "vllm-51593-persistent-topk-deadlock": {
     "25": {
       "caption": "复现启动命令",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/vllm-51593-persistent-topk-deadlock.md#L26-L35",
       "sha256": "87ef45093f9ee0de34b8417a15104cd53c180f2010d5f916dfe96ea33705d367"
     },
     "38": {
       "caption": "负长度传播链",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/vllm-51593-persistent-topk-deadlock.md#L39-L50",
       "sha256": "98ac070b7c5c64581e439f2ccf98dc88ff91e8e371f3093fb323512791799a8e"
     },
     "51": {
       "caption": "Padding 长度差异",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/vllm-51593-persistent-topk-deadlock.md#L52-L55",
       "sha256": "de2bc2d909d04f0a654ff4fb2f9ee0b44c75049e067d92c796b82434ecac6656"
     },
     "191": {
@@ -1096,8 +964,6 @@
     },
     "202": {
       "caption": "Kernel 边界修复示例",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/vllm-51593-persistent-topk-deadlock.md#L203-L213",
       "sha256": "63d213b82affba511630c051e13fc9cae6ccfb2000d362a463c45fa2da5705cc"
     },
     "287": {
@@ -1108,8 +974,6 @@
     },
     "317": {
       "caption": "CTA 共享内存布局",
-      "sourceLabel": "GitHub",
-      "url": "https://github.com/taking-lying-flat/blog/blob/1f7cdf3153659244a5013fae12fb12b2842aeb3b/notes/vllm-51593-persistent-topk-deadlock.md#L318-L335",
       "sha256": "22f3c9651caf1edaef3b7efb72d764149d6cad0f1428961bb98def7f1c0033f6"
     }
   }
