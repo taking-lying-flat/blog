@@ -78,6 +78,30 @@
 }
 .lake-document .lake-image-cropped { position: relative; overflow: hidden; }
 .lake-document .lake-image-cropped img { position: absolute; display: block; max-width: none; }
+/* Keep this long policy note compact, including its official source excerpts. */
+[data-post="policy-optimization-i"] .post-header { margin-bottom: 12px; padding-bottom: 0; }
+[data-post="policy-optimization-i"] .lake-document { padding-block: 8px; }
+[data-post="policy-optimization-i"] .lake-document h1 { margin: 24px 0 10px; }
+[data-post="policy-optimization-i"] .lake-document h2 { margin: 20px 0 10px; }
+[data-post="policy-optimization-i"] .lake-document > :first-child { margin-top: 0; }
+[data-post="policy-optimization-i"] .lake-document p { margin-bottom: 6px; }
+[data-post="policy-optimization-i"] .lake-document :is(#ub85cdaa4, #u7a18e1e3) { display: none; }
+[data-post="policy-optimization-i"] .lake-document .lake-image { margin-block: 6px; }
+[data-post="policy-optimization-i"] .lake-document p:has(> .lake-math:only-child) {
+  min-height: 0;
+  line-height: 1.25;
+  margin-block: 6px;
+}
+[data-post="policy-optimization-i"] .post-footer { margin-top: 20px; padding-top: 8px; }
+.lake-document .lake-supplement { margin: 18px 0; white-space: normal; }
+.lake-document .lake-supplement h3 { margin: 18px 0 8px; font-size: 19px; }
+.lake-document .lake-supplement > :first-child { margin-top: 0; }
+.lake-document .lake-supplement > :last-child { margin-bottom: 0; }
+.lake-document .lake-supplement .code-block { margin: 10px 0 12px; }
+.lake-document .lake-supplement .code-caption { min-height: 35px; padding-block: 5px; }
+.lake-document .lake-supplement .code-block pre { padding: 12px 16px; line-height: 1.5; }
+.lake-document .lake-supplement .line-numbers { white-space: pre; }
+.lake-document .lake-supplement .math-inline { margin-inline: .15em; }
 /* Give Sakura III's DDPM paragraph two extra character widths on desktop. */
 @media (min-width: 1152px) {
   .lake-document #u151ed2ee { width: calc(100% + 32px); }

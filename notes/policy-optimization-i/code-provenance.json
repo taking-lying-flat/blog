@@ -1,0 +1,131 @@
+{
+  "retrievedAt": "2026-09-27",
+  "extraction": "Selected source ranges, dedented; only explicitly recorded docstring, alternative branch and logging omissions. Computation unchanged.",
+  "excerpts": [
+    {
+      "section": "trpo",
+      "caption": "代理损失与阻尼 HVP",
+      "repository": "openai/spinningup",
+      "commit": "038665d62d569055401d91856abb287263096178",
+      "path": "spinup/algos/tf1/trpo/trpo.py",
+      "lines": [
+        [
+          236,
+          237
+        ],
+        [
+          244,
+          248
+        ]
+      ],
+      "omittedLinePatterns": [],
+      "codeSha256": "3ec6618118fb399b5fc580c1585afe4e2ae10625dc3879ec47e8e5a625465dfb",
+      "sourceSha256": "2331b634fb2a58d3b1e4e2464c176b57a43b7055a9920b925da58ea683e608ca",
+      "url": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/tf1/trpo/trpo.py#L236-L248"
+    },
+    {
+      "section": "trpo",
+      "caption": "flat_grad / hessian_vector_product",
+      "repository": "openai/spinningup",
+      "commit": "038665d62d569055401d91856abb287263096178",
+      "path": "spinup/algos/tf1/trpo/core.py",
+      "lines": [
+        [
+          70,
+          80
+        ]
+      ],
+      "omittedLinePatterns": [],
+      "codeSha256": "0c827bb6d728b04d3dd3f3af84faf47c9c45f4c945433b2ca7ba8185f398be0d",
+      "sourceSha256": "e7129fcf5d3a89e93154861f41d657b939d5fb6c385d78abe22e5853e3163a5e",
+      "url": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/tf1/trpo/core.py#L70-L80"
+    },
+    {
+      "section": "trpo",
+      "caption": "cg(Ax, b) · 省略函数说明",
+      "repository": "openai/spinningup",
+      "commit": "038665d62d569055401d91856abb287263096178",
+      "path": "spinup/algos/tf1/trpo/trpo.py",
+      "lines": [
+        [
+          263,
+          280
+        ]
+      ],
+      "omittedLinePatterns": [
+        "\"\"\"",
+        "Conjugate gradient algorithm",
+        "see https://en.wikipedia.org/"
+      ],
+      "codeSha256": "ed7b199cdc5605d4bda38da6e1f6ef74a019f89554ce969b058e302a86032f40",
+      "sourceSha256": "2331b634fb2a58d3b1e4e2464c176b57a43b7055a9920b925da58ea683e608ca",
+      "url": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/tf1/trpo/trpo.py#L263-L280"
+    },
+    {
+      "section": "trpo",
+      "caption": "update · TRPO 分支",
+      "repository": "openai/spinningup",
+      "commit": "038665d62d569055401d91856abb287263096178",
+      "path": "spinup/algos/tf1/trpo/trpo.py",
+      "lines": [
+        [
+          284,
+          296
+        ],
+        [
+          304,
+          314
+        ]
+      ],
+      "omittedLinePatterns": [
+        "logger.log(",
+        "logger.store("
+      ],
+      "codeSha256": "a2cb9b67b0aa118166be2d3ab4b2789f25ef0075261ac896f94251d9ac086da8",
+      "sourceSha256": "2331b634fb2a58d3b1e4e2464c176b57a43b7055a9920b925da58ea683e608ca",
+      "url": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/tf1/trpo/trpo.py#L284-L314"
+    },
+    {
+      "section": "gae",
+      "caption": "get_advantages_and_returns · 计算主体",
+      "repository": "OpenRLHF/OpenRLHF",
+      "commit": "dc2a7ad326f619fc5a47737ea47d1920ce2c0b53",
+      "path": "openrlhf/trainer/ppo_utils/experience_maker.py",
+      "lines": [
+        [
+          371,
+          387
+        ]
+      ],
+      "omittedLinePatterns": [],
+      "codeSha256": "635c5c7271d782b42183436795eab1934e17e448b251c5850880b0554d8fbe22",
+      "sourceSha256": "1defeef7fa22fc8ff6621d76f5a042a57ebfff4f83aa0338ef9a397de8f8563f",
+      "url": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/trainer/ppo_utils/experience_maker.py#L371-L387"
+    },
+    {
+      "section": "ppo",
+      "caption": "PolicyLoss.forward · 标准 PPO 路径",
+      "repository": "OpenRLHF/OpenRLHF",
+      "commit": "dc2a7ad326f619fc5a47737ea47d1920ce2c0b53",
+      "path": "openrlhf/models/loss.py",
+      "lines": [
+        [
+          185,
+          188
+        ],
+        [
+          200,
+          205
+        ],
+        [
+          249,
+          256
+        ]
+      ],
+      "omittedLinePatterns": [],
+      "codeSha256": "fe713c08facbb197d2969d8eeed748422b917fca8999e3f796b62a5ce96915f4",
+      "sourceSha256": "a6dd82c27e8b1711c6a33b6acd0319be25df9f9d54e2326b950d8f2131060860",
+      "url": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/models/loss.py#L185-L256"
+    }
+  ]
+}

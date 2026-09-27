@@ -206,6 +206,29 @@ for (const post of posts) {
   if (post.format === 'lake') {
     Object.assign(post, await readLake(path.join(root, post.file), escape, renderLakeMath));
     post.titleId = slugify(post.title);
+    const supplements = JSON.parse(await readFile(path.join(post.directory, 'supplements.json'), 'utf8')
+      .catch((error) => { if (error.code === 'ENOENT') return '[]'; throw error; }));
+    for (const supplement of supplements) {
+      if (!/^[\w-]+$/.test(supplement.id) || !/^[\w-]+$/.test(supplement.before)) {
+        throw new Error(`Invalid Lake supplement anchor: ${post.slug}`);
+      }
+      const source = await readFile(path.join(post.directory, supplement.file), 'utf8');
+      const tokens = markdown.parse(source, {});
+      for (const token of tokens) {
+        if (token.type === 'fence' && token.info.trim() === 'math') await renderMath(token, true);
+        for (const child of token.children ?? []) {
+          if (child.type === 'math_inline') await renderMath(child, false);
+        }
+      }
+      const content = `<section class="lake-supplement prose" id="${escape(supplement.id)}">${
+        markdown.renderer.render(tokens, markdown.options, { slug: post.slug })}</section>`;
+      const anchor = new RegExp(`<h[12]\\b[^>]*\\sid="${supplement.before}"[^>]*>`, 'g');
+      let matches = 0;
+      post.content = post.content.replace(anchor, (heading) => { matches++; return content + heading; });
+      if (matches !== 1) throw new Error(`Missing or repeated Lake supplement anchor: ${supplement.before}`);
+      const proseText = tokens.filter((token) => token.type === 'inline').map(inlineText).join(' ');
+      post.readingMinutes += Math.ceil((proseText.match(/\p{Script=Han}/gu)?.length ?? 0) / 300);
+    }
     continue;
   }
   post.source = await readFile(path.join(root, post.file), 'utf8');
