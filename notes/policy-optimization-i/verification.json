@@ -96,9 +96,12 @@
   "currentPublication": {
     "additionalChecksRun": false,
     "reason": "User requested immediate publication without additional checks.",
+    "ppoRepository": "volcengine/verl",
+    "ppoRevision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
     "officialCodeBlocks": [
       "gae-source",
       "ppo-policy-source",
+      "ppo-update-source",
       "ppo-value-source",
       "bootstrap-source"
     ]

@@ -1,30 +1,29 @@
-```python Bootstrap · 计算优势与价值目标 | OpenAI Spinning Up · PyTorch
-def finish_path(self, last_val=0):
-    """
-    Call this at the end of a trajectory, or when one gets cut off
-    by an epoch ending. This looks back in the buffer to where the
-    trajectory started, and uses rewards and value estimates from
-    the whole trajectory to compute advantage estimates with GAE-Lambda,
-    as well as compute the rewards-to-go for each state, to use as
-    the targets for the value function.
+```python Bootstrap · TD 递推，终点价值为 0 | verl
+@register_adv_est(AdvantageEstimator.GAE)
+def compute_gae_advantage_return(
+    token_level_rewards,
+    values,
+    response_mask,
+    gamma,
+    lam,
+):
+    with torch.no_grad():
+        nextvalues = 0
+        lastgaelam = 0
+        advantages_reversed = []
+        gen_len = token_level_rewards.shape[-1]
 
-    The "last_val" argument should be 0 if the trajectory ended
-    because the agent reached a terminal state (died), and otherwise
-    should be V(s_T), the value function estimated for the last state.
-    This allows us to bootstrap the reward-to-go calculation to account
-    for timesteps beyond the arbitrary episode horizon (or epoch cutoff).
-    """
+        for t in reversed(range(gen_len)):
+            delta = token_level_rewards[:, t] + gamma * nextvalues - values[:, t]
+            lastgaelam_ = delta + gamma * lam * lastgaelam
 
-    path_slice = slice(self.path_start_idx, self.ptr)
-    rews = np.append(self.rew_buf[path_slice], last_val)
-    vals = np.append(self.val_buf[path_slice], last_val)
+            nextvalues = values[:, t] * response_mask[:, t] + (1 - response_mask[:, t]) * nextvalues
+            lastgaelam = lastgaelam_ * response_mask[:, t] + (1 - response_mask[:, t]) * lastgaelam
 
-    # the next two lines implement GAE-Lambda advantage calculation
-    deltas = rews[:-1] + self.gamma * vals[1:] - vals[:-1]
-    self.adv_buf[path_slice] = core.discount_cumsum(deltas, self.gamma * self.lam)
+            advantages_reversed.append(lastgaelam)
+        advantages = torch.stack(advantages_reversed[::-1], dim=1)
 
-    # the next line computes rewards-to-go, to be targets for the value function
-    self.ret_buf[path_slice] = core.discount_cumsum(rews, self.gamma)[:-1]
-
-    self.path_start_idx = self.ptr
+        returns = advantages + values
+        advantages = verl_F.masked_whiten(advantages, response_mask)
+    return advantages, returns
 ```

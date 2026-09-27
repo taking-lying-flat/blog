@@ -49,3 +49,7 @@
 ## 官方 PPO 与 bootstrap 函数
 
 新增 OpenAI Spinning Up 的 PyTorch 原函数 `compute_loss_pi`、`compute_loss_v`、`update`、`PPOBuffer.finish_path`，只移除外层缩进，未改写函数。GAE 移除导入、类型标注和文档字符串，保留原方法参数及计算主体。标题改为一行；删除指定 γ-just 段落后图片周围的留白。按用户要求，此次只构建发布，不运行额外检查。
+
+## 统一 PPO 源码
+
+PPO 部分全部替换为同一 verl 提交 `6093e007cc341973c9d9a6fb3867a85976c7c458`：`compute_policy_loss_vanilla`、`compute_value_loss`、`BaseEngine.train_batch`、`compute_gae_advantage_return`。仅删注释、文档字符串、类型标注和外层缩进，计算逻辑保留。GAE 区域保留 OpenRLHF 原方法并删除注释。Bootstrap 框标题注明终点价值为 0。移除 Spinning Up 代码与许可；本轮只构建发布，不运行额外检查。

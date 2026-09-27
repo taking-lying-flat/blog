@@ -3,51 +3,48 @@
     "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/trainer/ppo_utils/experience_maker.py#L342-L387",
     "license": "assets/licenses/OpenRLHF-LICENSE.txt",
     "changes": [
-      "Omitted imports, type annotations and docstring; preserved original method parameters and calculation."
+      "Omitted imports, comments, docstrings and type annotations; preserved original method parameters and calculation."
     ],
     "bodyUnchanged": true
   },
   "ppo-policy-source": {
-    "functions": [
-      {
-        "name": "compute_loss_pi",
-        "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/pytorch/ppo/ppo.py#L227-L243"
-      }
-    ],
-    "license": "assets/licenses/SpinningUp-LICENSE.txt",
+    "function": "compute_policy_loss_vanilla",
+    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/trainer/ppo/core_algos.py#L1285-L1376",
+    "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
+    "license": "assets/licenses/verl-LICENSE.txt",
     "changes": [
-      "Removed enclosing indentation only."
+      "Removed comments, docstrings, type annotations and enclosing indentation."
     ],
-    "bodyUnchanged": true
+    "computationUnchanged": true
   },
   "ppo-value-source": {
-    "functions": [
-      {
-        "name": "compute_loss_v",
-        "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/pytorch/ppo/ppo.py#L246-L248"
-      },
-      {
-        "name": "update",
-        "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/pytorch/ppo/ppo.py#L257-L291"
-      }
-    ],
-    "license": "assets/licenses/SpinningUp-LICENSE.txt",
+    "function": "compute_value_loss",
+    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/trainer/ppo/core_algos.py#L2125-L2185",
+    "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
+    "license": "assets/licenses/verl-LICENSE.txt",
     "changes": [
-      "Removed enclosing indentation only."
+      "Removed comments, docstrings, type annotations and enclosing indentation."
     ],
-    "bodyUnchanged": true
+    "computationUnchanged": true
   },
   "bootstrap-source": {
-    "functions": [
-      {
-        "name": "finish_path",
-        "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/pytorch/ppo/ppo.py#L42-L69"
-      }
-    ],
-    "license": "assets/licenses/SpinningUp-LICENSE.txt",
+    "function": "compute_gae_advantage_return",
+    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/trainer/ppo/core_algos.py#L215-L263",
+    "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
+    "license": "assets/licenses/verl-LICENSE.txt",
     "changes": [
-      "Removed enclosing indentation only."
+      "Removed comments, docstrings, type annotations and enclosing indentation."
     ],
-    "bodyUnchanged": true
+    "computationUnchanged": true
+  },
+  "ppo-update-source": {
+    "function": "train_batch",
+    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/workers/engine/base.py#L113-L132",
+    "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
+    "license": "assets/licenses/verl-LICENSE.txt",
+    "changes": [
+      "Removed comments, docstrings, type annotations and enclosing indentation."
+    ],
+    "computationUnchanged": true
   }
 }

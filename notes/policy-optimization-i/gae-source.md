@@ -12,7 +12,6 @@ def get_advantages_and_returns(
     advantages_reversed = []
     response_length = rewards.size(1)
 
-    # Mask invalid responses
     if action_mask is not None:
         values = action_mask * values
         rewards = action_mask * rewards

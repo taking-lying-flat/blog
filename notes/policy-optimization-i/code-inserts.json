@@ -9,18 +9,24 @@
     "id": "ppo-policy-source",
     "after": "u7c175980",
     "file": "ppo-policy-source.md",
-    "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/pytorch/ppo/ppo.py#L227-L243"
+    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/trainer/ppo/core_algos.py#L1285-L1376"
+  },
+  {
+    "id": "ppo-update-source",
+    "after": "uc919fb1a",
+    "file": "ppo-update-source.md",
+    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/workers/engine/base.py#L113-L132"
   },
   {
     "id": "ppo-value-source",
     "after": "uc919fb1a",
     "file": "ppo-value-source.md",
-    "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/pytorch/ppo/ppo.py#L246-L248"
+    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/trainer/ppo/core_algos.py#L2125-L2185"
   },
   {
     "id": "bootstrap-source",
     "after": "u7d0cf8b8",
     "file": "bootstrap-source.md",
-    "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/spinup/algos/pytorch/ppo/ppo.py#L42-L69"
+    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/trainer/ppo/core_algos.py#L215-L263"
   }
 ]

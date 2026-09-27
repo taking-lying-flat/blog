@@ -3204,10 +3204,10 @@
       "sha256": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
     },
     {
-      "source": "https://github.com/openai/spinningup/blob/038665d62d569055401d91856abb287263096178/LICENSE",
-      "file": "assets/licenses/SpinningUp-LICENSE.txt",
-      "bytes": 1087,
-      "sha256": "f0f761bec044b403bafbc7c373b2267072926dabd123ed4edb78ce4f2c214703"
+      "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/LICENSE",
+      "file": "assets/licenses/verl-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
     }
   ],
   "cards": [
