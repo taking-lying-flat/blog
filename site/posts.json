@@ -1,5 +1,13 @@
 [
   {
+    "file": "../notes/policy-optimization-i/source.lake",
+    "format": "lake",
+    "slug": "policy-optimization-i",
+    "date": "2026-09-27",
+    "description": "策略优化笔记：TRPO、广义优势估计 GAE 与 PPO。",
+    "tags": ["强化学习", "TRPO", "GAE", "PPO"]
+  },
+  {
     "file": "../notes/qwen35-gated-deltanet.md",
     "slug": "qwen35-gated-deltanet",
     "date": "2026-09-26",

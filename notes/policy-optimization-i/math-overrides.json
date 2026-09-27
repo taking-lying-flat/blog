@@ -1,0 +1,110 @@
+{
+  "cz1JC": {
+    "from": "\\epsilon = \\max_s \\left| \\mathbb{E}_{a\\sim\\pi_{\\mathrm{new}}(a\\mid s)} \\left[ A_{\\pi_{\\mathrm{old}}}(s,a) \\right] \\right|.",
+    "to": "\\epsilon = \\max_{s,a}\\left|A_{\\pi_{\\mathrm{old}}}(s,a)\\right|.",
+    "reason": "一般随机策略的 TV 二次界使用最大绝对优势，不能沿用混合策略的期望优势定义；独立推导并与作者修订版定理 1 核对。",
+    "reference": "https://arxiv.org/pdf/1502.05477"
+  },
+  "fwYRA": {
+    "from": "\\eta(\\pi_{\\mathrm{new}}) \\leq L_{\\pi_{\\mathrm{old}}}(\\pi_{\\mathrm{new}}) + \\frac{2\\epsilon\\gamma}{(1-\\gamma)^2}\\alpha^2",
+    "to": "\\eta(\\pi_{\\mathrm{new}}) \\leq L_{\\pi_{\\mathrm{old}}}(\\pi_{\\mathrm{new}}) + \\frac{4\\epsilon\\gamma}{(1-\\gamma)^2}\\alpha^2",
+    "reason": "最大绝对优势定义下，一般随机策略的 TV 二次界系数为 4；会议版本存在系数与定义不一致。",
+    "reference": "https://arxiv.org/pdf/1502.05477"
+  },
+  "qCnk0": {
+    "from": "D_{\\mathrm{TV}}(p\\|q)^2\\leq D_{\\mathrm{KL}}(p\\|q)",
+    "to": "D_{\\mathrm{TV}}(p\\|q)^2\\leq \\frac{1}{2}D_{\\mathrm{KL}}(p\\|q)",
+    "reason": "采用自然对数下 Pinsker 不等式的 1/2 系数；由 TV 的 4ε 界推出下一式 C=2εγ/(1−γ)²，与原算法图片一致。",
+    "reference": "Independent derivation using Pinsker inequality (natural logarithms)."
+  },
+  "mnTLE": {
+    "from": "\\eta(\\pi_{i+1}) \\leq M_i(\\pi_{i+1}),\\quad\n\\eta(\\pi_i)=M_i(\\pi_i),\\quad\ntherefore\\\n\\eta(\\pi_{i+1})-\\eta(\\pi_i)\n\\leq\nM_i(\\pi_{i+1})-M_i(\\pi_i).",
+    "to": "\\eta(\\pi_{i+1}) \\leq M_i(\\pi_{i+1}),\\quad\n\\eta(\\pi_i)=M_i(\\pi_i),\\quad\n\\therefore\\quad\n\\eta(\\pi_{i+1})-\\eta(\\pi_i)\n\\leq\nM_i(\\pi_{i+1})-M_i(\\pi_i).",
+    "reason": "修复 therefore 的 LaTeX 命令。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
+  },
+  "Ltldv": {
+    "from": "\\underset{\\theta}{\\text{maximize}} [L_{\\theta_{\\text{old}}}(\\theta) - C D_{\\text{KL}}^{\\max}(\\theta_{\\text{old}}, \\theta)].",
+    "to": "\\underset{\\theta}{\\text{minimize}} [L_{\\theta_{\\text{old}}}(\\theta) + C D_{\\text{KL}}^{\\max}(\\theta_{\\text{old}}, \\theta)].",
+    "reason": "本节定义 η 为代价，应最小化代理代价与 KL 惩罚之和。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
+  },
+  "x1X1a": {
+    "from": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{maximize}} \\quad L_{\\theta_{\\text{old}}}(\\theta) \\\\\n&\\text{subject to} \\quad D_{\\text{KL}}^{\\max}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n}",
+    "to": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} \\quad L_{\\theta_{\\text{old}}}(\\theta) \\\\\n&\\text{subject to} \\quad D_{\\text{KL}}^{\\max}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n}",
+    "reason": "与本节代价最小化定义一致。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
+  },
+  "FTIvE": {
+    "from": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{maximize}} L_{\\theta_{\\text{old}}}(\\theta) \\\\\n&\\text{subject to } \\overline{D}_{\\text{KL}}^{\\rho_{\\theta_{\\text{old}}}}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n}",
+    "to": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} L_{\\theta_{\\text{old}}}(\\theta) \\\\\n&\\text{subject to } \\overline{D}_{\\text{KL}}^{\\rho_{\\theta_{\\text{old}}}}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n}",
+    "reason": "与本节代价最小化定义一致。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
+  },
+  "thCI1": {
+    "from": "L_n(\\theta) = \\frac{ \\sum_{k=1}^{K} \\frac{\\pi_{\\theta}(a_{n,k}\\mid s_n)} {\\pi_{\\theta_{\\mathrm{old}}}(a_{n,k}\\mid s_n)} \\hat{Q}(s_n,a_{n,k}) }{ \\sum_{k=1}^{K} \\frac{\\pi_{\\theta}(a_{n,k}\\mid s_n)} {\\pi_{\\theta_{\\mathrm{old}}}(a_{n,k}\\mid s_n)} }",
+    "to": "L_n(\\theta) = \\frac{ \\sum_{k=1}^{K} \\frac{\\pi_{\\theta}(a_{n,k}\\mid s_n)} {q(a_{n,k}\\mid s_n)} \\hat{Q}(s_n,a_{n,k}) }{ \\sum_{k=1}^{K} \\frac{\\pi_{\\theta}(a_{n,k}\\mid s_n)} {q(a_{n,k}\\mid s_n)} }",
+    "reason": "前文允许从一般提议分布 q 采样，重要性权重分母必须是 q。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
+  },
+  "qeLgp": {
+    "from": "\\theta_{k+1} = \\arg\\max_{\\theta'}\n\\;g^T(\\theta' - \\theta_k)\n\\qquad \\text{s.t.} \\qquad\n\\frac{1}{2}(\\theta' - \\theta_k)^T H (\\theta' - \\theta_k) \\leq \\delta\n",
+    "to": "\\theta_{k+1} = \\arg\\min_{\\theta'}\n\\;g^T(\\theta' - \\theta_k)\n\\qquad \\text{s.t.} \\qquad\n\\frac{1}{2}(\\theta' - \\theta_k)^T H (\\theta' - \\theta_k) \\leq \\delta\n",
+    "reason": "使用代价优势时，局部代理目标也应最小化。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
+  },
+  "TP8ux": {
+    "from": "g = \\nabla_{\\theta'}\\,\\mathbb{E}_{s \\sim \\nu^{\\pi_{\\theta_k}}} \\mathbb{E}_{a \\sim \\pi_{\\theta_k}(\\cdot|s)}\n\\left[\n\\frac{\\pi_{\\theta'}(a|s)}{\\pi_{\\theta_k}(a|s)}\\,A^{\\pi_{\\theta_k}}(s,a)\n\\right]\n",
+    "to": "g = \\left.\\nabla_{\\theta^{\\prime}}\\mathbb{E}_{s\\sim\\nu^{\\pi_{\\theta_k}},\\,a\\sim\\pi_{\\theta_k}(\\cdot\\mid s)}\\left[\\frac{\\pi_{\\theta^{\\prime}}(a\\mid s)}{\\pi_{\\theta_k}(a\\mid s)}A^{\\pi_{\\theta_k}}(s,a)\\right]\\right|_{\\theta^{\\prime}=\\theta_k}",
+    "reason": "梯度须在展开点 θk 求值。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
+  },
+  "w9WPQ": {
+    "from": "H = \\mathbb{H} \\left[ \\mathbb{E}_{s \\sim \\nu^{\\pi_{\\theta_k}}} \\left[ D_{KL}\\left(\\pi_{\\theta_k}(\\cdot|s),\\, \\pi_{\\theta'}(\\cdot|s)\\right) \\right] \\right]\n",
+    "to": "H=\\left.\\nabla_{\\theta^{\\prime}}^2\\mathbb{E}_{s\\sim\\nu^{\\pi_{\\theta_k}}}\\left[D_{\\mathrm{KL}}\\left(\\pi_{\\theta_k}(\\cdot\\mid s)\\|\\pi_{\\theta^{\\prime}}(\\cdot\\mid s)\\right)\\right]\\right|_{\\theta^{\\prime}=\\theta_k}",
+    "reason": "明确 Hessian 对新策略参数求二阶导并在 θk 求值。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
+  },
+  "gQ3mL": {
+    "from": "\\theta_{k+1} = \\theta_k +\n\\sqrt{\\frac{2\\delta}{g^T H^{-1} g}}\\,H^{-1}g\n",
+    "to": "\\theta_{k+1} = \\theta_k -\n\\sqrt{\\frac{2\\delta}{g^T H^{-1} g}}\\,H^{-1}g\n",
+    "reason": "代价最小化沿负自然梯度更新。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
+  },
+  "W2Bx5": {
+    "from": "x",
+    "to": "x\\approx-H^{-1}g",
+    "reason": "明确共轭梯度求解 Hx=−g，后续 θ+βx 与代价最小化保持一致。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
+  },
+  "nzyEP": {
+    "from": "\\sum_{l=0}^{\\infty} \\gamma^l \\tilde{r}(s_{t+l}, a_t, s_{t+l+1}) = \\sum_{l=0}^{\\infty} \\gamma^l r(s_{t+l}, a_{t+l}, s_{t+l+1}) - \\Phi(s_t).",
+    "to": "\\sum_{l=0}^{\\infty} \\gamma^l \\tilde{r}(s_{t+l}, a_{t+l}, s_{t+l+1}) = \\sum_{l=0}^{\\infty} \\gamma^l r(s_{t+l}, a_{t+l}, s_{t+l+1}) - \\Phi(s_t).",
+    "reason": "奖励塑形轨迹求和中的动作下标应随 l 递增。",
+    "reference": "https://arxiv.org/pdf/1506.02438"
+  },
+  "GT4DR": {
+    "from": "\\sum_{l=0}^{\\infty} (\\gamma\\lambda)^l \\tilde{r}(s_{t+l}, a_t, s_{t+l+1}) = \\sum_{l=0}^{\\infty} (\\gamma\\lambda)^l \\delta_{t+l}^V = \\hat{A}_t^{\\text{GAE}(\\gamma, \\lambda)}.",
+    "to": "\\sum_{l=0}^{\\infty} (\\gamma\\lambda)^l \\tilde{r}(s_{t+l}, a_{t+l}, s_{t+l+1}) = \\sum_{l=0}^{\\infty} (\\gamma\\lambda)^l \\delta_{t+l}^V = \\hat{A}_t^{\\text{GAE}(\\gamma, \\lambda)}.",
+    "reason": "奖励塑形轨迹求和中的动作下标应随 l 递增。",
+    "reference": "https://arxiv.org/pdf/1506.02438"
+  },
+  "EE1ae": {
+    "from": "\\begin{aligned}\n\\tilde{Q}^{\\pi, \\gamma}(s, a) &= Q^{\\pi, \\gamma}(s, a) - \\Phi(s) \\\\\n\\tilde{V}^{\\pi, \\gamma}(s, a) &= V^{\\pi, \\gamma}(s) - \\Phi(s) \\\\\n\\tilde{A}^{\\pi, \\gamma}(s, a) &= (Q^{\\pi, \\gamma}(s, a) - \\Phi(s)) - (V^{\\pi, \\gamma}(s) - \\Phi(s)) = A^{\\pi, \\gamma}(s, a).\n\\end{aligned}",
+    "to": "\\begin{aligned}\n\\tilde{Q}^{\\pi, \\gamma}(s, a) &= Q^{\\pi, \\gamma}(s, a) - \\Phi(s) \\\\\n\\tilde{V}^{\\pi, \\gamma}(s) &= V^{\\pi, \\gamma}(s) - \\Phi(s) \\\\\n\\tilde{A}^{\\pi, \\gamma}(s, a) &= (Q^{\\pi, \\gamma}(s, a) - \\Phi(s)) - (V^{\\pi, \\gamma}(s) - \\Phi(s)) = A^{\\pi, \\gamma}(s, a).\n\\end{aligned}",
+    "reason": "状态价值函数仅以状态为参数。",
+    "reference": "https://arxiv.org/pdf/1506.02438"
+  },
+  "qibui": {
+    "from": "H=\\frac{1}{N}\\sum_{n=1}^{N}j_nj_n^{\\mathrm T}, \\quad j_n=\\nabla_{\\phi}V_{\\phi}(s_n).",
+    "to": "H=\\frac{1}{N\\sigma^2}\\sum_{n=1}^{N}j_nj_n^{\\mathrm T},\\quad j_n=\\left.\\nabla_{\\phi}V_{\\phi}(s_n)\\right|_{\\phi=\\phi_{\\mathrm{old}}}.",
+    "reason": "保持前一式 KL 半径 ε 不变，H 应包含 1/σ²，雅可比在旧参数处计算；由原 KL 约束直接二阶展开。",
+    "reference": "https://arxiv.org/pdf/1506.02438"
+  },
+  "wvCJ2": {
+    "from": "t \\in [0,T]",
+    "to": "t\\in\\{0,\\ldots,T-1\\}",
+    "reason": "长度 T 的 rollout 包含动作时间步 0 至 T−1，sT 仅用于 bootstrap。",
+    "reference": "https://arxiv.org/pdf/1707.06347"
+  }
+}
