@@ -1272,6 +1272,14 @@
       "sha256": "69910543d2248eb7d201a3aa164278fc24f886f86e5acd0273dc70fa5e9a728c",
       "width": 1139,
       "height": 918
+    },
+    {
+      "source": "https://raw.githubusercontent.com/deepseek-ai/DeepSeek-V2/ec98ee3cbffc32104cd55dba8af884b3d772602a/figures/architecture.png",
+      "file": "assets/images/deepseek-v2-architecture-horizontal.svg",
+      "bytes": 231354,
+      "sha256": "06b7bcbf989d6611cb31e60ff3ac7c337b68c7a4c27be7ba8dd498863773182e",
+      "width": 1868,
+      "height": 690
     }
   ],
   "cards": [

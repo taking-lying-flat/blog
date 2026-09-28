@@ -121,6 +121,6 @@
   .lake-document { margin-inline: -20px; padding-inline: 20px; }
 }
 
-.lake-document .lake-figure { margin: 18px auto; max-width: 840px; white-space: normal; }
+.lake-document .lake-figure { margin: 18px auto; max-width: 100%; white-space: normal; }
 .lake-document .lake-figure img { display: block; width: 100%; height: auto; }
 .lake-document .lake-figure figcaption { margin-top: 8px; color: #656d76; font-size: 13px; text-align: center; }
