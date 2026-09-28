@@ -56,6 +56,7 @@
   white-space: normal;
 }
 .lake-document .lake-math + .lake-math { margin-inline-start: 0; }
+.lake-document .lake-math-punctuation { display: inline-block; white-space: nowrap; }
 .lake-document p > .lake-math:only-child { margin-inline: 0; }
 .lake-document .lake-math img { display: inline; max-width: none; }
 /* Scroll long equations without shrinking their symbols or losing either end. */
