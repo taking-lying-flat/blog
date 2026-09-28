@@ -4,8 +4,8 @@
     "format": "lake",
     "slug": "deepseek-ai-i",
     "date": "2026-09-28",
-    "description": "DeepSeekMoE 笔记：细粒度专家划分、共享专家隔离与负载均衡。",
-    "tags": ["DeepSeek", "MoE", "专家路由"]
+    "description": "DeepSeekMoE 与 DeepSeek-V2 笔记：专家划分、MLA、解耦 RoPE 与路由负载均衡。",
+    "tags": ["DeepSeek", "MoE", "MLA", "专家路由"]
   },
   {
     "file": "../notes/policy-optimization-i/source.lake",

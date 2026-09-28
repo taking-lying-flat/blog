@@ -35,11 +35,12 @@ export async function readLake(file, escape, renderMath) {
     if (card.kind !== 'math') continue;
     const code = overrides[card.value.id]?.to ?? card.value.code;
     // Numbered equations need responsive MathJax layout, not a fixed-width image.
-    if (!invalidMath.has(card.asset) && code === card.value.code &&
+    const original = assets.get(card.asset) ?? { width: '100%' };
+    if (card.asset && !invalidMath.has(card.asset) && code === card.value.code &&
         !/\\(?:mathcal|mathscr|tag)\b/.test(code)) continue;
-    const key = JSON.stringify([code, assets.get(card.asset).width]);
+    const key = JSON.stringify([code, original.width]);
     if (!generated.has(key)) {
-      const rendered = await renderMath(code, assets.get(card.asset));
+      const rendered = await renderMath(code, original);
       generated.set(key, { ...rendered, file: `assets/math/${sha256(rendered.content).slice(0, 32)}.rendered.svg` });
     }
     renderedCards.set(card.value.id, generated.get(key));
@@ -133,6 +134,18 @@ export async function readLake(file, escape, renderMath) {
   // its original light palette; retain the pair for a future viewer as well.
   content = content.replace(/style="([^"<>]*color:\s*)(rgb\([^)]+\)),\s*rgb\([^)]+\)([^"<>]*)"/g,
     (original, prefix, light, suffix) => `data-lake-style="${original.slice(7, -1)}" style="${prefix}${light}${suffix}"`);
+  const figures = JSON.parse(await readFile(path.join(directory, 'figure-inserts.json'), 'utf8')
+    .catch((error) => { if (error.code === 'ENOENT') return '[]'; throw error; }));
+  for (const figure of figures) {
+    const asset = assets.get(figure.asset);
+    if (!/^[\w-]+$/.test(figure.id) || !/^[\w-]+$/.test(figure.before) ||
+        !asset || !/^https:\/\//.test(asset.source)) throw new Error(`Invalid Lake figure: ${figure.id}`);
+    const html = `<figure class="lake-figure" id="${figure.id}"><a href="${escape(asset.file)}"><img src="${escape(asset.file)}" alt="${escape(figure.alt)}" width="${asset.width}" height="${asset.height}" decoding="async"></a><figcaption>${escape(figure.caption)} · <a href="${escape(figure.source)}">官方来源</a></figcaption></figure>`;
+    const anchor = new RegExp(`<p\\b[^>]*\\sid="${figure.before}"[^>]*>`, 'g');
+    let matches = 0;
+    content = content.replace(anchor, (opening) => { matches++; return html + opening; });
+    if (matches !== 1) throw new Error(`Missing or repeated Lake figure anchor: ${figure.before}`);
+  }
   const text = content.replace(/<[^>]*>/g, '');
   return {
     title: manifest.title,
