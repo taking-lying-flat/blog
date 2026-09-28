@@ -250,57 +250,17 @@ response = tokenizer.decode(generated_tokens[0])
 **原生 `vLLM`**：真正决定返回文本的是 `vllm/v1/engine/detokenizer.py`。它将输出缓冲区初始化为空，并且只向其中追加引擎新产生的 `token`：
 
 ```python
-def update(self, new_token_ids: list[int], stop_terminated: bool) -> str | None:
-    if not new_token_ids:
-        return None
-
-    if stop_terminated and not self.include_stop_str_in_output:
-        skipped_stop_token_id = new_token_ids[-1]
-        new_token_ids = new_token_ids[:-1]
-    else:
-        skipped_stop_token_id = None
-
-    stop_check_offset = len(self.output_text)
-    for new_token_id in new_token_ids:
-        self.token_ids.append(new_token_id)
-        self.output_text += self.decode_next(new_token_id)
-        if self.min_tokens and self.num_output_tokens() <= self.min_tokens:
-            stop_check_offset = len(self.output_text)
-
-    if skipped_stop_token_id is not None:
-        self.token_ids.append(skipped_stop_token_id)
-
-    stop_string = None
-    if self.stop and self.num_output_tokens() > self.min_tokens:
-        stop = check_stop_strings(
-            output_text=self.output_text,
-            new_char_count=len(self.output_text) - stop_check_offset,
-            stop=self.stop,
-            include_in_output=self.include_stop_str_in_output,
-        )
-        if stop is not None:
-            stop_string, truncate_to = stop
-            if truncate_to != -1:
-                self.output_text = self.output_text[:truncate_to]
-
-    return stop_string
+for new_token_id in new_token_ids:
+    self.token_ids.append(new_token_id)
+    self.output_text += self.decode_next(new_token_id)
 ```
 
-`vllm/v1/engine/output_processor.py` 随后直接用这个缓冲区构造 `CompletionOutput`：
+`vllm/v1/engine/output_processor.py` 随后读取生成文本，作为 `CompletionOutput.text` 返回：
 
 ```python
-return CompletionOutput(
-    index=self.request_index,
-    text=text,
-    token_ids=token_ids,
-    routed_experts=routed_experts,
-    sampling_mask=sampling_mask,
-    logprobs=logprobs,
-    cumulative_logprob=self.logprobs_processor.cumulative_logprob,
-    finish_reason=str(finish_reason) if finished else None,
-    stop_reason=stop_reason if finished else None,
-    spec_decode_metrics=self.spec_decode_metrics if finished else None,
-)
+finished = finish_reason is not None
+delta = self.output_kind == RequestOutputKind.DELTA
+text = self.detokenizer.get_next_output_text(finished, delta)
 ```
 
 在 `detokenizer` 内部，`prompt token` 只用于初始化前缀状态，保证第一个生成 `token` 能在正确的文本边界上解码；`output_text` 本身仍从空字符串开始，并且只接收 `new_token_ids`。因此，原生 `vLLM` 的 `CompletionOutput.text` 只包含模型新生成的答案。空 `<think></think>` 位于 `prompt` 中，从未写入这个输出缓冲区，所以不会出现在返回文本里
