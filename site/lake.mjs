@@ -34,7 +34,9 @@ export async function readLake(file, escape, renderMath) {
   for (const card of manifest.cards) {
     if (card.kind !== 'math') continue;
     const code = overrides[card.value.id]?.to ?? card.value.code;
-    if (!invalidMath.has(card.asset) && code === card.value.code && !/\\math(?:cal|scr)\b/.test(code)) continue;
+    // Numbered equations need responsive MathJax layout, not a fixed-width image.
+    if (!invalidMath.has(card.asset) && code === card.value.code &&
+        !/\\(?:mathcal|mathscr|tag)\b/.test(code)) continue;
     const key = JSON.stringify([code, assets.get(card.asset).width]);
     if (!generated.has(key)) {
       const rendered = await renderMath(code, assets.get(card.asset));
@@ -90,6 +92,10 @@ export async function readLake(file, escape, renderMath) {
     if (!asset) throw new Error(`Missing Lake asset: ${card.asset}`);
     if (card.kind === 'math') {
       mathCount++;
+      if (asset.html) {
+        const code = overrides[card.value.id]?.to ?? card.value.code;
+        return `<span class="lake-math lake-math-numbered" data-card-id="${id}" role="math" aria-label="${escape(code)}">${asset.html}</span>`;
+      }
       const wide = parseFloat(asset.width) > 20;
       const baseline = asset.style?.match(/vertical-align:\s*([^;]+)/)?.[1] ?? '0';
       const sizing = wide ? `--lake-math-width:${asset.width};vertical-align:${baseline};` : '';

@@ -55,6 +55,7 @@ const svg = new SVG({ fontCache: 'local', displayOverflow: 'overflow', linebreak
 const document = mathjax.document('', {
   InputJax: new TeX({
     packages: ['base', 'ams', 'boldsymbol', 'newcommand', 'color'],
+    tagSide: 'right',
     formatError(_jax, error) { throw error; },
   }),
   OutputJax: svg,
@@ -73,6 +74,7 @@ async function renderMath(token, display) {
 
 async function renderLakeMath(code, original) {
   const node = await document.convertPromise(code, { display: true, em: 16, ex: 8, containerWidth: 1024 });
+  const html = /\\tag\b/.test(code) ? adaptor.outerHTML(node) : undefined;
   const svgNode = adaptor.tags(node, 'svg')[0];
   if (!svgNode) throw new Error(`Missing SVG for Lake formula: ${code}`);
   // Tagged equations use a percentage width; external images need the
@@ -87,6 +89,7 @@ async function renderLakeMath(code, original) {
   }
   return {
     content,
+    html,
     width: adaptor.getAttribute(svgNode, 'width'),
     height: adaptor.getAttribute(svgNode, 'height'),
     style: adaptor.getAttribute(svgNode, 'style') ?? '',

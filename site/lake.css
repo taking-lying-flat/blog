@@ -66,6 +66,21 @@
   scrollbar-width: thin;
 }
 .lake-document .lake-math-wide img { display: block; }
+/* Center the equation in the text column and keep its number at the right edge. */
+.lake-document .lake-math-numbered {
+  display: block;
+  width: 100%;
+  margin-inline: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: normal;
+}
+.lake-document .lake-math-numbered mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+}
 /* Remove the exported blank line after FlashAttention's V-transpose options. */
 .lake-document #u9509cdfc > br { display: none; }
 /* The group OBS update is an unnumbered display equation. */

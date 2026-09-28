@@ -12,137 +12,245 @@
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L272-L291",
       "sha256": "f2a6aa13183e46eab72c6f746e32bba58decc220040e89163e95a0a892e71f4f"
     },
-    "340": {
-      "caption": "投影、门控与 Head 映射",
+    "342": {
+      "caption": "投影、门控与 Head 映射 · 1/5 输入投影",
       "sourceLabel": "Transformers · 节选",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L552-L665",
-      "sha256": "4fb7bf1f40f0fcce0aa3c369f1e6325b39ce2e63632c5a6f481a7548a3194596"
+      "sha256": "a042d011cf8538ce0bd489a3c0c167621b849d208a224c4fac0837931f39ce93"
     },
-    "468": {
+    "370": {
+      "caption": "投影、门控与 Head 映射 · 2/5 短卷积路径",
+      "sourceLabel": "Transformers · 节选",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L552-L665",
+      "sha256": "9d431347dea655463a89d41c6a78b3af0049c099977a5d08e3cfe7e6b7f41a62"
+    },
+    "406": {
+      "caption": "投影、门控与 Head 映射 · 3/5 门控与 Head 映射",
+      "sourceLabel": "Transformers · 节选",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L552-L665",
+      "sha256": "1eb2d3050a2bed375d69ac6336d8b820c7af5aa54fbcdfb1c413a2a51d4371fd"
+    },
+    "433": {
+      "caption": "投影、门控与 Head 映射 · 4/5 选择状态算子",
+      "sourceLabel": "Transformers · 节选",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L552-L665",
+      "sha256": "dc3cca34fbcd25965c23194c82f506ccfb4af49db3e73665630a96b0a4a7b6dc"
+    },
+    "469": {
+      "caption": "投影、门控与 Head 映射 · 5/5 状态回写与输出投影",
+      "sourceLabel": "Transformers · 节选",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L552-L665",
+      "sha256": "ea298fc2bdaf668e95e2c738f616df9a8a87beaafbd29a735fe14d41730386fa"
+    },
+    "486": {
       "caption": "更新卷积缓存",
       "sourceLabel": "Transformers",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L252-L268",
       "sha256": "0877adb1ca7772ddd6a73a9efed59e9ce24a2cbfb13b98b5579d771f021bb990"
     },
-    "515": {
-      "caption": "状态读出与输出门控",
+    "535": {
+      "caption": "状态读出与输出门控 · 1/2 Chunk 与 Recurrent 分支",
       "sourceLabel": "Transformers · 节选",
       "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L626-L665",
-      "sha256": "883d4a73d673d4cb9422c44492cac1aee1c144070a7de2e3128a2a1fe2815e10"
+      "sha256": "00b75c45f8aab91c48c5071e72f31472bfd21b44aa44a9b2c8374b0d95c65e15"
     },
-    "580": {
-      "caption": "Chunk 前向计算",
+    "571": {
+      "caption": "状态读出与输出门控 · 2/2 输出门与缓存更新",
+      "sourceLabel": "Transformers · 节选",
+      "url": "https://github.com/huggingface/transformers/blob/v5.17.0/src/transformers/models/qwen3_5_moe/modeling_qwen3_5_moe.py#L626-L665",
+      "sha256": "06cec9bce4d3a5183b421d5477f9534ca9848a84b5b745be587f5cc734468908"
+    },
+    "606": {
+      "caption": "Chunk 前向计算 · 1/3 累计衰减门",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L33-L123",
-      "sha256": "119b24a9842409ef99e2021785fe89dd7301745b527fb26a1ae1079de1bbbb1a"
+      "sha256": "0d81a415732bc3a18dd2a46febbf8fa5f5758560589cfd565b3157f2c60fb772"
     },
-    "695": {
-      "caption": "计算累计对数门控",
+    "648": {
+      "caption": "Chunk 前向计算 · 2/3 块内变换与入口状态",
+      "sourceLabel": "FLA",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L33-L123",
+      "sha256": "55e2e3028044f9ddb4e4cb9f65f4922b7bb199f699e3d0cbb8615f0cadef3396"
+    },
+    "674": {
+      "caption": "Chunk 前向计算 · 3/3 状态递推与读出",
+      "sourceLabel": "FLA",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L33-L123",
+      "sha256": "af8763f78f9213b79afbed620428df057443ddca016acbcf58502577d866e2c1"
+    },
+    "733": {
+      "caption": "计算累计对数门控 · 1/2 定位序列与 Chunk",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/utils/cumsum.py#L33-L73",
-      "sha256": "9fd023a1f08f70ede745624713b747d89e02e769a454c0ac451a2e5eeada2d84"
+      "sha256": "683eedc512f9b55ceeb28cee13d629daa72ce28cbad32d08dd835f1e3e2870f3"
     },
-    "774": {
-      "caption": "计算块内 Gram 矩阵",
+    "768": {
+      "caption": "计算累计对数门控 · 2/2 前缀和与写回",
+      "sourceLabel": "FLA",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/utils/cumsum.py#L33-L73",
+      "sha256": "a5e0698b071998f25e46d47bdf43a4fdfe3a64f21f4a73eb18df835368e0eae6"
+    },
+    "818": {
+      "caption": "计算块内 Gram 矩阵 · 1/2 定位 KKT 的有效区间",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_scaled_dot_kkt.py#L33-L80",
-      "sha256": "486daec84c769f06ace748a5b256d4d5b938ed32ab3097baad0888e46931451c"
+      "sha256": "a876491f012bd83f4023bca7a967d81aef6787d70b6696e7e57f1c311f110df5"
     },
-    "827": {
+    "856": {
+      "caption": "计算块内 Gram 矩阵 · 2/2 分片累计 Gram 矩阵",
+      "sourceLabel": "FLA",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_scaled_dot_kkt.py#L33-L80",
+      "sha256": "5d4b595ce2b107a7cf609d7bca8fd5da04c862f3d7ddfe6bc1ab7cad267720bb"
+    },
+    "875": {
       "caption": "施加衰减与因果约束",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_scaled_dot_kkt.py#L33-L80",
       "sha256": "cbd75e5f06dee30c70e96067594d6fb2bcc3b6f32911e30b80d2e4b6e9e3a36b"
     },
-    "850": {
+    "898": {
       "caption": "融合 KKT 与三角求解",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L40-L328",
       "sha256": "b8f3e466b3f1487ee94fbe90010578a646a56845cadb490da2f207bed48ab8aa"
     },
-    "893": {
+    "941": {
       "caption": "对角子块前代",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L40-L328",
       "sha256": "7a0ec0971a35e31b47491339c8cc5aeec67ed4b78f1d770d4641000b21da2f3c"
     },
-    "911": {
+    "959": {
       "caption": "合并相邻子块",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L40-L328",
       "sha256": "3dfbe91170a74280457be9d2f8c18f5879630abaa88ddde3132729848973d5c3"
     },
-    "948": {
+    "996": {
       "caption": "合并四个子块",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk_fwd.py#L40-L328",
       "sha256": "e9957a8114f2e97e28fcdb1c2e95c0ac9dfe56a79b76f9b0e759926c237723e0"
     },
-    "991": {
+    "1039": {
       "caption": "计算变换后的 V",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/wy_fast.py#L39-L102",
       "sha256": "d144e565bc16e1f68e027097bc6ff6ef1ddeb08fc8398322f325199154c92e3d"
     },
-    "1025": {
+    "1073": {
       "caption": "计算衰减后的 W",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/wy_fast.py#L39-L102",
       "sha256": "7189086dd18c4ba91c44fa12223d917302b540abb258517c5f95bbb6e6200da5"
     },
-    "1083": {
+    "1131": {
       "caption": "计算块内残差",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_delta_h.py#L50-L338",
       "sha256": "0f2f3018017574cb129d1701bfb7c09781c613b5664780b5ca9e66c8910d4c9d"
     },
-    "1123": {
+    "1171": {
       "caption": "更新块间状态",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_delta_h.py#L50-L338",
       "sha256": "bab7dc0c4cae549904330a0663f8bfce4b16002e6df4bf22eeec4b0af4da5201"
     },
-    "1178": {
+    "1226": {
       "caption": "计算历史项与局部项",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_o.py#L43-L140",
       "sha256": "8fa82ae294edba107632c379e6bbe71d4f055484ae750ca7ef3cd35220a6baa7"
     },
-    "1212": {
+    "1260": {
       "caption": "合并衰减与输出",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_o.py#L43-L140",
       "sha256": "c54224e5ec4308bec411c047078a7e67f392351e010aee920c1ee89e4aad21da"
     },
-    "1265": {
+    "1313": {
       "caption": "传播状态梯度",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/common/chunk_delta_h.py#L359-L671",
       "sha256": "6fc94fa9263889b1faf195cf471e90f168b99cf851b662f78594684adb198c6c"
     },
-    "1302": {
+    "1350": {
       "caption": "反传三角变换梯度",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/wy_fast.py#L119-L247",
       "sha256": "be7af434f4e37f580fe0fb937152eb951bf9c95de7f495aa79a73e8056f4cafe"
     },
-    "1333": {
-      "caption": "组织 Chunk 反向传播",
+    "1383": {
+      "caption": "组织 Chunk 反向传播 · 1/5 重算 W/U",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L126-L250",
-      "sha256": "9e5dd0fa45b5beee11ead136e252c092a45df179c081201acf958ddcc81813a1"
+      "sha256": "6072f6ad038653753d3da9883f75c753227131d73b84b1dae2321260dd46b7c2"
     },
-    "1485": {
-      "caption": "启动 Recurrent 内核",
+    "1420": {
+      "caption": "组织 Chunk 反向传播 · 2/5 重算状态与局部 V 梯度",
+      "sourceLabel": "FLA",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L126-L250",
+      "sha256": "3b772615b8c1bcb4fcc0b6c9ccb6745ec4b084b151c8bb3cb7cceabf96dfee46"
+    },
+    "1447": {
+      "caption": "组织 Chunk 反向传播 · 3/5 沿状态链反向传播",
+      "sourceLabel": "FLA",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L126-L250",
+      "sha256": "ff703a72fdae7ea9db46c5c2c25e7668439cd41ba553bcc6144187103c88ba0b"
+    },
+    "1483": {
+      "caption": "组织 Chunk 反向传播 · 4/5 Q/K 与三角变换梯度",
+      "sourceLabel": "FLA",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L126-L250",
+      "sha256": "de559507ee1f49903d8910af0c5bb3f07d0f28829459a7b6d15a1df19aa1a138"
+    },
+    "1515": {
+      "caption": "组织 Chunk 反向传播 · 5/5 合并 Gate 梯度",
+      "sourceLabel": "FLA",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/chunk.py#L126-L250",
+      "sha256": "4ac09af2addd2dc9f5c1388a8bc74e278e9c660b6d17b4f7d8d20e1500416a76"
+    },
+    "1557": {
+      "caption": "启动 Recurrent 内核 · 1/2 分配状态与并行网格",
       "sourceLabel": "FLA",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L182-L248",
-      "sha256": "6efa4b05409aefcebcb6ae4a701e6b73168ee179d3342132a9f1c3a1a1c65f30"
+      "sha256": "27aa167977fb659159bd1aa38fd3a65b60aec47d17f84c9fec939e909666ea37"
     },
-    "1576": {
-      "caption": "逐 Token 更新状态",
+    "1600": {
+      "caption": "启动 Recurrent 内核 · 2/2 启动 Recurrent Kernel",
+      "sourceLabel": "FLA",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L182-L248",
+      "sha256": "e0058b908d8f2e860d564001c96f22feac07f943c82fb71a0c4966433df65e4b"
+    },
+    "1655": {
+      "caption": "逐 Token 更新状态 · 1/5 初始化寄存器状态",
       "sourceLabel": "FLA · 节选",
       "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L100-L179",
-      "sha256": "040a03f37d3ba7eb1a5ca77b0639bd966e449554ddc6c97984587c1b33842f6a"
+      "sha256": "6cf3e5d0cd1ccce90b5364b133725a0e4700c8e4572bf798ac78e706c46596d6"
+    },
+    "1670": {
+      "caption": "逐 Token 更新状态 · 2/5 加载 Token 与写入系数",
+      "sourceLabel": "FLA · 节选",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L100-L179",
+      "sha256": "7ff496b331cc652fe46387758ad56ccf805cb51ef3ab578c057a0fee942b2914"
+    },
+    "1691": {
+      "caption": "逐 Token 更新状态 · 3/5 衰减历史状态",
+      "sourceLabel": "FLA · 节选",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L100-L179",
+      "sha256": "61dde3aed0adf25f6f8927ac065ebea1d09c7da7bd8d38b1055885fe283fd77f"
+    },
+    "1718": {
+      "caption": "逐 Token 更新状态 · 4/5 残差写入与状态读出",
+      "sourceLabel": "FLA · 节选",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L100-L179",
+      "sha256": "e7ea7f3e397d2c109ec4cb9b2975740830dfc5ef26065bf2e05f5d7bf837a225"
+    },
+    "1744": {
+      "caption": "逐 Token 更新状态 · 5/5 保存末态",
+      "sourceLabel": "FLA · 节选",
+      "url": "https://github.com/fla-org/flash-linear-attention/blob/v0.5.2/fla/ops/gated_delta_rule/fused_recurrent.py#L100-L179",
+      "sha256": "4f2b86d2ac2b3f205575dedb0a8642ad8c86732ce3ec3ba2d281ccad8eb532cb"
     }
   },
   "rope": {

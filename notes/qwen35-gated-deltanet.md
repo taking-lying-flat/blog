@@ -338,6 +338,8 @@ g&=-\exp(A_{\log})\odot\operatorname{softplus}(a+d_{\mathrm{bias}}),
 
 - `A_log` 和 `dt_bias` 是每个 value head 的可学习参数。上述参数化保证 `g` 为负值，从而将历史衰减限制在 0 与 1 之间；`beta` 经 sigmoid 控制残差写入强度。Grouped Value Attention 通过 head 映射使多个 value head 共享 Q/K，模型代码使用 `repeat_interleave` 显式实现该映射。下面保留官方 `forward()`，包括无缓存计算与缓存接续分支。
 
+- **输入投影。** 先屏蔽 padding，判断是否已有缓存，再分别生成 Q/K/V、输出门 z、写入系数 b 和衰减参数 a。下面各段接续同一个 `forward()` 函数。
+
 ```python
 def forward(
     self,
@@ -362,7 +364,11 @@ def forward(
 
     b = self.in_proj_b(hidden_states)
     a = self.in_proj_a(hidden_states)
+```
 
+- **短卷积路径。** 已有状态且只处理一个 token 时，更新卷积窗口；其他情况执行整段因果卷积，并在使用缓存时截取当前序列对应的输出。
+
+```python
     if (
         use_precomputed_states
         and seq_len == 1
@@ -394,7 +400,11 @@ def forward(
 
         if cache_params is not None:
             mixed_qkv = mixed_qkv[:, :, -seq_len:]
+```
 
+- **门控与 Head 映射。** 卷积输出拆成 Q/K/V 并整理为多头布局。`sigmoid(b)` 得到写入系数，a 生成非正的对数衰减；value head 更多时，Q/K 沿 head 维复制。
+
+```python
     mixed_qkv = mixed_qkv.transpose(1, 2)
     query, key, value = torch.split(
         mixed_qkv,
@@ -417,7 +427,11 @@ def forward(
             self.num_v_heads // self.num_k_heads, dim=2
         )
         key = key.repeat_interleave(self.num_v_heads // self.num_k_heads, dim=2)
+```
 
+- **选择状态算子。** 有缓存的单 token 输入使用 recurrent 路径，其他输入使用 chunk 路径。两条路径都接收相同的门控与初始状态，并按需返回末态。
+
+```python
     recurrent_state = (
         cache_params.layers[self.layer_idx].recurrent_states[0]
         if use_precomputed_states
@@ -449,7 +463,11 @@ def forward(
             cu_seqlens=kwargs.pop("cu_seq_lens_q", None),
             **kwargs,
         )
+```
 
+- **状态回写与输出投影。** 末态写回缓存，状态读出按 value head 归一化并由 z 门控，再通过 `out_proj` 映射回模型隐藏维度。
+
+```python
     if cache_params is not None:
         cache_params.update_recurrent_state(
             last_recurrent_state, self.layer_idx
@@ -513,6 +531,8 @@ Y&=\operatorname{Concat}_{h}\!\left[
 
 - 输出归一化独立作用于每个 value head。`self.norm` 先执行 RMSNorm，再乘 `SiLU(z)`；head 维合并后，`out_proj` 将结果映射回模型隐藏维度。以下摘录官方状态计算与输出分支。
 
+- **Chunk 与 Recurrent 分支。** 这一段读取缓存中的 recurrent state，再依据序列长度和缓存状态选择算子；Q/K 的 L2 归一化由算子内部完成。
+
 ```python
 recurrent_state = (
     cache_params.layers[self.layer_idx].recurrent_states[0]
@@ -545,7 +565,11 @@ else:
         cu_seqlens=kwargs.pop("cu_seq_lens_q", None),
         **kwargs,
     )
+```
 
+- **输出门与缓存更新。** 算子返回后先更新 recurrent state，再对各 head 的读出执行门控归一化，最后合并 head 并做输出投影。
+
+```python
 if cache_params is not None:
     cache_params.update_recurrent_state(last_recurrent_state, self.layer_idx)
 
@@ -577,6 +601,8 @@ return output
 - `chunk_gated_delta_rule_fwd_intra` 构造并求解块内系统，生成逆矩阵 `A`、`u` 和 `w`；`chunk_gated_delta_rule_fwd_h` 引入块入口状态，计算 `v_new` 及下一块状态；`chunk_fwd_o` 完成输出计算。这里 `h` 保存所有块的入口状态，`final_state` 保存各序列的最终状态。
 
 - 默认 64-token 路径将 KKT 构造与下三角求解融合执行，随后单独生成 W/U。下面给出前向入口，块内分析采用固定长度、无 context parallelism、外部已计算 gate 的默认分支。
+
+- **累计衰减门。** `chunk_gated_delta_rule_fwd()` 先得到 chunk 内的累计对数衰减。若 gate 在 kernel 内生成，就同时完成 gate 计算和前缀和；否则直接对输入 g 累加。
 
 ```python
 def chunk_gated_delta_rule_fwd(
@@ -616,6 +642,11 @@ def chunk_gated_delta_rule_fwd(
             cu_seqlens=cu_seqlens,
             chunk_indices=chunk_indices,
         )
+```
+
+- **块内变换与入口状态。** `chunk_gated_delta_rule_fwd_intra()` 构造三角逆 A 及变换后的 W/U。启用上下文并行时，再准备各分片所需的入口状态。
+
+```python
     w, u, A = chunk_gated_delta_rule_fwd_intra(
         k=k,
         v=v,
@@ -637,6 +668,11 @@ def chunk_gated_delta_rule_fwd(
             state_v_first=state_v_first,
             chunk_size=chunk_size,
         )
+```
+
+- **状态递推与读出。** 状态 kernel 生成各块入口状态 h、残差 `v_new` 和末态；输出 kernel 再把历史状态贡献与块内贡献合并。返回值也保留反向重计算所需的量。
+
+```python
     h, v_new, final_state = chunk_gated_delta_rule_fwd_h(
         k=k,
         w=w,
@@ -693,6 +729,8 @@ def chunk_gated_delta_rule_fwd(
 
 - 算子位于 `fla/ops/utils/cumsum.py`，标量 kernel 的网格为 `(NT, B * H)`：每个 program 负责一个 chunk 和一个 gate head。`o_t` 构造块内 token 索引，`m_t` 屏蔽尾块越界位置；按 `[B, T, H]` 布局加载后，`tl.cumsum` 沿时间轴执行前缀和。累积在 FP32 中完成，并通过 `RCP_LN2` 将自然对数转换为以 2 为底的对数。后续 kernel 使用 `exp2` 还原整体衰减和区间衰减，避免在各阶段重复计算连乘。
 
+- **定位序列与 Chunk。** 每个 program 对应一个 chunk 和一个 gate head。变长输入通过 `chunk_indices` 与 `cu_seqlens` 找到序列边界，定长输入直接由 batch 编号计算起点。
+
 ```python
 @triton.jit(do_not_specialize=['T'])
 def chunk_local_cumsum_scalar_kernel(
@@ -724,7 +762,11 @@ def chunk_local_cumsum_scalar_kernel(
         T = eos - bos
     else:
         bos, eos = i_b * T, i_b * T + T
+```
 
+- **前缀和与写回。** 沿时间维加载有效 gate，在 FP32 中计算 `tl.cumsum`；`REVERSE` 可将其转换为后缀和，`HAS_SCALE` 控制缩放，最后只写回有效位置。
+
+```python
     o_t = i_t * BT + tl.arange(0, BT)
     m_t = o_t < T
     p_s = s + bos * H + i_h + o_t * H
@@ -772,6 +814,8 @@ def chunk_local_cumsum_scalar_kernel(
 
 - **定位 chunk 并累计 Gram 矩阵。** `chunk_indices` 给出序列编号与序列内块编号，`cu_seqlens` 确定起点 `bos` 和有效长度 T；定长分支直接通过 batch 编号计算起点。K 维按 `BK` 分片，逐片累加 $`\mathbf K_{[t]}\mathbf K_{[t]}^\top`$。`i_h // (HV // H)` 将 value head 映射到共享的 key head；K 的时间步长为 `H * K`，beta 的时间步长为 `HV`。`m_t` 屏蔽尾块的无效 token。
 
+- **定位 KKT 的有效区间。** kernel 先定位序列、chunk 和 value head，并构造时间索引与尾块掩码。后续访存都以这里确定的 `bos` 和有效长度为边界。
+
 ```python
 @triton.jit(do_not_specialize=['T'])
 def chunk_scaled_dot_kkt_fwd_kernel(
@@ -806,7 +850,11 @@ def chunk_scaled_dot_kkt_fwd_kernel(
         bos, eos = i_b * T, i_b * T + T
     o_t = i_t * BT + tl.arange(0, BT)
     m_t = o_t < T
+```
 
+- **分片累计 Gram 矩阵。** 加载每个位置的 beta 后，沿 K 维分片读取 key。每片的 `K @ K.T` 累加到 FP32 矩阵 `b_A`；value head 通过整数除法映射到共享的 key head。
+
+```python
     p_b = beta + bos * HV + i_h + o_t * HV
     b_b = tl.load(p_b, mask=m_t, other=0.0)
 
@@ -1331,6 +1379,8 @@ b_dA = tl.where(m_A, -b_dA, 0).to(k.dtype.element_ty)
 
 - 前向保存归一化后的 Q/K、原始 V、累计 gate、beta、三角逆 A、初态和序列索引，反向重算 W/U、块入口状态和 `v_new`。若启用了 kernel 内 Q/K 归一化，最外层还要调用 `l2norm_bwd`；融合 beta sigmoid 时再经过 `fused_beta_sigmoid_bwd`，融合衰减门时则由 `gdn_gate_bwd` 回传到 gate 输入、`A_log` 和 `dt_bias`。
 
+- **重算 W/U。** 反向入口用保存的 K、V、beta、A 和累计 gate 重建 W/U；上下文并行时，同时展开初始状态供后续重计算使用。下面各段接续同一个反向函数。
+
 ```python
 def chunk_gated_delta_rule_bwd(
     q: torch.Tensor,
@@ -1364,6 +1414,11 @@ def chunk_gated_delta_rule_bwd(
     )
     if cp_context is not None:
         initial_state = expand_h0(initial_state, context=cp_context)
+```
+
+- **重算状态与局部 V 梯度。** 重建各块入口状态 h 和残差 `v_new`，再由输出梯度计算块内的局部 V 梯度，作为状态反传的输入。
+
+```python
     h, v_new, _ = chunk_gated_delta_rule_fwd_h(
         k=k,
         w=w,
@@ -1386,6 +1441,11 @@ def chunk_gated_delta_rule_bwd(
         chunk_indices=chunk_indices,
         chunk_size=chunk_size,
     )
+```
+
+- **沿状态链反向传播。** 上下文并行分支先处理边界梯度；随后状态反向 kernel 计算各块状态梯度、初态梯度，并把状态传播的贡献合入 V 梯度。
+
+```python
     if cp_context is not None:
         dht, initial_state = chunk_gated_delta_rule_bwd_dhu_pre_process(
             q=q,
@@ -1417,6 +1477,11 @@ def chunk_gated_delta_rule_bwd(
         state_v_first=state_v_first,
         chunk_size=chunk_size,
     )
+```
+
+- **Q/K 与三角变换梯度。** `chunk_bwd_dqkwg()` 回传读出和状态计算中的 Q/K/W/g 梯度，`prepare_wy_repr_bwd()` 再将 W/U 的梯度传回 K、V、beta 与 gate。
+
+```python
     dq, dk, dw, dg = chunk_bwd_dqkwg(
         q=q,
         k=k,
@@ -1444,6 +1509,11 @@ def chunk_gated_delta_rule_bwd(
         cu_seqlens=cu_seqlens,
         chunk_indices=chunk_indices,
     )
+```
+
+- **合并 Gate 梯度。** 两条路径的 K 和 gate 梯度分别相加。累计 gate 的梯度通过 chunk 内后缀和回到逐 token 输入；若启用融合 gate，还继续回传到 `A_log` 和 `dt_bias`。
+
+```python
     dk.add_(dk2)
     dg.add_(dg2)
     dg = chunk_local_cumsum(
@@ -1482,6 +1552,8 @@ N_V&=\left\lceil d_v/B_V\right\rceil,\qquad
 ```
 
 - 每个 program 维护一个 `[BK, BV]` 状态片段，并沿时间维串行更新。不同 value 片段可以独立推进，因为每个片段只需要完整 key 向量和对应的 value 子向量。较小的 BV 限制单个 program 的状态寄存器用量；最终状态使用 FP32 保存，供下一次调用接续。
+
+- **分配状态与并行网格。** 启动函数计算序列数和 head 数，将 K 维补到 2 的幂，并沿 V 维切片。需要返回末态时分配 FP32 缓冲区，网格覆盖所有序列、head 和 value 分片。
 
 ```python
 def fused_recurrent_gated_delta_rule_fwd(
@@ -1522,6 +1594,11 @@ def fused_recurrent_gated_delta_rule_fwd(
     else:
         final_state = None
     grid = (NV, N * HV)
+```
+
+- **启动 Recurrent Kernel。** 将输入、初态、末态缓冲区和块尺寸交给 Triton kernel；归一化、beta 激活与状态布局通过编译期选项选择，调用结束后返回输出与末态。
+
+```python
     fused_recurrent_gated_delta_rule_fwd_kernel[grid](
         q=q,
         k=k,
@@ -1574,6 +1651,8 @@ o_t&=sH_t^\top q_t.
 
 - 对 K 维的归约实现 $`\bar H_t^\top k_t`$，读出衰减后的旧 value；外积 $`k_te_t^\top`$ 将残差写入当前 key 方向；最后的归约实现状态对 query 的读出。完整 key 维包含在每个 program 内，因此这些归约不需要跨 program 通信。
 
+- **初始化寄存器状态。** 根据 `STATE_V_FIRST` 选择状态矩阵的两个维度顺序；有初态时加载对应片段，否则从 FP32 零状态开始。
+
 ```python
 if STATE_V_FIRST:
     b_h = tl.zeros([BV, BK], dtype=tl.float32)
@@ -1585,7 +1664,11 @@ if USE_INITIAL_STATE:
     else:
         p_h0 = h0 + i_nh * K * V + o_k[:, None] * V + o_v[None, :]
     b_h += tl.load(p_h0, mask=mask_h, other=0).to(tl.float32)
+```
 
+- **加载 Token 与写入系数。** 时间循环逐步加载 Q/K/V，按需归一化 Q/K，并对 query 施加输出缩放。beta 可以按 head 或 value 通道读取，再按配置执行 sigmoid。
+
+```python
 for _ in tl.range(0, T):
     b_q = tl.load(p_q, mask=mask_k, other=0).to(tl.float32)
     b_k = tl.load(p_k, mask=mask_k, other=0).to(tl.float32)
@@ -1602,7 +1685,11 @@ for _ in tl.range(0, T):
         b_beta = tl.sigmoid(b_beta)
         if ALLOW_NEG_EIGVAL:
             b_beta = b_beta * 2
+```
 
+- **衰减历史状态。** scalar gate 对整个状态片段统一衰减；可选的 key/value gate 则分别沿对应维度缩放。融合 gate 分支在这里计算衰减参数。
+
+```python
     if USE_G:
         b_g = tl.load(p_g).to(tl.float32)
         if USE_GATE_IN_KERNEL:
@@ -1625,7 +1712,11 @@ for _ in tl.range(0, T):
             b_h *= exp(b_gv[:, None])
         else:
             b_h *= exp(b_gv[None, :])
+```
 
+- **残差写入与状态读出。** 先减去旧状态在当前 key 上的预测，再用 beta 加权残差并执行外积写入；更新后的状态对 query 读出。输出写回后，所有输入指针推进到下一个 token。
+
+```python
     if STATE_V_FIRST:
         b_v = b_beta * (b_v - tl.sum(b_h * b_k[None, :], 1))
         b_h += b_v[:, None] * b_k[None, :]
@@ -1647,7 +1738,11 @@ for _ in tl.range(0, T):
         p_gv += HV * V
     p_beta += HV * (1 if IS_BETA_HEADWISE else V)
     p_o += HV * V
+```
 
+- **保存末态。** 时间循环结束后，按选定的状态布局写回寄存器中的末态。`mask_h` 屏蔽补齐的 K/V 位置，供下一次调用继续使用。
+
+```python
 if STORE_FINAL_STATE:
     if STATE_V_FIRST:
         p_ht = ht + i_nh * K * V + o_v[:, None] * K + o_k[None, :]
