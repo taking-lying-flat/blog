@@ -244,6 +244,14 @@ for (const post of posts) {
   post.route = `posts/${post.slug}/`;
   if (post.format === 'lake') {
     Object.assign(post, await readLake(path.join(root, post.file), escape, renderLakeMath));
+    post.directories = [post.directory];
+    for (const file of post.appendFiles ?? []) {
+      const addition = await readLake(path.join(root, file), escape, renderLakeMath);
+      post.content += addition.content;
+      post.readingMinutes += addition.readingMinutes;
+      post.directories.push(addition.directory);
+      post.generatedAssets.push(...addition.generatedAssets);
+    }
     post.titleId = slugify(post.title);
     const inserts = JSON.parse(await readFile(path.join(post.directory, 'code-inserts.json'), 'utf8')
       .catch((error) => { if (error.code === 'ENOENT') return '[]'; throw error; }));
@@ -408,7 +416,9 @@ for (const [index, post] of posts.entries()) {
   await mkdir(path.join(output, post.route), { recursive: true });
   await writeFile(path.join(output, post.route, 'index.html'), article);
   if (post.format === 'lake') {
-    await cp(path.join(post.directory, 'assets'), path.join(output, post.route, 'assets'), { recursive: true });
+    for (const directory of post.directories) {
+      await cp(path.join(directory, 'assets'), path.join(output, post.route, 'assets'), { recursive: true });
+    }
     for (const asset of post.generatedAssets) await writeFile(path.join(output, post.route, asset.file), asset.content);
   }
 }
