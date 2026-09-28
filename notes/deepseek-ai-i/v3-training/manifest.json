@@ -1,0 +1,581 @@
+{
+  "source": {
+    "file": "source.lake",
+    "sha256": "dbad19a5ad21e2bc6976287d45f0d3635e21f53aeb0097f90e50fbe404373c39",
+    "bytes": 17795,
+    "title": "无标题文档"
+  },
+  "title": "DeepSeek-V3 Training Framework",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "counts": {
+    "math": 0,
+    "images": 3,
+    "separators": 0
+  },
+  "assets": [
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790612928164-7fb28aa6-507c-4e8c-aa50-d61fd63bd9b3.png",
+      "file": "assets/v3-training/images/1790612928164-7fb28aa6-507c-4e8c-aa50-d61fd63bd9b3.png",
+      "bytes": 35949,
+      "sha256": "a5db4025550b6ac5da018e0df5d260cdf260f057a475de526231934a2dad6545"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790613056358-98618f2c-ce63-480a-b519-f1e497225bbf.png",
+      "file": "assets/v3-training/images/1790613056358-98618f2c-ce63-480a-b519-f1e497225bbf.png",
+      "bytes": 101472,
+      "sha256": "16c4b0fb5d40de6652e8105fdbe53105fa635120bde6da4b57e447c0a05ac06e"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790613086160-a7d46916-01db-42c6-8687-d057089fd784.png",
+      "file": "assets/v3-training/images/1790613086160-a7d46916-01db-42c6-8687-d057089fd784.png",
+      "bytes": 65634,
+      "sha256": "0e66e8f076f77ac3ffbe1633dec4d4e1bac126003fb4c3fd0a1db7f7338d62f2"
+    }
+  ],
+  "cards": [
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790612928164-7fb28aa6-507c-4e8c-aa50-d61fd63bd9b3.png%22%2C%22taskId%22%3A%22u5f1cdc25-beba-4679-8869-ccb8746867b%22%2C%22clientId%22%3A%22u1c5bea7f-b4b8-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A759.2%2C%22height%22%3A101%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A35949%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A949%2C%22originHeight%22%3A126%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22BACKWARDCHUNK%22%2C%22x%22%3A513%2C%22y%22%3A102%2C%22width%22%3A133%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22AFORWARDCHUN%22%2C%22x%22%3A298%2C%22y%22%3A102%2C%22width%22%3A120%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22DISPATCHFA%22%2C%22x%22%3A129%2C%22y%22%3A50%2C%22width%22%3A107%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22COMBINEFA%22%2C%22x%22%3A525%2C%22y%22%3A51%2C%22width%22%3A106%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22COMBINEB)A%22%2C%22x%22%3A762%2C%22y%22%3A51%2C%22width%22%3A114%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22DISPATCH(B)A%22%2C%22x%22%3A290%2C%22y%22%3A51%2C%22width%22%3A122%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22ATTNFA%22%2C%22x%22%3A811%2C%22y%22%3A29%2C%22width%22%3A85%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22TTNWW%22%2C%22x%22%3A720%2C%22y%22%3A29%2C%22width%22%3A69%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22OMMUNICATION%22%2C%22x%22%3A20%2C%22y%22%3A52%2C%22width%22%3A80%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22MLPW%22%2C%22x%22%3A234%2C%22y%22%3A28%2C%22width%22%3A92%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22ATTNB)%22%2C%22x%22%3A544%2C%22y%22%3A29%2C%22width%22%3A82%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22MLP(B)A%22%2C%22x%22%3A134%2C%22y%22%3A28%2C%22width%22%3A78%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22MLPFA%22%2C%22x%22%3A327%2C%22y%22%3A28%2C%22width%22%3A97%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22COMPUTATION%22%2C%22x%22%3A21%2C%22y%22%3A28%2C%22width%22%3A81%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22TIME%22%2C%22x%22%3A31%2C%22y%22%3A74%2C%22width%22%3A55%2C%22height%22%3A13%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23ede9b6%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u06659756%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790612928164-7fb28aa6-507c-4e8c-aa50-d61fd63bd9b3.png",
+        "taskId": "u5f1cdc25-beba-4679-8869-ccb8746867b",
+        "clientId": "u1c5bea7f-b4b8-4",
+        "originalType": "binary",
+        "width": 759.2,
+        "height": 101,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 35949,
+        "from": "paste",
+        "originWidth": 949,
+        "originHeight": 126,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "BACKWARDCHUNK",
+            "x": 513,
+            "y": 102,
+            "width": 133,
+            "height": 13
+          },
+          {
+            "text": "AFORWARDCHUN",
+            "x": 298,
+            "y": 102,
+            "width": 120,
+            "height": 13
+          },
+          {
+            "text": "DISPATCHFA",
+            "x": 129,
+            "y": 50,
+            "width": 107,
+            "height": 16
+          },
+          {
+            "text": "COMBINEFA",
+            "x": 525,
+            "y": 51,
+            "width": 106,
+            "height": 15
+          },
+          {
+            "text": "COMBINEB)A",
+            "x": 762,
+            "y": 51,
+            "width": 114,
+            "height": 15
+          },
+          {
+            "text": "DISPATCH(B)A",
+            "x": 290,
+            "y": 51,
+            "width": 122,
+            "height": 16
+          },
+          {
+            "text": "ATTNFA",
+            "x": 811,
+            "y": 29,
+            "width": 85,
+            "height": 14
+          },
+          {
+            "text": "TTNWW",
+            "x": 720,
+            "y": 29,
+            "width": 69,
+            "height": 13
+          },
+          {
+            "text": "OMMUNICATION",
+            "x": 20,
+            "y": 52,
+            "width": 80,
+            "height": 12
+          },
+          {
+            "text": "MLPW",
+            "x": 234,
+            "y": 28,
+            "width": 92,
+            "height": 15
+          },
+          {
+            "text": "ATTNB)",
+            "x": 544,
+            "y": 29,
+            "width": 82,
+            "height": 13
+          },
+          {
+            "text": "MLP(B)A",
+            "x": 134,
+            "y": 28,
+            "width": 78,
+            "height": 16
+          },
+          {
+            "text": "MLPFA",
+            "x": 327,
+            "y": 28,
+            "width": 97,
+            "height": 15
+          },
+          {
+            "text": "COMPUTATION",
+            "x": 21,
+            "y": 28,
+            "width": 81,
+            "height": 12
+          },
+          {
+            "text": "TIME",
+            "x": 31,
+            "y": 74,
+            "width": 55,
+            "height": 13
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#ede9b6",
+        "__spacing": "both",
+        "id": "u06659756",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/v3-training/images/1790612928164-7fb28aa6-507c-4e8c-aa50-d61fd63bd9b3.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790613056358-98618f2c-ce63-480a-b519-f1e497225bbf.png%22%2C%22taskId%22%3A%22ue37cd6bd-99d7-45fa-b89b-7be0cac762e%22%2C%22clientId%22%3A%22u1c5bea7f-b4b8-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A945%2C%22height%22%3A166%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A101472%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1527%2C%22originHeight%22%3A268%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22%E8%AF%81%22%2C%22x%22%3A596%2C%22y%22%3A19%2C%22width%22%3A681%2C%22height%22%3A187%7D%2C%7B%22text%22%3A%22123456%22%2C%22x%22%3A120%2C%22y%22%3A20%2C%22width%22%3A128%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22OVERAPPEDFORWARD%26BACKWARD%22%2C%22x%22%3A883%2C%22y%22%3A238%2C%22width%22%3A253%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22787989%22%2C%22x%22%3A1319%2C%22y%22%3A45%2C%22width%22%3A188%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%2266778899%22%2C%22x%22%3A1335%2C%22y%22%3A19%2C%22width%22%3A177%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%221002113%22%2C%22x%22%3A267%2C%22y%22%3A159%2C%22width%22%3A181%2C%22height%22%3A29%7D%2C%7B%22text%22%3A%2201234%22%2C%22x%22%3A89%2C%22y%22%3A46%2C%22width%22%3A152%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22ACKWARDFORWEIGHTS%22%2C%22x%22%3A667%2C%22y%22%3A235%2C%22width%22%3A210%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22234%22%2C%22x%22%3A221%2C%22y%22%3A91%2C%22width%22%3A148%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%22DEVICE1%22%2C%22x%22%3A23%2C%22y%22%3A49%2C%22width%22%3A66%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22898%22%2C%22x%22%3A1330%2C%22y%22%3A94%2C%22width%22%3A159%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22DEVICE3%22%2C%22x%22%3A25%2C%22y%22%3A97%2C%22width%22%3A60%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22DEVICE6%22%2C%22x%22%3A25%2C%22y%22%3A165%2C%22width%22%3A61%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22EVICE%22%2C%22x%22%3A29%2C%22y%22%3A144%2C%22width%22%3A55%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A602%2C%22y%22%3A22%2C%22width%22%3A137%2C%22height%22%3A184%7D%2C%7B%22text%22%3A%22DEVICE0%22%2C%22x%22%3A20%2C%22y%22%3A22%2C%22width%22%3A77%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22EVICE%22%2C%22x%22%3A32%2C%22y%22%3A191%2C%22width%22%3A44%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22230%22%2C%22x%22%3A254%2C%22y%22%3A110%2C%22width%22%3A122%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%22001112223%22%2C%22x%22%3A266%2C%22y%22%3A186%2C%22width%22%3A195%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%2220031%22%2C%22x%22%3A278%2C%22y%22%3A135%2C%22width%22%3A183%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%22DEVICE2%22%2C%22x%22%3A20%2C%22y%22%3A72%2C%22width%22%3A78%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22DEVICE4%22%2C%22x%22%3A23%2C%22y%22%3A116%2C%22width%22%3A73%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22ACKWARDFORINPUT%22%2C%22x%22%3A484%2C%22y%22%3A239%2C%22width%22%3A130%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2299%22%2C%22x%22%3A1341%2C%22y%22%3A141%2C%22width%22%3A150%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22TIME%22%2C%22x%22%3A36%2C%22y%22%3A212%2C%22width%22%3A36%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%E4%B8%89%22%2C%22x%22%3A344%2C%22y%22%3A42%2C%22width%22%3A134%2C%22height%22%3A35%7D%2C%7B%22text%22%3A%2289%22%2C%22x%22%3A1403%2C%22y%22%3A61%2C%22width%22%3A110%2C%22height%22%3A26%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23d3950c%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u65247da6%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790613056358-98618f2c-ce63-480a-b519-f1e497225bbf.png",
+        "taskId": "ue37cd6bd-99d7-45fa-b89b-7be0cac762e",
+        "clientId": "u1c5bea7f-b4b8-4",
+        "originalType": "binary",
+        "width": 945,
+        "height": 166,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 101472,
+        "from": "paste",
+        "originWidth": 1527,
+        "originHeight": 268,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "证",
+            "x": 596,
+            "y": 19,
+            "width": 681,
+            "height": 187
+          },
+          {
+            "text": "123456",
+            "x": 120,
+            "y": 20,
+            "width": 128,
+            "height": 27
+          },
+          {
+            "text": "OVERAPPEDFORWARD&BACKWARD",
+            "x": 883,
+            "y": 238,
+            "width": 253,
+            "height": 20
+          },
+          {
+            "text": "787989",
+            "x": 1319,
+            "y": 45,
+            "width": 188,
+            "height": 24
+          },
+          {
+            "text": "66778899",
+            "x": 1335,
+            "y": 19,
+            "width": 177,
+            "height": 26
+          },
+          {
+            "text": "1002113",
+            "x": 267,
+            "y": 159,
+            "width": 181,
+            "height": 29
+          },
+          {
+            "text": "01234",
+            "x": 89,
+            "y": 46,
+            "width": 152,
+            "height": 21
+          },
+          {
+            "text": "ACKWARDFORWEIGHTS",
+            "x": 667,
+            "y": 235,
+            "width": 210,
+            "height": 21
+          },
+          {
+            "text": "234",
+            "x": 221,
+            "y": 91,
+            "width": 148,
+            "height": 26
+          },
+          {
+            "text": "DEVICE1",
+            "x": 23,
+            "y": 49,
+            "width": 66,
+            "height": 16
+          },
+          {
+            "text": "898",
+            "x": 1330,
+            "y": 94,
+            "width": 159,
+            "height": 20
+          },
+          {
+            "text": "DEVICE3",
+            "x": 25,
+            "y": 97,
+            "width": 60,
+            "height": 17
+          },
+          {
+            "text": "DEVICE6",
+            "x": 25,
+            "y": 165,
+            "width": 61,
+            "height": 21
+          },
+          {
+            "text": "EVICE",
+            "x": 29,
+            "y": 144,
+            "width": 55,
+            "height": 16
+          },
+          {
+            "text": "",
+            "x": 602,
+            "y": 22,
+            "width": 137,
+            "height": 184
+          },
+          {
+            "text": "DEVICE0",
+            "x": 20,
+            "y": 22,
+            "width": 77,
+            "height": 23
+          },
+          {
+            "text": "EVICE",
+            "x": 32,
+            "y": 191,
+            "width": 44,
+            "height": 16
+          },
+          {
+            "text": "230",
+            "x": 254,
+            "y": 110,
+            "width": 122,
+            "height": 30
+          },
+          {
+            "text": "001112223",
+            "x": 266,
+            "y": 186,
+            "width": 195,
+            "height": 26
+          },
+          {
+            "text": "20031",
+            "x": 278,
+            "y": 135,
+            "width": 183,
+            "height": 30
+          },
+          {
+            "text": "DEVICE2",
+            "x": 20,
+            "y": 72,
+            "width": 78,
+            "height": 21
+          },
+          {
+            "text": "DEVICE4",
+            "x": 23,
+            "y": 116,
+            "width": 73,
+            "height": 21
+          },
+          {
+            "text": "ACKWARDFORINPUT",
+            "x": 484,
+            "y": 239,
+            "width": 130,
+            "height": 17
+          },
+          {
+            "text": "99",
+            "x": 1341,
+            "y": 141,
+            "width": 150,
+            "height": 23
+          },
+          {
+            "text": "TIME",
+            "x": 36,
+            "y": 212,
+            "width": 36,
+            "height": 17
+          },
+          {
+            "text": "三",
+            "x": 344,
+            "y": 42,
+            "width": 134,
+            "height": 35
+          },
+          {
+            "text": "89",
+            "x": 1403,
+            "y": 61,
+            "width": 110,
+            "height": 26
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#d3950c",
+        "__spacing": "both",
+        "id": "u65247da6",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/v3-training/images/1790613056358-98618f2c-ce63-480a-b519-f1e497225bbf.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790613086160-a7d46916-01db-42c6-8687-d057089fd784.png%22%2C%22taskId%22%3A%22u77c43d42-e5df-4125-98f7-4b2c8fed035%22%2C%22clientId%22%3A%22u1c5bea7f-b4b8-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A782%2C%22height%22%3A147%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A65634%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1421%2C%22originHeight%22%3A268%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22%E5%AD%A6-1)(F%26B%2BB-3W)%22%2C%22x%22%3A448%2C%22y%22%3A191%2C%22width%22%3A354%2C%22height%22%3A35%7D%2C%7B%22text%22%3A%22(PP-1)(F%2BB-2W)%22%2C%22x%22%3A456%2C%22y%22%3A147%2C%22width%22%3A322%2C%22height%22%3A35%7D%2C%7B%22text%22%3A%22DUALPIPE(OURS)%22%2C%22x%22%3A63%2C%22y%22%3A189%2C%22width%22%3A289%2C%22height%22%3A39%7D%2C%7B%22text%22%3A%22(PP-1)(F%2BB)%22%2C%22x%22%3A493%2C%22y%22%3A102%2C%22width%22%3A250%2C%22height%22%3A34%7D%2C%7B%22text%22%3A%22ACTIVATION%22%2C%22x%22%3A1169%2C%22y%22%3A44%2C%22width%22%3A179%2C%22height%22%3A28%7D%2C%7B%22text%22%3A%22PARAMETER%22%2C%22x%22%3A895%2C%22y%22%3A43%2C%22width%22%3A179%2C%22height%22%3A31%7D%2C%7B%22text%22%3A%22BUBBLE%22%2C%22x%22%3A558%2C%22y%22%3A41%2C%22width%22%3A127%2C%22height%22%3A32%7D%2C%7B%22text%22%3A%22MLETHOD%22%2C%22x%22%3A136%2C%22y%22%3A41%2C%22width%22%3A138%2C%22height%22%3A32%7D%2C%7B%22text%22%3A%22ZB1P%22%2C%22x%22%3A153%2C%22y%22%3A146%2C%22width%22%3A102%2C%22height%22%3A34%7D%2C%7B%22text%22%3A%22PP%2B1%22%2C%22x%22%3A1207%2C%22y%22%3A194%2C%22width%22%3A93%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%221F1B%22%2C%22x%22%3A162%2C%22y%22%3A99%2C%22width%22%3A90%2C%22height%22%3A36%7D%2C%7B%22text%22%3A%22PP%22%2C%22x%22%3A1227%2C%22y%22%3A148%2C%22width%22%3A55%2C%22height%22%3A32%7D%2C%7B%22text%22%3A%22PP%22%2C%22x%22%3A1224%2C%22y%22%3A103%2C%22width%22%3A59%2C%22height%22%3A31%7D%2C%7B%22text%22%3A%221X%22%2C%22x%22%3A958%2C%22y%22%3A102%2C%22width%22%3A57%2C%22height%22%3A36%7D%2C%7B%22text%22%3A%221X%22%2C%22x%22%3A963%2C%22y%22%3A144%2C%22width%22%3A43%2C%22height%22%3A42%7D%2C%7B%22text%22%3A%222X%22%2C%22x%22%3A960%2C%22y%22%3A191%2C%22width%22%3A46%2C%22height%22%3A34%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f2f1f0%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22ud9658997%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790613086160-a7d46916-01db-42c6-8687-d057089fd784.png",
+        "taskId": "u77c43d42-e5df-4125-98f7-4b2c8fed035",
+        "clientId": "u1c5bea7f-b4b8-4",
+        "originalType": "binary",
+        "width": 782,
+        "height": 147,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 65634,
+        "from": "paste",
+        "originWidth": 1421,
+        "originHeight": 268,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "学-1)(F&B+B-3W)",
+            "x": 448,
+            "y": 191,
+            "width": 354,
+            "height": 35
+          },
+          {
+            "text": "(PP-1)(F+B-2W)",
+            "x": 456,
+            "y": 147,
+            "width": 322,
+            "height": 35
+          },
+          {
+            "text": "DUALPIPE(OURS)",
+            "x": 63,
+            "y": 189,
+            "width": 289,
+            "height": 39
+          },
+          {
+            "text": "(PP-1)(F+B)",
+            "x": 493,
+            "y": 102,
+            "width": 250,
+            "height": 34
+          },
+          {
+            "text": "ACTIVATION",
+            "x": 1169,
+            "y": 44,
+            "width": 179,
+            "height": 28
+          },
+          {
+            "text": "PARAMETER",
+            "x": 895,
+            "y": 43,
+            "width": 179,
+            "height": 31
+          },
+          {
+            "text": "BUBBLE",
+            "x": 558,
+            "y": 41,
+            "width": 127,
+            "height": 32
+          },
+          {
+            "text": "MLETHOD",
+            "x": 136,
+            "y": 41,
+            "width": 138,
+            "height": 32
+          },
+          {
+            "text": "ZB1P",
+            "x": 153,
+            "y": 146,
+            "width": 102,
+            "height": 34
+          },
+          {
+            "text": "PP+1",
+            "x": 1207,
+            "y": 194,
+            "width": 93,
+            "height": 30
+          },
+          {
+            "text": "1F1B",
+            "x": 162,
+            "y": 99,
+            "width": 90,
+            "height": 36
+          },
+          {
+            "text": "PP",
+            "x": 1227,
+            "y": 148,
+            "width": 55,
+            "height": 32
+          },
+          {
+            "text": "PP",
+            "x": 1224,
+            "y": 103,
+            "width": 59,
+            "height": 31
+          },
+          {
+            "text": "1X",
+            "x": 958,
+            "y": 102,
+            "width": 57,
+            "height": 36
+          },
+          {
+            "text": "1X",
+            "x": 963,
+            "y": 144,
+            "width": 43,
+            "height": 42
+          },
+          {
+            "text": "2X",
+            "x": 960,
+            "y": 191,
+            "width": 46,
+            "height": 34
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f2f1f0",
+        "__spacing": "both",
+        "id": "ud9658997",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/v3-training/images/1790613086160-a7d46916-01db-42c6-8687-d057089fd784.png"
+    }
+  ]
+}
