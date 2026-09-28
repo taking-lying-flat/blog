@@ -252,7 +252,7 @@ delta = self.output_kind == RequestOutputKind.DELTA
 text = self.detokenizer.get_next_output_text(finished, delta)
 ```
 
-在 `detokenizer` 内部，`prompt token` 只用于初始化前缀状态，保证第一个生成 `token` 能在正确的文本边界上解码；`output_text` 本身仍从空字符串开始，并且只接收 `new_token_ids`。因此，原生 `vLLM` 的 `CompletionOutput.text` 只包含模型新生成的答案。空 `<think></think>` 位于 `prompt` 中，从未写入这个输出缓冲区，所以不会出现在返回文本里
+- 原生 `vLLM`：在 `detokenizer` 内部，`prompt token` 只用于初始化前缀状态，保证第一个生成 `token` 能在正确的文本边界上解码；`output_text` 本身仍从空字符串开始，并且只接收 `new_token_ids`。因此，原生 `vLLM` 的 `CompletionOutput.text` 只包含模型新生成的答案。空 `<think></think>` 位于 `prompt` 中，从未写入这个输出缓冲区，所以不会出现在返回文本里
 
 <strong class="backend-label">ms-swift</strong>：`swift/template/base.py` 先截取新增 `token`，再在解码阶段恢复模板前缀
 
@@ -284,7 +284,7 @@ def decode_generate_ids(
     return response
 ```
 
-`Qwen3.5` 继承基础模板的 `skip_prompt=True`。因此，`ms-swift` 的 `Transformers backend` 先通过 `get_generate_ids()` 切掉整个 `prompt`，再由 `decode_generate_ids()` 解码新增 `token`；随后 `ms-swift` 重新调用 `_get_response_prefix()`，显式执行 `response_prefix + response`。空 `<think></think>` 正是在这一步被拼回最终 `response`，而不是模型本轮新生成的 `token`
+- `ms-swift`（`Transformers` 后端）：`Qwen3.5` 继承基础模板的 `skip_prompt=True`。因此，`ms-swift` 的 `Transformers backend` 先通过 `get_generate_ids()` 切掉整个 `prompt`，再由 `decode_generate_ids()` 解码新增 `token`；随后 `ms-swift` 重新调用 `_get_response_prefix()`，显式执行 `response_prefix + response`。空 `<think></think>` 正是在这一步被拼回最终 `response`，而不是模型本轮新生成的 `token`
 
 <strong class="backend-label">ms-swift · vLLM backend</strong>：`swift/infer_engine/vllm_engine.py` 不直接返回原生 `vLLM` 的 `output.text`，而是读取 `output.token_ids`，再次调用 `Swift` 模板解码：
 
@@ -297,7 +297,7 @@ for output in result.outputs:
     )
 ```
 
-所以，原生 `vLLM` 返回的是 `completion`，而 `ms-swift` 的 `vLLM backend` 返回的是经过模板重建的 `assistant response`。底层采样没有改变，变化的只是返回文本是否重新包含 `response_prefix`
+- `ms-swift`（`vLLM` 后端）：原生 `vLLM` 返回的是 `completion`，而 `ms-swift` 的 `vLLM backend` 返回的是经过模板重建的 `assistant response`。底层采样没有改变，变化的只是返回文本是否重新包含 `response_prefix`
 
 ### 3. `SFT` 路径：标签规范化与 `Loss Mask`
 
