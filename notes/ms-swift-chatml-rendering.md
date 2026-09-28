@@ -24,7 +24,7 @@ non-thinking
 
 ### 1. 从 `TemplateMeta` 到实际 `response prefix`
 
-`Qwen3.5` 在 `swift/template/templates/qwen.py` 中注册为 `thinking` 模板，并同时提供两种 `assistant` 前缀：
+- `Qwen3.5` 在 `swift/template/templates/qwen.py` 中注册为 `thinking` 模板，并同时提供两种 `assistant` 前缀：
 
 ```python
 register_template(
@@ -182,7 +182,7 @@ thinking_prefix / non_thinking_prefix
 
 ### 2. 推理路径：前缀如何进入 `ChatML`
 
-`Qwen3.5` 从公开编码入口进入 `ChatML` 拼接的完整方法解析链是：
+- `Qwen3.5` 从公开编码入口进入 `ChatML` 拼接的完整方法解析链是：
 
 ```text
 Template.encode()
@@ -234,7 +234,8 @@ elif response_prefix:
 
 #### 返回语义：为什么 `ms-swift` 会显示空 `<think></think>`
 
-`enable_thinking=False` 时，空 `<think></think>` 已经作为 `response_prefix` 写入 `prompt`，模型只在它后面生成答案。因此，“`ms-swift` 输出空 `think`，而 `Transformers` 和 `vLLM` 不输出”的差异不在采样阶段，而在生成完成后的 `response` 构造阶段
+- `enable_thinking=False` 时，空 `<think></think>` 已经作为 `response_prefix` 写入 `prompt`，模型只在它后面生成答案。
+- 因此，“`ms-swift` 输出空 `think`，而 `Transformers` 和 `vLLM` 不输出”的差异不在采样阶段，而在生成完成后的 `response` 构造阶段
 
 **`Transformers` `model.generate()`**：`transformers/generation/utils.py` 中的标准处理方式是按输入长度截取新增 `token`：
 
@@ -312,9 +313,8 @@ for output in result.outputs:
 
 ### 3. `SFT` 路径：标签规范化与 `Loss Mask`
 
-`SFT` 样本已经包含最后一轮 `assistant` 回答，因此 `response is not None`，编码器把 `{{RESPONSE}}` 放入 `ChatML`，而不会把推理用的 `response_prefix` 再追加一次。此时模式来自 `assistant` 标签本身
-
-进入 `_swift_encode()` 之前，`Qwen3_5Template._swift_prepare_inputs()` 先对消息执行与 `Qwen3.5 Hugging Face Jinja` 模板一致的规范化：`user/system/tool` 执行 `strip()`；`assistant` 若已经包含完整 `<think>...</think>`，则被整理成固定换行结构
+- `SFT` 样本已经包含最后一轮 `assistant` 回答，因此 `response is not None`，编码器把 `{{RESPONSE}}` 放入 `ChatML`，而不会把推理用的 `response_prefix` 再追加一次。此时模式来自 `assistant` 标签本身
+- 进入 `_swift_encode()` 之前，`Qwen3_5Template._swift_prepare_inputs()` 先对消息执行与 `Qwen3.5 Hugging Face Jinja` 模板一致的规范化：`user/system/tool` 执行 `strip()`；`assistant` 若已经包含完整 `<think>...</think>`，则被整理成固定换行结构
 
 ```python
 elif role == 'assistant':
@@ -443,7 +443,8 @@ labels:    [-100 ...      | 答案 token]
 
 ### 4. `OPD` 路径：`rollout` 模式与训练序列对齐
 
-普通 `SFT` 使用已有标签，所以 `enable_thinking` 不选择数据类型；`OPD / on-policy GKD` 在训练内部先让学生模型在线生成，因此其中包含一段真正的推理路径。`swift/rlhf_trainers/rollout_mixin.py` 的 `_generate_completions()` 先预处理样本，再进入 `template.generate_context()`：
+- 普通 `SFT` 使用已有标签，所以 `enable_thinking` 不选择数据类型；`OPD / on-policy GKD` 在训练内部先让学生模型在线生成，因此其中包含一段真正的推理路径。
+- `swift/rlhf_trainers/rollout_mixin.py` 的 `_generate_completions()` 先预处理样本，再进入 `template.generate_context()`：
 
 ```python
 def _generate_completions(
@@ -600,7 +601,8 @@ if non_thinking_prefix_ids:
 
 ### 1. `Qwen3-Omni` 的 `ChatML` 结构
 
-`Qwen3-Omni` 沿用 `Qwen` 的 `ChatML` 格式：消息以 `<|im_start|>{role}` 开始，以 `<|im_end|>` 结束。工具定义放在 `system` 中，工具调用与 `thinking` 放在 `assistant` 中；工具结果由 `<tool_response>` 包装，作为下一条 `user` 消息
+- `Qwen3-Omni` 沿用 `Qwen` 的 `ChatML` 格式：消息以 `<|im_start|>{role}` 开始，以 `<|im_end|>` 结束。
+- 工具定义放在 `system` 中，工具调用与 `thinking` 放在 `assistant` 中；工具结果由 `<tool_response>` 包装，作为下一条 `user` 消息
 
 ```text
 <|im_start|>system
@@ -677,7 +679,7 @@ class Qwen3OmniTemplate(Qwen2_5OmniTemplate):
 
 ### 2. 标准 `messages` 与内部输入
 
-`ms-swift` 的标准多模态样本在 **`messages.content` 中保存媒体占位符**，在 **顶层数组中保存媒体数据**：
+- `ms-swift` 的标准多模态样本在 **`messages.content` 中保存媒体占位符**，在 **顶层数组中保存媒体数据**：
 
 ```json
 {
@@ -730,7 +732,7 @@ StdTemplateInputs(
 
 ### 3. `replace_tag()` 将标准标记改写为 `Omni` 标记
 
-`Template._swift_encode()` 先把 `system`、`user` 和 `assistant` 编译为 `ChatML context list`。此时 `user` 内容仍保留标准标记：
+- `Template._swift_encode()` 先把 `system`、`user` 和 `assistant` 编译为 `ChatML context list`。此时 `user` 内容仍保留标准标记：
 
 ```text
 <|im_start|>system
@@ -796,7 +798,8 @@ def replace_tag(self, media_type, index, inputs):
 
 ### 4. 媒体预处理与占位 `token` 扩展
 
-`Qwen2_5OmniTemplate._encode()` 先取得包含单个媒体 `pad token` 的 `input_ids`，再调用 `processor` 生成媒体张量。`text=''` 使 `processor` 只处理媒体；临时产生的文本 `input_ids` 与 `attention_mask` 会被删除
+- `Qwen2_5OmniTemplate._encode()` 先取得包含单个媒体 `pad token` 的 `input_ids`，再调用 `processor` 生成媒体张量。
+- `text=''` 使 `processor` 只处理媒体；临时产生的文本 `input_ids` 与 `attention_mask` 会被删除
 
 ```python
 encoded = Template._encode(self, inputs)
@@ -973,7 +976,7 @@ labels = (
 
 ### 5. `Batch`、`attention_mask` 与多模态 `RoPE`
 
-单样本编码完成后，`Template._data_collator()` 将不同长度的 `input_ids` 补齐到 `batch` 内最大长度，并据有效序列长度构造二维 `attention_mask`：
+- 单样本编码完成后，`Template._data_collator()` 将不同长度的 `input_ids` 补齐到 `batch` 内最大长度，并据有效序列长度构造二维 `attention_mask`：
 
 ```python
 seq_lens = [len(seq) for seq in res['input_ids']]
@@ -1071,7 +1074,7 @@ position_ids = torch.concat([text_position_ids, position_ids], dim=0)
 
 ### 6. `post_encode` 与 `embedding scatter`
 
-`Qwen2_5OmniTemplate._post_encode()` 会在模板侧提前计算多模态 `embedding`。`Qwen3-Omni` 明确覆盖该实现：
+- `Qwen2_5OmniTemplate._post_encode()` 会在模板侧提前计算多模态 `embedding`。`Qwen3-Omni` 明确覆盖该实现：
 
 ```python
 class Qwen3OmniTemplate(Qwen2_5OmniTemplate):
@@ -1226,6 +1229,9 @@ if deepstack_visual_embeds is not None and layer_idx in range(
 
 ### 7. 输入链路的张量闭合
 
+- 三种模态共享同一项对齐条件：**语言序列中的媒体 `token` 数必须等于对应 `encoder` 输出的 `embedding` 数**。
+- `replace_tag()` 确定媒体边界，`image_grid_thw`、`video_grid_thw` 与音频长度函数确定槽位数量，`_extend_tokens()` 在 `input_ids` 中建立槽位，`get_placeholder_mask()` 与 `masked_scatter()` 完成最终的 `embedding` 写入
+
 ```text
 messages.content 中的 <image>/<video>/<audio>
         ↓ StdTemplateInputs.from_dict
@@ -1248,6 +1254,3 @@ text embedding + image/video/audio encoder output
         ↓ get_placeholder_mask + masked_scatter
 统一的 inputs_embeds[B, L, D]
 ```
-
-> [!IMPORTANT]
-> 三种模态共享同一项对齐条件：**语言序列中的媒体 `token` 数必须等于对应 `encoder` 输出的 `embedding` 数**。`replace_tag()` 确定媒体边界，`image_grid_thw`、`video_grid_thw` 与音频长度函数确定槽位数量，`_extend_tokens()` 在 `input_ids` 中建立槽位，`get_placeholder_mask()` 与 `masked_scatter()` 完成最终的 `embedding` 写入
