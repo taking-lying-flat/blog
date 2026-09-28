@@ -2,6 +2,7 @@
   {
     "file": "../notes/deepseek-ai-i/source.lake",
     "appendFiles": ["../notes/deepseek-ai-i/v3/source.lake"],
+    "removeEmptyParagraphs": true,
     "format": "lake",
     "slug": "deepseek-ai-i",
     "date": "2026-09-28",

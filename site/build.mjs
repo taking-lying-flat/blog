@@ -271,6 +271,17 @@ for (const post of posts) {
       post.content = post.content.replace(anchor, (paragraph) => { matches++; return paragraph + content.trim(); });
       if (matches !== 1) throw new Error(`Missing or repeated Lake code anchor: ${insert.after}`);
     }
+    if (post.removeEmptyParagraphs) {
+      // Exported spacer paragraphs add a blank line on top of section margins.
+      // Keep media, formulas and anchors; discard only empty text formatting.
+      post.content = post.content.replace(/<p\b[^>]*>([\s\S]*?)<\/p>/gi, (paragraph, inner) => {
+        const visible = inner
+          .replace(/<\/?(?:span|strong|em|b|i|u)\b[^>]*>|<br\s*\/?>/gi, '')
+          .replace(/&nbsp;|&#(?:160|x0*a0|8203|x0*200b);/gi, '')
+          .replace(/[\s\u200b-\u200d\ufeff]/g, '');
+        return visible ? paragraph : '';
+      });
+    }
     continue;
   }
   post.source = await readFile(path.join(root, post.file), 'utf8');
