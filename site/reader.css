@@ -113,7 +113,7 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 @media screen and (min-width: 800px) {
   [data-post="ms-swift-chatml-rendering"] .prose { line-height: 1.7; }
   [data-post="ms-swift-chatml-rendering"] .prose :is(p, ul, ol) { margin-bottom: 10px; }
-  [data-post="ms-swift-chatml-rendering"] .prose p { text-wrap: pretty; }
+  [data-post="ms-swift-chatml-rendering"] .prose :is(p, li) { text-wrap: pretty; }
   [data-post="ms-swift-chatml-rendering"] .prose li { margin-block: 4px; }
   [data-post="ms-swift-chatml-rendering"] .prose h2 { margin: 24px 0 10px; }
   [data-post="ms-swift-chatml-rendering"] .prose h3 { margin: 20px 0 8px; }
