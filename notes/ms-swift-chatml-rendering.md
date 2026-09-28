@@ -234,7 +234,7 @@ generated_tokens = outputs.sequences[:, input_length:]
 response = tokenizer.decode(generated_tokens[0])
 ```
 
-对 `decoder-only` 模型，`outputs.sequences` 包含 `prompt + completion`。常见推理代码按照输入长度切片，只解码新增 `token`；空思考块属于 `prompt`，因此不会出现在 `response` 中。严格来说，`model.generate()` 没有过滤 `<think></think>`：直接解码完整的 `outputs.sequences` 仍然可以看到它
+- `Transformers`：对 `decoder-only` 模型，`outputs.sequences` 包含 `prompt + completion`。常见推理代码按照输入长度切片，只解码新增 `token`；空思考块属于 `prompt`，因此不会出现在 `response` 中。严格来说，`model.generate()` 没有过滤 `<think></think>`：直接解码完整的 `outputs.sequences` 仍然可以看到它
 
 <strong class="backend-label">原生 vLLM</strong>：`vllm/v1/engine/detokenizer.py` 将输出缓冲区初始化为空，只追加新生成的 token：
 
