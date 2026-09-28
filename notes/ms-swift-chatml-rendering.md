@@ -220,7 +220,84 @@ elif response_prefix:
 
 ```
 
-- `enable_thinking=False` 时，`ms-swift` 在构造返回文本时会拼回 `response_prefix`，因此空 `<think></think>` 来自模板前缀，不是本轮新生成的内容
+#### 返回语义：为什么 `ms-swift` 会显示空 `<think></think>`
+
+`enable_thinking=False` 时，空 `<think></think>` 已经作为 `response_prefix` 写入 `prompt`，模型只在它后面生成答案。
+因此，“`ms-swift` 输出空 `think`，而 `Transformers` 和 `vLLM` 不输出”的差异不在采样阶段，而在生成完成后的 `response` 构造阶段
+
+<strong class="backend-label">Transformers · <code>model.generate()</code></strong>：`transformers/generation/utils.py` 中的标准处理方式是按输入长度截取新增 `token`：
+
+```python
+outputs = model.generate(**inputs, return_dict_in_generate=True)
+input_length = inputs.input_ids.shape[1]
+generated_tokens = outputs.sequences[:, input_length:]
+response = tokenizer.decode(generated_tokens[0])
+```
+
+对 `decoder-only` 模型，`outputs.sequences` 包含 `prompt + completion`。常见推理代码按照输入长度切片，只解码新增 `token`；空思考块属于 `prompt`，因此不会出现在 `response` 中。严格来说，`model.generate()` 没有过滤 `<think></think>`：直接解码完整的 `outputs.sequences` 仍然可以看到它
+
+<strong class="backend-label">原生 vLLM</strong>：`vllm/v1/engine/detokenizer.py` 将输出缓冲区初始化为空，只追加新生成的 token：
+
+```python
+for new_token_id in new_token_ids:
+    self.token_ids.append(new_token_id)
+    self.output_text += self.decode_next(new_token_id)
+```
+
+`vllm/v1/engine/output_processor.py` 随后读取生成文本，作为 `CompletionOutput.text` 返回：
+
+```python
+finished = finish_reason is not None
+delta = self.output_kind == RequestOutputKind.DELTA
+text = self.detokenizer.get_next_output_text(finished, delta)
+```
+
+在 `detokenizer` 内部，`prompt token` 只用于初始化前缀状态，保证第一个生成 `token` 能在正确的文本边界上解码；`output_text` 本身仍从空字符串开始，并且只接收 `new_token_ids`。因此，原生 `vLLM` 的 `CompletionOutput.text` 只包含模型新生成的答案。空 `<think></think>` 位于 `prompt` 中，从未写入这个输出缓冲区，所以不会出现在返回文本里
+
+<strong class="backend-label">ms-swift</strong>：`swift/template/base.py` 先截取新增 `token`，再在解码阶段恢复模板前缀
+
+```python
+def get_generate_ids(
+    self, generate_ids: Union[torch.Tensor, List[int]], num_prompt_tokens: int
+) -> Union[torch.Tensor, List[int]]:
+    if self.skip_prompt:
+        generate_ids = generate_ids[..., num_prompt_tokens:]
+    return generate_ids
+
+
+def decode_generate_ids(
+    self,
+    generate_ids: List[int],
+    *,
+    is_finished: bool = True,
+    first_token=True,
+    template_inputs=None,
+    **kwargs,
+) -> Any:
+    if kwargs.get('spaces_between_special_tokens') is None:
+        kwargs['spaces_between_special_tokens'] = False
+    generate_ids = self.skip_stop_tokens(generate_ids, is_finished)
+    response = self.tokenizer.decode(generate_ids, **kwargs)
+    response_prefix = self._get_response_prefix(template_inputs)
+    if first_token and response_prefix:
+        response = response_prefix + response
+    return response
+```
+
+`Qwen3.5` 继承基础模板的 `skip_prompt=True`。因此，`ms-swift` 的 `Transformers backend` 先通过 `get_generate_ids()` 切掉整个 `prompt`，再由 `decode_generate_ids()` 解码新增 `token`；随后 `ms-swift` 重新调用 `_get_response_prefix()`，显式执行 `response_prefix + response`。空 `<think></think>` 正是在这一步被拼回最终 `response`，而不是模型本轮新生成的 `token`
+
+<strong class="backend-label">ms-swift · vLLM backend</strong>：`swift/infer_engine/vllm_engine.py` 不直接返回原生 `vLLM` 的 `output.text`，而是读取 `output.token_ids`，再次调用 `Swift` 模板解码：
+
+```python
+for output in result.outputs:
+    output.token_ids = list(output.token_ids)
+    response = self.template.decode_generate_ids(
+        output.token_ids,
+        template_inputs=inputs['template_inputs'],
+    )
+```
+
+所以，原生 `vLLM` 返回的是 `completion`，而 `ms-swift` 的 `vLLM backend` 返回的是经过模板重建的 `assistant response`。底层采样没有改变，变化的只是返回文本是否重新包含 `response_prefix`
 
 ### 3. `SFT` 路径：标签规范化与 `Loss Mask`
 

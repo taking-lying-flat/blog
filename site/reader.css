@@ -127,6 +127,9 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
   [data-post="ms-swift-chatml-rendering"] .prose :is(th, td) { padding: 7px 12px; }
 }
 
+[data-post="ms-swift-chatml-rendering"] .prose .backend-label { color: var(--fgColor-danger); font-family: var(--sans); font-weight: 700; }
+[data-post="ms-swift-chatml-rendering"] .prose .backend-label code { color: inherit; background: transparent; font-weight: inherit; }
+
 .code-block {
   --code-bg: var(--page);
   --code-ink: var(--ink);
