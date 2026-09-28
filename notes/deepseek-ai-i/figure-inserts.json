@@ -3,6 +3,6 @@
     "id": "deepseek-v2-architecture",
     "before": "u839ff8a4",
     "asset": "assets/images/deepseek-v2-architecture-horizontal.svg",
-    "alt": "DeepSeek-V2 架构：Transformer Block、DeepSeekMoE 与多头潜在注意力 MLA"
+    "alt": "DeepSeek-V2 架构：左侧 DeepSeekMoE，中间 Transformer Block，右侧多头潜在注意力 MLA"
   }
 ]
