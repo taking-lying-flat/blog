@@ -73,6 +73,13 @@ export async function readLake(file, escape, renderMath) {
       return `${opening}${replacement}${closing}`;
     });
     if (matches !== 1) throw new Error(`Lake text correction must match once: ${id}`);
+    if (override.removeEmptyBlock) {
+      const block = override.removeEmptyBlock;
+      if (!['li', 'p'].includes(block) || replacement !== '') throw new Error(`Invalid Lake block deletion: ${id}`);
+      const emptyBlock = new RegExp(`<${block}\\b[^>]*>\\s*<span\\b[^>]*\\sid="${id}"[^>]*><\\/span>\\s*(?:<br\\s*\\/?>\\s*)?<\\/${block}>`, 'g');
+      if ([...content.matchAll(emptyBlock)].length !== 1) throw new Error(`Lake block deletion must match once: ${id}`);
+      content = content.replace(emptyBlock, '');
+    }
   }
   let index = 0;
   let mathCount = 0;

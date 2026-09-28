@@ -1,0 +1,20 @@
+{
+  "udaa6079f": {
+    "from": "值得关注的是，作者发现 DeepSeekMoE 2B 的性能已接近参数量相同的对应稠密模型，而后者构成 MoE 语言模型的严格性能上界",
+    "to": "作者发现 DeepSeekMoE 2B 的性能已接近参数量相同的对应稠密模型，而后者构成 MoE 语言模型的严格性能上界"
+  },
+  "ue3fb1cbb": {
+    "from": "作者还将 DeepSeekMoE 与开源模型进行比较。评估结果表明，DeepSeekMoE 16B 持续大幅优于激活参数量相近的模型，并取得与 LLaMA2 7B 相当的性能，而后者的激活参数量约为其 2.5 倍",
+    "to": "",
+    "removeEmptyBlock": "li"
+  },
+  "ufd5c6a32": {
+    "from": "其中，专家参数总量等于标准 FFN 参数量的",
+    "to": "专家参数总量等于标准 FFN 参数量的"
+  },
+  "u2c8e13ca": {
+    "from": "​",
+    "to": "",
+    "removeEmptyBlock": "p"
+  }
+}
