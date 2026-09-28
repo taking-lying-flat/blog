@@ -859,63 +859,15 @@ loss_scale = encoded.get('loss_scale')
 config = self.config.thinker_config
 ```
 
-图片与视频共用官方展开循环；独立图片的长度来自 `image_grid_thw`，视频携带音频时进入专门的交错分支：
-
-```python
-for media_type in ['image', 'video']:
-    if self.version == 'omni_v3':
-        token_id = [getattr(config, f'{media_type}_token_id')]
-    else:
-        token = f'<|{media_type.upper()}|>'
-        token_id = self._tokenize(token)
-    idx_list = findall(input_ids, token_id)
-    if idx_list:
-        merge_size = processor.image_processor.merge_size
-        media_grid_thw = media_inputs.get(f'{media_type}_grid_thw')
-        if media_type == 'video' and self.use_audio_in_video:
-            audio_lengths = audio_lengths_origin[video_audios_mask]
-            video_second_per_grid = media_inputs['video_second_per_grid']
-            _get_new_tokens_use_audio_in_video = partial(
-                self._get_new_tokens_use_audio_in_video,
-                video_grid_thw=media_grid_thw,
-                video_second_per_grid=video_second_per_grid,
-                audio_lengths=audio_lengths,
-                video_token_id=token_id,
-                audio_token_id=audio_token_id,
-            )
-            input_ids, labels, loss_scale = self._extend_tokens(
-                input_ids,
-                labels,
-                loss_scale,
-                idx_list,
-                _get_new_tokens_use_audio_in_video,
-            )
-
-        else:
-
-            def _get_new_tokens(i):
-                token_len = media_grid_thw[i].prod() // (merge_size**2)
-                return token_id * token_len
-
-            input_ids, labels, loss_scale = self._extend_tokens(
-                input_ids, labels, loss_scale, idx_list, _get_new_tokens
-            )
-```
-
-不含音频交错的独立视频同样调用 `_get_new_tokens()`，长度来自 `video_grid_thw`：
+图片与独立视频的占位长度均为 `T × H × W / merge_size²`。`media_grid_thw` 分别取 `image_grid_thw` 或 `video_grid_thw`，`merge_size` 来自 processor：
 
 ```python
 def _get_new_tokens(i):
     token_len = media_grid_thw[i].prod() // (merge_size**2)
     return token_id * token_len
-
-
-input_ids, labels, loss_scale = self._extend_tokens(
-    input_ids, labels, loss_scale, idx_list, _get_new_tokens
-)
 ```
 
-`audio placeholder` 的长度来自 `feature_attention_mask`。`_get_feat_extract_output_lengths()` 将有效声学帧数转换为 `audio encoder` 的输出长度：
+`input_lengths` 是 `feature_attention_mask.sum(dim=1)` 得到的有效声学帧数；下面的原函数将它转换为音频 token 数：
 
 ```python
 def _get_feat_extract_output_lengths(self, input_lengths):
@@ -929,30 +881,6 @@ def _get_feat_extract_output_lengths(self, input_lengths):
             + 1
             + (input_lengths // 100) * 13
         )
-
-
-if self.version == 'omni_v3':
-    audio_token_id = [config.audio_token_id]
-else:
-    audio_token_id = self._tokenize('<|AUDIO|>')
-idx_list = findall(input_ids, audio_token_id)
-feature_attention_mask = media_inputs.get('feature_attention_mask')
-if feature_attention_mask is not None:
-    audio_feature_lengths = torch.sum(feature_attention_mask, dim=1)
-    audio_lengths = self._get_feat_extract_output_lengths(audio_feature_lengths)
-else:
-    audio_lengths = None
-audio_lengths_origin = audio_lengths
-if idx_list:
-    if self.use_audio_in_video:
-        audio_lengths = audio_lengths[~video_audios_mask]
-
-    def _get_new_audio_tokens(i):
-        return audio_token_id * audio_lengths[i]
-
-    input_ids, labels, loss_scale = self._extend_tokens(
-        input_ids, labels, loss_scale, idx_list, _get_new_audio_tokens
-    )
 ```
 
 三类 `placeholder` 扩展完成后，媒体张量与更新后的 `token` 序列共同写入编码结果：
