@@ -20,5 +20,9 @@
   "u724dbf24": {
     "from": "基于该架构，作者进一步将模型参数规模扩展至 16B，并在包含 2T token 的大规模语料上训练 DeepSeekMoE 16B。评估结果表明，DeepSeekMoE 16B 仅使用约 40% 的计算量，即可达到与 DeepSeek 7B 相当的性能，后者是在相同 2T token 语料上训练的稠密模型",
     "to": "进一步将模型参数规模扩展至 16B，并在包含 2T token 的大规模语料上训练 DeepSeekMoE 16B。评估结果表明，DeepSeekMoE 16B 仅使用约 40% 的计算量，即可达到与 DeepSeek 7B 相当的性能，后者是在相同 2T token 语料上训练的稠密模型"
+  },
+  "udbec8f30": {
+    "from": "作者沿用 DeepSeekMath（Shao et al., 2024）的方法，采用组相对策略优化，进一步使模型与人类偏好对齐，得到 DeepSeek-V2 Chat (RL)",
+    "to": "作者沿用 DeepSeekMath的方法，采用组相对策略优化，进一步使模型与人类偏好对齐，得到 DeepSeek-V2 Chat (RL)"
   }
 }
