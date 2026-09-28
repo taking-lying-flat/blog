@@ -251,12 +251,6 @@ response = tokenizer.decode(generated_tokens[0])
 
 ```python
 def update(self, new_token_ids: list[int], stop_terminated: bool) -> str | None:
-    """Update RequestState for the request_id by:
-        1) Detokenize the new token ids incrementally.
-        2) Evaluate stop criteria.
-
-    Return matched stop string or None.
-    """
     if not new_token_ids:
         return None
 
