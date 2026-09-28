@@ -247,7 +247,7 @@ response = tokenizer.decode(generated_tokens[0])
 
 对 `decoder-only` 模型，`outputs.sequences` 包含 `prompt + completion`。常见推理代码按照输入长度切片，只解码新增 `token`；空思考块属于 `prompt`，因此不会出现在 `response` 中。严格来说，`model.generate()` 没有过滤 `<think></think>`：直接解码完整的 `outputs.sequences` 仍然可以看到它
 
-**原生 `vLLM`**：真正决定返回文本的是 `vllm/v1/engine/detokenizer.py`。它将输出缓冲区初始化为空，并且只向其中追加引擎新产生的 `token`：
+**原生 `vLLM`**：`vllm/v1/engine/detokenizer.py` 将输出缓冲区初始化为空，只追加新生成的 token：
 
 ```python
 for new_token_id in new_token_ids:
@@ -600,7 +600,7 @@ if non_thinking_prefix_ids:
 
 ### 1. `Qwen3-Omni` 的 `ChatML` 结构
 
-`Qwen3-Omni` 沿用 `Qwen` 系列的 `ChatML` 角色边界。`system`、`user` 和 `assistant` 消息分别由 `<|im_start|>{role}` 与 `<|im_end|>` 包围；工具定义位于 `system` 内容中，工具调用与 `thinking` 位于 `assistant` 内容中，工具返回则由 `<tool_response>` 包装为下一条 `user` 消息
+`Qwen3-Omni` 沿用 `Qwen` 的 `ChatML` 格式：消息以 `<|im_start|>{role}` 开始，以 `<|im_end|>` 结束。工具定义放在 `system` 中，工具调用与 `thinking` 放在 `assistant` 中；工具结果由 `<tool_response>` 包装，作为下一条 `user` 消息
 
 ```text
 <|im_start|>system
@@ -726,7 +726,7 @@ StdTemplateInputs(
 )
 ```
 
-**第 `i` 个媒体占位符与对应数组的第 `i` 个元素配对**：`<image>` 对应 `images[i]`，`<video>` 对应 `videos[i]`，`<audio>` 对应 `audios[i]`。仅提供顶层媒体数组时，`_add_default_tags()` 会把缺少的标记补到第一条消息开头；显式标记则直接确定媒体与文本的相对位置
+**第 `i` 个媒体占位符与对应数组的第 `i` 个元素配对**：`<image>` 对应 `images[i]`，`<video>` 对应 `videos[i]`，`<audio>` 对应 `audios[i]`。仅提供顶层媒体数组时，`_add_default_tags()` 会将缺少的标记补到首条消息开头；显式标记则确定媒体在文本中的位置
 
 ### 3. `replace_tag()` 将标准标记改写为 `Omni` 标记
 
@@ -752,7 +752,7 @@ context_list, loss_scale_list = self._pre_tokenize(
 )
 ```
 
-`Qwen3-Omni` 继承 `swift/template/templates/qwen.py` 中的 `Qwen2_5OmniTemplate.replace_tag()`，并以 `version='omni_v3'` 选择相应分支：
+`Qwen3-Omni` 继承 `qwen.py` 中的 `Qwen2_5OmniTemplate.replace_tag()`，使用 `omni_v3` 分支：
 
 ```python
 def replace_tag(self, media_type, index, inputs):
@@ -792,7 +792,7 @@ def replace_tag(self, media_type, index, inputs):
 <|audio_start|><|audio_pad|><|audio_end|>音频中是什么<|im_end|>
 ```
 
-`_encode_context_list()` 对这组 `context` 逐段执行 `tokenizer`。此时**每种媒体仍只有一个 `pad token`**，尚未与真实媒体特征长度对齐
+`_encode_context_list()` 逐段调用 tokenizer。此时**每份媒体只有一个 `pad token`**，还未按特征长度展开
 
 ### 4. 媒体预处理与占位 `token` 扩展
 
@@ -1040,7 +1040,7 @@ res['feature_attention_mask'] = torch.concat(feature_attention_mask)
 | `input_features` | `[N_audio, 128, F_max]` | 补齐后的 `mel` 特征 |
 | `feature_attention_mask` | `[N_audio, F_max]` | 有效声学特征帧 |
 
-`Qwen3-Omni` 的 `get_rope_index()` 同时使用 `token` 序列、视觉网格、音频长度与视频时间间隔构造多模态位置。`ms-swift` 的模板调用为：
+`get_rope_index()` 根据 token 序列、视觉网格、音频长度和视频时间间隔，构造 `Qwen3-Omni` 的多模态位置：
 
 ```python
 feature_attention_mask = inputs.get('feature_attention_mask')
@@ -1178,7 +1178,7 @@ special_audio_mask = special_audio_mask.unsqueeze(-1)
 
 多模态实现中常说的 **`scatter_mask`**，在当前 `Qwen3-Omni` 源码中对应 `special_image_mask`、`special_video_mask`、`special_audio_mask` 及其返回后的 `image_mask`、`video_mask`、`audio_mask`。这些 `mask` 共同定义 `scatter` 的目标位置
 
-以图像为例，`image_mask` 的逻辑形状为 `[B,L,1]`，在 `masked_scatter()` 中广播为 `[B,L,D]`。若存在 `N_image` 个图像 `token`，则 `mask` 中参与替换的标量数为 `N_image × D`；`image_embeds` 的元素数同样为 `N_image × D`。`Transformers` 在 `scatter` 前显式检查这一不变量：
+以图像为例，`image_mask` 的逻辑形状为 `[B,L,1]`，在 `masked_scatter()` 中广播为 `[B,L,D]`。若存在 `N_image` 个图像 `token`，则 `mask` 中参与替换的标量数为 `N_image × D`；`image_embeds` 的元素数同样为 `N_image × D`。`Transformers` 在写入前检查二者相等：
 
 ```python
 torch_compilable_check(
