@@ -1,0 +1,795 @@
+{
+  "source": {
+    "file": "source.lake",
+    "sha256": "be6b5396247c836b183975a682fe6ea061a6eefb1778d58eaa6849dfff0b574f",
+    "bytes": 30345,
+    "title": "无标题文档"
+  },
+  "title": "DeepSeek-V3 FP8 Training and Inference Deployment",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "idOverrides": {
+    "hDedJ": "deepseek-v3-fp8-training"
+  },
+  "counts": {
+    "math": 13,
+    "images": 2,
+    "separators": 0
+  },
+  "assets": [
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/b68c8917fd4ecdbe92b7f871e8c43975.svg",
+      "file": "assets/v3-fp8/math/b68c8917fd4ecdbe92b7f871e8c43975.svg",
+      "bytes": 2497,
+      "sha256": "7b60829860be6ceed135afae06668755a381593c5791ddbd0b7e1362555ad5f6",
+      "width": "6.813ex",
+      "height": "2.509ex",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/9d93b5cc0e5960249341c8885071647e.svg",
+      "file": "assets/v3-fp8/math/9d93b5cc0e5960249341c8885071647e.svg",
+      "bytes": 2275,
+      "sha256": "eb5879d68108124d804fb4c33d4a6afc9f1cedc04c4cb07854eff0d967c6e4ce",
+      "width": "8.461ex",
+      "height": "2.509ex",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790638025670-d8f42b2e-7d0a-42e3-87b0-1d1c2dc305e7.png",
+      "file": "assets/v3-fp8/images/1790638025670-d8f42b2e-7d0a-42e3-87b0-1d1c2dc305e7.png",
+      "bytes": 66220,
+      "sha256": "9598db61525dc8ed008bb6e47b4634813a4beeb985b2df99ea1376e345e23e9d"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790638476904-f1a64c9d-d1b4-4d9a-bf0b-0338235f7652.png",
+      "file": "assets/v3-fp8/images/1790638476904-f1a64c9d-d1b4-4d9a-bf0b-0338235f7652.png",
+      "bytes": 87306,
+      "sha256": "7c3a9c44a382aaf2dc0ec199c57b156343a1b1e4655aa7c49b7d8298e6e8f4ef"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/2e697c8a674440e2c4af32781563e951.svg",
+      "file": "assets/v3-fp8/math/2e697c8a674440e2c4af32781563e951.svg",
+      "bytes": 2648,
+      "sha256": "ae920710971af977152c364cdfd012ba786df193f2120d7f7533061222234d15",
+      "width": "7.49ex",
+      "height": "2.176ex",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/57a55880734793a1bc170f5c634b0c74.svg",
+      "file": "assets/v3-fp8/math/57a55880734793a1bc170f5c634b0c74.svg",
+      "bytes": 2747,
+      "sha256": "4e044b95fccf227ee6b4ad5e123b677b1065f1248e766613ca5c6e0f266637c4",
+      "width": "9.815ex",
+      "height": "2.176ex",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/38a3f4d664b7a723d138f9d57be0c783.svg",
+      "file": "assets/v3-fp8/math/38a3f4d664b7a723d138f9d57be0c783.svg",
+      "bytes": 1566,
+      "sha256": "fb80e0a1118ed65854044ca87f9ba773a3aeb9d042e0afa2a22b552d71ca9272",
+      "width": "2.066ex",
+      "height": "2.176ex",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/36c02df76659b7fd539ceb8ffb4e5d56.svg",
+      "file": "assets/v3-fp8/math/36c02df76659b7fd539ceb8ffb4e5d56.svg",
+      "bytes": 3927,
+      "sha256": "79b85df9e69735bafc3d849615b0dd2ff1e3d5be14b74d952063d846d8edb465",
+      "width": "9.814ex",
+      "height": "2.176ex",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/ed8d2849bfe5f97caec443f2bdc71250.svg",
+      "file": "assets/v3-fp8/math/ed8d2849bfe5f97caec443f2bdc71250.svg",
+      "bytes": 1804,
+      "sha256": "2e901fb995c38f8c2e9c5cce36733c85cff2ec1aabaf79737a63786ba88fe2e4",
+      "width": "3.347ex",
+      "height": "2.509ex",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/b9b6d0bb7b899d69008b3f8eccc2d20d.svg",
+      "file": "assets/v3-fp8/math/b9b6d0bb7b899d69008b3f8eccc2d20d.svg",
+      "bytes": 2613,
+      "sha256": "16962296290e04d5030f61c6c1daeca96295ee986959d6e32c559ccee46d4be6",
+      "width": "7.49ex",
+      "height": "2.176ex",
+      "style": "vertical-align: -0.338ex;"
+    }
+  ],
+  "cards": [
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%221%20%5C%5Ctimes%20N_c%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fb68c8917fd4ecdbe92b7f871e8c43975.svg%22%2C%22id%22%3A%22s1Sax%22%7D"
+      },
+      "value": {
+        "code": "1 \\times N_c",
+        "src": "https://cdn.nlark.com/yuque/__latex/b68c8917fd4ecdbe92b7f871e8c43975.svg",
+        "id": "s1Sax"
+      },
+      "asset": "assets/v3-fp8/math/b68c8917fd4ecdbe92b7f871e8c43975.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22N_c%20%5C%5Ctimes%20N_c%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F9d93b5cc0e5960249341c8885071647e.svg%22%2C%22id%22%3A%22C57zJ%22%7D"
+      },
+      "value": {
+        "code": "N_c \\times N_c",
+        "src": "https://cdn.nlark.com/yuque/__latex/9d93b5cc0e5960249341c8885071647e.svg",
+        "id": "C57zJ"
+      },
+      "asset": "assets/v3-fp8/math/9d93b5cc0e5960249341c8885071647e.svg"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790638025670-d8f42b2e-7d0a-42e3-87b0-1d1c2dc305e7.png%22%2C%22taskId%22%3A%22u5ec60755-5520-45ad-a83d-21d2770445b%22%2C%22clientId%22%3A%22u58899e26-5083-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A753.6000366210938%2C%22height%22%3A218%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A66220%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1022%2C%22originHeight%22%3A295%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22GRADIENT%22%2C%22x%22%3A37%2C%22y%22%3A251%2C%22width%22%3A70%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22RADIEN%22%2C%22x%22%3A481%2C%22y%22%3A250%2C%22width%22%3A62%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22OUTPU%22%2C%22x%22%3A485%2C%22y%22%3A70%2C%22width%22%3A53%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22WEIGHT%22%2C%22x%22%3A890%2C%22y%22%3A59%2C%22width%22%3A59%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22TOFP8%22%2C%22x%22%3A602%2C%22y%22%3A225%2C%22width%22%3A54%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22OPTIMIZE%22%2C%22x%22%3A880%2C%22y%22%3A151%2C%22width%22%3A74%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22MASTER%22%2C%22x%22%3A703%2C%22y%22%3A151%2C%22width%22%3A59%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22TOFP8%22%2C%22x%22%3A392%2C%22y%22%3A149%2C%22width%22%3A50%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22GRADIENT%22%2C%22x%22%3A885%2C%22y%22%3A82%2C%22width%22%3A66%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22TOFP8%22%2C%22x%22%3A600%2C%22y%22%3A20%2C%22width%22%3A52%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22WEIGHT%22%2C%22x%22%3A258%2C%22y%22%3A158%2C%22width%22%3A58%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22INPUT%22%2C%22x%22%3A52%2C%22y%22%3A70%2C%22width%22%3A45%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22TOBF16%22%2C%22x%22%3A390%2C%22y%22%3A57%2C%22width%22%3A54%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22TOBF16%22%2C%22x%22%3A135%2C%22y%22%3A225%2C%22width%22%3A56%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22STATES%22%2C%22x%22%3A889%2C%22y%22%3A173%2C%22width%22%3A57%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22WEIGHT%22%2C%22x%22%3A699%2C%22y%22%3A172%2C%22width%22%3A67%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22OUTPUT%22%2C%22x%22%3A480%2C%22y%22%3A229%2C%22width%22%3A62%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22TOFP8%22%2C%22x%22%3A392%2C%22y%22%3A226%2C%22width%22%3A51%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22LNPUT%22%2C%22x%22%3A40%2C%22y%22%3A230%2C%22width%22%3A58%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22OFP32%22%2C%22x%22%3A802%2C%22y%22%3A147%2C%22width%22%3A53%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22BF16%22%2C%22x%22%3A484%2C%22y%22%3A274%2C%22width%22%3A47%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22FP32%22%2C%22x%22%3A891%2C%22y%22%3A104%2C%22width%22%3A56%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22FP32%22%2C%22x%22%3A219%2C%22y%22%3A269%2C%22width%22%3A37%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22DGRAD%22%2C%22x%22%3A259%2C%22y%22%3A218%2C%22width%22%3A62%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22BF16%22%2C%22x%22%3A53%2C%22y%22%3A97%2C%22width%22%3A41%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22BF16%22%2C%22x%22%3A968%2C%22y%22%3A123%2C%22width%22%3A40%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22WGRAD%22%2C%22x%22%3A679%2C%22y%22%3A45%2C%22width%22%3A62%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22FPROP%22%2C%22x%22%3A265%2C%22y%22%3A46%2C%22width%22%3A45%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22OFP8%22%2C%22x%22%3A140%2C%22y%22%3A58%2C%22width%22%3A42%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22FP32%22%2C%22x%22%3A734%2C%22y%22%3A98%2C%22width%22%3A38%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22CP32%22%2C%22x%22%3A316%2C%22y%22%3A96%2C%22width%22%3A34%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22T6%22%2C%22x%22%3A965%2C%22y%22%3A109%2C%22width%22%3A34%2C%22height%22%3A12%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f2f1ed%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u274143c3%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790638025670-d8f42b2e-7d0a-42e3-87b0-1d1c2dc305e7.png",
+        "taskId": "u5ec60755-5520-45ad-a83d-21d2770445b",
+        "clientId": "u58899e26-5083-4",
+        "originalType": "binary",
+        "width": 753.6000366210938,
+        "height": 218,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 66220,
+        "from": "paste",
+        "originWidth": 1022,
+        "originHeight": 295,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "GRADIENT",
+            "x": 37,
+            "y": 251,
+            "width": 70,
+            "height": 18
+          },
+          {
+            "text": "RADIEN",
+            "x": 481,
+            "y": 250,
+            "width": 62,
+            "height": 19
+          },
+          {
+            "text": "OUTPU",
+            "x": 485,
+            "y": 70,
+            "width": 53,
+            "height": 19
+          },
+          {
+            "text": "WEIGHT",
+            "x": 890,
+            "y": 59,
+            "width": 59,
+            "height": 18
+          },
+          {
+            "text": "TOFP8",
+            "x": 602,
+            "y": 225,
+            "width": 54,
+            "height": 16
+          },
+          {
+            "text": "OPTIMIZE",
+            "x": 880,
+            "y": 151,
+            "width": 74,
+            "height": 15
+          },
+          {
+            "text": "MASTER",
+            "x": 703,
+            "y": 151,
+            "width": 59,
+            "height": 16
+          },
+          {
+            "text": "TOFP8",
+            "x": 392,
+            "y": 149,
+            "width": 50,
+            "height": 14
+          },
+          {
+            "text": "GRADIENT",
+            "x": 885,
+            "y": 82,
+            "width": 66,
+            "height": 15
+          },
+          {
+            "text": "TOFP8",
+            "x": 600,
+            "y": 20,
+            "width": 52,
+            "height": 14
+          },
+          {
+            "text": "WEIGHT",
+            "x": 258,
+            "y": 158,
+            "width": 58,
+            "height": 20
+          },
+          {
+            "text": "INPUT",
+            "x": 52,
+            "y": 70,
+            "width": 45,
+            "height": 17
+          },
+          {
+            "text": "TOBF16",
+            "x": 390,
+            "y": 57,
+            "width": 54,
+            "height": 14
+          },
+          {
+            "text": "TOBF16",
+            "x": 135,
+            "y": 225,
+            "width": 56,
+            "height": 14
+          },
+          {
+            "text": "STATES",
+            "x": 889,
+            "y": 173,
+            "width": 57,
+            "height": 15
+          },
+          {
+            "text": "WEIGHT",
+            "x": 699,
+            "y": 172,
+            "width": 67,
+            "height": 18
+          },
+          {
+            "text": "OUTPUT",
+            "x": 480,
+            "y": 229,
+            "width": 62,
+            "height": 18
+          },
+          {
+            "text": "TOFP8",
+            "x": 392,
+            "y": 226,
+            "width": 51,
+            "height": 16
+          },
+          {
+            "text": "LNPUT",
+            "x": 40,
+            "y": 230,
+            "width": 58,
+            "height": 18
+          },
+          {
+            "text": "OFP32",
+            "x": 802,
+            "y": 147,
+            "width": 53,
+            "height": 15
+          },
+          {
+            "text": "BF16",
+            "x": 484,
+            "y": 274,
+            "width": 47,
+            "height": 13
+          },
+          {
+            "text": "FP32",
+            "x": 891,
+            "y": 104,
+            "width": 56,
+            "height": 13
+          },
+          {
+            "text": "FP32",
+            "x": 219,
+            "y": 269,
+            "width": 37,
+            "height": 12
+          },
+          {
+            "text": "DGRAD",
+            "x": 259,
+            "y": 218,
+            "width": 62,
+            "height": 11
+          },
+          {
+            "text": "BF16",
+            "x": 53,
+            "y": 97,
+            "width": 41,
+            "height": 14
+          },
+          {
+            "text": "BF16",
+            "x": 968,
+            "y": 123,
+            "width": 40,
+            "height": 13
+          },
+          {
+            "text": "WGRAD",
+            "x": 679,
+            "y": 45,
+            "width": 62,
+            "height": 14
+          },
+          {
+            "text": "FPROP",
+            "x": 265,
+            "y": 46,
+            "width": 45,
+            "height": 14
+          },
+          {
+            "text": "OFP8",
+            "x": 140,
+            "y": 58,
+            "width": 42,
+            "height": 15
+          },
+          {
+            "text": "FP32",
+            "x": 734,
+            "y": 98,
+            "width": 38,
+            "height": 12
+          },
+          {
+            "text": "CP32",
+            "x": 316,
+            "y": 96,
+            "width": 34,
+            "height": 16
+          },
+          {
+            "text": "T6",
+            "x": 965,
+            "y": 109,
+            "width": 34,
+            "height": 12
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f2f1ed",
+        "__spacing": "both",
+        "id": "u274143c3",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/v3-fp8/images/1790638025670-d8f42b2e-7d0a-42e3-87b0-1d1c2dc305e7.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790638476904-f1a64c9d-d1b4-4d9a-bf0b-0338235f7652.png%22%2C%22taskId%22%3A%22u092833e9-4358-4e41-894e-900d9e39c90%22%2C%22clientId%22%3A%22u9bfd7026-d081-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A806.4%2C%22height%22%3A424%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A87306%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1008%2C%22originHeight%22%3A530%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22%E4%BA%8C%22%2C%22x%22%3A658%2C%22y%22%3A86%2C%22width%22%3A156%2C%22height%22%3A133%7D%2C%7B%22text%22%3A%22(B)LNCREASINGACCUMULATIONPRECISION%22%2C%22x%22%3A660%2C%22y%22%3A491%2C%22width%22%3A302%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22A)FINE-GRAINEDGUANTIZATION%22%2C%22x%22%3A193%2C%22y%22%3A492%2C%22width%22%3A233%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22WGMMA4%22%2C%22x%22%3A846%2C%22y%22%3A75%2C%22width%22%3A98%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22CUDACORE%22%2C%22x%22%3A645%2C%22y%22%3A424%2C%22width%22%3A86%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22TENSORCORE%22%2C%22x%22%3A652%2C%22y%22%3A247%2C%22width%22%3A81%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22FP32REGISTER%22%2C%22x%22%3A837%2C%22y%22%3A420%2C%22width%22%3A103%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22OUTPUT%22%2C%22x%22%3A635%2C%22y%22%3A308%2C%22width%22%3A71%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22%2FGEMMINPUT%22%2C%22x%22%3A808%2C%22y%22%3A244%2C%22width%22%3A126%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22OUTPUT%22%2C%22x%22%3A43%2C%22y%22%3A392%2C%22width%22%3A61%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22SCALINGFACTO%22%2C%22x%22%3A840%2C%22y%22%3A399%2C%22width%22%3A92%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22CUDACORE%22%2C%22x%22%3A47%2C%22y%22%3A453%2C%22width%22%3A72%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22LOWPRECACC%22%2C%22x%22%3A844%2C%22y%22%3A221%2C%22width%22%3A90%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22WGMMA%22%2C%22x%22%3A653%2C%22y%22%3A74%2C%22width%22%3A88%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22NTERVA%22%2C%22x%22%3A880%2C%22y%22%3A355%2C%22width%22%3A56%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22SCALINC%22%2C%22x%22%3A47%2C%22y%22%3A77%2C%22width%22%3A53%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22WEIGHT%22%2C%22x%22%3A396%2C%22y%22%3A46%2C%22width%22%3A65%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22SCALING%22%2C%22x%22%3A403%2C%22y%22%3A93%2C%22width%22%3A51%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22FACTOR%22%2C%22x%22%3A402%2C%22y%22%3A109%2C%22width%22%3A49%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22FACTOR%22%2C%22x%22%3A56%2C%22y%22%3A95%2C%22width%22%3A44%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22TENSORCORE%22%2C%22x%22%3A47%2C%22y%22%3A348%2C%22width%22%3A75%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22NG%22%2C%22x%22%3A887%2C%22y%22%3A328%2C%22width%22%3A40%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22INPUT%22%2C%22x%22%3A28%2C%22y%22%3A48%2C%22width%22%3A49%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22%E5%8F%A3%22%2C%22x%22%3A779%2C%22y%22%3A243%2C%22width%22%3A53%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22NC%22%2C%22x%22%3A466%2C%22y%22%3A175%2C%22width%22%3A32%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22VC%22%2C%22x%22%3A75%2C%22y%22%3A163%2C%22width%22%3A27%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22NC%22%2C%22x%22%3A425%2C%22y%22%3A213%2C%22width%22%3A33%2C%22height%22%3A17%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f7f7f6%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u1f99e80f%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790638476904-f1a64c9d-d1b4-4d9a-bf0b-0338235f7652.png",
+        "taskId": "u092833e9-4358-4e41-894e-900d9e39c90",
+        "clientId": "u9bfd7026-d081-4",
+        "originalType": "binary",
+        "width": 806.4,
+        "height": 424,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 87306,
+        "from": "paste",
+        "originWidth": 1008,
+        "originHeight": 530,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "二",
+            "x": 658,
+            "y": 86,
+            "width": 156,
+            "height": 133
+          },
+          {
+            "text": "(B)LNCREASINGACCUMULATIONPRECISION",
+            "x": 660,
+            "y": 491,
+            "width": 302,
+            "height": 18
+          },
+          {
+            "text": "A)FINE-GRAINEDGUANTIZATION",
+            "x": 193,
+            "y": 492,
+            "width": 233,
+            "height": 20
+          },
+          {
+            "text": "WGMMA4",
+            "x": 846,
+            "y": 75,
+            "width": 98,
+            "height": 20
+          },
+          {
+            "text": "CUDACORE",
+            "x": 645,
+            "y": 424,
+            "width": 86,
+            "height": 17
+          },
+          {
+            "text": "TENSORCORE",
+            "x": 652,
+            "y": 247,
+            "width": 81,
+            "height": 16
+          },
+          {
+            "text": "FP32REGISTER",
+            "x": 837,
+            "y": 420,
+            "width": 103,
+            "height": 16
+          },
+          {
+            "text": "OUTPUT",
+            "x": 635,
+            "y": 308,
+            "width": 71,
+            "height": 21
+          },
+          {
+            "text": "/GEMMINPUT",
+            "x": 808,
+            "y": 244,
+            "width": 126,
+            "height": 16
+          },
+          {
+            "text": "OUTPUT",
+            "x": 43,
+            "y": 392,
+            "width": 61,
+            "height": 17
+          },
+          {
+            "text": "SCALINGFACTO",
+            "x": 840,
+            "y": 399,
+            "width": 92,
+            "height": 15
+          },
+          {
+            "text": "CUDACORE",
+            "x": 47,
+            "y": 453,
+            "width": 72,
+            "height": 12
+          },
+          {
+            "text": "LOWPRECACC",
+            "x": 844,
+            "y": 221,
+            "width": 90,
+            "height": 15
+          },
+          {
+            "text": "WGMMA",
+            "x": 653,
+            "y": 74,
+            "width": 88,
+            "height": 21
+          },
+          {
+            "text": "NTERVA",
+            "x": 880,
+            "y": 355,
+            "width": 56,
+            "height": 16
+          },
+          {
+            "text": "SCALINC",
+            "x": 47,
+            "y": 77,
+            "width": 53,
+            "height": 14
+          },
+          {
+            "text": "WEIGHT",
+            "x": 396,
+            "y": 46,
+            "width": 65,
+            "height": 18
+          },
+          {
+            "text": "SCALING",
+            "x": 403,
+            "y": 93,
+            "width": 51,
+            "height": 13
+          },
+          {
+            "text": "FACTOR",
+            "x": 402,
+            "y": 109,
+            "width": 49,
+            "height": 14
+          },
+          {
+            "text": "FACTOR",
+            "x": 56,
+            "y": 95,
+            "width": 44,
+            "height": 12
+          },
+          {
+            "text": "TENSORCORE",
+            "x": 47,
+            "y": 348,
+            "width": 75,
+            "height": 16
+          },
+          {
+            "text": "NG",
+            "x": 887,
+            "y": 328,
+            "width": 40,
+            "height": 17
+          },
+          {
+            "text": "INPUT",
+            "x": 28,
+            "y": 48,
+            "width": 49,
+            "height": 15
+          },
+          {
+            "text": "口",
+            "x": 779,
+            "y": 243,
+            "width": 53,
+            "height": 23
+          },
+          {
+            "text": "NC",
+            "x": 466,
+            "y": 175,
+            "width": 32,
+            "height": 18
+          },
+          {
+            "text": "VC",
+            "x": 75,
+            "y": 163,
+            "width": 27,
+            "height": 16
+          },
+          {
+            "text": "NC",
+            "x": 425,
+            "y": 213,
+            "width": 33,
+            "height": 17
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f7f7f6",
+        "__spacing": "both",
+        "id": "u1f99e80f",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/v3-fp8/images/1790638476904-f1a64c9d-d1b4-4d9a-bf0b-0338235f7652.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%221%20%5C%5Ctimes%20128%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F2e697c8a674440e2c4af32781563e951.svg%22%2C%22id%22%3A%22CIasc%22%7D"
+      },
+      "value": {
+        "code": "1 \\times 128",
+        "src": "https://cdn.nlark.com/yuque/__latex/2e697c8a674440e2c4af32781563e951.svg",
+        "id": "CIasc"
+      },
+      "asset": "assets/v3-fp8/math/2e697c8a674440e2c4af32781563e951.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22128%20%5C%5Ctimes%20128%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F57a55880734793a1bc170f5c634b0c74.svg%22%2C%22id%22%3A%22P6O19%22%7D"
+      },
+      "value": {
+        "code": "128 \\times 128",
+        "src": "https://cdn.nlark.com/yuque/__latex/57a55880734793a1bc170f5c634b0c74.svg",
+        "id": "P6O19"
+      },
+      "asset": "assets/v3-fp8/math/57a55880734793a1bc170f5c634b0c74.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22K%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F38a3f4d664b7a723d138f9d57be0c783.svg%22%2C%22id%22%3A%22k2zps%22%7D"
+      },
+      "value": {
+        "code": "K",
+        "src": "https://cdn.nlark.com/yuque/__latex/38a3f4d664b7a723d138f9d57be0c783.svg",
+        "id": "k2zps"
+      },
+      "asset": "assets/v3-fp8/math/38a3f4d664b7a723d138f9d57be0c783.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22K%20%3D%204096%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F36c02df76659b7fd539ceb8ffb4e5d56.svg%22%2C%22id%22%3A%22idGZT%22%7D"
+      },
+      "value": {
+        "code": "K = 4096",
+        "src": "https://cdn.nlark.com/yuque/__latex/36c02df76659b7fd539ceb8ffb4e5d56.svg",
+        "id": "idGZT"
+      },
+      "asset": "assets/v3-fp8/math/36c02df76659b7fd539ceb8ffb4e5d56.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22N_C%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fed8d2849bfe5f97caec443f2bdc71250.svg%22%2C%22id%22%3A%22AtEcJ%22%7D"
+      },
+      "value": {
+        "code": "N_C",
+        "src": "https://cdn.nlark.com/yuque/__latex/ed8d2849bfe5f97caec443f2bdc71250.svg",
+        "id": "AtEcJ"
+      },
+      "asset": "assets/v3-fp8/math/ed8d2849bfe5f97caec443f2bdc71250.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22K%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F38a3f4d664b7a723d138f9d57be0c783.svg%22%2C%22id%22%3A%22OOmk6%22%7D"
+      },
+      "value": {
+        "code": "K",
+        "src": "https://cdn.nlark.com/yuque/__latex/38a3f4d664b7a723d138f9d57be0c783.svg",
+        "id": "OOmk6"
+      },
+      "asset": "assets/v3-fp8/math/38a3f4d664b7a723d138f9d57be0c783.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22N_C%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fed8d2849bfe5f97caec443f2bdc71250.svg%22%2C%22id%22%3A%22S4HHo%22%7D"
+      },
+      "value": {
+        "code": "N_C",
+        "src": "https://cdn.nlark.com/yuque/__latex/ed8d2849bfe5f97caec443f2bdc71250.svg",
+        "id": "S4HHo"
+      },
+      "asset": "assets/v3-fp8/math/ed8d2849bfe5f97caec443f2bdc71250.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%221%20%5C%5Ctimes%20128%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F2e697c8a674440e2c4af32781563e951.svg%22%2C%22id%22%3A%22US1r3%22%7D"
+      },
+      "value": {
+        "code": "1 \\times 128",
+        "src": "https://cdn.nlark.com/yuque/__latex/2e697c8a674440e2c4af32781563e951.svg",
+        "id": "US1r3"
+      },
+      "asset": "assets/v3-fp8/math/2e697c8a674440e2c4af32781563e951.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22128%20%5C%5Ctimes%20128%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F57a55880734793a1bc170f5c634b0c74.svg%22%2C%22id%22%3A%22XqVbM%22%7D"
+      },
+      "value": {
+        "code": "128 \\times 128",
+        "src": "https://cdn.nlark.com/yuque/__latex/57a55880734793a1bc170f5c634b0c74.svg",
+        "id": "XqVbM"
+      },
+      "asset": "assets/v3-fp8/math/57a55880734793a1bc170f5c634b0c74.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%221%20%5C%5Ctimes%20128%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F2e697c8a674440e2c4af32781563e951.svg%22%2C%22id%22%3A%22mayti%22%7D"
+      },
+      "value": {
+        "code": "1 \\times 128",
+        "src": "https://cdn.nlark.com/yuque/__latex/2e697c8a674440e2c4af32781563e951.svg",
+        "id": "mayti"
+      },
+      "asset": "assets/v3-fp8/math/2e697c8a674440e2c4af32781563e951.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22128%20%5C%5Ctimes%201%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fb9b6d0bb7b899d69008b3f8eccc2d20d.svg%22%2C%22id%22%3A%22vBtFz%22%7D"
+      },
+      "value": {
+        "code": "128 \\times 1",
+        "src": "https://cdn.nlark.com/yuque/__latex/b9b6d0bb7b899d69008b3f8eccc2d20d.svg",
+        "id": "vBtFz"
+      },
+      "asset": "assets/v3-fp8/math/b9b6d0bb7b899d69008b3f8eccc2d20d.svg"
+    }
+  ]
+}

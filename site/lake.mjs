@@ -146,6 +146,19 @@ export async function readLake(file, escape, renderMath) {
     content = content.replace(anchor, (opening) => { matches++; return html + opening; });
     if (matches !== 1) throw new Error(`Missing or repeated Lake figure anchor: ${figure.before}`);
   }
+  // Independently exported sections can reuse anchors. Rename only the
+  // declared anchors and their local links, preserving the source archive.
+  for (const [from, to] of Object.entries(manifest.idOverrides ?? {})) {
+    if (!/^[\w-]+$/.test(from) || !/^[\w-]+$/.test(to)) {
+      throw new Error(`Invalid Lake anchor correction: ${from}`);
+    }
+    const anchor = new RegExp(`(\\sid=")${from}("(?=[\\s>]))`, 'g');
+    if ([...content.matchAll(anchor)].length !== 1 || content.includes(` id="${to}"`)) {
+      throw new Error(`Lake anchor correction must be unique: ${from}`);
+    }
+    content = content.replace(anchor, `$1${to}$2`)
+      .replaceAll(`href="#${from}"`, `href="#${to}"`);
+  }
   const text = content.replace(/<[^>]*>/g, '');
   return {
     title: manifest.title,
