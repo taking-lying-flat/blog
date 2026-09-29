@@ -129,6 +129,12 @@
 .lake-document .lake-image-source { display: block; margin: -8px 0 12px; font-size: 13px; line-height: 1.5; white-space: normal; }
 
 .lake-document .lake-revised-section { white-space: normal; }
-.lake-document .lake-revised-section h3 { margin: 20px 0 8px; font-size: 19px; line-height: 1.5; }
 .lake-document .lake-revised-section .equation { margin: 12px 0; padding: 2px 0 4px; }
-.lake-document .lake-revised-section .equation mjx-container[display="true"] { margin: 0; }
+.lake-document .lake-revised-section .equation mjx-container[display="true"] { width: 100%; margin: 0; }
+
+[data-post="policy-optimization-ii"] .lake-document h1 { margin-block: 28px 14px; }
+[data-post="policy-optimization-ii"] .lake-document h2 { margin-block: 24px 12px; }
+[data-post="policy-optimization-ii"] .lake-document > :first-child { margin-top: 0; }
+[data-post="policy-optimization-ii"] .lake-document .lake-image { display: block; margin: 10px auto; }
+[data-post="policy-optimization-ii"] .lake-document .lake-image-source { margin: 0 0 6px; }
+[data-post="policy-optimization-ii"] .lake-revised-section .equation { margin: 8px 0; }

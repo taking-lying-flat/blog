@@ -2,8 +2,8 @@
   "u797d6151": {
     "from": "assets/images/1790664128277-7de9bf19-2524-47fe-9106-328b3eea749d.png",
     "asset": "assets/images/dpo-loss.png",
-    "width": 800,
-    "height": 645.372,
+    "width": 680,
+    "height": 548.566,
     "alt": "OpenRLHF · DPOLoss.forward（ipo=False，label_smoothing=0）",
     "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/models/loss.py#L329-L364",
     "label": "OpenRLHF · DPOLoss.forward（ipo=False，label_smoothing=0）"

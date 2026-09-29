@@ -6,7 +6,7 @@
   "assetHashesVerified": true,
   "images": 11,
   "headings": 8,
-  "formulaEdits": 18,
+  "formulaEdits": 21,
   "textEdits": 11,
   "codeImages": {
     "sourceLinks": 3,
@@ -41,100 +41,80 @@
     ],
     "grpoObjectiveRows": 2,
     "codeImageWidths": {
-      "dpo": 800,
+      "dpo": 680,
       "experience": 780
     },
     "bodyLineHeightUnchanged": true,
     "desktop": [
       {
-        "viewport": 1280,
+        "width": 1280,
         "overflow": false,
         "broken": 0,
         "wide": [],
-        "heights": {
-          "GwZDs": {
-            "width": 1024,
-            "height": 37.421875
-          },
-          "dKR5u": {
-            "width": 1024,
-            "height": 56.09375
-          },
-          "p5I1S": {
-            "width": 824.28125,
-            "height": 71.109375
-          },
-          "Rd9O4": {
-            "width": 1024,
-            "height": 69.21875
-          },
-          "JNe8n": {
-            "width": 1024,
-            "height": 133.609375
-          },
-          "u797d6151": {
-            "width": 800,
-            "height": 645.359375
-          },
-          "u152415ba": {
-            "width": 780,
-            "height": 506.890625
-          }
+        "emptyParagraphs": 0,
+        "dpoImage": {
+          "width": 680,
+          "height": 548.5625
         },
-        "supervisionHeadings": [
-          "结果监督",
-          "过程监督"
-        ],
-        "displayEquations": 4,
-        "oldSupervisionRemoved": true,
-        "nextParagraph": "uf68cc5c6",
-        "toc": 8
+        "bodyLineHeight": "27.84px",
+        "codeSourceLinks": 3,
+        "toc": 8,
+        "supervisionInline": true
       },
       {
-        "viewport": 1920,
+        "width": 1920,
         "overflow": false,
         "broken": 0,
         "wide": [],
-        "heights": {
-          "GwZDs": {
-            "width": 1024,
-            "height": 37.421875
-          },
-          "dKR5u": {
-            "width": 1024,
-            "height": 56.09375
-          },
-          "p5I1S": {
-            "width": 824.28125,
-            "height": 71.109375
-          },
-          "Rd9O4": {
-            "width": 1024,
-            "height": 69.21875
-          },
-          "JNe8n": {
-            "width": 1024,
-            "height": 133.609375
-          },
-          "u797d6151": {
-            "width": 800,
-            "height": 645.359375
-          },
-          "u152415ba": {
-            "width": 780,
-            "height": 506.890625
-          }
+        "emptyParagraphs": 0,
+        "dpoImage": {
+          "width": 680,
+          "height": 548.5625
         },
-        "supervisionHeadings": [
-          "结果监督",
-          "过程监督"
-        ],
-        "displayEquations": 4,
-        "oldSupervisionRemoved": true,
-        "nextParagraph": "uf68cc5c6",
-        "toc": 8
+        "bodyLineHeight": "27.84px",
+        "codeSourceLinks": 3,
+        "toc": 8,
+        "supervisionInline": true
       }
     ],
-    "build": "passed"
+    "build": "passed",
+    "paperEquationNumbers": {
+      "YPV9n": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "PCcbe": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "JwmO7": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "numberingOnlyFormulaEdits": true,
+    "supervisionLabels": "bold inline",
+    "equationAlignment": "centered with right-aligned numbers"
   }
 }
