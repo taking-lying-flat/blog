@@ -39,7 +39,7 @@ GC_{\mathcal A}(q,o,t,\pi_{\mathrm{rf}})
 
 - 记 $`h_t=(q,o_{<t})`$ 为生成第 $`t`$ 个 token 时的上下文，$`\theta_0`$ 为当前批次的采样策略参数；求导时固定采样数据、参考策略、奖励模型及优势估计
 
-<details class="lake-derivation" id="insights-sft">
+<details class="lake-derivation" id="insights-sft" open>
 <summary>SFT · 监督微调</summary>
 <div class="lake-derivation-body">
 
@@ -66,7 +66,7 @@ GC_{\mathcal A}(q,o,t,\pi_{\mathrm{rf}})
 </div>
 </details>
 
-<details class="lake-derivation" id="insights-rft">
+<details class="lake-derivation" id="insights-rft" open>
 <summary>RFT · 拒绝采样微调</summary>
 <div class="lake-derivation-body">
 
@@ -101,7 +101,7 @@ GC_{\mathrm{RFT}}(q,o,t)=\mathbb I(q,o)=
 </div>
 </details>
 
-<details class="lake-derivation" id="insights-online-rft">
+<details class="lake-derivation" id="insights-online-rft" open>
 <summary>Online RFT · 在线拒绝采样微调</summary>
 <div class="lake-derivation-body">
 
@@ -120,7 +120,7 @@ GC_{\mathrm{RFT}}(q,o,t)=\mathbb I(q,o)=
 </div>
 </details>
 
-<details class="lake-derivation" id="insights-dpo">
+<details class="lake-derivation" id="insights-dpo" open>
 <summary>DPO · 直接偏好优化</summary>
 <div class="lake-derivation-body">
 
@@ -157,7 +157,7 @@ GC_{\mathrm{DPO}}^+=c_\theta,\qquad GC_{\mathrm{DPO}}^-=-c_\theta\tag{18}
 </div>
 </details>
 
-<details class="lake-derivation" id="insights-ppo">
+<details class="lake-derivation" id="insights-ppo" open>
 <summary>PPO · 近端策略优化</summary>
 <div class="lake-derivation-body">
 
@@ -202,7 +202,7 @@ GC_{\mathrm{PPO}}(q,o,t)=A_t\tag{22}
 </div>
 </details>
 
-<details class="lake-derivation" id="insights-grpo">
+<details class="lake-derivation" id="insights-grpo" open>
 <summary>GRPO · 组相对策略优化</summary>
 <div class="lake-derivation-body">
 
@@ -236,8 +236,6 @@ GC_{\mathrm{PPO}}(q,o,t)=A_t\tag{22}
 GC_{\mathrm{GRPO}}(q,\{o_j\}_{j=1}^{G},i,t)
 =\hat A_{i,t}+\beta\left[u_{i,t}(\theta_0)-1\right]\tag{25}
 ```
-
-- 这里求导的是固定采样批次上的代理目标，组内优势使用前文的结果监督或过程监督定义
 
 </div>
 </details>

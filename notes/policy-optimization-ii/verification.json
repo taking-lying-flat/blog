@@ -275,6 +275,26 @@
       "displayAndInlineMathUnchanged": true,
       "derivationPanels": 6,
       "build": "passed"
+    },
+    "expandedPanels": {
+      "defaultOpen": 6,
+      "canCollapse": true,
+      "desktop": [
+        {
+          "width": 1280,
+          "open": 6,
+          "overflow": false,
+          "wide": 0,
+          "removed": true
+        },
+        {
+          "width": 1920,
+          "open": 6,
+          "overflow": false,
+          "wide": 0,
+          "removed": true
+        }
+      ]
     }
   }
 }
