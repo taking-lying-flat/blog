@@ -7,7 +7,7 @@
   "images": 11,
   "headings": 8,
   "formulaEdits": 21,
-  "textEdits": 11,
+  "textEdits": 18,
   "codeImages": {
     "sourceLinks": 3,
     "dpoAndExperienceASTMatchOfficialSource": true,
@@ -133,5 +133,11 @@
       "textScalePreserved": true,
       "astMatchesOfficial": true
     }
+  },
+  "terminalPunctuation": {
+    "paragraphsAndListItemsChanged": 18,
+    "remaining": 0,
+    "otherArticleContentUnchanged": true,
+    "build": "passed"
   }
 }
