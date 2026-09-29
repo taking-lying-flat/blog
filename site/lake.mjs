@@ -77,7 +77,8 @@ export async function readLake(file, escape, renderMath) {
     if (override.removeEmptyBlock) {
       const block = override.removeEmptyBlock;
       if (!['li', 'p'].includes(block) || replacement !== '') throw new Error(`Invalid Lake block deletion: ${id}`);
-      const emptyBlock = new RegExp(`<${block}\\b[^>]*>\\s*<span\\b[^>]*\\sid="${id}"[^>]*><\\/span>\\s*(?:<br\\s*\\/?>\\s*)?<\\/${block}>`, 'g');
+      const emptyFormatting = '(?:\\s|<br\\s*\\/?>|<\\/?(?:span|strong|em|b|i|u)\\b[^>]*>)*';
+      const emptyBlock = new RegExp(`<${block}\\b[^>]*>${emptyFormatting}<span\\b[^>]*\\sid="${id}"[^>]*><\\/span>${emptyFormatting}<\\/${block}>`, 'g');
       if ([...content.matchAll(emptyBlock)].length !== 1) throw new Error(`Lake block deletion must match once: ${id}`);
       content = content.replace(emptyBlock, '');
     }
