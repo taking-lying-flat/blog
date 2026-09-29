@@ -20,6 +20,14 @@
   },
   "assets": [
     {
+      "source": "user-upload",
+      "file": "assets/images/gae-openrlhf.png",
+      "bytes": 426152,
+      "sha256": "9a3477c3d2a433ccfd8819196c1cc159ddaefe459cd0ca83caf6528b5014ba4f",
+      "width": 1402,
+      "height": 886
+    },
+    {
       "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1780197016527-249dc5dc-4b3d-4f78-8366-7782e9cb3a26.png",
       "file": "assets/images/1780197016527-249dc5dc-4b3d-4f78-8366-7782e9cb3a26.png",
       "bytes": 82765,

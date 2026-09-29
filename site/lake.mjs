@@ -153,7 +153,9 @@ export async function readLake(file, escape, renderMath) {
   for (const figure of figures) {
     const asset = assets.get(figure.asset);
     if (!/^[\w-]+$/.test(figure.id) || !/^[\w-]+$/.test(figure.before) ||
-        !asset || !/^https:\/\//.test(asset.source)) throw new Error(`Invalid Lake figure: ${figure.id}`);
+        !asset || !(asset.source === 'user-upload' || /^https:\/\//.test(asset.source))) {
+      throw new Error(`Invalid Lake figure: ${figure.id}`);
+    }
     const html = `<figure class="lake-figure" id="${figure.id}"><a href="${escape(asset.file)}"><img src="${escape(asset.file)}" alt="${escape(figure.alt)}" width="${asset.width}" height="${asset.height}" decoding="async"></a>${figure.caption ? `<figcaption>${escape(figure.caption)} · <a href="${escape(figure.source)}">官方来源</a></figcaption>` : ''}</figure>`;
     const anchor = new RegExp(`<p\\b[^>]*\\sid="${figure.before}"[^>]*>`, 'g');
     let matches = 0;
