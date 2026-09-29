@@ -3,8 +3,8 @@
     "file": "dpo-loss.py",
     "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/models/loss.py#L329-L364",
     "revision": "dc2a7ad326f619fc5a47737ea47d1920ce2c0b53",
-    "changes": "移除注释和文档字符串、调整缩进与换行；Experience 仅截取字段声明。",
-    "lines": 28,
+    "changes": "移除注释，合并参数列表、损失表达式和奖励计算中多余的换行；保留官方原函数全部计算逻辑。",
+    "lines": 18,
     "astVerified": true
   },
   "u152415ba": {

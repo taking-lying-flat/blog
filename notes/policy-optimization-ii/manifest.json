@@ -1288,10 +1288,10 @@
     {
       "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/models/loss.py#L329-L364",
       "file": "assets/images/dpo-loss.png",
-      "bytes": 284194,
-      "sha256": "c2400dbea08305f1585a02017fe7af4107b8f8d0222f53fc6f3d08563b80f918",
-      "width": 2204,
-      "height": 1778
+      "bytes": 253996,
+      "sha256": "45a79ba7c79b6778dd790d1181c3183590a58c1375f63cc3eae65982326f72ce",
+      "width": 2780,
+      "height": 1162
     },
     {
       "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/trainer/ppo_utils/experience.py#L28-L69",

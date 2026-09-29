@@ -11,7 +11,8 @@
   "codeImages": {
     "sourceLinks": 3,
     "dpoAndExperienceASTMatchOfficialSource": true,
-    "maxCodeImageLines": 28
+    "maxCodeImageLines": 23,
+    "dpoLines": 18
   },
   "desktop": {
     "widths": [
@@ -41,7 +42,7 @@
     ],
     "grpoObjectiveRows": 2,
     "codeImageWidths": {
-      "dpo": 680,
+      "dpo": 858,
       "experience": 780
     },
     "bodyLineHeightUnchanged": true,
@@ -53,13 +54,17 @@
         "wide": [],
         "emptyParagraphs": 0,
         "dpoImage": {
-          "width": 680,
-          "height": 548.5625
+          "width": 858,
+          "height": 358.625
         },
         "bodyLineHeight": "27.84px",
         "codeSourceLinks": 3,
         "toc": 8,
-        "supervisionInline": true
+        "supervisionLists": 5,
+        "supervisionLabels": [
+          "结果监督",
+          "过程监督"
+        ]
       },
       {
         "width": 1920,
@@ -68,13 +73,17 @@
         "wide": [],
         "emptyParagraphs": 0,
         "dpoImage": {
-          "width": 680,
-          "height": 548.5625
+          "width": 858,
+          "height": 358.625
         },
         "bodyLineHeight": "27.84px",
         "codeSourceLinks": 3,
         "toc": 8,
-        "supervisionInline": true
+        "supervisionLists": 5,
+        "supervisionLabels": [
+          "结果监督",
+          "过程监督"
+        ]
       }
     ],
     "build": "passed",
@@ -114,7 +123,15 @@
       ]
     },
     "numberingOnlyFormulaEdits": true,
-    "supervisionLabels": "bold inline",
-    "equationAlignment": "centered with right-aligned numbers"
+    "supervisionLabels": "bold headings followed by unordered lists",
+    "equationAlignment": "centered with right-aligned numbers",
+    "compactDpoImage": {
+      "linesBefore": 28,
+      "linesAfter": 18,
+      "heightBefore": 548.5625,
+      "heightAfter": 358.625,
+      "textScalePreserved": true,
+      "astMatchesOfficial": true
+    }
   }
 }
