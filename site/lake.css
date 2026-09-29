@@ -138,3 +138,10 @@
 [data-post="policy-optimization-ii"] .lake-document .lake-image { display: block; margin: 10px auto; }
 [data-post="policy-optimization-ii"] .lake-document .lake-image-source { margin: 0 0 6px; }
 [data-post="policy-optimization-ii"] .lake-revised-section .equation { margin: 8px 0; }
+
+.lake-document .lake-appendix .equation { font-size: 16px; }
+.lake-document .lake-derivation { margin: 8px 0; border: 1px solid #d8dee4; border-radius: 5px; }
+.lake-document .lake-derivation > summary { padding: 8px 12px; font-weight: 700; cursor: pointer; }
+.lake-document .lake-derivation[open] > summary { border-bottom: 1px solid #d8dee4; margin-bottom: 10px; }
+.lake-document .lake-derivation-body { padding: 0 12px 8px; }
+.lake-document .lake-derivation-body > :last-child { margin-bottom: 0; }

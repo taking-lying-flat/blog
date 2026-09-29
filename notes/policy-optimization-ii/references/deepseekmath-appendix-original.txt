@@ -1,0 +1,115 @@
+**A.1.1. 监督微调**
+
+监督微调（SFT）旨在最大化以下目标函数：
+
+$$
+\mathcal{J}_{\mathrm{SFT}}(\theta)=\mathbb{E}_{q,o\sim P_{\mathrm{sft}}(Q,O)}\left[\frac{1}{|o|}\sum_{t=1}^{|o|}\log\pi_{\theta}(o_t\mid q,o_{<t})\right].\tag{6}
+$$
+
+$\mathcal{J}_{\mathrm{SFT}}(\theta)$ 的梯度为：
+
+$$
+\nabla_{\theta}\mathcal{J}_{\mathrm{SFT}}=\mathbb{E}_{q,o\sim P_{\mathrm{sft}}(Q,O)}\left[\frac{1}{|o|}\sum_{t=1}^{|o|}\nabla_{\theta}\log\pi_{\theta}(o_t\mid q,o_{<t})\right].\tag{7}
+$$
+
+**数据来源**：用于 SFT 的数据集。**奖励函数**：可视为人工筛选机制。**梯度系数**：始终设为 1。
+
+**A.1.2. 拒绝采样微调**
+
+拒绝采样微调（RFT）首先针对每个问题，从经过监督微调的大语言模型中采样生成多个输出，然后使用其中答案正确的输出训练大语言模型。形式化地，RFT 旨在最大化以下目标函数：
+
+$$
+\mathcal{J}_{\mathrm{RFT}}(\theta)=\mathbb{E}_{q\sim P_{\mathrm{sft}}(Q),\,o\sim\pi_{\mathrm{sft}}(O\mid q)}\left[\frac{1}{|o|}\sum_{t=1}^{|o|}\mathbb{I}(o)\log\pi_{\theta}(o_t\mid q,o_{<t})\right].\tag{8}
+$$
+
+$\mathcal{J}_{\mathrm{RFT}}(\theta)$ 的梯度为：
+
+$$
+\nabla_{\theta}\mathcal{J}_{\mathrm{RFT}}(\theta)=\mathbb{E}_{q\sim P_{\mathrm{sft}}(Q),\,o\sim\pi_{\mathrm{sft}}(O\mid q)}\left[\frac{1}{|o|}\sum_{t=1}^{|o|}\mathbb{I}(o)\nabla_{\theta}\log\pi_{\theta}(o_t\mid q,o_{<t})\right].\tag{9}
+$$
+
+**数据来源**：SFT 数据集中的问题，以及从 SFT 模型中采样生成的相应输出。**奖励函数**：基于规则的判定，即判断答案是否正确。**梯度系数**：
+
+$$
+GC_{\mathrm{RFT}}(q,o,t)=\mathbb{I}(o)=\begin{cases}1,&\text{输出 }o\text{ 中的答案正确},\\0,&\text{输出 }o\text{ 中的答案错误}.\end{cases}\tag{10}
+$$
+
+**A.1.3. 在线拒绝采样微调**
+
+RFT 与在线拒绝采样微调（Online RFT）的唯一区别在于，Online RFT 的输出是从当前策略模型 $\pi_{\theta}$ 中实时采样得到的，而非从 SFT 模型 $\pi_{\theta_{\mathrm{sft}}}$ 中采样得到。因此，Online RFT 的梯度为：
+
+$$
+\nabla_{\theta}\mathcal{J}_{\mathrm{OnRFT}}(\theta)=\mathbb{E}_{q\sim P_{\mathrm{sft}}(Q),\,o\sim\pi_{\theta}(O\mid q)}\left[\frac{1}{|o|}\sum_{t=1}^{|o|}\mathbb{I}(o)\nabla_{\theta}\log\pi_{\theta}(o_t\mid q,o_{<t})\right].\tag{11}
+$$
+
+**A.1.4. 直接偏好优化（DPO）**
+
+DPO 的目标函数为：
+
+$$
+\mathcal{J}_{\mathrm{DPO}}(\theta)=\mathbb{E}_{q\sim P_{\mathrm{sft}}(Q),\,o^{+},o^{-}\sim\pi_{\mathrm{sft}}(O\mid q)}\left[\log\sigma\left(\frac{\beta}{|o^{+}|}\sum_{t=1}^{|o^{+}|}\log\frac{\pi_{\theta}(o_t^{+}\mid q,o_{<t}^{+})}{\pi_{\mathrm{ref}}(o_t^{+}\mid q,o_{<t}^{+})}-\frac{\beta}{|o^{-}|}\sum_{t=1}^{|o^{-}|}\log\frac{\pi_{\theta}(o_{<t}^{-}\mid q,o_{<t}^{-})}{\pi_{\mathrm{ref}}(o_{<t}^{-}\mid q,o_{<t}^{-})}\right)\right].\tag{12}
+$$
+
+$\mathcal{J}_{\mathrm{DPO}}(\theta)$ 的梯度为：
+
+$$
+\nabla_{\theta}\mathcal{J}_{\mathrm{DPO}}(\theta)=\mathbb{E}_{q\sim P_{\mathrm{sft}}(Q),\,o^{+},o^{-}\sim\pi_{\mathrm{sft}}(O\mid q)}\left[\frac{1}{|o^{+}|}\sum_{t=1}^{|o^{+}|}GC_{\mathrm{DPO}}(q,o,t)\nabla_{\theta}\log\pi_{\theta}(o_t^{+}\mid q,o_{<t}^{+})-\frac{1}{|o^{-}|}\sum_{t=1}^{|o^{-}|}GC_{\mathrm{DPO}}(q,o,t)\nabla_{\theta}\log\pi_{\theta}(o_t^{-}\mid q,o_{<t}^{-})\right].\tag{13}
+$$
+
+**数据来源**：SFT 数据集中的问题，以及从 SFT 模型中采样生成的相应输出。**奖励函数**：通用领域中的人类偏好；在数学任务中，也可以采用基于规则的判定。**梯度系数**：
+
+$$
+GC_{\mathrm{DPO}}(q,o,t)=\sigma\left(\beta\log\frac{\pi_{\theta}(o_t^{-}\mid q,o_{<t}^{-})}{\pi_{\mathrm{ref}}(o_t^{-}\mid q,o_{<t}^{-})}-\beta\log\frac{\pi_{\theta}(o_t^{+}\mid q,o_{<t}^{+})}{\pi_{\mathrm{ref}}(o_t^{+}\mid q,o_{<t}^{+})}\right).\tag{14}
+$$
+
+**A.1.5. 近端策略优化（PPO）**
+
+PPO 的目标函数为：
+
+$$
+\mathcal{J}_{\mathrm{PPO}}(\theta)=\mathbb{E}_{q\sim P_{\mathrm{sft}}(Q),\,o\sim\pi_{\theta_{\mathrm{old}}}(O\mid q)}\left[\frac{1}{|o|}\sum_{t=1}^{|o|}\min\left(\frac{\pi_{\theta}(o_t\mid q,o_{<t})}{\pi_{\theta_{\mathrm{old}}}(o_t\mid q,o_{<t})}A_t,\,\operatorname{clip}\left(\frac{\pi_{\theta}(o_t\mid q,o_{<t})}{\pi_{\theta_{\mathrm{old}}}(o_t\mid q,o_{<t})},1-\varepsilon,1+\varepsilon\right)A_t\right)\right].\tag{15}
+$$
+
+为简化分析，假设模型在每个探索阶段结束后仅进行一次更新，从而保证 $\pi_{\theta_{\mathrm{old}}}=\pi_{\theta}$。在这种情况下，可以移除 $\min$ 和 $\operatorname{clip}$ 运算：
+
+$$
+\mathcal{J}_{\mathrm{PPO}}(\theta)=\mathbb{E}_{q\sim P_{\mathrm{sft}}(Q),\,o\sim\pi_{\theta_{\mathrm{old}}}(O\mid q)}\left[\frac{1}{|o|}\sum_{t=1}^{|o|}\frac{\pi_{\theta}(o_t\mid q,o_{<t})}{\pi_{\theta_{\mathrm{old}}}(o_t\mid q,o_{<t})}A_t\right].\tag{16}
+$$
+
+$\mathcal{J}_{\mathrm{PPO}}(\theta)$ 的梯度为：
+
+$$
+\nabla_{\theta}\mathcal{J}_{\mathrm{PPO}}(\theta)=\mathbb{E}_{q\sim P_{\mathrm{sft}}(Q),\,o\sim\pi_{\theta_{\mathrm{old}}}(O\mid q)}\left[\frac{1}{|o|}\sum_{t=1}^{|o|}A_t\nabla_{\theta}\log\pi_{\theta}(o_t\mid q,o_{<t})\right].\tag{17}
+$$
+
+**数据来源**：SFT 数据集中的问题，以及从策略模型中采样生成的相应输出。**奖励函数**：奖励模型。**梯度系数**：
+
+$$
+GC_{\mathrm{PPO}}(q,o,t,\pi_{\theta_{\mathrm{rm}}})=A_t.\tag{18}
+$$
+
+其中，$A_t$ 为优势值，基于奖励 $\{r_{\ge t}\}$ 和学习得到的价值函数 $V_{\psi}$，通过广义优势估计（Generalized Advantage Estimation，GAE）计算得到（Schulman et al., 2015）。
+
+**A.1.6. 组相对策略优化（GRPO）**
+
+GRPO 的目标函数如下。为简化分析，假设 $\pi_{\theta_{\mathrm{old}}}=\pi_{\theta}$：
+
+$$
+\mathcal{J}_{\mathrm{GRPO}}(\theta)=\mathbb{E}_{q\sim P_{\mathrm{sft}}(Q),\,\{o_i\}_{i=1}^{G}\sim\pi_{\theta_{\mathrm{old}}}(O\mid q)}\left[\frac{1}{G}\sum_{i=1}^{G}\frac{1}{|o_i|}\sum_{t=1}^{|o_i|}\left[\frac{\pi_{\theta}(o_{i,t}\mid q,o_{i,<t})}{\pi_{\theta_{\mathrm{old}}}(o_{i,t}\mid q,o_{i,<t})}\hat{A}_{i,t}-\beta\left(\frac{\pi_{\mathrm{ref}}(o_{i,t}\mid q,o_{i,<t})}{\pi_{\theta}(o_{i,t}\mid q,o_{i,<t})}-\log\frac{\pi_{\mathrm{ref}}(o_{i,t}\mid q,o_{i,<t})}{\pi_{\theta}(o_{i,t}\mid q,o_{i,<t})}-1\right)\right]\right].\tag{19}
+$$
+
+$\mathcal{J}_{\mathrm{GRPO}}(\theta)$ 的梯度为：
+
+$$
+\nabla_{\theta}\mathcal{J}_{\mathrm{GRPO}}(\theta)=\mathbb{E}_{q\sim P_{\mathrm{sft}}(Q),\,\{o_i\}_{i=1}^{G}\sim\pi_{\theta_{\mathrm{old}}}(O\mid q)}\left[\frac{1}{G}\sum_{i=1}^{G}\frac{1}{|o_i|}\sum_{t=1}^{|o_i|}\left[\hat{A}_{i,t}+\beta\left(\frac{\pi_{\mathrm{ref}}(o_{i,t}\mid o_{i,<t})}{\pi_{\theta}(o_{i,t}\mid o_{i,<t})}-1\right)\right]\nabla_{\theta}\log\pi_{\theta}(o_{i,t}\mid q,o_{i,<t})\right].\tag{20}
+$$
+
+**数据来源**：SFT 数据集中的问题，以及从策略模型中采样生成的相应输出。**奖励函数**：奖励模型。**梯度系数**：
+
+$$
+GC_{\mathrm{GRPO}}(q,o,t,\pi_{\theta_{\mathrm{rm}}})=\hat{A}_{i,t}+\beta\left(\frac{\pi_{\mathrm{ref}}(o_{i,t}\mid o_{i,<t})}{\pi_{\theta}(o_{i,t}\mid o_{i,<t})}-1\right).\tag{21}
+$$
+
+其中，$\hat{A}_{i,t}$ 基于组内奖励分数计算得到。
+
+> 译注：公式沿用原图的符号与简化假设；式（12）负样本项中的 $o_{<t}^{-}$ 也按原图保留。

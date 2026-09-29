@@ -294,6 +294,30 @@ for (const post of posts) {
       post.content = post.content.replace(anchor,
         () => `<section class="lake-revised-section" id="${replacement.id}">${html.trim()}</section>`);
     }
+    for (const file of post.appendMarkdown ?? []) {
+      if (!/^[\w-]+\.md$/.test(file)) throw new Error(`Invalid Lake Markdown addition: ${file}`);
+      const source = await readFile(path.join(post.directory, file), 'utf8');
+      const tokens = markdown.parse(source, {});
+      cleanProsePunctuation(tokens);
+      for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+        if (token.type === 'heading_open') {
+          const id = slugify(plainTitle(inlineText(tokens[i + 1])).replace(/[\uFE0E\uFE0F]/g, '')).replace(/^-+|-+$/g, '');
+          if (!id || post.content.includes(` id="${id}"`)) throw new Error(`Duplicate Lake heading: ${id}`);
+          token.attrSet('id', id);
+          if (token.tag === 'h2') token.attrSet('style', 'text-align: center');
+        }
+        if (token.type === 'fence' && token.info.trim() === 'math') await renderMath(token, true);
+        for (const child of token.children ?? []) {
+          if (child.type === 'math_inline') await renderMath(child, false);
+        }
+      }
+      const html = markdown.renderer.render(tokens, markdown.options, { slug: post.slug });
+      post.content += `<section class="lake-revised-section lake-appendix">${html.trim()}</section>`;
+      const prose = tokens.filter(token => token.type === 'inline').map(inlineText).join(' ');
+      post.readingMinutes += Math.ceil((prose.match(/\p{Script=Han}/gu)?.length ?? 0) / 300 +
+        (prose.match(/[A-Za-z]+/g)?.length ?? 0) / 200);
+    }
     if (post.removeEmptyParagraphs) {
       // Exported spacer paragraphs add a blank line on top of section margins.
       // Keep media, formulas and anchors; discard only empty text formatting.
