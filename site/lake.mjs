@@ -83,6 +83,19 @@ export async function readLake(file, escape, renderMath) {
       content = content.replace(emptyBlock, '');
     }
   }
+  // Join an adjacent single-item list to its paragraph, preserving inline cards.
+  for (const { paragraph, listItem } of manifest.paragraphMerges ?? []) {
+    if (!/^[\w-]+$/.test(paragraph) || !/^[\w-]+$/.test(listItem)) {
+      throw new Error(`Invalid Lake paragraph merge: ${paragraph}`);
+    }
+    const inline = '(?:(?!<\\/?(?:p|ul|ol|li)\\b)[\\s\\S])*';
+    const pattern = new RegExp(`(<p\\b[^>]*\\sid="${paragraph}"[^>]*>)(${inline})<\\/p>\\s*<ul\\b[^>]*>\\s*(<li\\b[^>]*\\sid="${listItem}"[^>]*>)(${inline})<\\/li>\\s*<\\/ul>`, 'g');
+    if ([...content.matchAll(pattern)].length !== 1) {
+      throw new Error(`Lake paragraph merge must match once: ${paragraph}`);
+    }
+    content = content.replace(pattern, (_match, opening, body, itemOpening, itemBody) =>
+      `${opening}${body}${itemOpening.replace(/^<li\b/, '<span')}${itemBody}</span></p>`);
+  }
   let index = 0;
   let mathCount = 0;
   let imageCount = 0;
