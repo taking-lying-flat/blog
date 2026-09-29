@@ -1,0 +1,8 @@
+{
+  "cg9OL": {
+    "from": "\\mathcal{J}_{\\mathrm{GRPO}}(\\theta) = \\mathbb{E}\\left[q \\sim P(Q), \\{o_i\\}_{i=1}^{G} \\sim \\pi_{\\theta_{\\mathrm{old}}}(O \\mid q)\\right] \\frac{1}{G}\\sum_{i=1}^{G}\\left(\\min\\left(\\frac{\\pi_\\theta(o_i \\mid q)}{\\pi_{\\theta_{\\mathrm{old}}}(o_i \\mid q)}A_i,\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_i \\mid q)}{\\pi_{\\theta_{\\mathrm{old}}}(o_i \\mid q)},1-\\varepsilon,1+\\varepsilon\\right)A_i\\right)-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta \\| \\pi_{\\mathrm{ref}}\\right)\\right). \\tag{1}",
+    "to": "\\begin{aligned}\n\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)\n&=\\mathbb{E}_{\\substack{q\\sim P(Q)\\\\\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(O\\mid q)}}\n\\Biggl[\\frac{1}{G}\\sum_{i=1}^{G}\\Biggl(\n\\min\\Biggl(\\frac{\\pi_\\theta(o_i\\mid q)}{\\pi_{\\theta_{\\mathrm{old}}}(o_i\\mid q)}A_i,\\\\\n&\\qquad\\operatorname{clip}\\left(\n\\frac{\\pi_\\theta(o_i\\mid q)}{\\pi_{\\theta_{\\mathrm{old}}}(o_i\\mid q)},\n1-\\varepsilon,1+\\varepsilon\\right)A_i\\Biggr)\n-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta\\|\\pi_{\\mathrm{ref}}\\right)\n\\Biggr)\\Biggr].\n\\end{aligned}\\tag{1}",
+    "reason": "将采样分布置于期望下标，并分行展示原目标，避免桌面横向滚动。",
+    "reference": "https://arxiv.org/html/2501.12948v2#S2.E1"
+  }
+}

@@ -1,13 +1,13 @@
 [
   {
     "file": "../notes/deepseek-ai-i/source.lake",
-    "appendFiles": ["../notes/deepseek-ai-i/v3/source.lake", "../notes/deepseek-ai-i/v3-training/source.lake", "../notes/deepseek-ai-i/v3-fp8/source.lake"],
+    "appendFiles": ["../notes/deepseek-ai-i/v3/source.lake", "../notes/deepseek-ai-i/v3-training/source.lake", "../notes/deepseek-ai-i/v3-fp8/source.lake", "../notes/deepseek-ai-i/r1/source.lake"],
     "removeEmptyParagraphs": true,
     "format": "lake",
     "slug": "deepseek-ai-i",
     "date": "2026-09-28",
-    "description": "DeepSeekMoE、DeepSeek-V2 与 DeepSeek-V3 笔记：MLA、专家路由、负载均衡、MTP、DualPipe、FP8 训练与推理部署。",
-    "tags": ["DeepSeek", "MoE", "MLA", "专家路由", "MTP"]
+    "description": "DeepSeekMoE、DeepSeek-V2、DeepSeek-V3 与 DeepSeek-R1 笔记：MLA、专家路由、MTP、FP8、GRPO 与多阶段强化学习。",
+    "tags": ["DeepSeek", "MoE", "MLA", "专家路由", "MTP", "GRPO"]
   },
   {
     "file": "../notes/policy-optimization-i/source.lake",
