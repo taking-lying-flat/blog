@@ -271,6 +271,29 @@ for (const post of posts) {
       post.content = post.content.replace(anchor, (paragraph) => { matches++; return paragraph + content.trim(); });
       if (matches !== 1) throw new Error(`Missing or repeated Lake code anchor: ${insert.after}`);
     }
+    const replacements = JSON.parse(await readFile(path.join(post.directory, 'section-replacements.json'), 'utf8')
+      .catch((error) => { if (error.code === 'ENOENT') return '[]'; throw error; }));
+    for (const replacement of replacements) {
+      if (![replacement.id, replacement.start, replacement.before].every((id) => /^[\w-]+$/.test(id)) ||
+          !/^[\w-]+\.md$/.test(replacement.file)) {
+        throw new Error(`Invalid Lake section replacement: ${post.slug}`);
+      }
+      const source = await readFile(path.join(post.directory, replacement.file), 'utf8');
+      const tokens = markdown.parse(source, {});
+      for (const token of tokens) {
+        if (token.type === 'fence' && token.info.trim() === 'math') await renderMath(token, true);
+        for (const child of token.children ?? []) {
+          if (child.type === 'math_inline') await renderMath(child, false);
+        }
+      }
+      const html = markdown.renderer.render(tokens, markdown.options, { slug: post.slug });
+      const anchor = new RegExp(`<p\\b[^>]*\\sid="${replacement.start}"[^>]*>[\\s\\S]*?(?=<p\\b[^>]*\\sid="${replacement.before}"[^>]*>)`, 'g');
+      if ([...post.content.matchAll(anchor)].length !== 1) {
+        throw new Error(`Missing or repeated Lake section: ${replacement.id}`);
+      }
+      post.content = post.content.replace(anchor,
+        () => `<section class="lake-revised-section" id="${replacement.id}">${html.trim()}</section>`);
+    }
     if (post.removeEmptyParagraphs) {
       // Exported spacer paragraphs add a blank line on top of section margins.
       // Keep media, formulas and anchors; discard only empty text formatting.

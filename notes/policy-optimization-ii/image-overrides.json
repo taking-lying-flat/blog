@@ -2,8 +2,8 @@
   "u797d6151": {
     "from": "assets/images/1790664128277-7de9bf19-2524-47fe-9106-328b3eea749d.png",
     "asset": "assets/images/dpo-loss.png",
-    "width": 1024,
-    "height": 826.076,
+    "width": 800,
+    "height": 645.372,
     "alt": "OpenRLHF · DPOLoss.forward（ipo=False，label_smoothing=0）",
     "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/models/loss.py#L329-L364",
     "label": "OpenRLHF · DPOLoss.forward（ipo=False，label_smoothing=0）"
@@ -11,8 +11,8 @@
   "u152415ba": {
     "from": "assets/images/1790657145483-5428575c-fa7f-4841-b293-6d7311b2796e.png",
     "asset": "assets/images/experience-fields.png",
-    "width": 1024,
-    "height": 665.464,
+    "width": 780,
+    "height": 506.896,
     "alt": "OpenRLHF · Experience 字段（节选）",
     "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/trainer/ppo_utils/experience.py#L28-L69",
     "label": "OpenRLHF · Experience 字段（节选）"

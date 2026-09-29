@@ -4,7 +4,6 @@
   "sourceSha256": "ce4eb6c996e27cc0f6478c331f759414e5a200c6bd3f34e497d5866f55c8bb2c",
   "assets": 133,
   "assetHashesVerified": true,
-  "formulas": 167,
   "images": 11,
   "headings": 8,
   "formulaEdits": 18,
@@ -27,5 +26,115 @@
     "tocJumpAndToggle": true
   },
   "build": "passed",
-  "existingLakeBundlesUnchanged": 14
+  "existingLakeBundlesUnchanged": 14,
+  "archivedFormulaCards": 167,
+  "layoutRefinement": {
+    "date": "2026-09-29",
+    "renderedLakeFormulaCards": 152,
+    "supervisionDisplayEquations": 4,
+    "supervisionInlineFormulas": 7,
+    "singleLineFormulaCards": [
+      "GwZDs",
+      "dKR5u",
+      "p5I1S",
+      "Rd9O4"
+    ],
+    "grpoObjectiveRows": 2,
+    "codeImageWidths": {
+      "dpo": 800,
+      "experience": 780
+    },
+    "bodyLineHeightUnchanged": true,
+    "desktop": [
+      {
+        "viewport": 1280,
+        "overflow": false,
+        "broken": 0,
+        "wide": [],
+        "heights": {
+          "GwZDs": {
+            "width": 1024,
+            "height": 37.421875
+          },
+          "dKR5u": {
+            "width": 1024,
+            "height": 56.09375
+          },
+          "p5I1S": {
+            "width": 824.28125,
+            "height": 71.109375
+          },
+          "Rd9O4": {
+            "width": 1024,
+            "height": 69.21875
+          },
+          "JNe8n": {
+            "width": 1024,
+            "height": 133.609375
+          },
+          "u797d6151": {
+            "width": 800,
+            "height": 645.359375
+          },
+          "u152415ba": {
+            "width": 780,
+            "height": 506.890625
+          }
+        },
+        "supervisionHeadings": [
+          "结果监督",
+          "过程监督"
+        ],
+        "displayEquations": 4,
+        "oldSupervisionRemoved": true,
+        "nextParagraph": "uf68cc5c6",
+        "toc": 8
+      },
+      {
+        "viewport": 1920,
+        "overflow": false,
+        "broken": 0,
+        "wide": [],
+        "heights": {
+          "GwZDs": {
+            "width": 1024,
+            "height": 37.421875
+          },
+          "dKR5u": {
+            "width": 1024,
+            "height": 56.09375
+          },
+          "p5I1S": {
+            "width": 824.28125,
+            "height": 71.109375
+          },
+          "Rd9O4": {
+            "width": 1024,
+            "height": 69.21875
+          },
+          "JNe8n": {
+            "width": 1024,
+            "height": 133.609375
+          },
+          "u797d6151": {
+            "width": 800,
+            "height": 645.359375
+          },
+          "u152415ba": {
+            "width": 780,
+            "height": 506.890625
+          }
+        },
+        "supervisionHeadings": [
+          "结果监督",
+          "过程监督"
+        ],
+        "displayEquations": 4,
+        "oldSupervisionRemoved": true,
+        "nextParagraph": "uf68cc5c6",
+        "toc": 8
+      }
+    ],
+    "build": "passed"
+  }
 }

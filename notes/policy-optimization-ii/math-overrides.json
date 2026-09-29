@@ -6,8 +6,8 @@
   },
   "GwZDs": {
     "from": "\\mathcal{L}(\\psi) = -\\lambda\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}_{\\mathrm{rm}}}\\left[\\log\\sigma\\left(r(x,y_w)-r(x,y_l)\\right)\\right]+\\beta_{\\mathrm{rm}}\\mathbb{E}_{(x,y_w)\\sim\\mathcal{D}_{\\mathrm{rm}}}\\left[\\log\\left(r'(x,y_w)\\right)\\right]. \\tag{2}",
-    "to": "\\begin{aligned}\\mathcal{L}(\\psi)={}&-\\lambda\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}_{\\mathrm{rm}}}\\left[\\log\\sigma\\left(r(x,y_w)-r(x,y_l)\\right)\\right]\\\\&-\\beta_{\\mathrm{rm}}\\mathbb{E}_{(x,y_w)\\sim\\mathcal{D}_{\\mathrm{rm}}}\\left[\\log r^{\\prime}(x,y_w)\\right].\\end{aligned}\\tag{2}",
-    "reason": "最小化目标中的语言模型项应为负对数似然；按两项换行。"
+    "to": "\\mathcal{L}(\\psi)=-\\lambda\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}_{\\mathrm{rm}}}\\left[\\log\\sigma\\left(r(x,y_w)-r(x,y_l)\\right)\\right]-\\beta_{\\mathrm{rm}}\\mathbb{E}_{(x,y_w)\\sim\\mathcal{D}_{\\mathrm{rm}}}\\left[\\log r^{\\prime}(x,y_w)\\right].\\tag{2}",
+    "reason": "保留最小化负对数似然的符号修正，合并为单行。"
   },
   "QjpIE": {
     "from": "r_{\\mathrm{total}} = r(x,y)-\\eta\\operatorname{KL}\\left(\\pi_{\\phi}^{\\mathrm{RL}}(y\\mid x),\\pi^{\\mathrm{SFT}}(y\\mid x)\\right). \\tag{3}",
@@ -31,8 +31,8 @@
   },
   "dKR5u": {
     "from": "\\mathcal{L}_{\\text{ppo-penalty}}(\\theta)=\\hat{\\mathbb{E}}_t\\left[\\frac{\\pi_{\\theta}(a_t\\mid s_t)}{\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)}\\hat{A}_t\\right]-\\beta\\operatorname{KL}\\left(\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid s_t),\\pi_{\\theta}(\\cdot\\mid s_t)\\right). \\tag{14}",
-    "to": "\\begin{aligned}\\mathcal{L}_{\\text{ppo-penalty}}(\\theta)=\\hat{\\mathbb{E}}_t\\Bigg[&\\frac{\\pi_{\\theta}(a_t\\mid s_t)}{\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)}\\hat{A}_t\\\\&-\\beta\\operatorname{KL}\\left(\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid s_t)\\,\\|\\,\\pi_{\\theta}(\\cdot\\mid s_t)\\right)\\Bigg].\\end{aligned}\\tag{14}",
-    "reason": "KL 项也需对采样状态取平均。"
+    "to": "\\mathcal{L}_{\\text{ppo-penalty}}(\\theta)=\\hat{\\mathbb{E}}_t\\left[\\frac{\\pi_{\\theta}(a_t\\mid s_t)}{\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)}\\hat{A}_t-\\beta\\operatorname{KL}\\left(\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid s_t)\\,\\|\\,\\pi_{\\theta}(\\cdot\\mid s_t)\\right)\\right].\\tag{14}",
+    "reason": "KL 项保留在采样期望内，合并为单行。"
   },
   "KXZgQ": {
     "from": "\\underset{\\theta}{\\operatorname{maximize}}\\;\\hat{\\mathbb{E}}_t\\left[\\frac{\\pi_{\\theta}(a_t\\mid s_t)}{\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)}\\hat{A}_t\\right],\\quad \\text{subject to}\\quad \\hat{\\mathbb{E}}_t\\left[\\operatorname{KL}\\left(\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid s_t),\\pi_{\\theta}(\\cdot\\mid s_t)\\right)\\right]\\leq\\delta. \\tag{13}",
@@ -71,13 +71,13 @@
   },
   "Rd9O4": {
     "from": "\\mathcal{J}_{\\mathrm{PPO}}(\\theta)=\\mathbb{E}\\left[q\\sim P(Q),o\\sim\\pi_{\\theta_{\\mathrm{old}}}(O|q)\\right]\\frac{1}{|o|}\\sum_{t=1}^{|o|}\\min\\left[\\frac{\\pi_\\theta(o_t|q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t|q,o_{<t})}A_t,\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_t|q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t|q,o_{<t})},1-\\varepsilon,1+\\varepsilon\\right)A_t\\right].\\tag{1}",
-    "to": "\\begin{aligned}\\mathcal{J}_{\\mathrm{PPO}}(\\theta)=\\mathbb{E}_{\\substack{q\\sim P(Q)\\\\o\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}}\\Bigg[\\frac{1}{|o|}\\sum_{t=1}^{|o|}\\min\\Bigg\\{&\\frac{\\pi_\\theta(o_t\\mid q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t\\mid q,o_{<t})}A_t,\\\\&\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_t\\mid q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t\\mid q,o_{<t})},1-\\varepsilon,1+\\varepsilon\\right)A_t\\Bigg\\}\\Bigg].\\end{aligned}\\tag{1}",
-    "reason": "采样分布写为期望下标，整个目标放入期望并分行。"
+    "to": "\\mathcal{J}_{\\mathrm{PPO}}(\\theta)=\\mathbb{E}_{\\substack{q\\sim P(Q)\\\\o\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}}\\Bigg[\\frac{1}{|o|}\\sum_{t=1}^{|o|}\\min\\Bigg\\{\\frac{\\pi_\\theta(o_t\\mid q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t\\mid q,o_{<t})}A_t,\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_t\\mid q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t\\mid q,o_{<t})},1-\\varepsilon,1+\\varepsilon\\right)A_t\\Bigg\\}\\Bigg].\\tag{1}",
+    "reason": "保留正确的采样期望范围，合并为单行。"
   },
   "JNe8n": {
     "from": "\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)=\\mathbb{E}\\left[q\\sim P(Q),\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(O|q)\\right]\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\left\\{\\min\\left[\\frac{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}|q,o_{i,<t})}\\hat{A}_{i,t},\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}|q,o_{i,<t})},1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right]-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left[\\pi_\\theta\\|\\pi_{\\mathrm{ref}}\\right]\\right\\}.\\tag{3}",
-    "to": "\\begin{aligned}\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)&=\\mathbb{E}_{\\substack{q\\sim P(Q)\\\\\\{o_i\\}_{i=1}^G\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}}\\Bigg[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\Bigg\\{\\\\&\\quad\\min\\Bigg[\\frac{\\pi_\\theta(o_{i,t}\\mid q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}\\mid q,o_{i,<t})}\\hat{A}_{i,t},\\\\&\\qquad\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_{i,t}\\mid q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}\\mid q,o_{i,<t})},1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\Bigg]\\\\&\\quad-\\beta\\widehat{\\mathbb{D}}_{\\mathrm{KL},i,t}\\Bigg\\}\\Bigg].\\end{aligned}\\tag{3}",
-    "reason": "明确期望作用范围和 token 级 KL 估计量；分行避免横向滚动。"
+    "to": "\\begin{aligned}\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)&=\\mathbb{E}_{\\substack{q\\sim P(Q)\\\\\\{o_i\\}_{i=1}^G\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}}\\Bigg[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\Bigg\\{\\min\\Bigg[\\frac{\\pi_\\theta(o_{i,t}\\mid q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}\\mid q,o_{i,<t})}\\hat{A}_{i,t},\\\\&\\quad\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_{i,t}\\mid q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}\\mid q,o_{i,<t})},1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\Bigg]-\\beta\\widehat{\\mathbb{D}}_{\\mathrm{KL},i,t}\\Bigg\\}\\Bigg].\\end{aligned}\\tag{3}",
+    "reason": "保留采样期望和 token 级 KL 估计，四行压为两行。"
   },
   "mMiJb": {
     "from": "\\mathbb{D}_{\\mathrm{KL}}\\left[\\pi_\\theta\\|\\pi_{\\mathrm{ref}}\\right]=\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-\\log\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-1.\\tag{4}",
@@ -86,7 +86,7 @@
   },
   "p5I1S": {
     "from": "\\nabla_\\theta\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})=-\\beta\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}}\\left[\\underbrace{\\sigma\\left(\\hat{r}_\\theta(x,y_l)-\\hat{r}_\\theta(x,y_w)\\right)}_{\\text{奖励估计错误时权重更高}}\\left[\\underbrace{\\nabla_\\theta\\log\\pi(y_w\\mid x)}_{\\text{提高 }y_w\\text{ 的似然}}-\\underbrace{\\nabla_\\theta\\log\\pi(y_l\\mid x)}_{\\text{降低 }y_l\\text{ 的似然}}\\right]\\right].",
-    "to": "\\begin{aligned}\\nabla_\\theta\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})&=-\\beta\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal D}\\Big[\\\\&\\quad\\underbrace{\\sigma(\\hat r_\\theta(x,y_l)-\\hat r_\\theta(x,y_w))}_{\\text{奖励估计错误时权重更高}}\\\\&\\quad\\cdot\\Big(\\underbrace{\\nabla_\\theta\\log\\pi_\\theta(y_w\\mid x)}_{\\text{提高 }y_w\\text{ 的似然}}-\\underbrace{\\nabla_\\theta\\log\\pi_\\theta(y_l\\mid x)}_{\\text{降低 }y_l\\text{ 的似然}}\\Big)\\Big].\\end{aligned}",
-    "reason": "统一策略参数下标并分行显示梯度。"
+    "to": "\\nabla_\\theta\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})=-\\beta\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}}\\left[\\underbrace{\\sigma\\left(\\hat{r}_\\theta(x,y_l)-\\hat{r}_\\theta(x,y_w)\\right)}_{\\text{奖励估计错误时权重更高}}\\left[\\underbrace{\\nabla_\\theta\\log\\pi_\\theta(y_w\\mid x)}_{\\text{提高 }y_w\\text{ 的似然}}-\\underbrace{\\nabla_\\theta\\log\\pi_\\theta(y_l\\mid x)}_{\\text{降低 }y_l\\text{ 的似然}}\\right]\\right].",
+    "reason": "统一策略参数下标，取消多余换行。"
   }
 }
