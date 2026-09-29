@@ -1,8 +1,8 @@
 ## ☀️ 𝐈𝐧𝐬𝐢𝐠𝐡𝐭𝐬 𝐨𝐟 𝐑𝐞𝐢𝐧𝐟𝐨𝐫𝐜𝐞𝐦𝐞𝐧𝐭 𝐋𝐞𝐚𝐫𝐧𝐢𝐧𝐠
 
-**作者提出统一的梯度分析框架，将 SFT、RFT、DPO、PPO 和 GRPO 等方法分解为数据来源、奖励函数与更新算法，并通过实验考察各组成部分的作用**
+**统一梯度分析框架将 SFT、RFT、DPO、PPO 和 GRPO 等方法分解为数据来源、奖励函数与更新算法，并通过实验考察各组成部分的作用**
 
-- 按照 [DeepSeekMath §5.2](https://arxiv.org/html/2402.03300v3#S5.SS2) 的表述，训练方法 $`\mathcal A`$ 关于参数 $`\theta`$ 的梯度可统一写为
+- 训练方法 $`\mathcal A`$ 关于参数 $`\theta`$ 的梯度可统一写为
 
 ```math
 \nabla_\theta\mathcal J_{\mathcal A}(\theta)
@@ -32,12 +32,12 @@ GC_{\mathcal A}(q,o,t,\pi_{\mathrm{rf}})
 
 **强化学习为何有效**
 
-- 在该论文的 GSM8K 与 MATH 实验中，强化学习提高了多数投票正确率 Maj@K，但未提高衡量 $`K`$ 次采样中是否至少包含一个正确回答的 Pass@K。作者据此认为，改进主要表现为**提高已有正确推理路径的生成概率，使输出分布更稳定**；这一观察限于论文采用的模型、数据和训练设置
-- 类似地，Wang et al. 将 SFT 模型在推理任务中的部分不足归因于偏好对齐，并观察到后续对齐训练能够改善推理表现。相关讨论见 [DeepSeekMath §5.2.2](https://arxiv.org/html/2402.03300v3#S5.SS2.SSS2)
+- 在 DeepSeekMath 的 GSM8K 与 MATH 实验中，强化学习提高了多数投票正确率 Maj@K，但未提高衡量 $`K`$ 次采样中是否至少包含一个正确回答的 Pass@K。这一结果支持以下解释：改进主要表现为**提高已有正确推理路径的生成概率，使输出分布更稳定**
+- 类似地，Wang et al. 将 SFT 模型在推理任务中的部分不足归因于偏好对齐，并观察到后续对齐训练能够改善推理表现
 
 **各方法的目标与梯度**
 
-- 下列推导对应 [论文附录 A.1](https://arxiv.org/html/2402.03300v3#A1.SS1)，按方法展开查看。记 $`h_t=(q,o_{<t})`$ 为生成第 $`t`$ 个 token 时的上下文，$`\theta_0`$ 为当前批次的采样策略参数；求导时固定采样数据、参考策略、奖励模型及优势估计
+- 记 $`h_t=(q,o_{<t})`$ 为生成第 $`t`$ 个 token 时的上下文，$`\theta_0`$ 为当前批次的采样策略参数；求导时固定采样数据、参考策略、奖励模型及优势估计
 
 <details class="lake-derivation" id="insights-sft">
 <summary>SFT · 监督微调</summary>
@@ -124,7 +124,7 @@ GC_{\mathrm{RFT}}(q,o,t)=\mathbb I(q,o)=
 <summary>DPO · 直接偏好优化</summary>
 <div class="lake-derivation-body">
 
-- 将采样回答按偏好标注整理为 $`(q,o^+,o^-)\sim\mathcal D_{\mathrm{pref}}`$，其中 $`o^+`$ 为偏好回答。这里采用附录按回答长度归一化的写法，记平均对数概率比为 $`s_\theta(q,o)`$，并定义 $`\Delta_\theta=s_\theta(q,o^+)-s_\theta(q,o^-)`$
+- 将采样回答按偏好标注整理为 $`(q,o^+,o^-)\sim\mathcal D_{\mathrm{pref}}`$，其中 $`o^+`$ 为偏好回答。按回答长度归一化，记平均对数概率比为 $`s_\theta(q,o)`$，并定义 $`\Delta_\theta=s_\theta(q,o^+)-s_\theta(q,o^-)`$
 
 ```math
 \begin{aligned}

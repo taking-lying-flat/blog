@@ -269,6 +269,12 @@
       "https://arxiv.org/html/2402.03300v3#S5.SS2",
       "https://arxiv.org/html/2402.03300v3#A1.SS1"
     ],
-    "build": "passed"
+    "build": "passed",
+    "wordingCleanup": {
+      "hyperlinksRemaining": 0,
+      "displayAndInlineMathUnchanged": true,
+      "derivationPanels": 6,
+      "build": "passed"
+    }
   }
 }
