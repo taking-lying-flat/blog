@@ -1,5 +1,21 @@
 [
   {
+    "file": "../notes/policy-optimization-ii/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "policy-optimization-ii",
+    "date": "2026-09-29",
+    "description": "策略优化笔记：RLHF 中的 PPO 实践、KL 惩罚与奖励塑形、DPO，以及 DeepSeekMath 的 GRPO。",
+    "tags": [
+      "强化学习",
+      "RLHF",
+      "PPO",
+      "DPO",
+      "GRPO"
+    ]
+  },
+  {
     "file": "../notes/deepseek-ai-i/source.lake",
     "appendFiles": ["../notes/deepseek-ai-i/v3/source.lake", "../notes/deepseek-ai-i/v3-training/source.lake", "../notes/deepseek-ai-i/v3-fp8/source.lake", "../notes/deepseek-ai-i/r1/source.lake"],
     "removeEmptyParagraphs": true,

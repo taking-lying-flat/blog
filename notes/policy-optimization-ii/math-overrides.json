@@ -1,0 +1,92 @@
+{
+  "FvKm0": {
+    "from": "\\mathcal{L}(\\psi) = \\log \\sigma\\left(r(x,y_w)-r(x,y_l)\\right). \\tag{1}",
+    "to": "\\mathcal{L}(\\psi)=-\\log\\sigma\\left(r(x,y_w)-r(x,y_l)\\right).\\tag{1}",
+    "reason": "统一为最小化负对数似然损失。"
+  },
+  "GwZDs": {
+    "from": "\\mathcal{L}(\\psi) = -\\lambda\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}_{\\mathrm{rm}}}\\left[\\log\\sigma\\left(r(x,y_w)-r(x,y_l)\\right)\\right]+\\beta_{\\mathrm{rm}}\\mathbb{E}_{(x,y_w)\\sim\\mathcal{D}_{\\mathrm{rm}}}\\left[\\log\\left(r'(x,y_w)\\right)\\right]. \\tag{2}",
+    "to": "\\begin{aligned}\\mathcal{L}(\\psi)={}&-\\lambda\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}_{\\mathrm{rm}}}\\left[\\log\\sigma\\left(r(x,y_w)-r(x,y_l)\\right)\\right]\\\\&-\\beta_{\\mathrm{rm}}\\mathbb{E}_{(x,y_w)\\sim\\mathcal{D}_{\\mathrm{rm}}}\\left[\\log r^{\\prime}(x,y_w)\\right].\\end{aligned}\\tag{2}",
+    "reason": "最小化目标中的语言模型项应为负对数似然；按两项换行。"
+  },
+  "QjpIE": {
+    "from": "r_{\\mathrm{total}} = r(x,y)-\\eta\\operatorname{KL}\\left(\\pi_{\\phi}^{\\mathrm{RL}}(y\\mid x),\\pi^{\\mathrm{SFT}}(y\\mid x)\\right). \\tag{3}",
+    "to": "r_{\\mathrm{total}}(x,y)=r(x,y)-\\eta\\log\\frac{\\pi_{\\phi}^{\\mathrm{RL}}(y\\mid x)}{\\pi^{\\mathrm{SFT}}(y\\mid x)}.\\tag{3}",
+    "reason": "区分单条回答上的对数概率比惩罚与策略期望下的 KL 散度。"
+  },
+  "xu9S7": {
+    "from": "\\nabla_{\\theta}J(\\theta) = \\mathbb{E}_{\\tau\\sim\\pi_{\\theta}}\\left[\\sum_{t=0}^{T}\\nabla_{\\theta}\\log\\pi_{\\theta}(a_t\\mid s_t)\\Phi_t\\right]. \\tag{5}",
+    "to": "\\nabla_{\\theta}J(\\theta) = \\mathbb{E}_{\\tau\\sim\\pi_{\\theta}}\\left[\\sum_{t=1}^{T}\\nabla_{\\theta}\\log\\pi_{\\theta}(a_t\\mid s_t)\\Phi_t\\right]. \\tag{5}",
+    "reason": "与有限轨迹的动作编号 1 到 T 一致。"
+  },
+  "Y3kZ0": {
+    "from": "\\Phi_t=\\sum_{t'=t}^{T}R(s_{t'},a_{t'})",
+    "to": "\\Phi_t=\\sum_{t'=t}^{T}r(s_{t'},a_{t'})",
+    "reason": "即时奖励统一记为 r；R 表示轨迹回报。"
+  },
+  "B4Shc": {
+    "from": "\\Phi_t=\\sum_{t'=t}^{T}R(s_{t'},a_{t'})-b(s_t)",
+    "to": "\\Phi_t=\\sum_{t'=t}^{T}r(s_{t'},a_{t'})-b(s_t)",
+    "reason": "即时奖励统一记为 r；R 表示轨迹回报。"
+  },
+  "dKR5u": {
+    "from": "\\mathcal{L}_{\\text{ppo-penalty}}(\\theta)=\\hat{\\mathbb{E}}_t\\left[\\frac{\\pi_{\\theta}(a_t\\mid s_t)}{\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)}\\hat{A}_t\\right]-\\beta\\operatorname{KL}\\left(\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid s_t),\\pi_{\\theta}(\\cdot\\mid s_t)\\right). \\tag{14}",
+    "to": "\\begin{aligned}\\mathcal{L}_{\\text{ppo-penalty}}(\\theta)=\\hat{\\mathbb{E}}_t\\Bigg[&\\frac{\\pi_{\\theta}(a_t\\mid s_t)}{\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)}\\hat{A}_t\\\\&-\\beta\\operatorname{KL}\\left(\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid s_t)\\,\\|\\,\\pi_{\\theta}(\\cdot\\mid s_t)\\right)\\Bigg].\\end{aligned}\\tag{14}",
+    "reason": "KL 项也需对采样状态取平均。"
+  },
+  "KXZgQ": {
+    "from": "\\underset{\\theta}{\\operatorname{maximize}}\\;\\hat{\\mathbb{E}}_t\\left[\\frac{\\pi_{\\theta}(a_t\\mid s_t)}{\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)}\\hat{A}_t\\right],\\quad \\text{subject to}\\quad \\hat{\\mathbb{E}}_t\\left[\\operatorname{KL}\\left(\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid s_t),\\pi_{\\theta}(\\cdot\\mid s_t)\\right)\\right]\\leq\\delta. \\tag{13}",
+    "to": "\\begin{aligned}\\underset{\\theta}{\\operatorname{maximize}}\\quad&\\hat{\\mathbb{E}}_t\\left[\\frac{\\pi_{\\theta}(a_t\\mid s_t)}{\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)}\\hat{A}_t\\right]\\\\\\text{subject to}\\quad&\\hat{\\mathbb{E}}_t\\left[\\operatorname{KL}\\left(\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid s_t)\\,\\|\\,\\pi_{\\theta}(\\cdot\\mid s_t)\\right)\\right]\\le\\delta.\\end{aligned}\\tag{13}",
+    "reason": "分行展示 TRPO 目标与约束。"
+  },
+  "YUSZq": {
+    "from": "\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)",
+    "to": "\\frac{\\pi_{\\theta}(a_t\\mid s_t)}{\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)}",
+    "reason": "clip 的对象是新旧策略的概率比。"
+  },
+  "zPCk9": {
+    "from": "(1-\\epsilon,1+\\epsilon)",
+    "to": "[1-\\epsilon,1+\\epsilon]",
+    "reason": "裁剪包含两个端点。"
+  },
+  "jxVpq": {
+    "from": "r^*(y,x)",
+    "to": "r^*(x,y)",
+    "reason": "与本文奖励函数的自变量顺序一致。"
+  },
+  "GEwfm": {
+    "from": "\\max_{\\pi_\\theta}\\mathbb{E}_{x\\sim\\mathcal{D},\\,y\\sim\\pi_\\theta(y\\mid x)}\\left[r_\\phi(x,y)\\right]-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left[\\pi_\\theta(y\\mid x)\\,\\|\\,\\pi_{\\mathrm{ref}}(y\\mid x)\\right]. \\tag{3}",
+    "to": "\\max_{\\pi_\\theta}\\mathbb{E}_{x\\sim\\mathcal D}\\left[\\mathbb{E}_{y\\sim\\pi_\\theta(\\cdot\\mid x)}[r_\\phi(x,y)]-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta(\\cdot\\mid x)\\,\\|\\,\\pi_{\\mathrm{ref}}(\\cdot\\mid x)\\right)\\right].\\tag{3}",
+    "reason": "KL 对回答分布计算，并与奖励一起对提示取期望。"
+  },
+  "vZ130": {
+    "from": "\\mathbb{E}_{x,y\\sim\\mathcal{D}}[r_\\phi(x,y)]=0",
+    "to": "\\mathbb{E}_{y\\sim\\mathcal{D}(\\cdot\\mid x)}[r_\\phi(x,y)]=0",
+    "reason": "逐提示中心化应采用条件期望。"
+  },
+  "xaUMp": {
+    "from": "r_t=r_\\varphi(q,o_{<t})-\\beta\\log\\frac{\\pi_\\theta(o_t|q,o_{<t})}{\\pi_{\\mathrm{ref}}(o_t|q,o_{<t})}.\\tag{2}",
+    "to": "r_t=r_\\varphi(q,o_{\\le t})-\\beta\\log\\frac{\\pi_\\theta(o_t|q,o_{<t})}{\\pi_{\\mathrm{ref}}(o_t|q,o_{<t})}.\\tag{2}",
+    "reason": "奖励模型输入应包含当前 token，与 DeepSeekMath 式（2）一致。"
+  },
+  "Rd9O4": {
+    "from": "\\mathcal{J}_{\\mathrm{PPO}}(\\theta)=\\mathbb{E}\\left[q\\sim P(Q),o\\sim\\pi_{\\theta_{\\mathrm{old}}}(O|q)\\right]\\frac{1}{|o|}\\sum_{t=1}^{|o|}\\min\\left[\\frac{\\pi_\\theta(o_t|q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t|q,o_{<t})}A_t,\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_t|q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t|q,o_{<t})},1-\\varepsilon,1+\\varepsilon\\right)A_t\\right].\\tag{1}",
+    "to": "\\begin{aligned}\\mathcal{J}_{\\mathrm{PPO}}(\\theta)=\\mathbb{E}_{\\substack{q\\sim P(Q)\\\\o\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}}\\Bigg[\\frac{1}{|o|}\\sum_{t=1}^{|o|}\\min\\Bigg\\{&\\frac{\\pi_\\theta(o_t\\mid q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t\\mid q,o_{<t})}A_t,\\\\&\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_t\\mid q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t\\mid q,o_{<t})},1-\\varepsilon,1+\\varepsilon\\right)A_t\\Bigg\\}\\Bigg].\\end{aligned}\\tag{1}",
+    "reason": "采样分布写为期望下标，整个目标放入期望并分行。"
+  },
+  "JNe8n": {
+    "from": "\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)=\\mathbb{E}\\left[q\\sim P(Q),\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(O|q)\\right]\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\left\\{\\min\\left[\\frac{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}|q,o_{i,<t})}\\hat{A}_{i,t},\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}|q,o_{i,<t})},1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right]-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left[\\pi_\\theta\\|\\pi_{\\mathrm{ref}}\\right]\\right\\}.\\tag{3}",
+    "to": "\\begin{aligned}\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)&=\\mathbb{E}_{\\substack{q\\sim P(Q)\\\\\\{o_i\\}_{i=1}^G\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}}\\Bigg[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\Bigg\\{\\\\&\\quad\\min\\Bigg[\\frac{\\pi_\\theta(o_{i,t}\\mid q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}\\mid q,o_{i,<t})}\\hat{A}_{i,t},\\\\&\\qquad\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_{i,t}\\mid q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}\\mid q,o_{i,<t})},1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\Bigg]\\\\&\\quad-\\beta\\widehat{\\mathbb{D}}_{\\mathrm{KL},i,t}\\Bigg\\}\\Bigg].\\end{aligned}\\tag{3}",
+    "reason": "明确期望作用范围和 token 级 KL 估计量；分行避免横向滚动。"
+  },
+  "mMiJb": {
+    "from": "\\mathbb{D}_{\\mathrm{KL}}\\left[\\pi_\\theta\\|\\pi_{\\mathrm{ref}}\\right]=\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-\\log\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-1.\\tag{4}",
+    "to": "\\widehat{\\mathbb{D}}_{\\mathrm{KL},i,t}=\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-\\log\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-1.\\tag{4}",
+    "reason": "区分随机估计量与精确 KL 散度。"
+  },
+  "p5I1S": {
+    "from": "\\nabla_\\theta\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})=-\\beta\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}}\\left[\\underbrace{\\sigma\\left(\\hat{r}_\\theta(x,y_l)-\\hat{r}_\\theta(x,y_w)\\right)}_{\\text{奖励估计错误时权重更高}}\\left[\\underbrace{\\nabla_\\theta\\log\\pi(y_w\\mid x)}_{\\text{提高 }y_w\\text{ 的似然}}-\\underbrace{\\nabla_\\theta\\log\\pi(y_l\\mid x)}_{\\text{降低 }y_l\\text{ 的似然}}\\right]\\right].",
+    "to": "\\begin{aligned}\\nabla_\\theta\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})&=-\\beta\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal D}\\Big[\\\\&\\quad\\underbrace{\\sigma(\\hat r_\\theta(x,y_l)-\\hat r_\\theta(x,y_w))}_{\\text{奖励估计错误时权重更高}}\\\\&\\quad\\cdot\\Big(\\underbrace{\\nabla_\\theta\\log\\pi_\\theta(y_w\\mid x)}_{\\text{提高 }y_w\\text{ 的似然}}-\\underbrace{\\nabla_\\theta\\log\\pi_\\theta(y_l\\mid x)}_{\\text{降低 }y_l\\text{ 的似然}}\\Big)\\Big].\\end{aligned}",
+    "reason": "统一策略参数下标并分行显示梯度。"
+  }
+}

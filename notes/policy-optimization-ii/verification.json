@@ -1,0 +1,31 @@
+{
+  "date": "2026-09-29",
+  "sourceByteIdentical": true,
+  "sourceSha256": "ce4eb6c996e27cc0f6478c331f759414e5a200c6bd3f34e497d5866f55c8bb2c",
+  "assets": 133,
+  "assetHashesVerified": true,
+  "formulas": 167,
+  "images": 11,
+  "headings": 8,
+  "formulaEdits": 18,
+  "textEdits": 11,
+  "codeImages": {
+    "sourceLinks": 3,
+    "dpoAndExperienceASTMatchOfficialSource": true,
+    "maxCodeImageLines": 28
+  },
+  "desktop": {
+    "widths": [
+      1280,
+      1920
+    ],
+    "pageOverflow": false,
+    "formulaOverflow": false,
+    "brokenImages": 0,
+    "emptyParagraphs": 0,
+    "duplicateDocumentAnchors": 0,
+    "tocJumpAndToggle": true
+  },
+  "build": "passed",
+  "existingLakeBundlesUnchanged": 14
+}

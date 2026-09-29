@@ -125,3 +125,5 @@
 .lake-document .lake-figure { margin: 18px auto; max-width: 100%; white-space: normal; }
 .lake-document .lake-figure img { display: block; width: 100%; height: auto; }
 .lake-document .lake-figure figcaption { margin-top: 8px; color: #656d76; font-size: 13px; text-align: center; }
+
+.lake-document .lake-image-source { display: block; margin: -8px 0 12px; font-size: 13px; line-height: 1.5; white-space: normal; }

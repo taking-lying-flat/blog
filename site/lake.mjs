@@ -27,6 +27,19 @@ export async function readLake(file, escape, renderMath) {
     assets.set(asset.file, asset);
     if (asset.file.endsWith('.svg') && /\b(?:NaN|Infinity)\b/.test(bytes.toString())) invalidMath.add(asset.file);
   }
+  const imageOverrides = JSON.parse(await readFile(path.join(directory, 'image-overrides.json'), 'utf8')
+    .catch((error) => { if (error.code === 'ENOENT') return '{}'; throw error; }));
+  for (const [id, correction] of Object.entries(imageOverrides)) {
+    const card = manifest.cards.find((card) => card.kind === 'image' && card.value.id === id);
+    if (!card || correction.from !== card.asset ||
+        !/^https:\/\//.test(correction.source) || typeof correction.label !== 'string' ||
+        (correction.asset && (!assets.has(correction.asset) ||
+          !Number.isFinite(correction.width) || correction.width <= 0 ||
+          !Number.isFinite(correction.height) || correction.height <= 0 ||
+          (card.value.crop ?? [0, 0, 1, 1]).some((value, index) => value !== [0, 0, 1, 1][index])))) {
+      throw new Error(`Invalid Lake image correction: ${id}`);
+    }
+  }
   // Legacy SVGs use ornate script glyphs for \mathcal. Use the same readable
   // calligraphic font as the repaired equations, preserving the math commands.
   const renderedCards = new Map();
@@ -127,7 +140,10 @@ export async function readLake(file, escape, renderMath) {
     }
     if (card.kind === 'image') {
       imageCount++;
-      const { crop = [0, 0, 1, 1], originWidth, originHeight, width, height } = card.value;
+      const correction = imageOverrides[card.value.id];
+      const value = correction?.asset ? { ...card.value, ...correction } : card.value;
+      const imageFile = correction?.asset ?? card.asset;
+      const { crop = [0, 0, 1, 1], originWidth, originHeight, width, height } = value;
       if (crop.some((value, index) => value !== [0, 0, 1, 1][index])) {
         const [left, top, right, bottom] = crop;
         const cropWidth = right - left;
@@ -137,7 +153,8 @@ export async function readLake(file, escape, renderMath) {
         const sizing = `width:${100 / cropWidth}%;height:auto;left:${-100 * left / cropWidth}%;top:${-100 * top / cropHeight}%;`;
         return `<span class="lake-image lake-image-cropped" data-card-id="${id}" style="width:${width}px;aspect-ratio:${originWidth * cropWidth}/${originHeight * cropHeight}"><img src="${escape(card.asset)}" alt="${escape(card.value.title ?? '')}" width="${width}" height="${height}" style="${sizing}" decoding="async"></span>`;
       }
-      return `<img class="lake-image" data-card-id="${id}" src="${escape(card.asset)}" alt="${escape(card.value.title ?? '')}" width="${card.value.width}" height="${card.value.height}" style="width:${card.value.width}px;aspect-ratio:${card.value.width}/${card.value.height}" decoding="async">`;
+      const image = `<img class="lake-image" data-card-id="${id}" src="${escape(imageFile)}" alt="${escape(correction?.alt ?? card.value.title ?? '')}" width="${width}" height="${height}" style="width:${width}px;aspect-ratio:${width}/${height}" decoding="async">`;
+      return image + (correction ? `<span class="lake-image-source"><a href="${escape(correction.source)}">${escape(correction.label)} · GitHub</a></span>` : '');
     }
     throw new Error(`Unsupported Lake card: ${card.kind}`);
   });

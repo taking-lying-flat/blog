@@ -1,0 +1,23 @@
+@dataclass
+class Experience:
+    sequences: torch.Tensor = tensor_field("step", default=None)
+    attention_mask: torch.LongTensor = tensor_field("step", default=None)
+    action_mask: torch.BoolTensor = tensor_field("step", default=None)
+    action_log_probs: torch.Tensor = tensor_field("step", default=None)
+    base_action_log_probs: torch.Tensor = tensor_field("step", default=None)
+    rollout_log_probs: torch.Tensor = tensor_field("step", default=None)
+    values: torch.Tensor = tensor_field("step", default=None)
+    returns: torch.Tensor = tensor_field("step", default=None)
+    advantages: torch.Tensor = tensor_field("step", default=None)
+    kl: torch.Tensor = tensor_field("step", default=None)
+    rewards: torch.Tensor = tensor_field("episode", default=None)
+    scores: torch.Tensor = tensor_field("episode", default=None)
+    response_length: torch.Tensor = tensor_field("episode", default=None)
+    truncated: torch.Tensor = tensor_field("episode", default=None)
+    total_length: torch.Tensor = tensor_field("episode", default=None)
+    index: list[int] = None
+    prompts: list[str] = field(default_factory=list)
+    labels: list[str] = field(default_factory=list)
+    images: list = field(default_factory=list)
+    mm_train_inputs: list = field(default_factory=list)
+    info: dict = field(default_factory=dict)

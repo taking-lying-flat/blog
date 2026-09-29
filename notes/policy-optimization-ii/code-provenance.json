@@ -1,0 +1,18 @@
+{
+  "u797d6151": {
+    "file": "dpo-loss.py",
+    "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/models/loss.py#L329-L364",
+    "revision": "dc2a7ad326f619fc5a47737ea47d1920ce2c0b53",
+    "changes": "移除注释和文档字符串、调整缩进与换行；Experience 仅截取字段声明。",
+    "lines": 28,
+    "astVerified": true
+  },
+  "u152415ba": {
+    "file": "experience-fields.py",
+    "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/trainer/ppo_utils/experience.py#L28-L69",
+    "revision": "dc2a7ad326f619fc5a47737ea47d1920ce2c0b53",
+    "changes": "移除注释和文档字符串、调整缩进与换行；Experience 仅截取字段声明。",
+    "lines": 23,
+    "astVerified": true
+  }
+}
