@@ -83,6 +83,8 @@ export async function readLake(file, escape, renderMath) {
       content = content.replace(emptyBlock, '');
     }
   }
+  // Deleted list items must not leave empty lists that add vertical space.
+  content = content.replace(/<(ul|ol)\b[^>]*>\s*<\/\1>/gi, '');
   let index = 0;
   let mathCount = 0;
   let imageCount = 0;
