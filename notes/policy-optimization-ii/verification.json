@@ -276,23 +276,110 @@
       "derivationPanels": 6,
       "build": "passed"
     },
-    "expandedPanels": {
-      "defaultOpen": 6,
-      "canCollapse": true,
+    "staticPanels": {
+      "count": 6,
+      "distinctColors": 6,
+      "collapseControls": 0,
       "desktop": [
         {
           "width": 1280,
-          "open": 6,
           "overflow": false,
           "wide": 0,
-          "removed": true
+          "controls": 0,
+          "panels": [
+            {
+              "id": "insights-sft",
+              "tag": "SECTION",
+              "background": "rgb(242, 246, 252)",
+              "border": "rgb(170, 196, 227)",
+              "height": 323.921875
+            },
+            {
+              "id": "insights-rft",
+              "tag": "SECTION",
+              "background": "rgb(242, 248, 242)",
+              "border": "rgb(178, 206, 180)",
+              "height": 413.234375
+            },
+            {
+              "id": "insights-online-rft",
+              "tag": "SECTION",
+              "background": "rgb(239, 248, 247)",
+              "border": "rgb(165, 208, 203)",
+              "height": 204.875
+            },
+            {
+              "id": "insights-dpo",
+              "tag": "SECTION",
+              "background": "rgb(255, 247, 235)",
+              "border": "rgb(223, 195, 151)",
+              "height": 465.203125
+            },
+            {
+              "id": "insights-ppo",
+              "tag": "SECTION",
+              "background": "rgb(247, 242, 251)",
+              "border": "rgb(198, 179, 219)",
+              "height": 558.046875
+            },
+            {
+              "id": "insights-grpo",
+              "tag": "SECTION",
+              "background": "rgb(252, 241, 245)",
+              "border": "rgb(216, 175, 191)",
+              "height": 431.8125
+            }
+          ]
         },
         {
           "width": 1920,
-          "open": 6,
           "overflow": false,
           "wide": 0,
-          "removed": true
+          "controls": 0,
+          "panels": [
+            {
+              "id": "insights-sft",
+              "tag": "SECTION",
+              "background": "rgb(242, 246, 252)",
+              "border": "rgb(170, 196, 227)",
+              "height": 323.921875
+            },
+            {
+              "id": "insights-rft",
+              "tag": "SECTION",
+              "background": "rgb(242, 248, 242)",
+              "border": "rgb(178, 206, 180)",
+              "height": 413.234375
+            },
+            {
+              "id": "insights-online-rft",
+              "tag": "SECTION",
+              "background": "rgb(239, 248, 247)",
+              "border": "rgb(165, 208, 203)",
+              "height": 204.875
+            },
+            {
+              "id": "insights-dpo",
+              "tag": "SECTION",
+              "background": "rgb(255, 247, 235)",
+              "border": "rgb(223, 195, 151)",
+              "height": 465.203125
+            },
+            {
+              "id": "insights-ppo",
+              "tag": "SECTION",
+              "background": "rgb(247, 242, 251)",
+              "border": "rgb(198, 179, 219)",
+              "height": 558.046875
+            },
+            {
+              "id": "insights-grpo",
+              "tag": "SECTION",
+              "background": "rgb(252, 241, 245)",
+              "border": "rgb(216, 175, 191)",
+              "height": 431.8125
+            }
+          ]
         }
       ]
     }

@@ -39,8 +39,8 @@ GC_{\mathcal A}(q,o,t,\pi_{\mathrm{rf}})
 
 - 记 $`h_t=(q,o_{<t})`$ 为生成第 $`t`$ 个 token 时的上下文，$`\theta_0`$ 为当前批次的采样策略参数；求导时固定采样数据、参考策略、奖励模型及优势估计
 
-<details class="lake-derivation" id="insights-sft" open>
-<summary>SFT · 监督微调</summary>
+<section class="lake-derivation" id="insights-sft">
+<p class="lake-derivation-title">SFT · 监督微调</p>
 <div class="lake-derivation-body">
 
 - SFT 直接最大化示范回答的平均对数似然，其中 $`P_{\mathrm{sft}}`$ 为示范数据的联合分布
@@ -64,10 +64,10 @@ GC_{\mathcal A}(q,o,t,\pi_{\mathrm{rf}})
 - **数据来源**为 SFT 示范数据，人工筛选体现了对样本质量的判断；无需额外的显式奖励模型，梯度系数 $`GC_{\mathrm{SFT}}=1`$
 
 </div>
-</details>
+</section>
 
-<details class="lake-derivation" id="insights-rft" open>
-<summary>RFT · 拒绝采样微调</summary>
+<section class="lake-derivation" id="insights-rft">
+<p class="lake-derivation-title">RFT · 拒绝采样微调</p>
 <div class="lake-derivation-body">
 
 - 对 SFT 数据中的问题，从固定的 SFT 模型采样回答。记这一联合分布为 $`\mathcal D_{\mathrm{off}}(q,o)=P_{\mathrm{sft}}(q)\pi_{\mathrm{sft}}(o\mid q)`$，并用 $`\mathbb I(q,o)`$ 表示答案是否正确，目标为
@@ -99,10 +99,10 @@ GC_{\mathrm{RFT}}(q,o,t)=\mathbb I(q,o)=
 ```
 
 </div>
-</details>
+</section>
 
-<details class="lake-derivation" id="insights-online-rft" open>
-<summary>Online RFT · 在线拒绝采样微调</summary>
+<section class="lake-derivation" id="insights-online-rft">
+<p class="lake-derivation-title">Online RFT · 在线拒绝采样微调</p>
 <div class="lake-derivation-body">
 
 - Online RFT 将固定 SFT 模型替换为当前批次的采样策略。记 $`\mathcal D_0(q,o)=P_{\mathrm{sft}}(q)\pi_{\theta_0}(o\mid q)`$，在固定这批样本的条件下，更新方向为
@@ -118,10 +118,10 @@ GC_{\mathrm{RFT}}(q,o,t)=\mathbb I(q,o)=
 - 正确性判定与梯度系数均与 RFT 相同；区别在于后续批次会使用更新后的策略重新采样，求导时不对本批次的离散采样过程反向传播
 
 </div>
-</details>
+</section>
 
-<details class="lake-derivation" id="insights-dpo" open>
-<summary>DPO · 直接偏好优化</summary>
+<section class="lake-derivation" id="insights-dpo">
+<p class="lake-derivation-title">DPO · 直接偏好优化</p>
 <div class="lake-derivation-body">
 
 - 将采样回答按偏好标注整理为 $`(q,o^+,o^-)\sim\mathcal D_{\mathrm{pref}}`$，其中 $`o^+`$ 为偏好回答。按回答长度归一化，记平均对数概率比为 $`s_\theta(q,o)`$，并定义 $`\Delta_\theta=s_\theta(q,o^+)-s_\theta(q,o^-)`$
@@ -155,10 +155,10 @@ GC_{\mathrm{DPO}}^+=c_\theta,\qquad GC_{\mathrm{DPO}}^-=-c_\theta\tag{18}
 - 若采用前文标准 DPO 的序列对数概率比约定，则去掉 $`s_\theta`$ 及对应梯度中的长度归一化因子，链式求导形式不变
 
 </div>
-</details>
+</section>
 
-<details class="lake-derivation" id="insights-ppo" open>
-<summary>PPO · 近端策略优化</summary>
+<section class="lake-derivation" id="insights-ppo">
+<p class="lake-derivation-title">PPO · 近端策略优化</p>
 <div class="lake-derivation-body">
 
 - 对当前批次，固定旧策略 $`\pi_{\theta_0}`$ 与优势 $`A_t`$，记概率比 $`\rho_t(\theta)=\pi_\theta(o_t\mid h_t)/\pi_{\theta_0}(o_t\mid h_t)`$，PPO 的裁剪目标为
@@ -200,10 +200,10 @@ GC_{\mathrm{PPO}}(q,o,t)=A_t\tag{22}
 - $`A_t`$ 由奖励与学习得到的价值函数通过 GAE 估计。上述简化描述的是更新起点的梯度；复用同一批样本进行多轮更新时，仍需考虑概率比与裁剪
 
 </div>
-</details>
+</section>
 
-<details class="lake-derivation" id="insights-grpo" open>
-<summary>GRPO · 组相对策略优化</summary>
+<section class="lake-derivation" id="insights-grpo">
+<p class="lake-derivation-title">GRPO · 组相对策略优化</p>
 <div class="lake-derivation-body">
 
 - 对每个问题采样 $`G`$ 条回答，记联合采样分布为 $`\mathcal D_{G,0}`$，上下文为 $`h_{i,t}=(q,o_{i,<t})`$。沿用 PPO 的概率比定义 $`\rho_{i,t}(\theta)`$，并记 $`u_{i,t}(\theta)=\pi_{\mathrm{ref}}(o_{i,t}\mid h_{i,t})/\pi_\theta(o_{i,t}\mid h_{i,t})`$
@@ -238,4 +238,4 @@ GC_{\mathrm{GRPO}}(q,\{o_j\}_{j=1}^{G},i,t)
 ```
 
 </div>
-</details>
+</section>
