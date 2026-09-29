@@ -4,6 +4,7 @@
     "appendFiles": ["../notes/deepseek-ai-i/v3/source.lake", "../notes/deepseek-ai-i/v3-training/source.lake", "../notes/deepseek-ai-i/v3-fp8/source.lake", "../notes/deepseek-ai-i/r1/source.lake"],
     "removeEmptyParagraphs": true,
     "format": "lake",
+    "tocDepth": 2,
     "slug": "deepseek-ai-i",
     "date": "2026-09-28",
     "description": "DeepSeekMoE、DeepSeek-V2、DeepSeek-V3 与 DeepSeek-R1 笔记：MLA、专家路由、MTP、FP8、GRPO 与多阶段强化学习。",
@@ -12,6 +13,7 @@
   {
     "file": "../notes/policy-optimization-i/source.lake",
     "format": "lake",
+    "tocDepth": 2,
     "slug": "policy-optimization-i",
     "date": "2026-09-27",
     "description": "策略优化笔记：TRPO、广义优势估计 GAE 与 PPO。",
@@ -26,6 +28,7 @@
   {
     "file": "../notes/token-mixer-i/source.lake",
     "format": "lake",
+    "tocDepth": 2,
     "slug": "token-mixer-i",
     "date": "2026-09-26",
     "description": "Token Mixer 笔记：Gated DeltaNet、Kimi Linear 与 Gated DeltaNet-2。",
@@ -34,6 +37,7 @@
   {
     "file": "../notes/flash-attn/source.lake",
     "format": "lake",
+    "tocDepth": 2,
     "slug": "flash-attn",
     "date": "2026-09-26",
     "description": "FlashAttention 系列笔记：I/O 感知、分块与重计算、任务划分、异步流水线与 FP8。",
@@ -42,6 +46,7 @@
   {
     "file": "../notes/genai-flow-ii/source.lake",
     "format": "lake",
+    "tocDepth": 2,
     "slug": "genai-flow-ii",
     "date": "2026-09-24",
     "description": "生成模型笔记：Rectified Flow、Flow Matching 与 Stable Diffusion 3。",
@@ -50,6 +55,7 @@
   {
     "file": "../notes/genai-flow-i/source.lake",
     "format": "lake",
+    "tocDepth": 2,
     "slug": "genai-flow-i",
     "date": "2026-09-24",
     "description": "生成模型笔记：归一化流、Neural ODE、连续归一化流与 FFJORD。",
@@ -58,6 +64,7 @@
   {
     "file": "../notes/genai-sakura-iii/source.lake",
     "format": "lake",
+    "tocDepth": 2,
     "slug": "genai-sakura-iii",
     "date": "2026-09-23",
     "description": "生成模型笔记：基于 SDE 的得分生成模型、EDM 与 DPM-Solver。",
@@ -66,6 +73,7 @@
   {
     "file": "../notes/genai-sakura-ii/source.lake",
     "format": "lake",
+    "tocDepth": 2,
     "slug": "genai-sakura-ii",
     "date": "2026-09-23",
     "description": "生成模型笔记：Noise Conditional Score Network、DDPM、Improved DDPM 与 DDIM。",
@@ -74,6 +82,7 @@
   {
     "file": "../notes/genai-sakura-i/source.lake",
     "format": "lake",
+    "tocDepth": 2,
     "slug": "genai-sakura-i",
     "date": "2026-09-23",
     "description": "生成模型笔记：Auto-Encoding Variational Bayes、重参数化技巧与非平衡热力学扩散模型。",
@@ -82,6 +91,7 @@
   {
     "file": "../notes/infra-quant-i/source.lake",
     "format": "lake",
+    "tocDepth": 2,
     "slug": "infra-quant-i",
     "date": "2026-09-23",
     "description": "模型量化笔记：Optimal Brain Compression、GPTQ、AWQ、SpinQuant 与 FlatQuant。",

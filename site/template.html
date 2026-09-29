@@ -22,9 +22,11 @@
   <link rel="stylesheet" href="{{ROOT}}assets/reader.css">
   <link rel="stylesheet" href="{{ROOT}}assets/lake.css">
   <link rel="stylesheet" href="{{ROOT}}assets/body-serif.css">
+  <link rel="stylesheet" href="{{ROOT}}assets/toc.css">
   <script src="{{ROOT}}assets/theme.js"></script>
   <script src="{{ROOT}}assets/reader.js" defer></script>
   <script src="{{ROOT}}assets/lake.js" defer></script>
+  <script src="{{ROOT}}assets/toc.js" defer></script>
 </head>
 <body id="top" class="{{PAGE_CLASS}}-shell">
   <a class="skip-link" href="#main">跳转到正文</a>
@@ -44,7 +46,7 @@
       </ul>
     </nav>
   </header>
-  <main class="main {{PAGE_CLASS}}" id="main">{{BODY}}</main>
+  <main class="main {{PAGE_CLASS}} {{TOC_CLASS}}" id="main">{{BODY}}</main>
   <footer class="site-footer">
     <img class="footer-art" src="{{ROOT}}assets/anime-readers.png" width="2172" height="724" alt="" aria-hidden="true" loading="lazy" decoding="async">
     <span>© 2026 <a href="{{ROOT}}">Blog</a></span>

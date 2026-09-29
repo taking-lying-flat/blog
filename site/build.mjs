@@ -329,10 +329,53 @@ for (const post of posts) {
   post.content = markdown.renderer.render(tokens, markdown.options, { slug: post.slug });
 }
 
+function renderPaperToc(post) {
+  if (!post.tocDepth) return '';
+  if (![1, 2].includes(post.tocDepth)) throw new Error(`Invalid TOC depth: ${post.slug}`);
+  const parsed = adaptor.parse(post.content, 'text/html');
+  const headings = [];
+  const visit = (node) => {
+    const kind = adaptor.kind(node);
+    if (kind === 'h1' || (kind === 'h2' && post.tocDepth === 2)) {
+      headings.push({
+        level: Number(kind.slice(1)),
+        id: adaptor.getAttribute(node, 'id'),
+        title: plainTitle(adaptor.textContent(node)).replace(/\s+/g, ' ').trim(),
+      });
+      return;
+    }
+    if (['#text', '#comment', 'svg', 'pre', 'code'].includes(kind)) return;
+    for (const child of adaptor.childNodes(node)) visit(child);
+  };
+  visit(adaptor.body(parsed));
+  if (!headings.length || headings.some(h => !h.id || !h.title) ||
+      new Set(headings.map(h => h.id)).size !== headings.length) {
+    throw new Error(`Missing or duplicate paper headings: ${post.slug}`);
+  }
+  const groups = [];
+  for (const heading of headings) {
+    if (heading.level === 1) groups.push({ heading, sections: [] });
+    else {
+      if (!groups.length) throw new Error(`Paper section precedes its title: ${post.slug}`);
+      groups.at(-1).sections.push(heading);
+    }
+  }
+  const link = (heading) => `<a class="toc-link" href="#${escape(encodeURIComponent(heading.id))}">${escape(heading.title)}</a>`;
+  return `<aside class="post-toc" aria-label="文章目录">
+    <details class="toc-panel" open>
+      <summary><span>目录</span><span class="toc-hide">隐藏</span><span class="toc-show">显示</span></summary>
+      <nav aria-label="论文及章节">
+        <ol class="toc-list">${groups.map(({ heading, sections }) => `<li>${link(heading)}${sections.length
+          ? `<ol>${sections.map(section => `<li>${link(section)}</li>`).join('')}</ol>` : ''}</li>`).join('')}</ol>
+      </nav>
+    </details>
+  </aside>`;
+}
+
 const template = await readFile(path.join(root, 'template.html'), 'utf8');
 const primer = path.join(root, 'node_modules/@primer/primitives');
 const assets = new Map([
-  ...['reader.css', 'reader.js', 'theme.js', 'favicon.svg', 'lake.css', 'lake.js', 'body-serif.css'].map((file) => [file, path.join(root, file)]),
+  ...['reader.css', 'reader.js', 'theme.js', 'favicon.svg', 'lake.css', 'lake.js', 'body-serif.css', 'toc.css', 'toc.js'].map((file) => [file, path.join(root, file)]),
   ['anime-readers.png', path.join(root, 'illustrations/anime-readers.png')],
   ['gdn-architecture.png', path.join(root, 'illustrations/gdn-architecture.png')],
   ['gdn-chunk-parallel.png', path.join(root, 'illustrations/gdn-chunk-parallel.png')],
@@ -344,13 +387,13 @@ const assetVersion = createHash('sha256');
 for (const file of assets.values()) assetVersion.update(await readFile(file));
 const version = assetVersion.digest('hex').slice(0, 10);
 
-function page({ title, description, route = '', body, type = 'website', pageClass = '' }) {
+function page({ title, description, route = '', body, type = 'website', pageClass = '', hasToc = false }) {
   const values = {
     TITLE: escape(title), DESCRIPTION: escape(description), TYPE: type,
     URL: `${siteUrl}${route}`, ROOT: '../'.repeat(route.split('/').filter(Boolean).length) || './',
     POSTS_CURRENT: route === '' ? ' aria-current="page"' : '',
     ARCHIVES_CURRENT: route === 'archives/' ? ' aria-current="page"' : '',
-    PAGE_CLASS: pageClass, BODY: body,
+    PAGE_CLASS: pageClass, TOC_CLASS: hasToc ? 'has-paper-toc' : '', BODY: body,
   };
   let html = template.replace(/\{\{([A-Z_]+)\}\}/g, (_, key) => {
     if (!(key in values)) throw new Error(`Unknown template field: ${key}`);
@@ -405,8 +448,9 @@ await writeFile(path.join(output, 'archives/index.html'), archives);
 for (const [index, post] of posts.entries()) {
   const previous = posts[index - 1];
   const next = posts[index + 1];
+  const toc = renderPaperToc(post);
   const article = page({
-    title: `${post.title} · Blog`, description: post.description, route: post.route, type: 'article', pageClass: 'post-page',
+    title: `${post.title} · Blog`, description: post.description, route: post.route, type: 'article', pageClass: 'post-page', hasToc: Boolean(toc),
     body: `<article class="post-single" data-post="${escape(post.slug)}">
       <header class="post-header">
         <h1 id="${escape(post.titleId)}">${escape(post.title)}</h1>
@@ -422,7 +466,7 @@ for (const [index, post] of posts.entries()) {
         </nav>
         <a class="back-link" href="../../">← 全部文章</a>
       </footer>
-    </article>`,
+    </article>${toc}`,
   });
   await mkdir(path.join(output, post.route), { recursive: true });
   await writeFile(path.join(output, post.route, 'index.html'), article);

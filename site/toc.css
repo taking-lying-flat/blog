@@ -1,0 +1,37 @@
+/* Only explicitly selected paper notes receive a reading sidebar. */
+.post-page.has-paper-toc {
+  --toc-width: clamp(168px, calc(100vw - 1104px), 224px);
+  display: grid;
+  grid-template-columns: minmax(0, 1024px) var(--toc-width);
+  align-items: start;
+  gap: 24px;
+  max-width: calc(1096px + var(--toc-width));
+}
+.has-paper-toc > .post-single { min-width: 0; }
+.post-toc { position: sticky; top: 28px; min-width: 0; margin-top: 22px; font: 400 13px/1.6 var(--sans); }
+.toc-panel { border-left: 1px solid var(--line); padding-left: 14px; }
+.toc-panel summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 5px 8px 12px; list-style: none; cursor: pointer; font-weight: 600; }
+.toc-panel summary::-webkit-details-marker { display: none; }
+.toc-hide, .toc-show { color: var(--muted); font-size: 12px; font-weight: 400; }
+.toc-panel[open] .toc-show, .toc-panel:not([open]) .toc-hide { display: none; }
+.toc-panel nav { max-height: calc(100vh - 112px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.toc-list, .toc-list ol { margin: 0; padding: 0; list-style: none; }
+.toc-list > li + li { margin-top: 14px; }
+.toc-list ol { margin-top: 4px; padding-left: 12px; }
+.toc-list ol li + li { margin-top: 2px; }
+.toc-link { display: block; padding: 5px 8px; border-left: 2px solid transparent; border-radius: 0 4px 4px 0; color: var(--muted); text-decoration: none; overflow-wrap: anywhere; }
+.toc-list > li > .toc-link { color: var(--ink); font-weight: 600; }
+.toc-list ol .toc-link { font-size: 12px; }
+.toc-link:hover { color: var(--accent); background: var(--surface); }
+.toc-link[aria-current="location"] { border-left-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.post-page.has-paper-toc.toc-collapsed { display: block; max-width: 1072px; }
+.toc-collapsed .post-toc { position: fixed; top: 102px; right: 20px; margin: 0; z-index: 2; }
+.toc-collapsed .toc-panel { border: 1px solid var(--line); border-radius: 6px; padding: 0; background: var(--page); }
+.toc-collapsed .toc-panel summary { padding: 8px 12px; }
+@media (max-width: 1199px) {
+  .post-page.has-paper-toc { display: block; max-width: 1072px; }
+  .post-toc { position: fixed; top: 90px; right: 16px; width: min(280px, calc(100vw - 32px)); margin: 0; z-index: 2; }
+  .toc-panel { border: 1px solid var(--line); border-radius: 6px; padding: 10px; background: var(--page); box-shadow: var(--card-shadow); }
+  .toc-panel nav { max-height: calc(100vh - 170px); }
+  .toc-collapsed .post-toc { top: 90px; right: 16px; width: auto; }
+}
