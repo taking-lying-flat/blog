@@ -36,3 +36,35 @@ if (navigator.clipboard?.writeText) {
     });
   });
 }
+
+const categoryNav = document.querySelector('.category-nav');
+if (categoryNav) {
+  const buttons = [...categoryNav.querySelectorAll('[data-category]')];
+  const groups = [...document.querySelectorAll('.post-group')];
+  const heading = document.querySelector('#post-list-title');
+  const syncCategory = () => {
+    const requested = location.hash.replace('#category-', '');
+    const selected = buttons.find(button => button.dataset.category === requested) ?? buttons[0];
+    const category = selected.dataset.category;
+    let count = 0;
+    for (const group of groups) {
+      group.hidden = category !== 'all' && group.dataset.category !== category;
+      if (!group.hidden) count += group.querySelectorAll('.post-entry').length;
+    }
+    for (const button of buttons) {
+      button.setAttribute('aria-pressed', String(button === selected));
+    }
+    heading.firstChild.textContent = `${category === 'all' ? '全部文章' : selected.textContent} `;
+    heading.querySelector('span').textContent = String(count).padStart(2, '0');
+  };
+  categoryNav.addEventListener('click', event => {
+    const button = event.target.closest('button[data-category]');
+    if (!button || button.getAttribute('aria-pressed') === 'true') return;
+    const hash = button.dataset.category === 'all' ? '' : `#category-${button.dataset.category}`;
+    history.pushState(null, '', `${location.pathname}${location.search}${hash}`);
+    syncCategory();
+  });
+  window.addEventListener('popstate', syncCategory);
+  window.addEventListener('hashchange', syncCategory);
+  syncCategory();
+}

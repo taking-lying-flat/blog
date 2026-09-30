@@ -38,6 +38,31 @@ for (const post of posts) {
     throw new Error(`Missing or invalid article category: ${post.slug}`);
   }
 }
+const seriesGroups = new Map();
+for (const post of posts) {
+  if (!post.series) continue;
+  if (!Number.isInteger(post.seriesOrder) || post.seriesOrder < 1) {
+    throw new Error(`Invalid series order: ${post.slug}`);
+  }
+  const group = seriesGroups.get(post.series) ?? [];
+  if (group.some(other => other.category !== post.category || other.seriesOrder === post.seriesOrder)) {
+    throw new Error(`Inconsistent article series: ${post.series}`);
+  }
+  group.push(post);
+  seriesGroups.set(post.series, group);
+}
+function groupBySeries(categoryPosts) {
+  const groups = new Map();
+  for (const post of categoryPosts) {
+    const key = post.series ? `series:${post.series}` : `post:${post.slug}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(post);
+  }
+  return [...groups.values()].flatMap(group => group.sort((a, b) =>
+    (a.seriesOrder ?? 0) - (b.seriesOrder ?? 0)));
+}
+const readingOrder = categories.flatMap(({ id }) =>
+  groupBySeries(posts.filter(post => post.category === id)));
 const codeCaptions = JSON.parse(await readFile(path.join(root, 'code-captions.json'), 'utf8'));
 // Render article headings as written; code captions belong to the code block.
 // Repository-authored HTML tables are rendered alongside Markdown.
@@ -464,11 +489,13 @@ function page({ title, description, route = '', body, type = 'website', pageClas
 const home = page({
   title: 'Blog · 技术笔记', description: '关于模型、论文与源码的技术笔记。', pageClass: 'home-page',
   body: `<section aria-labelledby="post-list-title">
-    <div class="post-list-heading"><h1 id="post-list-title">全部文章 <span>${String(posts.length).padStart(2, '0')}</span></h1></div>
-    <nav class="category-nav" aria-label="文章分类">${categories.map(({ id, title }) =>
-      `<a href="#category-${id}" data-category="${id}">${escape(title)}</a>`).join('')}</nav>
+    <div class="post-list-heading"><h1 id="post-list-title" aria-live="polite">全部文章 <span>${String(posts.length).padStart(2, '0')}</span></h1></div>
+    <nav class="category-nav" aria-label="文章分类">
+      <button type="button" data-category="all" aria-pressed="true">全部</button>
+      ${categories.map(({ id, title }) =>
+      `<button type="button" data-category="${id}" aria-pressed="false">${escape(title)}</button>`).join('')}</nav>
     ${categories.map(({ id, title }) => {
-      const categoryPosts = posts.filter(post => post.category === id);
+      const categoryPosts = readingOrder.filter(post => post.category === id);
       return `<section class="post-group" data-category="${id}" aria-labelledby="category-${id}">
       <div class="post-group-heading"><h2 id="category-${id}">${escape(title)}</h2><span>${categoryPosts.length} 篇</span></div>
       <div class="post-list">${categoryPosts.map((post) => `<article class="post-entry">
@@ -510,9 +537,9 @@ await mkdir(path.join(output, 'archives'), { recursive: true });
 await mkdir(path.join(output, 'assets'), { recursive: true });
 await writeFile(path.join(output, 'index.html'), home);
 await writeFile(path.join(output, 'archives/index.html'), archives);
-for (const [index, post] of posts.entries()) {
-  const previous = posts[index - 1];
-  const next = posts[index + 1];
+for (const [index, post] of readingOrder.entries()) {
+  const previous = readingOrder[index - 1];
+  const next = readingOrder[index + 1];
   const toc = renderPaperToc(post);
   const article = page({
     title: `${post.title} · Blog`, description: post.description, route: post.route, type: 'article', pageClass: 'post-page', hasToc: Boolean(toc),

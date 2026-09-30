@@ -208,10 +208,12 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 [data-color-mode="dark"] .home-page [data-category="generative"] { --category-ink: #cfadf5; --category-border: #604577; --category-bg: #211a2b; }
 [data-color-mode="dark"] .home-page [data-category="code"] { --category-ink: #7bcfbb; --category-border: #315e55; --category-bg: #142520; }
 [data-color-mode="dark"] .home-page [data-category="issues"] { --category-ink: #eeb779; --category-border: #775332; --category-bg: #292017; }
+.home-page [data-category="all"] { --category-ink: var(--ink); --category-border: var(--line); --category-bg: var(--surface); }
 .category-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
-.category-nav a { padding: 5px 13px; border: 1px solid var(--category-border); border-radius: 6px; background: var(--category-bg); color: var(--category-ink); font-size: 13px; font-weight: 600; text-decoration: none; }
-.category-nav a:hover { border-color: var(--category-ink); }
-.post-group + .post-group { margin-top: 34px; }
+.category-nav button { padding: 5px 13px; border: 1px solid var(--category-border); border-radius: 6px; background: var(--category-bg); color: var(--category-ink); font-size: 13px; font-weight: 600; text-decoration: none; }
+.category-nav button:hover { border-color: var(--category-ink); }
+.category-nav button[aria-pressed="true"] { background: var(--category-ink); border-color: var(--category-ink); color: var(--page); }
+.post-group:not([hidden]) ~ .post-group:not([hidden]) { margin-top: 34px; }
 .post-group-heading { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
 .post-group-heading h2 { margin: 0; color: var(--category-ink); font-size: 17px; font-weight: 700; }
 .post-group-heading span { color: var(--muted); font-size: 12px; }
