@@ -1,0 +1,107 @@
+{
+  "N9Wmx": {
+    "from": "\\log P_{\\theta}(y\\mid x)=\\frac{1}{|y|}\\sum_{t=1}^{m}\\log\\pi_{\\theta}(y_t\\mid x,y_{<t}).",
+    "to": "\\log P_{\\theta}(y\\mid x)=\\frac{1}{|y|}\\sum_{t=1}^{|y|}\\log\\pi_{\\theta}(y_t\\mid x,y_{<t})\\tag{1}",
+    "reason": "统一长度下标与本篇编号"
+  },
+  "UwyPY": {
+    "from": "\\operatorname{odds}_{\\theta}(y\\mid x)=\\frac{P_{\\theta}(y\\mid x)}{1-P_{\\theta}(y\\mid x)}.",
+    "to": "\\operatorname{odds}_{\\theta}(y\\mid x)=\\frac{P_{\\theta}(y\\mid x)}{1-P_{\\theta}(y\\mid x)}\\tag{2}",
+    "reason": "连续编号"
+  },
+  "kWSyx": {
+    "from": "\\operatorname{OR}_{\\theta}(x,y_w,y_l)=\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}.\\tag{1}",
+    "to": "\\operatorname{OR}_{\\theta}(x,y_w,y_l)=\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}\\tag{3}",
+    "reason": "连续编号"
+  },
+  "igHRB": {
+    "from": "\\mathcal{L}_{\\mathrm{SFT}}(\\mathbf{x},\\mathbf{y})=-\\frac{1}{m}\\sum_{k=1}^{m}\\log P(x^{(k)},y^{(k)}).\\tag{2}",
+    "to": "\\mathcal{L}_{\\mathrm{SFT}}(x,y;\\theta)=-\\frac{1}{m}\\sum_{k=1}^{m}\\log\\pi_{\\theta}(y_k\\mid x,y_{<k}),\\qquad m=|y|\\tag{4}",
+    "reason": "明确因果语言模型条件似然"
+  },
+  "lWLNo": {
+    "from": "\\mathcal{L}_{\\mathrm{SFT}}(\\mathbf{x},\\mathbf{y})=-\\frac{1}{m}\\sum_{k=1}^{m}\\sum_{i=1}^{|V|}y_i^{(k)}\\cdot\\log\\left(p_i^{(k)}\\right).\\tag{3}",
+    "to": "\\mathcal{L}_{\\mathrm{SFT}}(x,y;\\theta)=-\\frac{1}{m}\\sum_{k=1}^{m}\\sum_{i=1}^{|V|}y_i^{(k)}\\log p_i^{(k)}\\tag{5}",
+    "reason": "统一符号与连续编号"
+  },
+  "D6aHK": {
+    "from": "\\mathcal{L}(d;\\theta)=\\mathcal{L}_{\\mathrm{SFT}}(x,y_w;\\theta)+\\lambda\\mathcal{L}_{\\mathrm{OR}}(d;\\theta).\\tag{4}",
+    "to": "\\mathcal{L}(d;\\theta)=\\mathcal{L}_{\\mathrm{SFT}}(x,y_w;\\theta)+\\lambda\\mathcal{L}_{\\mathrm{OR}}(d;\\theta)\\tag{6}",
+    "reason": "连续编号"
+  },
+  "cI70G": {
+    "from": "\\mathcal{L}_{\\mathrm{OR}}(d;\\theta)=-\\log\\sigma\\left(\\log\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}\\right).\\tag{5}",
+    "to": "\\mathcal{L}_{\\mathrm{OR}}(d;\\theta)=-\\log\\sigma\\left(\\log\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}\\right)\\tag{7}",
+    "reason": "连续编号"
+  },
+  "YHE6n": {
+    "from": "\\nabla_{\\theta}\\mathcal{L}_{\\mathrm{OR}}=\\delta(d)\\cdot h(d).\\tag{6}",
+    "to": "-\\nabla_{\\theta}\\mathcal{L}_{\\mathrm{OR}}=\\delta(d)\\,h(d)\\tag{8}",
+    "reason": "将原文的正向对比量明确记为负梯度，即最小化损失的下降方向"
+  },
+  "hvUIV": {
+    "from": "\\delta(d)=\\left[1+\\frac{\\operatorname{odds}_{\\theta}P(y_w\\mid x)}{\\operatorname{odds}_{\\theta}P(y_l\\mid x)}\\right]^{-1}.\\tag{7}",
+    "to": "\\delta(d)=\\left[1+\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}\\right]^{-1}\\tag{9}",
+    "reason": "统一 odds 记号并连续编号"
+  },
+  "Ay1lS": {
+    "from": "h(d)=\\frac{\\nabla_{\\theta}\\log P_{\\theta}(y_w\\mid x)}{1-P_{\\theta}(y_w\\mid x)}-\\frac{\\nabla_{\\theta}\\log P_{\\theta}(y_l\\mid x)}{1-P_{\\theta}(y_l\\mid x)}.\\tag{8}",
+    "to": "h(d)=\\frac{\\nabla_{\\theta}\\log P_{\\theta}(y_w\\mid x)}{1-P_{\\theta}(y_w\\mid x)}-\\frac{\\nabla_{\\theta}\\log P_{\\theta}(y_l\\mid x)}{1-P_{\\theta}(y_l\\mid x)}\\tag{10}",
+    "reason": "连续编号"
+  },
+  "r2Ram": {
+    "from": "(1-p_i^{(k)})",
+    "to": "-\\log\\left(1-\\pi_{\\theta}(k\\mid x,y_{<t})\\right)",
+    "reason": "明确被最小化的 unlikelihood 惩罚及符号"
+  },
+  "g4FY1": {
+    "from": "\\pi_{\\theta}",
+    "to": "P_{\\theta}(y\\mid x)",
+    "reason": "指向前文的长度归一化似然定义"
+  },
+  "iOAxG": {
+    "from": "v(z;\\lambda,\\alpha,z_0)=\\begin{cases}(z-z_0)^{\\alpha},&z\\ge z_0,\\\\-\\lambda(z_0-z)^{\\alpha},&z<z_0.\\end{cases}\\tag{4}",
+    "to": "v(z;\\lambda,\\alpha,z_0)=\\begin{cases}(z-z_0)^{\\alpha},&z\\ge z_0\\\\-\\lambda(z_0-z)^{\\alpha},&z<z_0\\end{cases}\\tag{1}",
+    "reason": "KTO 论文部分重新连续编号"
+  },
+  "scSQj": {
+    "from": "v_f\\left(r_{\\theta}(x,y)-\\mathbb{E}_{Q}\\left[r_{\\theta}(x',y')\\right]\\right).\\tag{5}",
+    "to": "v_f\\left(r_{\\theta}(x,y)-\\mathbb{E}_{Q}\\left[r_{\\theta}(x^{\\prime},y^{\\prime})\\right]\\right)\\tag{2}",
+    "reason": "连续编号"
+  },
+  "r2Qom": {
+    "from": "\\mathcal{L}_{\\mathrm{KTO}}(\\pi_{\\theta},\\pi_{\\mathrm{ref}})=\\mathbb{E}_{x,y\\sim\\mathcal{D}}\\left[\\lambda_y-v(x,y)\\right].\\tag{7}",
+    "to": "\\mathcal{L}_{\\mathrm{KTO}}(\\pi_{\\theta},\\pi_{\\mathrm{ref}})=\\mathbb{E}_{(x,y)\\sim\\mathcal{D}}\\left[\\lambda_y-v(x,y)\\right]\\tag{3}",
+    "reason": "连续编号"
+  },
+  "gsway": {
+    "from": "z_0=\\mathbb{E}_{x'\\sim\\mathcal{D}}\\left[\\operatorname{KL}\\left(\\pi_{\\theta}(y'\\mid x')\\Vert\\pi_{\\mathrm{ref}}(y'\\mid x')\\right)\\right],",
+    "to": "z_0=\\mathbb{E}_{x^{\\prime}\\sim\\mathcal{D}}\\left[\\operatorname{KL}\\left(\\pi_{\\theta}(\\cdot\\mid x^{\\prime})\\Vert\\pi_{\\mathrm{ref}}(\\cdot\\mid x^{\\prime})\\right)\\right]\\tag{4}",
+    "reason": "保持原稿采用的 2024 版跨输入参考点定义"
+  },
+  "P6jeJ": {
+    "from": "v(x,y)=\\begin{cases}\\lambda_D\\sigma\\left(\\beta(r_{\\theta}(x,y)-z_0)\\right),&y\\sim y_{\\mathrm{desirable}}\\mid x,\\\\\\lambda_U\\sigma\\left(\\beta(z_0-r_{\\theta}(x,y))\\right),&y\\sim y_{\\mathrm{undesirable}}\\mid x.\\end{cases}",
+    "to": "v(x,y)=\\begin{cases}\\lambda_D\\sigma\\left(\\beta(r_{\\theta}(x,y)-z_0)\\right),&y\\text{ 为符合期望的回答}\\\\\\lambda_U\\sigma\\left(\\beta(z_0-r_{\\theta}(x,y))\\right),&y\\text{ 为不符合期望的回答}\\end{cases}\\tag{5}",
+    "reason": "明确二元反馈标签并连续编号"
+  },
+  "YN2QV": {
+    "from": "\\hat{z}_0=\\max\\left(0,\\frac{1}{m}\\sum_{i\\ne j}\\log\\frac{\\pi_{\\theta}(y_j\\mid x_i)}{\\pi_{\\mathrm{ref}}(y_j\\mid x_i)}\\right).",
+    "to": "\\hat z_0=\\max\\left(0,\\frac{1}{m}\\sum_{i=1}^{m}\\log\\frac{\\pi_{\\theta}(y_{\\rho(i)}\\mid x_i)}{\\pi_{\\mathrm{ref}}(y_{\\rho(i)}\\mid x_i)}\\right)\\tag{6}",
+    "reason": "明确对 m 个错配样本取均值，而非对所有 m(m-1) 对求和"
+  },
+  "NTUCl": {
+    "from": "(x_i,y_j)",
+    "to": "(x_i,y_{\\rho(i)})",
+    "reason": "明确批内一一错配"
+  },
+  "J7Lhi": {
+    "from": "y_j",
+    "to": "y_{\\rho(i)}",
+    "reason": "明确批内一一错配"
+  },
+  "rk1l6": {
+    "from": "i\\ne j",
+    "to": "\\rho(i)\\ne i",
+    "reason": "明确错配置换无固定点"
+  }
+}

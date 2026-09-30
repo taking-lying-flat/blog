@@ -1,0 +1,13 @@
+{
+  "u13102922": {
+    "source": "https://github.com/huggingface/trl/blob/v0.19.1/trl/trainer/orpo_trainer.py#L629-L659",
+    "revision": "v0.19.1",
+    "changes": "保留桌面导出原图。已对照官方 odds_ratio_loss 核心计算；图中 losses 是带正号的偏好得分，训练器在组合目标时从 NLL 中减去其均值。仅调整显示尺寸。",
+    "integrationSource": "https://github.com/huggingface/trl/blob/v0.19.1/trl/trainer/orpo_trainer.py#L809"
+  },
+  "u5064d213": {
+    "source": "https://github.com/huggingface/trl/blob/v0.19.1/trl/trainer/kto_trainer.py#L1098-L1173",
+    "revision": "v0.19.1",
+    "changes": "保留桌面导出原图。已对照官方标准 KTO 分支的核心计算；截图不包含空批次保护与 APO 分支。仅调整显示尺寸。"
+  }
+}

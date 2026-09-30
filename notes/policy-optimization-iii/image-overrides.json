@@ -1,0 +1,20 @@
+{
+  "u13102922": {
+    "from": "assets/images/1790740518979-791c71a3-676c-4de7-97a6-d4109ff07e8a.png",
+    "asset": "assets/images/1790740518979-791c71a3-676c-4de7-97a6-d4109ff07e8a.png",
+    "width": 840,
+    "height": 298.9830508474576,
+    "alt": "TRL · ORPOTrainer.odds_ratio_loss（偏好项，合并时从 NLL 中减去）",
+    "source": "https://github.com/huggingface/trl/blob/v0.19.1/trl/trainer/orpo_trainer.py#L629-L659",
+    "label": "TRL · ORPOTrainer.odds_ratio_loss（偏好项，合并时从 NLL 中减去）"
+  },
+  "u5064d213": {
+    "from": "assets/images/1755430204190-4c757aac-adfe-4c92-8a89-fc817b517269.png",
+    "asset": "assets/images/1755430204190-4c757aac-adfe-4c92-8a89-fc817b517269.png",
+    "width": 800,
+    "height": 497.2624798711755,
+    "alt": "TRL · KTOTrainer.kto_loss（标准 KTO 分支）",
+    "source": "https://github.com/huggingface/trl/blob/v0.19.1/trl/trainer/kto_trainer.py#L1098-L1173",
+    "label": "TRL · KTOTrainer.kto_loss（标准 KTO 分支）"
+  }
+}
