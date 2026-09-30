@@ -1,0 +1,112 @@
+{
+  "BME2D": {
+    "from": "\\mathcal{J}(\\theta)=\\mathbb{E}_{q\\sim\\mathcal{D},\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}f_{i,t}(r_{i,t}(\\theta))\\widehat{A}_{i,t}\\right],\n\\tag{5}",
+    "to": "\\mathcal{J}(\\theta)=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}f_{i,t}(r_{i,t}(\\theta))\\widehat{A}_{i,t}\\right]\\tag{1}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "THIl0": {
+    "from": "f_{i,t}(x)=\\sigma\\left(\\tau_{i,t}(x-1)\\right)\\cdot\\frac{4}{\\tau_{i,t}},\\quad\n\\tau_{i,t}=\n\\begin{cases}\n\\tau_{\\mathrm{pos}}, & \\text{if }\\widehat{A}_{i,t}>0\\\\\n\\tau_{\\mathrm{neg}}, & \\text{otherwise}\n\\end{cases},\n\\tag{6}",
+    "to": "f_{i,t}(x)=\\sigma\\left(\\tau_{i,t}(x-1)\\right)\\cdot\\frac{4}{\\tau_{i,t}},\\quad\n\\tau_{i,t}=\n\\begin{cases}\n\\tau_{\\mathrm{pos}}, & \\text{if }\\widehat{A}_{i,t}>0\\\\\n\\tau_{\\mathrm{neg}}, & \\text{otherwise}\n\\end{cases}\\tag{2}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "Z1cuO": {
+    "from": "\\nabla_{\\theta}\\mathcal{J}(\\theta)=\\mathbb{E}_{q\\sim\\mathcal{D},\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}w_{i,t}(\\theta)\\,r_{i,t}(\\theta)\\,\\nabla_{\\theta}\\log\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\widehat{A}_{i,t}\\right],\n\\tag{7}",
+    "to": "\\nabla_{\\theta}\\mathcal{J}(\\theta)=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}w_{i,t}(\\theta)\\,r_{i,t}(\\theta)\\,\\nabla_{\\theta}\\log\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\widehat{A}_{i,t}\\right]\\tag{3}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "Q1q3y": {
+    "from": "w_{i,t}(\\theta)=4\\,p_{i,t}(\\theta)\\left(1-p_{i,t}(\\theta)\\right),\\quad p_{i,t}(\\theta)=\\sigma\\left(\\tau_{i,t}(r_{i,t}(\\theta)-1)\\right),\n\\tag{8}",
+    "to": "w_{i,t}(\\theta)=4\\,p_{i,t}(\\theta)\\left(1-p_{i,t}(\\theta)\\right),\\quad p_{i,t}(\\theta)=\\sigma\\left(\\tau_{i,t}(r_{i,t}(\\theta)-1)\\right)\\tag{4}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "YYiuc": {
+    "from": "g(\\log s_i(\\theta))=\\operatorname{sech}^{2}\\left(\\frac{\\bar{\\tau}_i}{2}\\log s_i(\\theta)\\right)",
+    "to": "g(\\log s_i(\\theta))=\\operatorname{sech}^{2}\\left(\\frac{\\tau_i}{2}\\log s_i(\\theta)\\right)",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "A853H": {
+    "from": "\\begin{array}{r}\n\\begin{aligned}\n\\frac{\\partial\\log\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\,\\widehat{A}_{i,t}}{\\partial z_v}\n&=\\frac{\\partial\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})}{\\partial z_v}\\cdot\\frac{\\widehat{A}_{i,t}}{\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})}\\\\[6pt]\n&=\\frac{\\mathbb{1}(v=y_{i,t})\\exp(z_{y_{i,t}})\\sum_{v'\\in\\mathcal{V}}\\exp(z_{v'})-\\exp(z_{y_{i,t}})\\exp(z_v)}{\\left(\\sum_{v'\\in\\mathcal{V}}\\exp(z_{v'})\\right)^2}\\cdot\\frac{\\widehat{A}_{i,t}}{\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})}\\\\[6pt]\n&=\n\\begin{cases}\n\\left(1-\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\right)\\cdot\\widehat{A}_{i,t} & \\text{if }v=y_{i,t}\\quad\\text{(sampled token)}\\\\\n-\\pi_{\\theta}(v\\mid q,y_{i,<t})\\cdot\\widehat{A}_{i,t} & \\text{otherwise}\\quad\\text{(unsampled token)}\n\\end{cases}\n\\end{aligned}\n\\\\[-2pt]\n(9)\n\\end{array}",
+    "to": "\\begin{aligned}\n\\frac{\\partial\\log\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\,\\widehat{A}_{i,t}}{\\partial z_v}\n&=\\frac{\\partial\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})}{\\partial z_v}\\cdot\\frac{\\widehat{A}_{i,t}}{\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})}\\\\\n&=\\frac{\\mathbb{1}(v=y_{i,t})\\exp(z_{y_{i,t}})\\sum_{v'\\in\\mathcal{V}}\\exp(z_{v'})-\\exp(z_{y_{i,t}})\\exp(z_v)}{\\left(\\sum_{v'\\in\\mathcal{V}}\\exp(z_{v'})\\right)^2}\\cdot\\frac{\\widehat{A}_{i,t}}{\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})}\\\\\n&=\n\\begin{cases}\n\\left(1-\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\right)\\cdot\\widehat{A}_{i,t} & \\text{if }v=y_{i,t}\\quad\\text{(sampled token)}\\\\\n-\\pi_{\\theta}(v\\mid q,y_{i,<t})\\cdot\\widehat{A}_{i,t} & \\text{otherwise}\\quad\\text{(unsampled token)}\n\\end{cases}\n\\end{aligned}\n\\tag{5}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "PDyst": {
+    "from": "\\mathcal{J}(\\theta)=\\mathbb{E}_{q\\sim\\mathcal{D},\\,\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}f_{i,t}\\big(r_{i,t}(\\theta)\\big)\\,\\widehat{A}_{i,t}\\right],\n\\tag{10}",
+    "to": "\\mathcal{J}(\\theta)=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}f_{i,t}\\big(r_{i,t}(\\theta)\\big)\\,\\widehat{A}_{i,t}\\right]\\tag{6}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "wFh0U": {
+    "from": "s_i(\\theta)=\\left(\\frac{\\pi_{\\theta}(y_i\\mid q)}{\\pi_{\\theta_{\\mathrm{old}}}(y_i\\mid q)}\\right)^{\\frac{1}{|y_i|}}=\\exp\\left(\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\log r_{i,t}(\\theta)\\right),\\quad s_{i,t}(\\theta)=\\mathrm{sg}[s_i(\\theta)]\\cdot\\frac{\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})}{\\mathrm{sg}[\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})]},\n\\tag{11}",
+    "to": "s_i(\\theta)=\\left(\\frac{\\pi_{\\theta}(y_i\\mid q)}{\\pi_{\\theta_{\\mathrm{old}}}(y_i\\mid q)}\\right)^{\\frac{1}{|y_i|}}=\\exp\\left(\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\log r_{i,t}(\\theta)\\right),\\quad s_{i,t}(\\theta)=\\mathrm{sg}[s_i(\\theta)]\\cdot\\frac{\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})}{\\mathrm{sg}[\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})]}\\tag{7}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "oRF1K": {
+    "from": "\\text{SAPO:}\\quad f_{i,t}^{\\mathrm{SAPO}}(r_{i,t}(\\theta))=\\frac{4}{\\tau_i}\\,\\sigma\\big(\\tau_i(r_{i,t}(\\theta)-1)\\big),\\qquad\n\\tau_i=\n\\begin{cases}\n\\tau_{\\mathrm{pos}}, & \\widehat{A}_i>0,\\\\\n\\tau_{\\mathrm{neg}}, & \\widehat{A}_i\\leq 0,\n\\end{cases}\n\\tag{12}",
+    "to": "f_{i,t}^{\\mathrm{SAPO}}(r_{i,t}(\\theta))=\\frac{4}{\\tau_i}\\,\\sigma\\big(\\tau_i(r_{i,t}(\\theta)-1)\\big),\\qquad\n\\tau_i=\n\\begin{cases}\n\\tau_{\\mathrm{pos}}, & \\widehat{A}_i>0\\\\\n\\tau_{\\mathrm{neg}}, & \\widehat{A}_i\\leq 0\n\\end{cases}\n\\tag{8}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "FAXYx": {
+    "from": "\\text{GRPO:}\\quad f_{i,t}^{\\mathrm{GRPO}}(r_{i,t}(\\theta);\\widehat{A}_i)=\n\\begin{cases}\n\\min\\big(r_{i,t}(\\theta),\\,1+\\varepsilon\\big), & \\widehat{A}_i>0,\\\\\n\\max\\big(r_{i,t}(\\theta),\\,1-\\varepsilon\\big), & \\widehat{A}_i\\leq 0,\n\\end{cases}\n\\tag{13}",
+    "to": "f_{i,t}^{\\mathrm{GRPO}}(r_{i,t}(\\theta);\\widehat{A}_i)=\n\\begin{cases}\n\\min\\big(r_{i,t}(\\theta),\\,1+\\varepsilon\\big), & \\widehat{A}_i>0\\\\\n\\max\\big(r_{i,t}(\\theta),\\,1-\\varepsilon\\big), & \\widehat{A}_i\\leq 0\n\\end{cases}\n\\tag{9}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "zL3VC": {
+    "from": "\\text{GSPO:}\\quad f_{i,t}^{\\mathrm{GSPO}}(r_{i,t}(\\theta);\\widehat{A}_i)\\equiv f_{i,t}^{\\mathrm{seq}}\\big(s_{i,t}(\\theta);\\widehat{A}_i\\big)=\n\\begin{cases}\n\\min\\big(s_{i,t}(\\theta),\\,1+\\varepsilon\\big), & \\widehat{A}_i>0,\\\\\n\\max\\big(s_{i,t}(\\theta),\\,1-\\varepsilon\\big), & \\widehat{A}_i\\leq 0.\n\\end{cases}\n\\tag{14}",
+    "to": "f_{i,t}^{\\mathrm{GSPO}}(r_{i,t}(\\theta);\\widehat{A}_i)\\equiv f_{i,t}^{\\mathrm{seq}}\\big(s_{i,t}(\\theta);\\widehat{A}_i\\big)=\n\\begin{cases}\n\\min\\big(s_{i,t}(\\theta),\\,1+\\varepsilon\\big), & \\widehat{A}_i>0\\\\\n\\max\\big(s_{i,t}(\\theta),\\,1-\\varepsilon\\big), & \\widehat{A}_i\\leq 0\n\\end{cases}\n\\tag{10}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "IQLVJ": {
+    "from": "\\nabla_{\\theta}\\mathcal{J}(\\theta)=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}f_{i,t}^{\\prime}\\big(r_{i,t}(\\theta)\\big)\\,r_{i,t}(\\theta)\\,\\nabla_{\\theta}\\log\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\,\\widehat{A}_i\\right].\n\\tag{15}",
+    "to": "\\nabla_{\\theta}\\mathcal{J}(\\theta)=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}f_{i,t}^{\\prime}\\big(r_{i,t}(\\theta)\\big)\\,r_{i,t}(\\theta)\\,\\nabla_{\\theta}\\log\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\,\\widehat{A}_i\\right]\\tag{11}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "dX5t4": {
+    "from": "f_{i,t}^{\\mathrm{SAPO}\\,\\prime}(r_{i,t}(\\theta))=4\\,\\sigma\\big(\\tau_i(r_{i,t}(\\theta)-1)\\big)\\Big(1-\\sigma\\big(\\tau_i(r_{i,t}(\\theta)-1)\\big)\\Big)=\\mathrm{sech}^{2}\\left(\\frac{\\tau_i}{2}(r_{i,t}(\\theta)-1)\\right),\n\\tag{16}",
+    "to": "f_{i,t}^{\\mathrm{SAPO}\\,\\prime}(r_{i,t}(\\theta))=4\\,\\sigma\\big(\\tau_i(r_{i,t}(\\theta)-1)\\big)\\Big(1-\\sigma\\big(\\tau_i(r_{i,t}(\\theta)-1)\\big)\\Big)=\\mathrm{sech}^{2}\\left(\\frac{\\tau_i}{2}(r_{i,t}(\\theta)-1)\\right)\\tag{12}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "WC3qF": {
+    "from": "f_{i,t}^{\\mathrm{SAPO}\\,\\prime}(r_{i,t}(\\theta))=\\mathrm{sech}^{2}\\left(\\frac{\\tau_i}{2}(r_{i,t}(\\theta)-1)\\right)\\approx\\mathrm{sech}^{2}\\left(\\frac{\\tau_i}{2}\\log r_{i,t}(\\theta)\\right)=:g_{\\tau_i}\\big(z_{i,t}(\\theta)\\big).\n\\tag{17}",
+    "to": "f_{i,t}^{\\mathrm{SAPO}\\,\\prime}(r_{i,t}(\\theta))=\\mathrm{sech}^{2}\\left(\\frac{\\tau_i}{2}(r_{i,t}(\\theta)-1)\\right)\\approx\\mathrm{sech}^{2}\\left(\\frac{\\tau_i}{2}\\log r_{i,t}(\\theta)\\right)=:g_{\\tau_i}\\big(z_{i,t}(\\theta)\\big)\\tag{13}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "xXZbF": {
+    "from": "g_{\\tau_i}(z_{i,t}(\\theta))=g_{\\tau_i}(\\mu_i(\\theta))+g_{\\tau_i}^{\\prime}(\\mu_i(\\theta))\\,(z_{i,t}(\\theta)-\\mu_i(\\theta))+\\frac{1}{2}\\,g_{\\tau_i}^{\\prime\\prime}(\\xi_{i,t}(\\theta))\\,(z_{i,t}(\\theta)-\\mu_i(\\theta))^2,\n\\tag{18}",
+    "to": "g_{\\tau_i}(z_{i,t}(\\theta))=g_{\\tau_i}(\\mu_i(\\theta))+g_{\\tau_i}^{\\prime}(\\mu_i(\\theta))\\,(z_{i,t}(\\theta)-\\mu_i(\\theta))+\\frac{1}{2}\\,g_{\\tau_i}^{\\prime\\prime}(\\xi_{i,t}(\\theta))\\,(z_{i,t}(\\theta)-\\mu_i(\\theta))^2\\tag{14}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "Njszq": {
+    "from": "\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}g_{\\tau_i}(z_{i,t}(\\theta))=g_{\\tau_i}(\\mu_i(\\theta))+\\frac{1}{2}\\left(\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}g_{\\tau_i}^{\\prime\\prime}(\\xi_{i,t}(\\theta))\\,(z_{i,t}(\\theta)-\\mu_i(\\theta))^2\\right).\n\\tag{19}",
+    "to": "\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}g_{\\tau_i}(z_{i,t}(\\theta))=g_{\\tau_i}(\\mu_i(\\theta))+\\frac{1}{2}\\left(\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}g_{\\tau_i}^{\\prime\\prime}(\\xi_{i,t}(\\theta))\\,(z_{i,t}(\\theta)-\\mu_i(\\theta))^2\\right)\\tag{15}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "eYPVm": {
+    "from": "g_{\\tau}^{\\prime\\prime}(z)=\\alpha^2\\Big(4\\,\\mathrm{sech}^{2}(\\alpha z)-6\\,\\mathrm{sech}^{4}(\\alpha z)\\Big),\\quad \\sup_z|g_{\\tau}^{\\prime\\prime}(z)|=2\\alpha^2=\\frac{\\tau^2}{2}.\n\\tag{20}",
+    "to": "g_{\\tau}^{\\prime\\prime}(z)=\\alpha^2\\Big(4\\,\\mathrm{sech}^{2}(\\alpha z)-6\\,\\mathrm{sech}^{4}(\\alpha z)\\Big),\\quad \\sup_z|g_{\\tau}^{\\prime\\prime}(z)|=2\\alpha^2=\\frac{\\tau^2}{2}\\tag{16}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "dtQ9x": {
+    "from": "D_i(\\theta)=\\left|\\frac{1}{|y_i|}\\sum_t g_{\\tau_i}(z_{i,t}(\\theta))-g_{\\tau_i}(\\mu_i(\\theta))\\right|\\leq\\frac{1}{2}\\sup_z|g_{\\tau_i}^{\\prime\\prime}(z)|\\,\\mathrm{Var}_i(\\theta)=\\frac{\\tau_i^2}{4}\\,\\mathrm{Var}_i(\\theta).\n\\tag{21}",
+    "to": "D_i(\\theta)=\\left|\\frac{1}{|y_i|}\\sum_t g_{\\tau_i}(z_{i,t}(\\theta))-g_{\\tau_i}(\\mu_i(\\theta))\\right|\\leq\\frac{1}{2}\\sup_z|g_{\\tau_i}^{\\prime\\prime}(z)|\\,\\mathrm{Var}_i(\\theta)=\\frac{\\tau_i^2}{4}\\,\\mathrm{Var}_i(\\theta)\\tag{17}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "k0tyG": {
+    "from": "\\nabla_{\\theta}\\mathcal{J}_{\\mathrm{SAPO}}\\approx\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}g_{\\tau_i}(z_{i,t}(\\theta))\\,\\nabla_{\\theta}\\log\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\,\\widehat{A}_i\\right].\n\\tag{22}",
+    "to": "\\nabla_{\\theta}\\mathcal{J}_{\\mathrm{SAPO}}\\approx\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}g_{\\tau_i}(z_{i,t}(\\theta))\\,\\nabla_{\\theta}\\log\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\,\\widehat{A}_i\\right]\\tag{18}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "UJDmk": {
+    "from": "\\begin{aligned}\n\\nabla_{\\theta}\\mathcal{J}_{\\mathrm{SAPO}}\n&\\approx\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}g_{\\tau_i}\\big(\\log s_i(\\theta)\\big)\\left(\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\nabla_{\\theta}\\log\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\right)\\widehat{A}_i\\right]\\\\\n&=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}g_{\\tau_i}\\big(\\log s_i(\\theta)\\big)\\,\\nabla_{\\theta}\\log s_i(\\theta)\\,\\widehat{A}_i\\right].\n\\end{aligned}\n\\tag{23}",
+    "to": "\\begin{aligned}\n\\nabla_{\\theta}\\mathcal{J}_{\\mathrm{SAPO}}\n&\\approx\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}g_{\\tau_i}\\big(\\log s_i(\\theta)\\big)\\left(\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\nabla_{\\theta}\\log\\pi_{\\theta}(y_{i,t}\\mid q,y_{i,<t})\\right)\\widehat{A}_i\\right]\\\\\n&=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}g_{\\tau_i}\\big(\\log s_i(\\theta)\\big)\\,\\nabla_{\\theta}\\log s_i(\\theta)\\,\\widehat{A}_i\\right]\n\\end{aligned}\n\\tag{19}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "jaSXk": {
+    "from": "f_{i,t}^{\\mathrm{GRPO}\\,\\prime}(r_{i,t}(\\theta);\\widehat{A}_i)=\n\\begin{cases}\n1, & \\widehat{A}_i>0\\text{ and }r_{i,t}(\\theta)\\leq 1+\\varepsilon,\\\\\n0, & \\widehat{A}_i>0\\text{ and }r_{i,t}(\\theta)>1+\\varepsilon,\\\\\n1, & \\widehat{A}_i\\leq 0\\text{ and }r_{i,t}(\\theta)\\geq 1-\\varepsilon,\\\\\n0, & \\widehat{A}_i\\leq 0\\text{ and }r_{i,t}(\\theta)<1-\\varepsilon.\n\\end{cases}\n\\tag{24}",
+    "to": "f_{i,t}^{\\mathrm{GRPO}\\,\\prime}(r_{i,t}(\\theta);\\widehat{A}_i)=\n\\begin{cases}\n1, & \\widehat{A}_i>0\\text{ and }r_{i,t}(\\theta)\\leq 1+\\varepsilon\\\\\n0, & \\widehat{A}_i>0\\text{ and }r_{i,t}(\\theta)>1+\\varepsilon\\\\\n1, & \\widehat{A}_i\\leq 0\\text{ and }r_{i,t}(\\theta)\\geq 1-\\varepsilon\\\\\n0, & \\widehat{A}_i\\leq 0\\text{ and }r_{i,t}(\\theta)<1-\\varepsilon\n\\end{cases}\n\\tag{20}",
+    "reason": "SAPO 内连续编号与右侧编号，去除公式末尾标点；期望采样分布在正文定义"
+  },
+  "hCqpm": {
+    "from": "f_{i,t}",
+    "to": "\\tau_i",
+    "reason": "门控比较部分采用序列共享优势与温度，与原文定义衔接"
+  }
+}

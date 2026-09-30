@@ -163,3 +163,14 @@
 [data-post="policy-optimization-iv"] .lake-document h1 { margin-block: 28px 14px; }
 [data-post="policy-optimization-iv"] .lake-document h2 { margin-block: 24px 12px; }
 [data-post="policy-optimization-iv"] .lake-document > :first-child { margin-top: 0; }
+
+/* SAPO: distinguish the steps of the final derivation without extra panels. */
+[data-post="policy-optimization-iv"] .lake-document :is(#uefd7a9b7, #uf194c48c, #u2fa3125f, #uc4facc47, #ufe61298e, #u099ba64f) {
+  margin-top: 16px;
+}
+[data-post="policy-optimization-iv"] .lake-document :is(#uc58c1bf8, #u52f574fc, #ufd9d1ab0) { color: #ad4e00; font-weight: 700; }
+[data-post="policy-optimization-iv"] .lake-document :is(#u9202baa8, #uf7132dcb, #u60155441, #uac76ba26) { color: #1d5ea6; font-weight: 700; }
+[data-post="policy-optimization-iv"] .lake-document :is(#u1ed6ac2c, #ubad194c5) { font-weight: 700; }
+[data-post="policy-optimization-iv"] .lake-document #u936b2bf7 { margin-top: 12px; color: #1d5ea6; }
+[data-post="policy-optimization-iv"] .lake-document #uaa82bc99 { text-align: center; }
+[data-post="policy-optimization-iv"] .lake-document #u936b2bf7 span[style] { color: inherit !important; }

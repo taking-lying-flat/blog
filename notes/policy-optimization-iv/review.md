@@ -1,6 +1,6 @@
 # Policy Optimization-IV 发布校对
 
-桌面 `🦫 𝓡𝓮𝓯𝓲𝓷𝓮𝓶𝓮𝓷𝓽.lake` 完整归档为 `references/original.lake`；发布源 `source.lake` 只截取 DAPO，截止于 GSPO 标题之前，GSPO 后续从 `gspo/source.lake` 追加，SAPO 尚未加入正文
+桌面 `🦫 𝓡𝓮𝓯𝓲𝓷𝓮𝓶𝓮𝓷𝓽.lake` 完整归档为 `references/original.lake`；发布源 `source.lake` 只截取 DAPO，截止于 GSPO 标题之前，GSPO 和 SAPO 后续依次从 `gspo/source.lake` 与 `sapo/source.lake` 追加
 
 - 对照 [DAPO 论文 v2](https://arxiv.org/html/2503.14476v2) 核对 PPO／GRPO 回顾、Clip-Higher、动态采样、Token 级损失和超长回答奖励塑形
 - 保留正文与四项技术的高亮公式，公式按论文顺序编号（1）—（13），内部全部使用英文

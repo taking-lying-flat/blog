@@ -9,16 +9,18 @@
     "seriesOrder": 4,
     "category": "llm",
     "date": "2026-09-30",
-    "description": "策略优化笔记：DAPO 的四项改进，以及 GSPO 的序列级优化、梯度分析与 GSPO-token",
+    "description": "策略优化笔记：DAPO、GSPO 与 SAPO，涵盖裁剪改进、序列级优化及软门控梯度分析",
     "tags": [
       "强化学习",
       "DAPO",
       "GSPO",
+      "SAPO",
       "GRPO",
       "长思维链"
     ],
     "appendFiles": [
-      "../notes/policy-optimization-iv/gspo/source.lake"
+      "../notes/policy-optimization-iv/gspo/source.lake",
+      "../notes/policy-optimization-iv/sapo/source.lake"
     ]
   },
   {
