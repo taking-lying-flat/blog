@@ -1,0 +1,32 @@
+{
+  "TL2Mu": {
+    "from": "r(x,y)=\\beta\\log\\frac{\\pi_\\theta(y\\mid x)}{\\pi_{\\mathrm{ref}}(y\\mid x)}+\\beta\\log Z(x).\n\\tag{1}",
+    "to": "r(x,y)=\\beta\\log\\frac{\\pi_\\theta(y\\mid x)}{\\pi_{\\mathrm{ref}}(y\\mid x)}+\\beta\\log Z(x)\\tag{1}",
+    "reason": "保留原论文编号及计算，去掉公式末尾标点"
+  },
+  "GWQXF": {
+    "from": "\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})=-\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}}\\left[\\log\\sigma\\left(\\beta\\log\\frac{\\pi_\\theta(y_w\\mid x)}{\\pi_{\\mathrm{ref}}(y_w\\mid x)}-\\beta\\log\\frac{\\pi_\\theta(y_l\\mid x)}{\\pi_{\\mathrm{ref}}(y_l\\mid x)}\\right)\\right].\n\\tag{2}",
+    "to": "\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})=-\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}}\\left[\\log\\sigma\\left(\\beta\\log\\frac{\\pi_\\theta(y_w\\mid x)}{\\pi_{\\mathrm{ref}}(y_w\\mid x)}-\\beta\\log\\frac{\\pi_\\theta(y_l\\mid x)}{\\pi_{\\mathrm{ref}}(y_l\\mid x)}\\right)\\right]\\tag{2}",
+    "reason": "保留原论文编号及计算，去掉公式末尾标点"
+  },
+  "wBweD": {
+    "from": "p_\\theta(y\\mid x)=\\frac{1}{|y|}\\log\\pi_\\theta(y\\mid x)=\\frac{1}{|y|}\\sum_{i=1}^{|y|}\\log\\pi_\\theta(y_i\\mid x,y_{<i}).\n\\tag{3}",
+    "to": "p_\\theta(y\\mid x)=\\frac{1}{|y|}\\log\\pi_\\theta(y\\mid x)=\\frac{1}{|y|}\\sum_{i=1}^{|y|}\\log\\pi_\\theta(y_i\\mid x,y_{<i})\\tag{3}",
+    "reason": "保留原论文编号及计算，去掉公式末尾标点"
+  },
+  "kceg6": {
+    "from": "r_{\\mathrm{SimPO}}(x,y)=\\frac{\\beta}{|y|}\\log\\pi_\\theta(y\\mid x)=\\frac{\\beta}{|y|}\\sum_{i=1}^{|y|}\\log\\pi_\\theta(y_i\\mid x,y_{<i}).\n\\tag{4}",
+    "to": "r_{\\mathrm{SimPO}}(x,y)=\\frac{\\beta}{|y|}\\log\\pi_\\theta(y\\mid x)=\\frac{\\beta}{|y|}\\sum_{i=1}^{|y|}\\log\\pi_\\theta(y_i\\mid x,y_{<i})\\tag{4}",
+    "reason": "保留原论文编号及计算，去掉公式末尾标点"
+  },
+  "m1aAb": {
+    "from": "p(y_w\\succ y_l\\mid x)=\\sigma\\left(r(x,y_w)-r(x,y_l)-\\gamma\\right).\n\\tag{5}",
+    "to": "p(y_w\\succ y_l\\mid x)=\\sigma\\left(r(x,y_w)-r(x,y_l)-\\gamma\\right)\\tag{5}",
+    "reason": "保留原论文编号及计算，去掉公式末尾标点"
+  },
+  "VdLg9": {
+    "from": "\\mathcal{L}_{\\mathrm{SimPO}}(\\pi_\\theta)=-\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}}\\left[\\log\\sigma\\left(\\frac{\\beta}{|y_w|}\\log\\pi_\\theta(y_w\\mid x)-\\frac{\\beta}{|y_l|}\\log\\pi_\\theta(y_l\\mid x)-\\gamma\\right)\\right].\n\\tag{6}",
+    "to": "\\mathcal{L}_{\\mathrm{SimPO}}(\\pi_\\theta)=-\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}}\\left[\\log\\sigma\\left(\\frac{\\beta}{|y_w|}\\log\\pi_\\theta(y_w\\mid x)-\\frac{\\beta}{|y_l|}\\log\\pi_\\theta(y_l\\mid x)-\\gamma\\right)\\right]\\tag{6}",
+    "reason": "保留原论文编号及计算，去掉公式末尾标点"
+  }
+}

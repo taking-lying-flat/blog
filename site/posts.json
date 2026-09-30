@@ -5,16 +5,18 @@
     "removeEmptyParagraphs": true,
     "tocDepth": 2,
     "slug": "policy-optimization-iii",
+    "appendFiles": ["../notes/policy-optimization-iii/simpo/source.lake"],
     "series": "policy-optimization",
     "seriesOrder": 3,
     "category": "llm",
     "date": "2026-09-30",
-    "description": "策略优化笔记：ORPO 的优势比目标与更新方向，以及 KTO 的前景理论、二元反馈和参考点估计",
+    "description": "策略优化笔记：ORPO 的优势比目标、KTO 的前景理论与二元反馈，以及 SimPO 的长度归一化奖励和目标间隔",
     "tags": [
       "强化学习",
       "偏好优化",
       "ORPO",
-      "KTO"
+      "KTO",
+      "SimPO"
     ]
   },
   {

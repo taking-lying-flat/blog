@@ -1,0 +1,11 @@
+{
+  "ub58d323a": {
+    "from": "assets/images/1755432972764-1f2978f5-9e2a-4c19-afaf-961266d9701b.png",
+    "asset": "assets/images/simpo-loss-compact.png",
+    "width": 840,
+    "height": 259.592,
+    "alt": "SimPO · SimPOTrainer.simpo_loss（sigmoid，label_smoothing=0，gamma_beta_ratio=γ/β）",
+    "source": "https://github.com/princeton-nlp/SimPO/blob/1b3e8f3528a23bce3da514a2dce8ea7490d4bc75/scripts/simpo_trainer.py#L560-L595",
+    "label": "SimPO · SimPOTrainer.simpo_loss（sigmoid，label_smoothing=0，gamma_beta_ratio=γ/β）"
+  }
+}

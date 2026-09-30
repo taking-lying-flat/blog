@@ -1,0 +1,12 @@
+{
+  "ub58d323a": {
+    "file": "simpo-loss.py",
+    "source": "https://github.com/princeton-nlp/SimPO/blob/1b3e8f3528a23bce3da514a2dce8ea7490d4bc75/scripts/simpo_trainer.py#L560-L595",
+    "revision": "1b3e8f3528a23bce3da514a2dce8ea7490d4bc75",
+    "sourceSha256": "4fb065dd34e3dc37f6c7c3ffcae37e1e6e4c4c48b70892d790337cf69f84eaf7",
+    "changes": "保留官方 sigmoid 分支，移除注释、文档字符串、其他损失分支及异常处理，合并参数列表和多余空行；计算与返回值保持官方原样",
+    "lines": 13,
+    "astVerified": true,
+    "normalizationSource": "https://github.com/princeton-nlp/SimPO/blob/1b3e8f3528a23bce3da514a2dce8ea7490d4bc75/scripts/simpo_trainer.py#L629-L635"
+  }
+}
