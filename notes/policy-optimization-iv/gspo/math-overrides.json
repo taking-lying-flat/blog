@@ -1,0 +1,47 @@
+{
+  "knkKH": {
+    "from": "\\mathbb{E}_{z\\sim\\pi_{\\mathrm{tar}}}[f(z)]=\\mathbb{E}_{z\\sim\\pi_{\\mathrm{beh}}}\\left[\\frac{\\pi_{\\mathrm{tar}}(z)}{\\pi_{\\mathrm{beh}}(z)}f(z)\\right].\n\\tag{4}",
+    "to": "\\mathbb{E}_{z\\sim\\pi_{\\mathrm{tar}}}[f(z)]=\\mathbb{E}_{z\\sim\\pi_{\\mathrm{beh}}}\\left[\\frac{\\pi_{\\mathrm{tar}}(z)}{\\pi_{\\mathrm{beh}}(z)}f(z)\\right]\\tag{1}",
+    "reason": "连续编号，推导合并编号；保留各步等式，使用已定义的比率与期望简记，整理长公式排版"
+  },
+  "h5nqN": {
+    "from": "\\mathcal{J}_{\\mathrm{GSPO}}(\\theta)=\\mathbb{E}_{x\\sim\\mathcal{D},\\,\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid x)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\min\\left(s_i(\\theta)\\hat{A}_i,\\;\\operatorname{clip}\\left(s_i(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_i\\right)\\right],\n\\tag{5}",
+    "to": "\\begin{aligned}\n&\\mathcal{J}_{\\mathrm{GSPO}}(\\theta)\\\\\n&=\\mathbb{E}_{\\substack{x\\sim\\mathcal{D}\\\\\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid x)}}\\!\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\min\\!\\left(s_i(\\theta)\\hat{A}_i,\\operatorname{clip}\\!\\left(s_i(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_i\\right)\\right]\n\\end{aligned}\\tag{2}",
+    "reason": "连续编号，推导合并编号；保留各步等式，使用已定义的比率与期望简记，整理长公式排版"
+  },
+  "djEvg": {
+    "from": "\\hat{A}_i=\\frac{r(x,y_i)-\\operatorname{mean}\\left(\\{r(x,y_i)\\}_{i=1}^{G}\\right)}{\\operatorname{std}\\left(\\{r(x,y_i)\\}_{i=1}^{G}\\right)},\n\\tag{6}",
+    "to": "\\hat{A}_i=\\frac{r(x,y_i)-\\operatorname{mean}\\left(\\{r(x,y_j)\\}_{j=1}^{G}\\right)}{\\operatorname{std}\\left(\\{r(x,y_j)\\}_{j=1}^{G}\\right)}\\tag{3}",
+    "reason": "连续编号，推导合并编号；保留各步等式，使用已定义的比率与期望简记，整理长公式排版"
+  },
+  "jeyia": {
+    "from": "s_i(\\theta)=\\left(\\frac{\\pi_\\theta(y_i\\mid x)}{\\pi_{\\theta_{\\mathrm{old}}}(y_i\\mid x)}\\right)^{\\frac{1}{|y_i|}}=\\exp\\left(\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\log\\frac{\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(y_{i,t}\\mid x,y_{i,<t})}\\right).\n\\tag{7}",
+    "to": "\\begin{aligned}\ns_i(\\theta)&=\\left(\\frac{\\pi_\\theta(y_i\\mid x)}{\\pi_{\\theta_{\\mathrm{old}}}(y_i\\mid x)}\\right)^{\\frac{1}{|y_i|}}\\\\\n&=\\exp\\left(\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\log\\frac{\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(y_{i,t}\\mid x,y_{i,<t})}\\right)\n\\end{aligned}\\tag{4}",
+    "reason": "连续编号，推导合并编号；保留各步等式，使用已定义的比率与期望简记，整理长公式排版"
+  },
+  "BCTxr": {
+    "from": "\\begin{aligned}\n\\nabla_\\theta\\mathcal{J}_{\\mathrm{GSPO}}(\\theta)&=\\nabla_\\theta\\mathbb{E}_{x\\sim\\mathcal{D},\\,\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid x)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}s_i(\\theta)\\hat{A}_i\\right] &\\qquad\\text{(8)}\\\\\n&=\\mathbb{E}_{x\\sim\\mathcal{D},\\,\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid x)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}s_i(\\theta)\\hat{A}_i\\cdot\\nabla_\\theta\\log s_i(\\theta)\\right] &\\qquad\\text{(9)}\\\\\n&=\\mathbb{E}_{x\\sim\\mathcal{D},\\,\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid x)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\left(\\frac{\\pi_\\theta(y_i\\mid x)}{\\pi_{\\theta_{\\mathrm{old}}}(y_i\\mid x)}\\right)^{\\frac{1}{|y_i|}}\\hat{A}_i\\cdot\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\nabla_\\theta\\log\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})\\right]. &\\qquad\\text{(10)}\n\\end{aligned}",
+    "to": "\\begin{aligned}\n\\nabla_\\theta\\mathcal{J}_{\\mathrm{GSPO}}(\\theta)\n&=\\nabla_\\theta\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}s_i(\\theta)\\hat{A}_i\\right]\\\\\n&=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}s_i(\\theta)\\hat{A}_i\\,\\nabla_\\theta\\log s_i(\\theta)\\right]\\\\\n&=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}s_i(\\theta)\\hat{A}_i\\,\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\nabla_\\theta\\log\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})\\right]\n\\end{aligned}\\tag{5}",
+    "reason": "连续编号，推导合并编号；保留各步等式，使用已定义的比率与期望简记，整理长公式排版"
+  },
+  "zGFFT": {
+    "from": "\\begin{aligned}\n\\nabla_\\theta\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)&=\\nabla_\\theta\\mathbb{E}_{x\\sim\\mathcal{D},\\,\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid x)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}w_{i,t}(\\theta)\\hat{A}_{i,t}\\right] &\\qquad\\text{(11)}\\\\\n&=\\mathbb{E}_{x\\sim\\mathcal{D},\\,\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid x)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\hat{A}_i\\cdot\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\frac{\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(y_{i,t}\\mid x,y_{i,<t})}\\nabla_\\theta\\log\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})\\right]. &\\qquad\\text{(12)}\n\\end{aligned}",
+    "to": "\\begin{aligned}\n\\nabla_\\theta\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)\n&=\\nabla_\\theta\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}w_{i,t}(\\theta)\\hat{A}_{i,t}\\right]\\\\\n&=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\hat{A}_i\\,\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}w_{i,t}(\\theta)\\nabla_\\theta\\log\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})\\right]\n\\end{aligned}\\tag{6}",
+    "reason": "连续编号，推导合并编号；保留各步等式，使用已定义的比率与期望简记，整理长公式排版"
+  },
+  "CccAQ": {
+    "from": "\\begin{array}{r}\n\\displaystyle \\mathcal{J}_{\\text{GSPO-token}}(\\theta)=\\mathbb{E}_{x\\sim\\mathcal{D},\\,\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid x)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\min\\left(s_{i,t}(\\theta)\\hat{A}_{i,t},\\;\\operatorname{clip}\\left(s_{i,t}(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right)\\right],\\\\[-0.3em]\n\\text{(13)}\n\\end{array}",
+    "to": "\\begin{aligned}\n&\\mathcal{J}_{\\text{GSPO-token}}(\\theta)\\\\\n&=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\min\\!\\left(s_{i,t}(\\theta)\\hat{A}_{i,t},\\operatorname{clip}\\!\\left(s_{i,t}(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right)\\right]\n\\end{aligned}\\tag{7}",
+    "reason": "连续编号，推导合并编号；保留各步等式，使用已定义的比率与期望简记，整理长公式排版"
+  },
+  "hKF4q": {
+    "from": "s_{i,t}(\\theta)=\\operatorname{sg}[s_i(\\theta)]\\cdot\\frac{\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})}{\\operatorname{sg}[\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})]},\n\\tag{14}",
+    "to": "s_{i,t}(\\theta)=\\operatorname{sg}[s_i(\\theta)]\\cdot\\frac{\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})}{\\operatorname{sg}[\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})]}\\tag{8}",
+    "reason": "连续编号，推导合并编号；保留各步等式，使用已定义的比率与期望简记，整理长公式排版"
+  },
+  "K8Qem": {
+    "from": "\\begin{aligned}\n\\nabla_\\theta\\mathcal{J}_{\\text{GSPO-token}}(\\theta)&=\\nabla_\\theta\\mathbb{E}_{x\\sim\\mathcal{D},\\,\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid x)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}s_{i,t}(\\theta)\\hat{A}_{i,t}\\right] &\\qquad\\text{(15)}\\\\\n&=\\mathbb{E}_{x\\sim\\mathcal{D},\\,\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid x)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}s_i(\\theta)\\cdot\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\hat{A}_{i,t}\\frac{\\nabla_\\theta\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})}{\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})}\\right] &\\qquad\\text{(16)}\\\\\n&=\\mathbb{E}_{x\\sim\\mathcal{D},\\,\\{y_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid x)}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\left(\\frac{\\pi_\\theta(y_i\\mid x)}{\\pi_{\\theta_{\\mathrm{old}}}(y_i\\mid x)}\\right)^{\\frac{1}{|y_i|}}\\cdot\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\hat{A}_{i,t}\\nabla_\\theta\\log\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})\\right]. &\\\\[-0.3em]\n&&\\text{(17)}\n\\end{aligned}",
+    "to": "\\begin{aligned}\n\\nabla_\\theta\\mathcal{J}_{\\text{GSPO-token}}(\\theta)\n&=\\nabla_\\theta\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}s_{i,t}(\\theta)\\hat{A}_{i,t}\\right]\\\\\n&=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}s_i(\\theta)\\,\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\hat{A}_{i,t}\\frac{\\nabla_\\theta\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})}{\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})}\\right]\\\\\n&=\\mathbb{E}\\left[\\frac{1}{G}\\sum_{i=1}^{G}s_i(\\theta)\\,\\frac{1}{|y_i|}\\sum_{t=1}^{|y_i|}\\hat{A}_{i,t}\\nabla_\\theta\\log\\pi_\\theta(y_{i,t}\\mid x,y_{i,<t})\\right]\n\\end{aligned}\\tag{9}",
+    "reason": "连续编号，推导合并编号；保留各步等式，使用已定义的比率与期望简记，整理长公式排版"
+  }
+}

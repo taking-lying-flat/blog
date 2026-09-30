@@ -9,12 +9,16 @@
     "seriesOrder": 4,
     "category": "llm",
     "date": "2026-09-30",
-    "description": "策略优化笔记：DAPO 的 Clip-Higher、动态采样、Token 级策略梯度损失与超长回答奖励塑形",
+    "description": "策略优化笔记：DAPO 的四项改进，以及 GSPO 的序列级优化、梯度分析与 GSPO-token",
     "tags": [
       "强化学习",
       "DAPO",
+      "GSPO",
       "GRPO",
       "长思维链"
+    ],
+    "appendFiles": [
+      "../notes/policy-optimization-iv/gspo/source.lake"
     ]
   },
   {
