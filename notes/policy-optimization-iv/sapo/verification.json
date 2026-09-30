@@ -161,5 +161,59 @@
     "sourceMathCards": 64,
     "sourceImages": 1,
     "layout": "short title and colored paragraph labels; single-line formulas where they fit; existing derivation steps retained"
+  },
+  "notationLayout": {
+    "order": [
+      "method paragraph",
+      "objective equation",
+      "ratio and advantage explanation",
+      "sampling distribution explanation"
+    ],
+    "lists": false,
+    "boldParagraphs": false,
+    "desktop": [
+      {
+        "viewport": 1280,
+        "overflow": false,
+        "wide": 0,
+        "errors": 0,
+        "paragraphs": [
+          {
+            "fontWeight": "400",
+            "height": 83.484375
+          },
+          {
+            "fontWeight": "400",
+            "height": 42.859375
+          },
+          {
+            "fontWeight": "400",
+            "height": 27.828125
+          }
+        ],
+        "formulas": 5
+      },
+      {
+        "viewport": 1920,
+        "overflow": false,
+        "wide": 0,
+        "errors": 0,
+        "paragraphs": [
+          {
+            "fontWeight": "400",
+            "height": 83.484375
+          },
+          {
+            "fontWeight": "400",
+            "height": 42.859375
+          },
+          {
+            "fontWeight": "400",
+            "height": 27.828125
+          }
+        ],
+        "formulas": 5
+      }
+    ]
   }
 }
