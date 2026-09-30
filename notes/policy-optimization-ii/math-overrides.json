@@ -86,8 +86,8 @@
   },
   "p5I1S": {
     "from": "\\nabla_\\theta\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})=-\\beta\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}}\\left[\\underbrace{\\sigma\\left(\\hat{r}_\\theta(x,y_l)-\\hat{r}_\\theta(x,y_w)\\right)}_{\\text{奖励估计错误时权重更高}}\\left[\\underbrace{\\nabla_\\theta\\log\\pi(y_w\\mid x)}_{\\text{提高 }y_w\\text{ 的似然}}-\\underbrace{\\nabla_\\theta\\log\\pi(y_l\\mid x)}_{\\text{降低 }y_l\\text{ 的似然}}\\right]\\right].",
-    "to": "\\nabla_\\theta\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})=-\\beta\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}}\\left[\\underbrace{\\sigma\\left(\\hat{r}_\\theta(x,y_l)-\\hat{r}_\\theta(x,y_w)\\right)}_{\\text{奖励估计错误时权重更高}}\\left[\\underbrace{\\nabla_\\theta\\log\\pi_\\theta(y_w\\mid x)}_{\\text{提高 }y_w\\text{ 的似然}}-\\underbrace{\\nabla_\\theta\\log\\pi_\\theta(y_l\\mid x)}_{\\text{降低 }y_l\\text{ 的似然}}\\right]\\right].\\tag{8}",
-    "reason": "统一策略参数下标，取消多余换行。 按本篇论文的正文顺序连续编号。"
+    "to": "\\nabla_\\theta\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})=-\\beta\\mathbb{E}_{(x,y_w,y_l)\\sim\\mathcal{D}}\\left[\\underbrace{\\sigma\\left(\\hat{r}_\\theta(x,y_l)-\\hat{r}_\\theta(x,y_w)\\right)}_{\\text{higher weight for misranked pairs}}\\left[\\underbrace{\\nabla_\\theta\\log\\pi_\\theta(y_w\\mid x)}_{\\text{increase likelihood of }y_w}-\\underbrace{\\nabla_\\theta\\log\\pi_\\theta(y_l\\mid x)}_{\\text{decrease likelihood of }y_l}\\right]\\right].\\tag{8}",
+    "reason": "统一策略参数下标，取消多余换行。 按本篇论文的正文顺序连续编号。 公式内的条件及说明文字统一为英文，计算、符号和编号不变。"
   },
   "m9aaO": {
     "from": "\\mathcal{L}_{\\text{ppo-clip}}(\\theta)=\\hat{\\mathbb{E}}_t\\left[\\min\\left(\\frac{\\pi_{\\theta}(a_t\\mid s_t)}{\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)}\\hat{A}_t,\\operatorname{clip}\\left(\\frac{\\pi_{\\theta}(a_t\\mid s_t)}{\\pi_{\\theta_{\\mathrm{old}}}(a_t\\mid s_t)},1-\\epsilon,1+\\epsilon\\right)\\hat{A}_t\\right)\\right]. \\tag{15}",

@@ -106,5 +106,10 @@
     "to": "t\\in\\{0,\\ldots,T-1\\}",
     "reason": "长度 T 的 rollout 包含动作时间步 0 至 T−1，sT 仅用于 bootstrap。",
     "reference": "https://arxiv.org/pdf/1707.06347"
+  },
+  "UVXeB": {
+    "from": "\\begin{aligned}\n\\text{若 } d &< \\frac{d_{\\text{targ}}}{1.5}, \\quad \\beta \\leftarrow \\frac{\\beta}{2} \\\\\n\\text{若 } d &> d_{\\text{targ}} \\times 1.5, \\quad \\beta \\leftarrow 2\\beta\n\\end{aligned}",
+    "to": "\\begin{aligned}\n\\text{if } d &< \\frac{d_{\\text{targ}}}{1.5}, \\quad \\beta \\leftarrow \\frac{\\beta}{2} \\\\\n\\text{if } d &> d_{\\text{targ}} \\times 1.5, \\quad \\beta \\leftarrow 2\\beta\n\\end{aligned}",
+    "reason": "公式内的条件及说明文字统一为英文，计算、符号和编号不变。"
   }
 }
