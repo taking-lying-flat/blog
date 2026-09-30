@@ -1,0 +1,67 @@
+{
+  "K6OXI": {
+    "from": "\\begin{aligned}\n\\mathcal{J}_{\\mathrm{PPO}}(\\theta)&=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,o_{\\leq t}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\left[\\min\\left(\\frac{\\pi_\\theta(o_t\\mid q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t\\mid q,o_{<t})}\\hat{A}_t,\\;\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_t\\mid q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t\\mid q,o_{<t})},1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_t\\right)\\right],\n\\end{aligned}\n\\tag{1}",
+    "to": "\\begin{aligned}\n&\\mathcal{J}_{\\mathrm{PPO}}(\\theta)=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,o_{\\leq t}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\left[\\min\\left(\\frac{\\pi_\\theta(o_t\\mid q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t\\mid q,o_{<t})}\\hat{A}_t,\\;\\operatorname{clip}\\left(\\frac{\\pi_\\theta(o_t\\mid q,o_{<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_t\\mid q,o_{<t})},1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_t\\right)\\right]\\end{aligned}\n\\tag{1}",
+    "reason": "整理多行对齐与末尾标点，保留原论文编号"
+  },
+  "Gi1SU": {
+    "from": "\\hat{A}_t^{\\mathrm{GAE}(\\gamma,\\lambda)}=\\sum_{l=0}^{\\infty}(\\gamma\\lambda)^l\\delta_{t+l},\n\\tag{2}",
+    "to": "\\hat{A}_t^{\\mathrm{GAE}(\\gamma,\\lambda)}=\\sum_{l=0}^{\\infty}(\\gamma\\lambda)^l\\delta_{t+l}\\tag{2}",
+    "reason": "整理多行对齐与末尾标点，保留原论文编号"
+  },
+  "XjJ0p": {
+    "from": "\\delta_l=R_l+\\gamma V(s_{l+1})-V(s_l),\\quad 0\\leq\\gamma,\\lambda\\leq 1.\n\\tag{3}",
+    "to": "\\delta_l=R_l+\\gamma V(s_{l+1})-V(s_l),\\quad 0\\leq\\gamma,\\lambda\\leq 1\\tag{3}",
+    "reason": "整理多行对齐与末尾标点，保留原论文编号"
+  },
+  "kq6a2": {
+    "from": "\\hat{A}_{i,t}=\\frac{r_i-\\operatorname{mean}(\\{R_i\\}_{i=1}^{G})}{\\operatorname{std}(\\{R_i\\}_{i=1}^{G})}.\n\\tag{4}",
+    "to": "\\hat{A}_{i,t}=\\frac{R_i-\\operatorname{mean}(\\{R_i\\}_{i=1}^{G})}{\\operatorname{std}(\\{R_i\\}_{i=1}^{G})}\\tag{4}",
+    "reason": "统一回答奖励 R_i 的大小写，保持组内优势定义"
+  },
+  "BuiBL": {
+    "from": "\\begin{aligned}\n&\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\left(\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\;\\operatorname{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right)-\\beta\\mathcal{D}_{\\mathrm{KL}}(\\pi_\\theta\\|\\pi_{\\mathrm{ref}})\\right)\\right],\n\\end{aligned}\n\\tag{5}",
+    "to": "\\begin{aligned}\n&\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\left[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\left(\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\;\\operatorname{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right)-\\beta\\mathcal{D}_{\\mathrm{KL}}(\\pi_\\theta\\|\\pi_{\\mathrm{ref}})\\right)\\right]\\end{aligned}\n\\tag{5}",
+    "reason": "整理多行对齐与末尾标点，保留原论文编号"
+  },
+  "ztsUX": {
+    "from": "r_{i,t}(\\theta)=\\frac{\\pi_\\theta(o_{i,t}\\mid q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}\\mid q,o_{i,<t})}.\n\\tag{6}",
+    "to": "r_{i,t}(\\theta)=\\frac{\\pi_\\theta(o_{i,t}\\mid q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}\\mid q,o_{i,<t})}\\tag{6}",
+    "reason": "整理多行对齐与末尾标点，保留原论文编号"
+  },
+  "LA24H": {
+    "from": "\\begin{aligned}\n\\mathcal{J}_{\\mathrm{DAPO}}(\\theta)&=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\quad\\left[\\frac{1}{\\sum_{i=1}^{G}|o_i|}\\sum_{i=1}^{G}\\sum_{t=1}^{|o_i|}\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\;\\operatorname{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon_{\\mathrm{low}},1+\\varepsilon_{\\mathrm{high}}\\right)\\hat{A}_{i,t}\\right)\\right]\\\\\n\\text{s.t.}\\quad&0<\\left|\\left\\{o_i\\mid\\texttt{is\\_equivalent}(a,o_i)\\right\\}\\right|<G,\n\\end{aligned}\n\\tag{8}",
+    "to": "\\begin{aligned}\n&\\mathcal{J}_{\\mathrm{DAPO}}(\\theta)=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\quad\\left[\\frac{1}{\\sum_{i=1}^{G}|o_i|}\\sum_{i=1}^{G}\\sum_{t=1}^{|o_i|}\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\;\\operatorname{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon_{\\mathrm{low}},1+\\varepsilon_{\\mathrm{high}}\\right)\\hat{A}_{i,t}\\right)\\right]\\\\\n&\\text{s.t.}\\quad0<\\left|\\left\\{o_i\\mid\\texttt{is_equivalent}(a,o_i)\\right\\}\\right|<G\\end{aligned}\n\\tag{8}",
+    "reason": "整理多行对齐与末尾标点，保留原论文编号 修复 MathJax 等宽文字内下划线的显示"
+  },
+  "BQ17U": {
+    "from": "r_{i,t}(\\theta)=\\frac{\\pi_\\theta(o_{i,t}\\mid q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}\\mid q,o_{i,<t})},\\quad \\hat{A}_{i,t}=\\frac{R_i-\\operatorname{mean}(\\{R_i\\}_{i=1}^{G})}{\\operatorname{std}(\\{R_i\\}_{i=1}^{G})}.\n\\tag{9}",
+    "to": "r_{i,t}(\\theta)=\\frac{\\pi_\\theta(o_{i,t}\\mid q,o_{i,<t})}{\\pi_{\\theta_{\\mathrm{old}}}(o_{i,t}\\mid q,o_{i,<t})},\\quad \\hat{A}_{i,t}=\\frac{R_i-\\operatorname{mean}(\\{R_i\\}_{i=1}^{G})}{\\operatorname{std}(\\{R_i\\}_{i=1}^{G})}\\tag{9}",
+    "reason": "整理多行对齐与末尾标点，保留原论文编号"
+  },
+  "Oi6sd": {
+    "from": "\\begin{aligned}\n\\mathcal{J}_{\\mathrm{DAPO}}(\\theta)&=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\quad\\left[\\frac{1}{\\sum_{i=1}^{G}|o_i|}\\sum_{i=1}^{G}\\sum_{t=1}^{|o_i|}\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\;\\operatorname{clip}\\left(r_{i,t}(\\theta),1-{\\color{red}\\varepsilon_{\\mathrm{low}}},1+{\\color{red}\\varepsilon_{\\mathrm{high}}}\\right)\\hat{A}_{i,t}\\right)\\right]\\\\\n\\text{s.t.}\\quad&0<\\left|\\left\\{o_i\\mid\\texttt{is\\_equivalent}(a,o_i)\\right\\}\\right|<G.\n\\end{aligned}\n\\tag{10}",
+    "to": "\\begin{aligned}\n&\\mathcal{J}_{\\mathrm{DAPO}}(\\theta)=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\quad\\left[\\frac{1}{\\sum_{i=1}^{G}|o_i|}\\sum_{i=1}^{G}\\sum_{t=1}^{|o_i|}\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\;\\operatorname{clip}\\left(r_{i,t}(\\theta),1-{\\color{red}\\varepsilon_{\\mathrm{low}}},1+{\\color{red}\\varepsilon_{\\mathrm{high}}}\\right)\\hat{A}_{i,t}\\right)\\right]\\\\\n&\\text{s.t.}\\quad0<\\left|\\left\\{o_i\\mid\\texttt{is_equivalent}(a,o_i)\\right\\}\\right|<G\\end{aligned}\n\\tag{10}",
+    "reason": "整理多行对齐与末尾标点，保留原论文编号 修复 MathJax 等宽文字内下划线的显示"
+  },
+  "rubPJ": {
+    "from": "\\begin{aligned}\n\\mathcal{J}_{\\mathrm{DAPO}}(\\theta)&=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\quad\\left[\\frac{1}{\\sum_{i=1}^{G}|o_i|}\\sum_{i=1}^{G}\\sum_{t=1}^{|o_i|}\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\;\\operatorname{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon_{\\mathrm{low}},1+\\varepsilon_{\\mathrm{high}}\\right)\\hat{A}_{i,t}\\right)\\right]\\\\\n\\text{s.t.}\\quad&{\\color{red}0<\\left|\\left\\{o_i\\mid\\texttt{is\\_equivalent}(a,o_i)\\right\\}\\right|<G}.\n\\end{aligned}\n\\tag{11}",
+    "to": "\\begin{aligned}\n&\\mathcal{J}_{\\mathrm{DAPO}}(\\theta)=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\quad\\left[\\frac{1}{\\sum_{i=1}^{G}|o_i|}\\sum_{i=1}^{G}\\sum_{t=1}^{|o_i|}\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\;\\operatorname{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon_{\\mathrm{low}},1+\\varepsilon_{\\mathrm{high}}\\right)\\hat{A}_{i,t}\\right)\\right]\\\\\n&\\text{s.t.}\\quad{\\color{red}0<\\left|\\left\\{o_i\\mid\\texttt{is_equivalent}(a,o_i)\\right\\}\\right|<G}\\end{aligned}\n\\tag{11}",
+    "reason": "整理多行对齐与末尾标点，保留原论文编号 修复 MathJax 等宽文字内下划线的显示"
+  },
+  "ejJR7": {
+    "from": "\\begin{aligned}\n\\mathcal{J}_{\\mathrm{DAPO}}(\\theta)&=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\quad\\left[\\frac{1}{{\\color{red}\\sum_{i=1}^{G}|o_i|}}{\\color{red}\\sum_{i=1}^{G}\\sum_{t=1}^{|o_i|}}\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\;\\operatorname{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon_{\\mathrm{low}},1+\\varepsilon_{\\mathrm{high}}\\right)\\hat{A}_{i,t}\\right)\\right],\\\\\n\\text{s.t.}\\quad&0<\\left|\\left\\{o_i\\mid\\texttt{is\\_equivalent}(a,o_i)\\right\\}\\right|<G.\n\\end{aligned}\n\\tag{12}",
+    "to": "\\begin{aligned}\n&\\mathcal{J}_{\\mathrm{DAPO}}(\\theta)=\\mathbb{E}_{(q,a)\\sim\\mathcal{D},\\,\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid q)}\\\\\n&\\quad\\left[\\frac{1}{{\\color{red}\\sum_{i=1}^{G}|o_i|}}{\\color{red}\\sum_{i=1}^{G}\\sum_{t=1}^{|o_i|}}\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\;\\operatorname{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon_{\\mathrm{low}},1+\\varepsilon_{\\mathrm{high}}\\right)\\hat{A}_{i,t}\\right)\\right]\\\\\n&\\text{s.t.}\\quad0<\\left|\\left\\{o_i\\mid\\texttt{is_equivalent}(a,o_i)\\right\\}\\right|<G\\end{aligned}\n\\tag{12}",
+    "reason": "整理多行对齐与末尾标点，保留原论文编号 修复 MathJax 等宽文字内下划线的显示"
+  },
+  "zAYbd": {
+    "from": "R_{\\mathrm{length}}(y)=\\begin{cases}0,&|y|\\leq L_{\\max}-L_{\\mathrm{cache}}\\\\\\frac{(L_{\\max}-L_{\\mathrm{cache}})-|y|}{L_{\\mathrm{cache}}},&L_{\\max}-L_{\\mathrm{cache}}<|y|\\leq L_{\\max}\\end{cases}\n\\tag{13}",
+    "to": "R_{\\mathrm{length}}(y)=\\begin{cases}0,&|y|\\leq L_{\\max}-L_{\\mathrm{cache}}\\\\\\dfrac{(L_{\\max}-L_{\\mathrm{cache}})-|y|}{L_{\\mathrm{cache}}},&L_{\\max}-L_{\\mathrm{cache}}<|y|\\leq L_{\\max}\\\\-1,&|y|>L_{\\max}\\end{cases}\\tag{13}",
+    "reason": "补齐原论文式（13）中长度超过 L_max 时为 -1 的分支"
+  },
+  "JnRt4": {
+    "from": "R(\\hat{y},y)=\\begin{cases}1,&\\texttt{is\\_equivalent}(\\hat{y},y)\\\\-1,&\\text{otherwise}\\end{cases}\n\\tag{7}",
+    "to": "R(\\hat{y},y)=\\begin{cases}1,&\\texttt{is_equivalent}(\\hat{y},y)\\\\-1,&\\text{otherwise}\\end{cases}\n\\tag{7}",
+    "reason": " 修复 MathJax 等宽文字内下划线的显示"
+  }
+}

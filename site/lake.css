@@ -159,3 +159,7 @@
 [data-post="policy-optimization-iii"] .lake-document .lake-image-source { margin: 0 0 8px; }
 
 [data-post="policy-optimization-iii"] .lake-image[data-card-id="uecd2cdb1"] { width: min(900px, 100%) !important; }
+
+[data-post="policy-optimization-iv"] .lake-document h1 { margin-block: 28px 14px; }
+[data-post="policy-optimization-iv"] .lake-document h2 { margin-block: 24px 12px; }
+[data-post="policy-optimization-iv"] .lake-document > :first-child { margin-top: 0; }

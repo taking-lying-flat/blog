@@ -1,5 +1,23 @@
 [
   {
+    "file": "../notes/policy-optimization-iv/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "policy-optimization-iv",
+    "series": "policy-optimization",
+    "seriesOrder": 4,
+    "category": "llm",
+    "date": "2026-09-30",
+    "description": "策略优化笔记：DAPO 的 Clip-Higher、动态采样、Token 级策略梯度损失与超长回答奖励塑形",
+    "tags": [
+      "强化学习",
+      "DAPO",
+      "GRPO",
+      "长思维链"
+    ]
+  },
+  {
     "file": "../notes/policy-optimization-iii/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
