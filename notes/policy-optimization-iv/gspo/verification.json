@@ -111,5 +111,64 @@
       "GSPO and GRPO gradients",
       "GSPO-token objective and gradient"
     ]
+  },
+  "compactEquations": {
+    "numbers": [
+      2,
+      4,
+      7
+    ],
+    "singleLine": true,
+    "fontSizeUnchanged": true,
+    "desktop": [
+      {
+        "id": "h5nqN",
+        "width": 1024,
+        "scroll": 1024,
+        "height": 66.953125,
+        "errors": 0,
+        "viewport": 1280
+      },
+      {
+        "id": "jeyia",
+        "width": 1024,
+        "scroll": 1024,
+        "height": 69.125,
+        "errors": 0,
+        "viewport": 1280
+      },
+      {
+        "id": "CccAQ",
+        "width": 1024,
+        "scroll": 1024,
+        "height": 69.21875,
+        "errors": 0,
+        "viewport": 1280
+      },
+      {
+        "id": "h5nqN",
+        "width": 1024,
+        "scroll": 1024,
+        "height": 66.953125,
+        "errors": 0,
+        "viewport": 1920
+      },
+      {
+        "id": "jeyia",
+        "width": 1024,
+        "scroll": 1024,
+        "height": 69.125,
+        "errors": 0,
+        "viewport": 1920
+      },
+      {
+        "id": "CccAQ",
+        "width": 1024,
+        "scroll": 1024,
+        "height": 69.21875,
+        "errors": 0,
+        "viewport": 1920
+      }
+    ]
   }
 }
