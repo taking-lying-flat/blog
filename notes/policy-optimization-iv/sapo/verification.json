@@ -166,10 +166,9 @@
     "order": [
       "method paragraph",
       "objective equation",
-      "ratio and advantage explanation",
-      "sampling distribution explanation"
+      "one bullet combining ratio, advantage and sampling explanations"
     ],
-    "lists": false,
+    "listItems": 1,
     "boldParagraphs": false,
     "desktop": [
       {
@@ -184,11 +183,7 @@
           },
           {
             "fontWeight": "400",
-            "height": 42.859375
-          },
-          {
-            "fontWeight": "400",
-            "height": 27.828125
+            "height": 70.6875
           }
         ],
         "formulas": 5
@@ -205,11 +200,7 @@
           },
           {
             "fontWeight": "400",
-            "height": 42.859375
-          },
-          {
-            "fontWeight": "400",
-            "height": 27.828125
+            "height": 70.6875
           }
         ],
         "formulas": 5
