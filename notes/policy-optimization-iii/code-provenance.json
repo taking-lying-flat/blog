@@ -8,6 +8,11 @@
   "u5064d213": {
     "source": "https://github.com/huggingface/trl/blob/v0.19.1/trl/trainer/kto_trainer.py#L1098-L1173",
     "revision": "v0.19.1",
-    "changes": "保留桌面导出原图。已对照官方标准 KTO 分支的核心计算；截图不包含空批次保护与 APO 分支。仅调整显示尺寸。"
+    "changes": "与原图相同的 TRL 标准 KTO 核心分支；合并参数列表、torch.cat 参数和多余空行，保留返回值与全部计算。通过 AST 与官方对应分支核对一致。",
+    "file": "kto-loss.py",
+    "lines": 19,
+    "maxColumns": 93,
+    "astVerified": true,
+    "sourceSha256": "f3c02f0577e7c356318f53a46161edc75824b5faa0dcf171c7dc4febae1f99ef"
   }
 }

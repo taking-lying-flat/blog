@@ -93,8 +93,8 @@ GC_{\mathcal A}(q,o,t,\pi_{\mathrm{rf}})
 ```math
 GC_{\mathrm{RFT}}(q,o,t)=\mathbb I(q,o)=
 \begin{cases}
-1,&o\text{ 对问题 }q\text{ 的回答正确}\\
-0,&o\text{ 对问题 }q\text{ 的回答错误}
+1,&\text{if }o\text{ correctly answers }q\\
+0,&\text{otherwise}
 \end{cases}\tag{14}
 ```
 

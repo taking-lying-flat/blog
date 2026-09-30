@@ -81,8 +81,8 @@
   },
   "P6jeJ": {
     "from": "v(x,y)=\\begin{cases}\\lambda_D\\sigma\\left(\\beta(r_{\\theta}(x,y)-z_0)\\right),&y\\sim y_{\\mathrm{desirable}}\\mid x,\\\\\\lambda_U\\sigma\\left(\\beta(z_0-r_{\\theta}(x,y))\\right),&y\\sim y_{\\mathrm{undesirable}}\\mid x.\\end{cases}",
-    "to": "v(x,y)=\\begin{cases}\\lambda_D\\sigma\\left(\\beta(r_{\\theta}(x,y)-z_0)\\right),&y\\text{ 为符合期望的回答}\\\\\\lambda_U\\sigma\\left(\\beta(z_0-r_{\\theta}(x,y))\\right),&y\\text{ 为不符合期望的回答}\\end{cases}\\tag{5}",
-    "reason": "明确二元反馈标签并连续编号"
+    "to": "v(x,y)=\\begin{cases}\\lambda_D\\sigma\\left(\\beta(r_{\\theta}(x,y)-z_0)\\right),&\\text{if }y\\text{ is desirable}\\\\\\lambda_U\\sigma\\left(\\beta(z_0-r_{\\theta}(x,y))\\right),&\\text{if }y\\text{ is undesirable}\\end{cases}\\tag{5}",
+    "reason": "明确二元反馈标签，条件使用英文并连续编号"
   },
   "YN2QV": {
     "from": "\\hat{z}_0=\\max\\left(0,\\frac{1}{m}\\sum_{i\\ne j}\\log\\frac{\\pi_{\\theta}(y_j\\mid x_i)}{\\pi_{\\mathrm{ref}}(y_j\\mid x_i)}\\right).",

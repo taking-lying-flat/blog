@@ -819,6 +819,14 @@
       "file": "assets/licenses/TRL-LICENSE.txt",
       "bytes": 11355,
       "sha256": "1d90ecbf7bb80ff27ef67b7785f621480b652b82e46c72d8a5730b0db65bf355"
+    },
+    {
+      "source": "https://github.com/huggingface/trl/blob/v0.19.1/trl/trainer/kto_trainer.py#L1098-L1173",
+      "file": "assets/images/kto-loss-compact.png",
+      "bytes": 306969,
+      "sha256": "b42d74c668e535ce5792522470ddaba09dd011636ace610e369969f0af5fa371",
+      "width": 2744,
+      "height": 1216
     }
   ],
   "cards": [

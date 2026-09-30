@@ -112,5 +112,53 @@
     "llmArticles": 7,
     "totalArticles": 20,
     "categoryFilter": true
+  },
+  "layoutUpdate": {
+    "englishConditionalFormulas": 2,
+    "remainingChineseCases": [],
+    "ktoLines": 19,
+    "ktoSourceBranchAstVerified": true,
+    "desktop": [
+      {
+        "overflow": false,
+        "mathErrors": 0,
+        "wide": [],
+        "width": 1280,
+        "slug": "policy-optimization-ii"
+      },
+      {
+        "overflow": false,
+        "mathErrors": 0,
+        "wide": [],
+        "width": 1280,
+        "slug": "policy-optimization-iii",
+        "ktoImage": {
+          "x": 120,
+          "y": 329.90625,
+          "width": 840,
+          "height": 372.234375
+        }
+      },
+      {
+        "overflow": false,
+        "mathErrors": 0,
+        "wide": [],
+        "width": 1920,
+        "slug": "policy-optimization-ii"
+      },
+      {
+        "overflow": false,
+        "mathErrors": 0,
+        "wide": [],
+        "width": 1920,
+        "slug": "policy-optimization-iii",
+        "ktoImage": {
+          "x": 416,
+          "y": 329.90625,
+          "width": 840,
+          "height": 372.234375
+        }
+      }
+    ]
   }
 }

@@ -10,9 +10,9 @@
   },
   "u5064d213": {
     "from": "assets/images/1755430204190-4c757aac-adfe-4c92-8a89-fc817b517269.png",
-    "asset": "assets/images/1755430204190-4c757aac-adfe-4c92-8a89-fc817b517269.png",
-    "width": 800,
-    "height": 497.2624798711755,
+    "asset": "assets/images/kto-loss-compact.png",
+    "width": 840,
+    "height": 372.245,
     "alt": "TRL · KTOTrainer.kto_loss（标准 KTO 分支）",
     "source": "https://github.com/huggingface/trl/blob/v0.19.1/trl/trainer/kto_trainer.py#L1098-L1173",
     "label": "TRL · KTOTrainer.kto_loss（标准 KTO 分支）"
