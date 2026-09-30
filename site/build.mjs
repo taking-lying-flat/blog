@@ -27,6 +27,17 @@ const output = path.join(root, 'dist');
 const siteUrl = 'https://taking-lying-flat.github.io/blog/';
 const posts = JSON.parse(await readFile(path.join(root, 'posts.json'), 'utf8'))
   .sort((a, b) => b.date.localeCompare(a.date));
+const categories = [
+  { id: 'llm', title: '大模型' },
+  { id: 'generative', title: '生成模型' },
+  { id: 'code', title: '源码解读' },
+  { id: 'issues', title: 'GitHub Issue' },
+];
+for (const post of posts) {
+  if (!categories.some(({ id }) => id === post.category)) {
+    throw new Error(`Missing or invalid article category: ${post.slug}`);
+  }
+}
 const codeCaptions = JSON.parse(await readFile(path.join(root, 'code-captions.json'), 'utf8'));
 // Render article headings as written; code captions belong to the code block.
 // Repository-authored HTML tables are rendered alongside Markdown.
@@ -454,8 +465,14 @@ const home = page({
   title: 'Blog · 技术笔记', description: '关于模型、论文与源码的技术笔记。', pageClass: 'home-page',
   body: `<section aria-labelledby="post-list-title">
     <div class="post-list-heading"><h1 id="post-list-title">全部文章 <span>${String(posts.length).padStart(2, '0')}</span></h1></div>
-    <div class="post-list">${posts.map((post) => `<article class="post-entry">
-      <h2><a href="${post.route}" aria-label="${escape(plainTitle(post.title))}">${escape(indexTitle(post.title))}</a></h2>
+    <nav class="category-nav" aria-label="文章分类">${categories.map(({ id, title }) =>
+      `<a href="#category-${id}" data-category="${id}">${escape(title)}</a>`).join('')}</nav>
+    ${categories.map(({ id, title }) => {
+      const categoryPosts = posts.filter(post => post.category === id);
+      return `<section class="post-group" data-category="${id}" aria-labelledby="category-${id}">
+      <div class="post-group-heading"><h2 id="category-${id}">${escape(title)}</h2><span>${categoryPosts.length} 篇</span></div>
+      <div class="post-list">${categoryPosts.map((post) => `<article class="post-entry">
+      <h3><a href="${post.route}" aria-label="${escape(plainTitle(post.title))}">${escape(indexTitle(post.title))}</a></h3>
       <footer class="entry-footer">
         <div class="entry-details">
           <div class="post-meta">${metadata(post)}</div>
@@ -463,7 +480,8 @@ const home = page({
         </div>
         <svg class="entry-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
       </footer>
-    </article>`).join('\n')}</div>
+    </article>`).join('\n')}</div></section>`;
+    }).join('\n')}
   </section>`,
 });
 
