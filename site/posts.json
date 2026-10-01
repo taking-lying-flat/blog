@@ -1,5 +1,24 @@
 [
   {
+    "file": "../notes/deepseek-ai-ii/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "deepseek-ai-ii",
+    "series": "deepseek-ai",
+    "seriesOrder": 2,
+    "category": "llm",
+    "date": "2026-10-01",
+    "description": "DeepSeek mHC 笔记：流形约束超连接、双随机矩阵、Sinkhorn–Knopp，以及内核融合、重计算与 DualPipe 通信优化",
+    "tags": [
+      "DeepSeek",
+      "mHC",
+      "Hyper-Connections",
+      "Sinkhorn–Knopp",
+      "模型架构"
+    ]
+  },
+  {
     "file": "../notes/policy-optimization-iv/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
@@ -70,6 +89,8 @@
     "format": "lake",
     "tocDepth": 2,
     "slug": "deepseek-ai-i",
+    "series": "deepseek-ai",
+    "seriesOrder": 1,
     "category": "llm",
     "date": "2026-09-28",
     "description": "DeepSeekMoE、DeepSeek-V2、DeepSeek-V3 与 DeepSeek-R1 笔记：MLA、专家路由、MTP、FP8、GRPO 与多阶段强化学习。",

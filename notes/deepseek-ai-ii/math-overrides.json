@@ -1,0 +1,67 @@
+{
+  "yMIco": {
+    "from": "\\mathbf{x}_{l+1}=\\mathbf{x}_l+\\mathcal{F}(\\mathbf{x}_l,\\mathcal{W}_l),\n\\tag{1}",
+    "to": "\\mathbf{x}_{l+1}=\\mathbf{x}_l+\\mathcal{F}(\\mathbf{x}_l,\\mathcal{W}_l)\\tag{1}",
+    "reason": "保留公式与原论文编号，移除末尾标点，编号统一靠右"
+  },
+  "Udqht": {
+    "from": "\\mathbf{x}_L=\\mathbf{x}_l+\\sum_{i=l}^{L-1}\\mathcal{F}(\\mathbf{x}_i,\\mathcal{W}_i),\n\\tag{2}",
+    "to": "\\mathbf{x}_L=\\mathbf{x}_l+\\sum_{i=l}^{L-1}\\mathcal{F}(\\mathbf{x}_i,\\mathcal{W}_i)\\tag{2}",
+    "reason": "保留公式与原论文编号，移除末尾标点，编号统一靠右"
+  },
+  "TVpYF": {
+    "from": "\\mathbf{x}_{l+1}=\\mathcal{H}_l^{\\mathrm{res}}\\mathbf{x}_l+\\mathcal{H}_l^{\\mathrm{post}\\,\\top}\\mathcal{F}(\\mathcal{H}_l^{\\mathrm{pre}}\\mathbf{x}_l,\\mathcal{W}_l),\n\\tag{3}",
+    "to": "\\mathbf{x}_{l+1}=\\mathcal{H}_l^{\\mathrm{res}}\\mathbf{x}_l+\\mathcal{H}_l^{\\mathrm{post}\\,\\top}\\mathcal{F}(\\mathcal{H}_l^{\\mathrm{pre}}\\mathbf{x}_l,\\mathcal{W}_l)\\tag{3}",
+    "reason": "保留公式与原论文编号，移除末尾标点，编号统一靠右"
+  },
+  "xpGI7": {
+    "from": "\\mathbf{x}_L=\\left(\\prod_{i=1}^{L-l}\\mathcal{H}_{L-i}^{\\mathrm{res}}\\right)\\mathbf{x}_l+\\sum_{i=l}^{L-1}\\left(\\prod_{j=1}^{L-1-i}\\mathcal{H}_{L-j}^{\\mathrm{res}}\\right)\\mathcal{H}_i^{\\mathrm{post}\\,\\top}\\mathcal{F}(\\mathcal{H}_i^{\\mathrm{pre}}\\mathbf{x}_i,\\mathcal{W}_i),\n\\tag{4}",
+    "to": "\\mathbf{x}_L=\\left(\\prod_{i=1}^{L-l}\\mathcal{H}_{L-i}^{\\mathrm{res}}\\right)\\mathbf{x}_l+\\sum_{i=l}^{L-1}\\left(\\prod_{j=1}^{L-1-i}\\mathcal{H}_{L-j}^{\\mathrm{res}}\\right)\\mathcal{H}_i^{\\mathrm{post}\\,\\top}\\mathcal{F}(\\mathcal{H}_i^{\\mathrm{pre}}\\mathbf{x}_i,\\mathcal{W}_i)\\tag{4}",
+    "reason": "保留公式与原论文编号，移除末尾标点，编号统一靠右"
+  },
+  "oyeOL": {
+    "from": "\\begin{cases}\n\\tilde{\\mathbf{x}}_l=\\text{RMSNorm}(\\mathbf{x}_l)\\\\\n\\mathcal{H}_l^{\\mathrm{pre}}=\\alpha_l^{\\mathrm{pre}}\\cdot\\tanh(\\theta_l^{\\mathrm{pre}}\\tilde{\\mathbf{x}}_l^{\\top})+\\mathbf{b}_l^{\\mathrm{pre}}\\\\\n\\mathcal{H}_l^{\\mathrm{post}}=\\alpha_l^{\\mathrm{post}}\\cdot\\tanh(\\theta_l^{\\mathrm{post}}\\tilde{\\mathbf{x}}_l^{\\top})+\\mathbf{b}_l^{\\mathrm{post}}\\\\\n\\mathcal{H}_l^{\\mathrm{res}}=\\alpha_l^{\\mathrm{res}}\\cdot\\tanh(\\theta_l^{\\mathrm{res}}\\tilde{\\mathbf{x}}_l^{\\top})+\\mathbf{b}_l^{\\mathrm{res}},\n\\end{cases}\n\\tag{5}",
+    "to": "\\begin{cases}\n\\tilde{\\mathbf{x}}_l=\\text{RMSNorm}(\\mathbf{x}_l)\\\\\n\\mathcal{H}_l^{\\mathrm{pre}}=\\alpha_l^{\\mathrm{pre}}\\cdot\\tanh(\\theta_l^{\\mathrm{pre}}\\tilde{\\mathbf{x}}_l^{\\top})+\\mathbf{b}_l^{\\mathrm{pre}}\\\\\n\\mathcal{H}_l^{\\mathrm{post}}=\\alpha_l^{\\mathrm{post}}\\cdot\\tanh(\\theta_l^{\\mathrm{post}}\\tilde{\\mathbf{x}}_l^{\\top})+\\mathbf{b}_l^{\\mathrm{post}}\\\\\n\\mathcal{H}_l^{\\mathrm{res}}=\\alpha_l^{\\mathrm{res}}\\cdot\\tanh(\\theta_l^{\\mathrm{res}}\\tilde{\\mathbf{x}}_l^{\\top})+\\mathbf{b}_l^{\\mathrm{res}}\n\\end{cases}\n\\tag{5}",
+    "reason": "保留公式与原论文编号，移除末尾标点，编号统一靠右"
+  },
+  "nFETx": {
+    "from": "\\mathcal{P}_{\\mathcal{M}^{\\mathrm{res}}}(\\mathcal{H}_l^{\\mathrm{res}})\\coloneqq\\left\\{\\mathcal{H}_l^{\\mathrm{res}}\\in\\mathbb{R}^{n\\times n}\\mid\\mathcal{H}_l^{\\mathrm{res}}\\mathbf{1}_n=\\mathbf{1}_n,\\ \\mathbf{1}_n^{\\top}\\mathcal{H}_l^{\\mathrm{res}}=\\mathbf{1}_n^{\\top},\\ \\mathcal{H}_l^{\\mathrm{res}}\\geqslant 0\\right\\},\n\\tag{6}",
+    "to": "\\mathcal{P}_{\\mathcal{M}^{\\mathrm{res}}}(\\mathcal{H}_l^{\\mathrm{res}})\\mathrel{:=}\\left\\{\\mathcal{H}_l^{\\mathrm{res}}\\in\\mathbb{R}^{n\\times n}\\mid\\mathcal{H}_l^{\\mathrm{res}}\\mathbf{1}_n=\\mathbf{1}_n,\\ \\mathbf{1}_n^{\\top}\\mathcal{H}_l^{\\mathrm{res}}=\\mathbf{1}_n^{\\top},\\ \\mathcal{H}_l^{\\mathrm{res}}\\geqslant 0\\right\\}\\tag{6}",
+    "reason": "将定义等号改为当前数学渲染器支持的等价写法"
+  },
+  "IPVCv": {
+    "from": "\\begin{cases}\n\\vec{\\mathbf{x}}_l^{\\prime}=\\text{RMSNorm}(\\vec{\\mathbf{x}}_l)\\\\\n\\tilde{\\mathcal{H}}_l^{\\mathrm{pre}}=\\alpha_l^{\\mathrm{pre}}\\cdot(\\vec{\\mathbf{x}}_l^{\\prime}\\varphi_l^{\\mathrm{pre}})+\\mathbf{b}_l^{\\mathrm{pre}}\\\\\n\\tilde{\\mathcal{H}}_l^{\\mathrm{post}}=\\alpha_l^{\\mathrm{post}}\\cdot(\\vec{\\mathbf{x}}_l^{\\prime}\\varphi_l^{\\mathrm{post}})+\\mathbf{b}_l^{\\mathrm{post}}\\\\\n\\tilde{\\mathcal{H}}_l^{\\mathrm{res}}=\\alpha_l^{\\mathrm{res}}\\cdot\\text{mat}(\\vec{\\mathbf{x}}_l^{\\prime}\\varphi_l^{\\mathrm{res}})+\\mathbf{b}_l^{\\mathrm{res}},\n\\end{cases}\n\\tag{7}",
+    "to": "\\begin{cases}\n\\vec{\\mathbf{x}}_l^{\\prime}=\\text{RMSNorm}(\\vec{\\mathbf{x}}_l)\\\\\n\\tilde{\\mathcal{H}}_l^{\\mathrm{pre}}=\\alpha_l^{\\mathrm{pre}}\\cdot(\\vec{\\mathbf{x}}_l^{\\prime}\\varphi_l^{\\mathrm{pre}})+\\mathbf{b}_l^{\\mathrm{pre}}\\\\\n\\tilde{\\mathcal{H}}_l^{\\mathrm{post}}=\\alpha_l^{\\mathrm{post}}\\cdot(\\vec{\\mathbf{x}}_l^{\\prime}\\varphi_l^{\\mathrm{post}})+\\mathbf{b}_l^{\\mathrm{post}}\\\\\n\\tilde{\\mathcal{H}}_l^{\\mathrm{res}}=\\alpha_l^{\\mathrm{res}}\\cdot\\text{mat}(\\vec{\\mathbf{x}}_l^{\\prime}\\varphi_l^{\\mathrm{res}})+\\mathbf{b}_l^{\\mathrm{res}}\n\\end{cases}\n\\tag{7}",
+    "reason": "保留公式与原论文编号，移除末尾标点，编号统一靠右"
+  },
+  "zOKpS": {
+    "from": "\\begin{cases}\n\\mathcal{H}_l^{\\mathrm{pre}}=\\sigma(\\tilde{\\mathcal{H}}_l^{\\mathrm{pre}})\\\\\n\\mathcal{H}_l^{\\mathrm{post}}=2\\sigma(\\tilde{\\mathcal{H}}_l^{\\mathrm{post}})\\\\\n\\mathcal{H}_l^{\\mathrm{res}}=\\text{Sinkhorn-Knopp}(\\tilde{\\mathcal{H}}_l^{\\mathrm{res}}),\n\\end{cases}\n\\tag{8}",
+    "to": "\\begin{cases}\n\\mathcal{H}_l^{\\mathrm{pre}}=\\sigma(\\tilde{\\mathcal{H}}_l^{\\mathrm{pre}})\\\\\n\\mathcal{H}_l^{\\mathrm{post}}=2\\sigma(\\tilde{\\mathcal{H}}_l^{\\mathrm{post}})\\\\\n\\mathcal{H}_l^{\\mathrm{res}}=\\text{Sinkhorn-Knopp}(\\tilde{\\mathcal{H}}_l^{\\mathrm{res}})\n\\end{cases}\n\\tag{8}",
+    "reason": "保留公式与原论文编号，移除末尾标点，编号统一靠右"
+  },
+  "A8MFz": {
+    "from": "\\mathbf{M}^{(t)}=\\mathcal{T}_r\\left(\\mathcal{T}_c(\\mathbf{M}^{(t-1)})\\right),\n\\tag{9}",
+    "to": "\\mathbf{M}^{(t)}=\\mathcal{T}_r\\left(\\mathcal{T}_c(\\mathbf{M}^{(t-1)})\\right)\\tag{9}",
+    "reason": "保留公式与原论文编号，移除末尾标点，编号统一靠右"
+  },
+  "Ha7AV": {
+    "from": "\\begin{alignedat}{3}\n\\varphi_l\n&:\\text{tfloat32}\n&\\qquad&[nC,n^2+2n]\n&\\qquad&(10)\\\\[4pt]\n\\vec{\\mathbf{x}}_l\n&:\\text{bfloat16}\n&\\qquad&[1,nC]\n&\\qquad&(11)\\\\[4pt]\n\\alpha_l^{\\mathrm{pre}},\\alpha_l^{\\mathrm{post}},\\alpha_l^{\\mathrm{res}}\n&:\\text{float32}\n&\\qquad&\\text{Scalars}\n&\\qquad&(12)\\\\[4pt]\n\\mathbf{b}_l\n&:\\text{float32}\n&\\qquad&[1,n^2+2n]\n&\\qquad&(13)\\\\[4pt]\n\\left[\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{pre}},\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{post}},\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{res}}\\right]\n&:\\text{float32}\n&\\qquad&=\\vec{\\mathbf{x}}_l\\varphi_l\n&\\qquad&(14)\\\\[4pt]\nr\n&:\\text{float32}\n&\\qquad&=\\left\\|\\vec{\\mathbf{x}}_l\\right\\|_2/\\sqrt{nC}\n&\\qquad&(15)\\\\[4pt]\n\\left[\\tilde{\\mathcal{H}}_l^{\\mathrm{pre}},\\tilde{\\mathcal{H}}_l^{\\mathrm{post}},\\tilde{\\mathcal{H}}_l^{\\mathrm{res}}\\right]\n&:\\text{float32}\n&\\qquad&=1/r\\left[\\alpha_l^{\\mathrm{pre}}\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{pre}},\\alpha_l^{\\mathrm{post}}\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{post}},\\alpha_l^{\\mathrm{res}}\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{res}}\\right]+\\mathbf{b}_l\n&\\qquad&(16)\\\\[4pt]\n\\mathcal{H}_l^{\\mathrm{pre}}\n&:\\text{float32}\n&\\qquad&=\\sigma\\left(\\tilde{\\mathcal{H}}_l^{\\mathrm{pre}}\\right)\n&\\qquad&(17)\\\\[4pt]\n\\mathcal{H}_l^{\\mathrm{post}}\n&:\\text{float32}\n&\\qquad&=2\\sigma\\left(\\tilde{\\mathcal{H}}_l^{\\mathrm{post}}\\right)\n&\\qquad&(18)\\\\[4pt]\n\\mathcal{H}_l^{\\mathrm{res}}\n&:\\text{float32}\n&\\qquad&=\\text{Sinkhorn-Knopp}\\left(\\tilde{\\mathcal{H}}_l^{\\mathrm{res}}\\right)\n&\\qquad&(19)\n\\end{alignedat}",
+    "to": "\\begin{alignat}{2}\n\\varphi_l\n&:\\text{tfloat32}\n&\\qquad&[nC,n^2+2n]\n\\tag{10}\\\\[4pt]\n\\vec{\\mathbf{x}}_l\n&:\\text{bfloat16}\n&\\qquad&[1,nC]\n\\tag{11}\\\\[4pt]\n\\alpha_l^{\\mathrm{pre}},\\alpha_l^{\\mathrm{post}},\\alpha_l^{\\mathrm{res}}\n&:\\text{float32}\n&\\qquad&\\text{Scalars}\n\\tag{12}\\\\[4pt]\n\\mathbf{b}_l\n&:\\text{float32}\n&\\qquad&[1,n^2+2n]\n\\tag{13}\\\\[4pt]\n\\left[\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{pre}},\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{post}},\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{res}}\\right]\n&:\\text{float32}\n&\\qquad&=\\vec{\\mathbf{x}}_l\\varphi_l\n\\tag{14}\\\\[4pt]\nr\n&:\\text{float32}\n&\\qquad&=\\left\\|\\vec{\\mathbf{x}}_l\\right\\|_2/\\sqrt{nC}\n\\tag{15}\\\\[4pt]\n\\left[\\tilde{\\mathcal{H}}_l^{\\mathrm{pre}},\\tilde{\\mathcal{H}}_l^{\\mathrm{post}},\\tilde{\\mathcal{H}}_l^{\\mathrm{res}}\\right]\n&:\\text{float32}\n&\\qquad&=1/r\\left[\\alpha_l^{\\mathrm{pre}}\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{pre}},\\alpha_l^{\\mathrm{post}}\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{post}},\\alpha_l^{\\mathrm{res}}\\tilde{\\tilde{\\mathcal{H}}}_l^{\\mathrm{res}}\\right]+\\mathbf{b}_l\n\\tag{16}\\\\[4pt]\n\\mathcal{H}_l^{\\mathrm{pre}}\n&:\\text{float32}\n&\\qquad&=\\sigma\\left(\\tilde{\\mathcal{H}}_l^{\\mathrm{pre}}\\right)\n\\tag{17}\\\\[4pt]\n\\mathcal{H}_l^{\\mathrm{post}}\n&:\\text{float32}\n&\\qquad&=2\\sigma\\left(\\tilde{\\mathcal{H}}_l^{\\mathrm{post}}\\right)\n\\tag{18}\\\\[4pt]\n\\mathcal{H}_l^{\\mathrm{res}}\n&:\\text{float32}\n&\\qquad&=\\text{Sinkhorn-Knopp}\\left(\\tilde{\\mathcal{H}}_l^{\\mathrm{res}}\\right)\n\\tag{19}\n\\end{alignat}",
+    "reason": "保留公式与原论文编号，移除末尾标点，编号统一靠右"
+  },
+  "Cxk3f": {
+    "from": "L_r^*=\\arg\\min_{L_r}\\left[nC\\times\\left\\lceil\\frac{L}{L_r}\\right\\rceil+(n+2)C\\times L_r\\right]\\approx\\sqrt{\\frac{nL}{n+2}}.\n\\tag{20}",
+    "to": "L_r^*=\\arg\\min_{L_r}\\left[nC\\times\\left\\lceil\\frac{L}{L_r}\\right\\rceil+(n+2)C\\times L_r\\right]\\approx\\sqrt{\\frac{nL}{n+2}}\\tag{20}",
+    "reason": "保留公式与原论文编号，移除末尾标点，编号统一靠右"
+  },
+  "K0LUM": {
+    "from": "\\mathcal{F}_{\\mathrm{pre}}\\coloneqq\\mathcal{H}_l^{\\mathrm{pre}}\\mathbf{x}_l",
+    "to": "\\mathcal{F}_{\\mathrm{pre}}\\mathrel{:=}\\mathcal{H}_l^{\\mathrm{pre}}\\mathbf{x}_l",
+    "reason": "将定义等号改为当前数学渲染器支持的等价写法"
+  },
+  "ktumI": {
+    "from": "\\mathcal{F}_{\\mathrm{post,res}}\\coloneqq\\mathcal{H}_l^{\\mathrm{res}}\\mathbf{x}_l+\\mathcal{H}_l^{\\mathrm{post}\\,\\top}\\mathcal{F}(\\cdot,\\cdot)",
+    "to": "\\mathcal{F}_{\\mathrm{post,res}}\\mathrel{:=}\\mathcal{H}_l^{\\mathrm{res}}\\mathbf{x}_l+\\mathcal{H}_l^{\\mathrm{post}\\,\\top}\\mathcal{F}(\\cdot,\\cdot)",
+    "reason": "将定义等号改为当前数学渲染器支持的等价写法"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "desktop": [
+    {
+      "width": 1280,
+      "overflow": false,
+      "toc": 5,
+      "errors": 0,
+      "broken": 0,
+      "empty": [],
+      "wide": [],
+      "numbers": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20"
+      ],
+      "chineseMath": [],
+      "images": 3
+    },
+    {
+      "width": 1920,
+      "overflow": false,
+      "toc": 5,
+      "errors": 0,
+      "broken": 0,
+      "empty": [],
+      "wide": [],
+      "numbers": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20"
+      ],
+      "chineseMath": [],
+      "images": 3
+    }
+  ],
+  "home": {
+    "deepseekSeries": [
+      "DeepSeek AI-I",
+      "DeepSeek AI-II"
+    ],
+    "llmArticles": 9,
+    "totalArticles": 22,
+    "categoryFilter": true
+  },
+  "toc": "two levels, navigation and hide verified"
+}

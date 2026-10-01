@@ -175,3 +175,8 @@
 [data-post="policy-optimization-iv"] .lake-document #uaa82bc99 { text-align: center; }
 [data-post="policy-optimization-iv"] .lake-document #u936b2bf7 span[style] { color: inherit !important; }
 [data-post="policy-optimization-iv"] .lake-document #sapo-notation .equation { font-size: 16px; }
+
+[data-post="deepseek-ai-ii"] .lake-document h1 { margin-block: 28px 14px; }
+[data-post="deepseek-ai-ii"] .lake-document h2 { margin-block: 24px 12px; }
+[data-post="deepseek-ai-ii"] .lake-document > :first-child { margin-top: 0; }
+[data-post="deepseek-ai-ii"] .lake-document :is(#u47166d57, #u4cc2ea74, #u947b4cfd) { text-align: center; }
