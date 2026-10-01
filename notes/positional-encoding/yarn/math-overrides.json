@@ -33,11 +33,11 @@
   },
   "kKS3k": {
     "from": "\\lambda_d=\\frac{2\\pi}{\\theta_d}=2\\pi b^{\\frac{2d}{|D|}}.\n\\tag{8}",
-    "to": "\\lambda_d=\\frac{2\\pi}{\\theta_d}=2\\pi b^{\\frac{2d}{|D|}}\n\\tag{8}"
+    "to": "\\lambda_d=\\frac{2\\pi}{\\theta_d}=2\\pi b^{\\frac{2(d-1)}{|D|}}\n\\tag{8}"
   },
   "VCnCD": {
     "from": "r(d)=\\frac{L}{\\lambda_d}=\\frac{L}{2\\pi b^{\\frac{2d}{|D|}}}.\n\\tag{10}",
-    "to": "r(d)=\\frac{L}{\\lambda_d}=\\frac{L}{2\\pi b^{\\frac{2d}{|D|}}}\n\\tag{9}"
+    "to": "r(d)=\\frac{L}{\\lambda_d}=\\frac{L}{2\\pi b^{\\frac{2(d-1)}{|D|}}}\n\\tag{9}"
   },
   "njAWI": {
     "from": "\\gamma(r)=\n\\begin{cases}\n0, & \\text{if } r<\\alpha \\\\\n1, & \\text{if } r>\\beta \\\\\n\\dfrac{r-\\alpha}{\\beta-\\alpha}, & \\text{otherwise}.\n\\end{cases}\n\\tag{11}",
@@ -54,5 +54,13 @@
   "NC0QP": {
     "from": "\\operatorname{softmax}\\left(\\frac{\\boldsymbol{q}_m^{T}\\boldsymbol{k}_n}{t\\sqrt{|D|}}\\right).\n\\tag{14}",
     "to": "\\operatorname{softmax}\\left(\\frac{\\boldsymbol{q}_m^{T}\\boldsymbol{k}_n}{t\\sqrt{|D|}}\\right)\n\\tag{13}"
+  },
+  "Wj9Rq": {
+    "from": "\\theta_d=b^{-2d/|D|}",
+    "to": "\\theta_d=b^{-2(d-1)/|D|}"
+  },
+  "NaeTW": {
+    "from": "n",
+    "to": "|D|/2"
   }
 }

@@ -37,18 +37,22 @@
   },
   "r8HX1": {
     "from": "\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{x}=\n\\begin{pmatrix}\nx_1 \\\\\nx_2 \\\\\nx_3 \\\\\nx_4 \\\\\n\\vdots \\\\\nx_{d-1} \\\\\nx_d\n\\end{pmatrix}\n\\otimes\n\\begin{pmatrix}\n\\cos m\\theta_1 \\\\\n\\cos m\\theta_1 \\\\\n\\cos m\\theta_2 \\\\\n\\cos m\\theta_2 \\\\\n\\vdots \\\\\n\\cos m\\theta_{d/2} \\\\\n\\cos m\\theta_{d/2}\n\\end{pmatrix}\n+\n\\begin{pmatrix}\n-x_2 \\\\\nx_1 \\\\\n-x_4 \\\\\nx_3 \\\\\n\\vdots \\\\\n-x_d \\\\\nx_{d-1}\n\\end{pmatrix}\n\\otimes\n\\begin{pmatrix}\n\\sin m\\theta_1 \\\\\n\\sin m\\theta_1 \\\\\n\\sin m\\theta_2 \\\\\n\\sin m\\theta_2 \\\\\n\\vdots \\\\\n\\sin m\\theta_{d/2} \\\\\n\\sin m\\theta_{d/2}\n\\end{pmatrix}\n\\tag{34}",
-    "to": "\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{x}=\n\\begin{pmatrix}\nx_1 \\\\\nx_2 \\\\\nx_3 \\\\\nx_4 \\\\\n\\vdots \\\\\nx_{d-1} \\\\\nx_d\n\\end{pmatrix}\n\\otimes\n\\begin{pmatrix}\n\\cos m\\theta_1 \\\\\n\\cos m\\theta_1 \\\\\n\\cos m\\theta_2 \\\\\n\\cos m\\theta_2 \\\\\n\\vdots \\\\\n\\cos m\\theta_{d/2} \\\\\n\\cos m\\theta_{d/2}\n\\end{pmatrix}\n+\n\\begin{pmatrix}\n-x_2 \\\\\nx_1 \\\\\n-x_4 \\\\\nx_3 \\\\\n\\vdots \\\\\n-x_d \\\\\nx_{d-1}\n\\end{pmatrix}\n\\otimes\n\\begin{pmatrix}\n\\sin m\\theta_1 \\\\\n\\sin m\\theta_1 \\\\\n\\sin m\\theta_2 \\\\\n\\sin m\\theta_2 \\\\\n\\vdots \\\\\n\\sin m\\theta_{d/2} \\\\\n\\sin m\\theta_{d/2}\n\\end{pmatrix}\n\\tag{10}"
+    "to": "\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{x}=\n\\begin{pmatrix}\nx_1 \\\\\nx_2 \\\\\nx_3 \\\\\nx_4 \\\\\n\\vdots \\\\\nx_{d-1} \\\\\nx_d\n\\end{pmatrix}\n\\odot\n\\begin{pmatrix}\n\\cos m\\theta_1 \\\\\n\\cos m\\theta_1 \\\\\n\\cos m\\theta_2 \\\\\n\\cos m\\theta_2 \\\\\n\\vdots \\\\\n\\cos m\\theta_{d/2} \\\\\n\\cos m\\theta_{d/2}\n\\end{pmatrix}\n+\n\\begin{pmatrix}\n-x_2 \\\\\nx_1 \\\\\n-x_4 \\\\\nx_3 \\\\\n\\vdots \\\\\n-x_d \\\\\nx_{d-1}\n\\end{pmatrix}\n\\odot\n\\begin{pmatrix}\n\\sin m\\theta_1 \\\\\n\\sin m\\theta_1 \\\\\n\\sin m\\theta_2 \\\\\n\\sin m\\theta_2 \\\\\n\\vdots \\\\\n\\sin m\\theta_{d/2} \\\\\n\\sin m\\theta_{d/2}\n\\end{pmatrix}\n\\tag{10}"
   },
   "L1eVE": {
     "from": "(\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{W}_q\\boldsymbol{x}_m)^{\\intercal}(\\boldsymbol{R}_{\\Theta,n}^{d}\\boldsymbol{W}_k\\boldsymbol{x}_n)=\\operatorname{Re}\\left[\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}\\right]\n\\tag{35}",
-    "to": "(\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{W}_q\\boldsymbol{x}_m)^{\\intercal}(\\boldsymbol{R}_{\\Theta,n}^{d}\\boldsymbol{W}_k\\boldsymbol{x}_n)=\\operatorname{Re}\\left[\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}\\right]\n\\tag{11}"
+    "to": "(\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{W}_q\\boldsymbol{x}_m)^{\\intercal}(\\boldsymbol{R}_{\\Theta,n}^{d}\\boldsymbol{W}_k\\boldsymbol{x}_n)=\\operatorname{Re}\\left[\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{\\mathrm{i}(m-n)\\theta_i}\\right]\n\\tag{11}"
   },
   "h4zEA": {
     "from": "\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}=\\sum_{i=0}^{d/2-1}h_i(S_{i+1}-S_i)=-\\sum_{i=0}^{d/2-1}S_{i+1}(h_{i+1}-h_i).\n\\tag{36}",
-    "to": "\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}=\\sum_{i=0}^{d/2-1}h_i(S_{i+1}-S_i)=-\\sum_{i=0}^{d/2-1}S_{i+1}(h_{i+1}-h_i)\n\\tag{12}"
+    "to": "\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{\\mathrm{i}(m-n)\\theta_i}=\\sum_{i=0}^{d/2-1}h_i(S_{i+1}-S_i)=-\\sum_{i=0}^{d/2-1}S_{i+1}(h_{i+1}-h_i)\n\\tag{12}"
   },
   "Kmzmu": {
     "from": "\\begin{aligned}\n\\left|\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}\\right|\n&=\\left|\\sum_{i=0}^{d/2-1}S_{i+1}(h_{i+1}-h_i)\\right| \\\\\n&\\leq\\sum_{i=0}^{d/2-1}|S_{i+1}||(h_{i+1}-h_i)| \\\\\n&\\leq\\left(\\max_i|h_{i+1}-h_i|\\right)\\sum_{i=0}^{d/2-1}|S_{i+1}|\n\\end{aligned}\n\\tag{37}",
-    "to": "\\begin{aligned}\n\\left|\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}\\right|\n&=\\left|\\sum_{i=0}^{d/2-1}S_{i+1}(h_{i+1}-h_i)\\right| \\\\\n&\\leq\\sum_{i=0}^{d/2-1}|S_{i+1}||(h_{i+1}-h_i)| \\\\\n&\\leq\\left(\\max_i|h_{i+1}-h_i|\\right)\\sum_{i=0}^{d/2-1}|S_{i+1}|\n\\end{aligned}\n\\tag{13}"
+    "to": "\\begin{aligned}\n\\left|\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{\\mathrm{i}(m-n)\\theta_i}\\right|\n&=\\left|\\sum_{i=0}^{d/2-1}S_{i+1}(h_{i+1}-h_i)\\right| \\\\\n&\\leq\\sum_{i=0}^{d/2-1}|S_{i+1}||(h_{i+1}-h_i)| \\\\\n&\\leq\\left(\\max_i|h_{i+1}-h_i|\\right)\\sum_{i=0}^{d/2-1}|S_{i+1}|\n\\end{aligned}\n\\tag{13}"
+  },
+  "kwh55": {
+    "from": "S_j=\\sum_{i=0}^{j-1}e^{i(m-n)\\theta_i}",
+    "to": "S_j=\\sum_{i=0}^{j-1}e^{\\mathrm{i}(m-n)\\theta_i}"
   }
 }
