@@ -3,16 +3,7 @@
     "file": "source.lake",
     "sha256": "bea55a2d44759eadae729d566c376ad013f160346179fb7040aa67343c4d4caa",
     "bytes": 80049,
-    "title": "❄️ 𝓐𝓽𝓽𝓮𝓷𝓽𝓲𝓸𝓷",
-    "original": {
-      "file": "references/original.lake",
-      "name": "❄️ 𝓐𝓽𝓽𝓮𝓷𝓽𝓲𝓸𝓷.lake",
-      "sha256": "7701996b45c4746e53c8bb23a5501f9ef7a97300639de3bdaa2d7ec6943646d9",
-      "bytes": 80049
-    },
-    "layoutEdits": [
-      "将 Efficient Infrastructure Design 标题移到内核融合段落之前，原始导出保存在 references/original.lake"
-    ]
+    "title": "❄️ 𝓐𝓽𝓽𝓮𝓷𝓽𝓲𝓸𝓷"
   },
   "title": "DeepSeek AI-II",
   "metadata": {

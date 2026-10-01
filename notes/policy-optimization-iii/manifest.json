@@ -4,13 +4,7 @@
     "sha256": "1df56aca2633103573326ae665ef7cb231de2fb1deccb88602970a19272d7af0",
     "bytes": 67417,
     "title": "🐘 𝓐𝓵𝓲𝓰𝓷𝓶𝓮𝓷𝓽",
-    "excerptBeforeHeading": "iaFhR",
-    "original": {
-      "file": "references/original.lake",
-      "name": "🐘 𝓐𝓵𝓲𝓰𝓷𝓶𝓮𝓷𝓽.lake",
-      "sha256": "faa6c6bc3369f3c0f37263fada91c0ef2182e3698bcb495b133b94abb7e4c55f",
-      "bytes": 102780
-    }
+    "excerptBeforeHeading": "iaFhR"
   },
   "title": "Policy Optimization-III",
   "metadata": {

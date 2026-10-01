@@ -4,13 +4,7 @@
     "sha256": "8f7835a9549dfc78bb979864a750452b73d7d9c184e471c3e0de5ecd0b4488ef",
     "bytes": 32291,
     "title": "🦫 𝓡𝓮𝓯𝓲𝓷𝓮𝓶𝓮𝓷𝓽",
-    "excerptBeforeHeading": "VZMmK",
-    "original": {
-      "file": "references/original.lake",
-      "name": "🦫 𝓡𝓮𝓯𝓲𝓷𝓮𝓶𝓮𝓷𝓽.lake",
-      "sha256": "90abd8678a8e20b71ec882850e8c2024a61dcac56a89963d8d2b292a83cb3ef9",
-      "bytes": 142178
-    }
+    "excerptBeforeHeading": "VZMmK"
   },
   "title": "Policy Optimization-IV",
   "metadata": {

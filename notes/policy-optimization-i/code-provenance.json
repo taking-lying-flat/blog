@@ -1,60 +1,6 @@
 {
   "gae": {
     "source": "https://github.com/OpenRLHF/OpenRLHF/blob/dc2a7ad326f619fc5a47737ea47d1920ce2c0b53/openrlhf/trainer/ppo_utils/experience_maker.py#L342-L387",
-    "license": "assets/licenses/OpenRLHF-LICENSE.txt",
-    "changes": [
-      "Omitted imports, comments, docstrings and type annotations; preserved original method parameters and calculation."
-    ],
-    "bodyUnchanged": true
-  },
-  "ppo-policy-source": {
-    "function": "compute_policy_loss_vanilla",
-    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/trainer/ppo/core_algos.py#L1285-L1376",
-    "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
-    "license": "assets/licenses/verl-LICENSE.txt",
-    "changes": [
-      "Removed comments, docstrings, type annotations and enclosing indentation.",
-      "Removed assertions, diagnostic metrics, metric returns and nonessential training plumbing at user request."
-    ],
-    "computationUnchanged": false,
-    "trainingMathPreserved": true,
-    "excerpt": true
-  },
-  "ppo-value-source": {
-    "function": "compute_value_loss",
-    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/trainer/ppo/core_algos.py#L2125-L2185",
-    "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
-    "license": "assets/licenses/verl-LICENSE.txt",
-    "changes": [
-      "Removed comments, docstrings, type annotations and enclosing indentation.",
-      "Removed assertions, diagnostic metrics, metric returns and nonessential training plumbing at user request."
-    ],
-    "computationUnchanged": false,
-    "trainingMathPreserved": true,
-    "excerpt": true
-  },
-  "bootstrap-source": {
-    "function": "compute_gae_advantage_return",
-    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/trainer/ppo/core_algos.py#L215-L263",
-    "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
-    "license": "assets/licenses/verl-LICENSE.txt",
-    "changes": [
-      "Removed comments, docstrings, type annotations and enclosing indentation.",
-      "Omitted advantage-estimator registration decorator."
-    ],
-    "computationUnchanged": true
-  },
-  "ppo-update-source": {
-    "function": "train_batch",
-    "source": "https://github.com/volcengine/verl/blob/6093e007cc341973c9d9a6fb3867a85976c7c458/verl/workers/engine/base.py#L113-L132",
-    "revision": "6093e007cc341973c9d9a6fb3867a85976c7c458",
-    "license": "assets/licenses/verl-LICENSE.txt",
-    "changes": [
-      "Removed comments, docstrings, type annotations and enclosing indentation.",
-      "Removed assertions, diagnostic metrics, metric returns and nonessential training plumbing at user request."
-    ],
-    "computationUnchanged": false,
-    "trainingMathPreserved": true,
-    "excerpt": true
+    "license": "assets/licenses/OpenRLHF-LICENSE.txt"
   }
 }

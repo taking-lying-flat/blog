@@ -4,13 +4,7 @@
     "sha256": "69b45fa25b0eba6d15742ae61a1f54cd731d19f7b5ff5f29cac50b1b436e2d42",
     "bytes": 33995,
     "title": "🐘 𝓐𝓵𝓲𝓰𝓷𝓶𝓮𝓷𝓽",
-    "excerptFromHeading": "iaFhR",
-    "original": {
-      "file": "references/original.lake",
-      "name": "🐘 𝓐𝓵𝓲𝓰𝓷𝓶𝓮𝓷𝓽.lake",
-      "sha256": "bd338beafd39dbede55539847c4d1494e069c53eac7f22950957afe521848662",
-      "bytes": 101126
-    }
+    "excerptFromHeading": "iaFhR"
   },
   "title": "Policy Optimization-III · SimPO",
   "metadata": {
