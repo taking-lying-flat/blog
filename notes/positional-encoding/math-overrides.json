@@ -1,0 +1,54 @@
+{
+  "PO9MV": {
+    "from": "\\langle f_q(\\boldsymbol{x}_m,m),f_k(\\boldsymbol{x}_n,n)\\rangle=g(\\boldsymbol{x}_m,\\boldsymbol{x}_n,m-n).\n\\tag{11}",
+    "to": "\\langle f_q(\\boldsymbol{x}_m,m),f_k(\\boldsymbol{x}_n,n)\\rangle=g(\\boldsymbol{x}_m,\\boldsymbol{x}_n,m-n)\n\\tag{1}"
+  },
+  "FMoIe": {
+    "from": "\\begin{aligned}\nf_q(\\boldsymbol{x}_m,m) &= (\\boldsymbol{W}_q\\boldsymbol{x}_m)e^{im\\theta} \\\\\nf_k(\\boldsymbol{x}_n,n) &= (\\boldsymbol{W}_k\\boldsymbol{x}_n)e^{in\\theta} \\\\\ng(\\boldsymbol{x}_m,\\boldsymbol{x}_n,m-n) &= \\operatorname{Re}\\left[(\\boldsymbol{W}_q\\boldsymbol{x}_m)(\\boldsymbol{W}_k\\boldsymbol{x}_n)^{*}e^{i(m-n)\\theta}\\right]\n\\end{aligned}\n\\tag{12}",
+    "to": "\\begin{aligned}\nf_q(\\boldsymbol{x}_m,m) &= (\\boldsymbol{W}_q\\boldsymbol{x}_m)e^{im\\theta} \\\\\nf_k(\\boldsymbol{x}_n,n) &= (\\boldsymbol{W}_k\\boldsymbol{x}_n)e^{in\\theta} \\\\\ng(\\boldsymbol{x}_m,\\boldsymbol{x}_n,m-n) &= \\operatorname{Re}\\left[(\\boldsymbol{W}_q\\boldsymbol{x}_m)(\\boldsymbol{W}_k\\boldsymbol{x}_n)^{*}e^{i(m-n)\\theta}\\right]\n\\end{aligned}\n\\tag{2}"
+  },
+  "oVibD": {
+    "from": "f_{\\{q,k\\}}(\\boldsymbol{x}_m,m)=\n\\begin{pmatrix}\n\\cos m\\theta & -\\sin m\\theta \\\\\n\\sin m\\theta & \\cos m\\theta\n\\end{pmatrix}\n\\begin{pmatrix}\nW_{\\{q,k\\}}^{(11)} & W_{\\{q,k\\}}^{(12)} \\\\\nW_{\\{q,k\\}}^{(21)} & W_{\\{q,k\\}}^{(22)}\n\\end{pmatrix}\n\\begin{pmatrix}\nx_m^{(1)} \\\\\nx_m^{(2)}\n\\end{pmatrix}\n\\tag{13}",
+    "to": "f_{\\{q,k\\}}(\\boldsymbol{x}_m,m)=\n\\begin{pmatrix}\n\\cos m\\theta & -\\sin m\\theta \\\\\n\\sin m\\theta & \\cos m\\theta\n\\end{pmatrix}\n\\begin{pmatrix}\nW_{\\{q,k\\}}^{(11)} & W_{\\{q,k\\}}^{(12)} \\\\\nW_{\\{q,k\\}}^{(21)} & W_{\\{q,k\\}}^{(22)}\n\\end{pmatrix}\n\\begin{pmatrix}\nx_m^{(1)} \\\\\nx_m^{(2)}\n\\end{pmatrix}\n\\tag{3}"
+  },
+  "HFkAT": {
+    "from": "f_{\\{q,k\\}}(\\boldsymbol{x}_m,m)=\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{W}_{\\{q,k\\}}\\boldsymbol{x}_m\n\\tag{14}",
+    "to": "f_{\\{q,k\\}}(\\boldsymbol{x}_m,m)=\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{W}_{\\{q,k\\}}\\boldsymbol{x}_m\n\\tag{4}"
+  },
+  "fUVUG": {
+    "from": "\\boldsymbol{R}_{\\Theta,m}^{d}=\n\\begin{pmatrix}\n\\cos m\\theta_1 & -\\sin m\\theta_1 & 0 & 0 & \\cdots & 0 & 0 \\\\\n\\sin m\\theta_1 & \\cos m\\theta_1 & 0 & 0 & \\cdots & 0 & 0 \\\\\n0 & 0 & \\cos m\\theta_2 & -\\sin m\\theta_2 & \\cdots & 0 & 0 \\\\\n0 & 0 & \\sin m\\theta_2 & \\cos m\\theta_2 & \\cdots & 0 & 0 \\\\\n\\vdots & \\vdots & \\vdots & \\vdots & \\ddots & \\vdots & \\vdots \\\\\n0 & 0 & 0 & 0 & \\cdots & \\cos m\\theta_{d/2} & -\\sin m\\theta_{d/2} \\\\\n0 & 0 & 0 & 0 & \\cdots & \\sin m\\theta_{d/2} & \\cos m\\theta_{d/2}\n\\end{pmatrix}\n\\tag{15}",
+    "to": "\\boldsymbol{R}_{\\Theta,m}^{d}=\n\\begin{pmatrix}\n\\cos m\\theta_1 & -\\sin m\\theta_1 & 0 & 0 & \\cdots & 0 & 0 \\\\\n\\sin m\\theta_1 & \\cos m\\theta_1 & 0 & 0 & \\cdots & 0 & 0 \\\\\n0 & 0 & \\cos m\\theta_2 & -\\sin m\\theta_2 & \\cdots & 0 & 0 \\\\\n0 & 0 & \\sin m\\theta_2 & \\cos m\\theta_2 & \\cdots & 0 & 0 \\\\\n\\vdots & \\vdots & \\vdots & \\vdots & \\ddots & \\vdots & \\vdots \\\\\n0 & 0 & 0 & 0 & \\cdots & \\cos m\\theta_{d/2} & -\\sin m\\theta_{d/2} \\\\\n0 & 0 & 0 & 0 & \\cdots & \\sin m\\theta_{d/2} & \\cos m\\theta_{d/2}\n\\end{pmatrix}\n\\tag{5}"
+  },
+  "Bh6uI": {
+    "from": "\\boldsymbol{q}_m^{\\intercal}\\boldsymbol{k}_n=(\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{W}_q\\boldsymbol{x}_m)^{\\intercal}(\\boldsymbol{R}_{\\Theta,n}^{d}\\boldsymbol{W}_k\\boldsymbol{x}_n)=\\boldsymbol{x}^{\\intercal}\\boldsymbol{W}_q R_{\\Theta,n-m}^{d}\\boldsymbol{W}_k\\boldsymbol{x}_n\n\\tag{16}",
+    "to": "\\boldsymbol{q}_m^{\\intercal}\\boldsymbol{k}_n=(\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{W}_q\\boldsymbol{x}_m)^{\\intercal}(\\boldsymbol{R}_{\\Theta,n}^{d}\\boldsymbol{W}_k\\boldsymbol{x}_n)=\\boldsymbol{x}_m^{\\intercal}\\boldsymbol{W}_q^{\\intercal}\\boldsymbol{R}_{\\Theta,n-m}^{d}\\boldsymbol{W}_k\\boldsymbol{x}_n\n\\tag{6}"
+  },
+  "tp2Ck": {
+    "from": "\\operatorname{Attention}(\\mathbf{Q},\\mathbf{K},\\mathbf{V})_m=\\frac{\\sum_{n=1}^{N}\\operatorname{sim}(\\boldsymbol{q}_m,\\boldsymbol{k}_n)\\boldsymbol{v}_n}{\\sum_{n=1}^{N}\\operatorname{sim}(\\boldsymbol{q}_m,\\boldsymbol{k}_n)}.\n\\tag{17}",
+    "to": "\\operatorname{Attention}(\\mathbf{Q},\\mathbf{K},\\mathbf{V})_m=\\frac{\\sum_{n=1}^{N}\\operatorname{sim}(\\boldsymbol{q}_m,\\boldsymbol{k}_n)\\boldsymbol{v}_n}{\\sum_{n=1}^{N}\\operatorname{sim}(\\boldsymbol{q}_m,\\boldsymbol{k}_n)}\n\\tag{7}"
+  },
+  "i2L53": {
+    "from": "\\operatorname{Attention}(\\boldsymbol{Q},\\boldsymbol{K},\\boldsymbol{V})_m=\\frac{\\sum_{n=1}^{N}\\phi(\\boldsymbol{q}_m)^{\\intercal}\\varphi(\\boldsymbol{k}_n)\\boldsymbol{v}_n}{\\sum_{n=1}^{N}\\phi(\\boldsymbol{q}_m)^{\\intercal}\\varphi(\\boldsymbol{k}_n)},\n\\tag{18}",
+    "to": "\\operatorname{Attention}(\\boldsymbol{Q},\\boldsymbol{K},\\boldsymbol{V})_m=\\frac{\\sum_{n=1}^{N}\\phi(\\boldsymbol{q}_m)^{\\intercal}\\varphi(\\boldsymbol{k}_n)\\boldsymbol{v}_n}{\\sum_{n=1}^{N}\\phi(\\boldsymbol{q}_m)^{\\intercal}\\varphi(\\boldsymbol{k}_n)}\n\\tag{8}"
+  },
+  "TZkdi": {
+    "from": "\\operatorname{Attention}(\\mathbf{Q},\\mathbf{K},\\mathbf{V})_m=\\frac{\\sum_{n=1}^{N}\\big(\\boldsymbol{R}_{\\Theta,m}^{d}\\phi(\\boldsymbol{q}_m)\\big)^{\\intercal}\\big(\\boldsymbol{R}_{\\Theta,n}^{d}\\varphi(\\boldsymbol{k}_n)\\big)\\boldsymbol{v}_n}{\\sum_{n=1}^{N}\\phi(\\boldsymbol{q}_m)^{\\intercal}\\varphi(\\boldsymbol{k}_n)}.\n\\tag{19}",
+    "to": "\\operatorname{Attention}(\\mathbf{Q},\\mathbf{K},\\mathbf{V})_m=\\frac{\\sum_{n=1}^{N}\\big(\\boldsymbol{R}_{\\Theta,m}^{d}\\phi(\\boldsymbol{q}_m)\\big)^{\\intercal}\\big(\\boldsymbol{R}_{\\Theta,n}^{d}\\varphi(\\boldsymbol{k}_n)\\big)\\boldsymbol{v}_n}{\\sum_{n=1}^{N}\\phi(\\boldsymbol{q}_m)^{\\intercal}\\varphi(\\boldsymbol{k}_n)}\n\\tag{9}"
+  },
+  "r8HX1": {
+    "from": "\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{x}=\n\\begin{pmatrix}\nx_1 \\\\\nx_2 \\\\\nx_3 \\\\\nx_4 \\\\\n\\vdots \\\\\nx_{d-1} \\\\\nx_d\n\\end{pmatrix}\n\\otimes\n\\begin{pmatrix}\n\\cos m\\theta_1 \\\\\n\\cos m\\theta_1 \\\\\n\\cos m\\theta_2 \\\\\n\\cos m\\theta_2 \\\\\n\\vdots \\\\\n\\cos m\\theta_{d/2} \\\\\n\\cos m\\theta_{d/2}\n\\end{pmatrix}\n+\n\\begin{pmatrix}\n-x_2 \\\\\nx_1 \\\\\n-x_4 \\\\\nx_3 \\\\\n\\vdots \\\\\n-x_d \\\\\nx_{d-1}\n\\end{pmatrix}\n\\otimes\n\\begin{pmatrix}\n\\sin m\\theta_1 \\\\\n\\sin m\\theta_1 \\\\\n\\sin m\\theta_2 \\\\\n\\sin m\\theta_2 \\\\\n\\vdots \\\\\n\\sin m\\theta_{d/2} \\\\\n\\sin m\\theta_{d/2}\n\\end{pmatrix}\n\\tag{34}",
+    "to": "\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{x}=\n\\begin{pmatrix}\nx_1 \\\\\nx_2 \\\\\nx_3 \\\\\nx_4 \\\\\n\\vdots \\\\\nx_{d-1} \\\\\nx_d\n\\end{pmatrix}\n\\otimes\n\\begin{pmatrix}\n\\cos m\\theta_1 \\\\\n\\cos m\\theta_1 \\\\\n\\cos m\\theta_2 \\\\\n\\cos m\\theta_2 \\\\\n\\vdots \\\\\n\\cos m\\theta_{d/2} \\\\\n\\cos m\\theta_{d/2}\n\\end{pmatrix}\n+\n\\begin{pmatrix}\n-x_2 \\\\\nx_1 \\\\\n-x_4 \\\\\nx_3 \\\\\n\\vdots \\\\\n-x_d \\\\\nx_{d-1}\n\\end{pmatrix}\n\\otimes\n\\begin{pmatrix}\n\\sin m\\theta_1 \\\\\n\\sin m\\theta_1 \\\\\n\\sin m\\theta_2 \\\\\n\\sin m\\theta_2 \\\\\n\\vdots \\\\\n\\sin m\\theta_{d/2} \\\\\n\\sin m\\theta_{d/2}\n\\end{pmatrix}\n\\tag{10}"
+  },
+  "L1eVE": {
+    "from": "(\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{W}_q\\boldsymbol{x}_m)^{\\intercal}(\\boldsymbol{R}_{\\Theta,n}^{d}\\boldsymbol{W}_k\\boldsymbol{x}_n)=\\operatorname{Re}\\left[\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}\\right]\n\\tag{35}",
+    "to": "(\\boldsymbol{R}_{\\Theta,m}^{d}\\boldsymbol{W}_q\\boldsymbol{x}_m)^{\\intercal}(\\boldsymbol{R}_{\\Theta,n}^{d}\\boldsymbol{W}_k\\boldsymbol{x}_n)=\\operatorname{Re}\\left[\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}\\right]\n\\tag{11}"
+  },
+  "h4zEA": {
+    "from": "\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}=\\sum_{i=0}^{d/2-1}h_i(S_{i+1}-S_i)=-\\sum_{i=0}^{d/2-1}S_{i+1}(h_{i+1}-h_i).\n\\tag{36}",
+    "to": "\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}=\\sum_{i=0}^{d/2-1}h_i(S_{i+1}-S_i)=-\\sum_{i=0}^{d/2-1}S_{i+1}(h_{i+1}-h_i)\n\\tag{12}"
+  },
+  "Kmzmu": {
+    "from": "\\begin{aligned}\n\\left|\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}\\right|\n&=\\left|\\sum_{i=0}^{d/2-1}S_{i+1}(h_{i+1}-h_i)\\right| \\\\\n&\\leq\\sum_{i=0}^{d/2-1}|S_{i+1}||(h_{i+1}-h_i)| \\\\\n&\\leq\\left(\\max_i|h_{i+1}-h_i|\\right)\\sum_{i=0}^{d/2-1}|S_{i+1}|\n\\end{aligned}\n\\tag{37}",
+    "to": "\\begin{aligned}\n\\left|\\sum_{i=0}^{d/2-1}\\boldsymbol{q}_{[2i:2i+1]}\\boldsymbol{k}_{[2i:2i+1]}^{*}e^{i(m-n)\\theta_i}\\right|\n&=\\left|\\sum_{i=0}^{d/2-1}S_{i+1}(h_{i+1}-h_i)\\right| \\\\\n&\\leq\\sum_{i=0}^{d/2-1}|S_{i+1}||(h_{i+1}-h_i)| \\\\\n&\\leq\\left(\\max_i|h_{i+1}-h_i|\\right)\\sum_{i=0}^{d/2-1}|S_{i+1}|\n\\end{aligned}\n\\tag{13}"
+  }
+}

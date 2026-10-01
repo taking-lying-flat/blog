@@ -1,5 +1,21 @@
 [
   {
+    "file": "../notes/positional-encoding/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "positional-encoding",
+    "category": "llm",
+    "date": "2026-10-01",
+    "description": "位置编码笔记：RoFormer 与 RoPE，涵盖二维旋转、相对位置关系、线性注意力、高效实现和长程衰减",
+    "tags": [
+      "位置编码",
+      "RoFormer",
+      "RoPE",
+      "Attention"
+    ]
+  },
+  {
     "file": "../notes/deepseek-ai-ii/v3-2/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,

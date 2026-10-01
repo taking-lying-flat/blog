@@ -202,3 +202,10 @@
 [data-post="deepseek-ai-ii"] .lake-document :is(#u6dcce30a, #u24d1ab97) .lake-image {
   margin-block: 12px;
 }
+
+[data-post="positional-encoding"] .lake-document h1 { margin-block: 28px 14px; }
+[data-post="positional-encoding"] .lake-document h2 { margin-block: 24px 12px; }
+[data-post="positional-encoding"] .lake-document > :first-child { margin-top: 0; }
+[data-post="positional-encoding"] .lake-document #u6a37c602 { text-align: center; }
+[data-post="positional-encoding"] .lake-document #u0ed08144 { text-align: center; line-height: 0; }
+[data-post="positional-encoding"] .lake-document #u0ed08144 .lake-image { margin-block: 12px; }
