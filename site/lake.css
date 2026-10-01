@@ -179,7 +179,7 @@
 [data-post="deepseek-ai-ii"] .lake-document h1 { margin-block: 28px 14px; }
 [data-post="deepseek-ai-ii"] .lake-document h2 { margin-block: 24px 12px; }
 [data-post="deepseek-ai-ii"] .lake-document > :first-child { margin-top: 0; }
-[data-post="deepseek-ai-ii"] .lake-document :is(#u47166d57, #u4cc2ea74, #u947b4cfd) { text-align: center; }
+[data-post="deepseek-ai-ii"] .lake-document :is(#u47166d57, #u4cc2ea74, #u947b4cfd, #u5fa3c8bf, #u1d3dd13b) { text-align: center; }
 
 /* Give only the two inline-formula passages extra room on desktop. */
 @media (min-width: 1200px) {

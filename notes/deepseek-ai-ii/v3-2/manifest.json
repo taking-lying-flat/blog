@@ -1,0 +1,1574 @@
+{
+  "source": {
+    "file": "source.lake",
+    "sha256": "153aa793dab02f1a4e564424e245bc97bc949f89daac2198fa6f2feb6da49bdf",
+    "bytes": 44253,
+    "title": "❄️ 𝓐𝓽𝓽𝓮𝓷𝓽𝓲𝓸𝓷",
+    "original": {
+      "file": "references/original.lake",
+      "name": "❄️ 𝓐𝓽𝓽𝓮𝓷𝓽𝓲𝓸𝓷.lake",
+      "sha256": "153aa793dab02f1a4e564424e245bc97bc949f89daac2198fa6f2feb6da49bdf",
+      "bytes": 44253
+    }
+  },
+  "title": "DeepSeek AI-II",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "counts": {
+    "math": 47,
+    "images": 2,
+    "separators": 0
+  },
+  "assets": [
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/3df0574f8df24a87181f1e5a8f72d6ec.svg",
+      "file": "assets/math/3df0574f8df24a87181f1e5a8f72d6ec.svg",
+      "bytes": 3977,
+      "sha256": "e2e421aceb169dfdeeb5516584c06f0892970e49c869e5349c3864cfb86294c9",
+      "width": "7.922ex",
+      "height": "3.009ex",
+      "viewBox": "0 -1006.6 3410.8 1295.7",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/1d18ebc4fd9517411b835409f0b3e52f.svg",
+      "file": "assets/math/1d18ebc4fd9517411b835409f0b3e52f.svg",
+      "bytes": 4025,
+      "sha256": "b3571383fa9e53d064c05c3327af47d7c67f49c231f713f341e80da03d5ca85c",
+      "width": "8.099ex",
+      "height": "3.009ex",
+      "viewBox": "0 -1006.6 3487.2 1295.7",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/da8e4ab827f34c2e811ae9b2485679b8.svg",
+      "file": "assets/math/da8e4ab827f34c2e811ae9b2485679b8.svg",
+      "bytes": 2714,
+      "sha256": "1153ea0a8c9bd351748858b955dcbee7d1b7b46eb678e06c7af8c4600725cfdf",
+      "width": "3.078ex",
+      "height": "2.843ex",
+      "viewBox": "0 -791.3 1325 1223.9",
+      "style": "vertical-align: -1.005ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/229e88c315f6efe7481f353ce1789e0b.svg",
+      "file": "assets/math/229e88c315f6efe7481f353ce1789e0b.svg",
+      "bytes": 13238,
+      "sha256": "70bca8388362cb75e25f7f6f2f43ffa092e2acdd0354c1991d8e8c596207a021",
+      "width": "99.999ex",
+      "height": "4.843ex",
+      "viewBox": "-10.5 -1293.7 43055 2085",
+      "style": "vertical-align: -1.838ex; margin-left: -0.024ex; max-width: 60000px;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/5c9d9add5d1d2d58e5fef7aa83d03a62.svg",
+      "file": "assets/math/5c9d9add5d1d2d58e5fef7aa83d03a62.svg",
+      "bytes": 2278,
+      "sha256": "9edd72cdbbcf85535832024562eb7075bb9ed8b69575c7122888feb368799ff2",
+      "width": "3.164ex",
+      "height": "2.676ex",
+      "viewBox": "0 -1006.6 1362.4 1152.1",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/719521e91ae942d7bad55ca5dc95f121.svg",
+      "file": "assets/math/719521e91ae942d7bad55ca5dc95f121.svg",
+      "bytes": 5752,
+      "sha256": "e5fe06e21318cae95fbf9757a570b42b188fca9407e15f82463555c4c08d177d",
+      "width": "9.821ex",
+      "height": "4.009ex",
+      "viewBox": "0 -1150.1 4228.5 1726.2",
+      "style": "vertical-align: -1.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/241f16eb5b238d4f960fe9df8147157b.svg",
+      "file": "assets/math/241f16eb5b238d4f960fe9df8147157b.svg",
+      "bytes": 5218,
+      "sha256": "fdec5e17afec176ad15dc9482d6c8c05ab1c65207ef223d76a258e4b28d1be9f",
+      "width": "8.144ex",
+      "height": "3.509ex",
+      "viewBox": "0 -934.9 3506.3 1510.9",
+      "style": "vertical-align: -1.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/cd7da655072cb606d866aed0b8354535.svg",
+      "file": "assets/math/cd7da655072cb606d866aed0b8354535.svg",
+      "bytes": 1571,
+      "sha256": "d5886de83820dc7068252cfb19e0612fc708c5582a0952c5fa9531fef9cb299e",
+      "width": "2.311ex",
+      "height": "2.509ex",
+      "viewBox": "0 -791.3 995.1 1080.4",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/38545d32c8c906cc3439dafca66ff8a9.svg",
+      "file": "assets/math/38545d32c8c906cc3439dafca66ff8a9.svg",
+      "bytes": 4678,
+      "sha256": "c78d35d9c83853132d11ee8ba952149d4f6a14300b9b0bb1a7d9d1ba3fdc6a0b",
+      "width": "8.921ex",
+      "height": "3.343ex",
+      "viewBox": "0 -1150.1 3841 1439.2",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/ba5076ba9b732b9cd5bacb865db11f51.svg",
+      "file": "assets/math/ba5076ba9b732b9cd5bacb865db11f51.svg",
+      "bytes": 1620,
+      "sha256": "ab307b389af32ebac2fbee7130cf10db60571a157003fcbdbba541c42e39e6d4",
+      "width": "2.489ex",
+      "height": "2.509ex",
+      "viewBox": "0 -791.3 1071.5 1080.4",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/62b64f67a5d8a557659326d2487f512a.svg",
+      "file": "assets/math/62b64f67a5d8a557659326d2487f512a.svg",
+      "bytes": 4132,
+      "sha256": "80e2498f0ce669391a10cbfef2610cea91f461acb7a0af0b37de329398c5bd33",
+      "width": "5.402ex",
+      "height": "3.009ex",
+      "viewBox": "0 -863.1 2326 1295.7",
+      "style": "vertical-align: -1.005ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+      "file": "assets/math/df976ff7fcf17d60490267d18a1e3996.svg",
+      "bytes": 1345,
+      "sha256": "87d2618f85a9489b0558599c2a4c2b2826bfd508b4e66eadfca8e21e5ce58013",
+      "width": "1.211ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 521.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/a6ad293ba1de5fa3ef9ca2ddaf226cd6.svg",
+      "file": "assets/math/a6ad293ba1de5fa3ef9ca2ddaf226cd6.svg",
+      "bytes": 3054,
+      "sha256": "4594597cec3090eb49414d4a73ddd943df7d7d7f8d60f541064f22e4589715b9",
+      "width": "4.516ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 1944.5 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/7e4aed712f34784d39d10eca50b423ef.svg",
+      "file": "assets/math/7e4aed712f34784d39d10eca50b423ef.svg",
+      "bytes": 1605,
+      "sha256": "11415cffe3ae4df31f7d0dd45c7d524d88baacea04ee9d23bee80cc8b519d8ae",
+      "width": "2.311ex",
+      "height": "2.009ex",
+      "viewBox": "0 -576.1 995.1 865.1",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/d08ffbdff9ee6d6a9f234afee19b3200.svg",
+      "file": "assets/math/d08ffbdff9ee6d6a9f234afee19b3200.svg",
+      "bytes": 13636,
+      "sha256": "ff4777a4ed9f579f42741aa101de293a1213660e319bbb62d3ee3ab5a42c5748",
+      "width": "99.999ex",
+      "height": "3.176ex",
+      "viewBox": "-10.5 -934.9 43055 1367.4",
+      "style": "vertical-align: -1.005ex; margin-left: -0.024ex; max-width: 60000px;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790826320347-1e310afa-5dcc-4278-949c-ab00ee6a4135.png",
+      "file": "assets/images/1790826320347-1e310afa-5dcc-4278-949c-ab00ee6a4135.png",
+      "bytes": 117331,
+      "sha256": "9eb38dcb3f453f3c13ab3e361a9afdde873cdac5969f21efea01784a12259c5b",
+      "width": 996,
+      "height": 522
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/cead1760d9d5723460c4b8d4028f113a.svg",
+      "file": "assets/math/cead1760d9d5723460c4b8d4028f113a.svg",
+      "bytes": 1047,
+      "sha256": "64941f8c89c938f3b9f2d0ab61f17eb5c0a0e4bcd441ab9cecd365ad278c8cc9",
+      "width": "0.84ex",
+      "height": "2.009ex",
+      "viewBox": "0 -719.6 361.5 865.1",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/4c34455491f7454dcfdc8eae33502069.svg",
+      "file": "assets/math/4c34455491f7454dcfdc8eae33502069.svg",
+      "bytes": 4358,
+      "sha256": "666f03d1bf1d5781463ff3665e32c1b4435dd00216bf4b0c68d6465c710ed7d2",
+      "width": "8.344ex",
+      "height": "3.176ex",
+      "viewBox": "-38.5 -934.9 3592.7 1367.4",
+      "style": "vertical-align: -1.005ex; margin-left: -0.089ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/8c767dab48bb1a7cfdb859e05ca7cd07.svg",
+      "file": "assets/math/8c767dab48bb1a7cfdb859e05ca7cd07.svg",
+      "bytes": 2645,
+      "sha256": "2c7d7c4bdf2fe14e36b3d57323084853bfe3c660c0e9cb718a58be30821355b6",
+      "width": "3ex",
+      "height": "2.343ex",
+      "viewBox": "-38.5 -576.1 1291.5 1008.6",
+      "style": "vertical-align: -1.005ex; margin-left: -0.089ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/3b8c1799a3d81fa6b8ae53fe8ec406d9.svg",
+      "file": "assets/math/3b8c1799a3d81fa6b8ae53fe8ec406d9.svg",
+      "bytes": 15091,
+      "sha256": "b2c87c77563038f7addd1a01b16515604eb9b591297ac1142e177046cdd42265",
+      "width": "99.999ex",
+      "height": "3.176ex",
+      "viewBox": "-10.5 -934.9 43055 1367.4",
+      "style": "vertical-align: -1.005ex; margin-left: -0.024ex; max-width: 60000px;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/57085e8fc6daed92b77a4c373d47f567.svg",
+      "file": "assets/math/57085e8fc6daed92b77a4c373d47f567.svg",
+      "bytes": 9811,
+      "sha256": "7bd4a3a32c50552f03a1602462e8615e21a4e627b90b363764bb55388bb1b999",
+      "width": "28.025ex",
+      "height": "3.009ex",
+      "viewBox": "0 -863.1 12066.4 1295.7",
+      "style": "vertical-align: -1.005ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/d01fcfb4423e9ff3e1ae27940636a6f1.svg",
+      "file": "assets/math/d01fcfb4423e9ff3e1ae27940636a6f1.svg",
+      "bytes": 15518,
+      "sha256": "ec232759d26afd6599ae31036c07520215e798a47b532c442efd30bfd624409a",
+      "width": "99.999ex",
+      "height": "3.176ex",
+      "viewBox": "-10.5 -934.9 43055 1367.4",
+      "style": "vertical-align: -1.005ex; margin-left: -0.024ex; max-width: 60000px;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/cc7bfaa9f9b4927ef6793d5b6c775ac2.svg",
+      "file": "assets/math/cc7bfaa9f9b4927ef6793d5b6c775ac2.svg",
+      "bytes": 2223,
+      "sha256": "435bc0cb37a793eb4645043481d38b396643d921b1b9e984d5f70458ace102cd",
+      "width": "3.578ex",
+      "height": "2.676ex",
+      "viewBox": "0 -1006.6 1540.6 1152.1",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790828034698-38366f0c-1fc1-49c1-96f8-96dbdddba715.png",
+      "file": "assets/images/1790828034698-38366f0c-1fc1-49c1-96f8-96dbdddba715.png",
+      "bytes": 213548,
+      "sha256": "26ce9a459eb0384617b0c7e5aeb0092b035d43a931f586f9ac90a2090258efa7",
+      "width": 1515,
+      "height": 600
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/34c7b563b30bde3c748139530686798e.svg",
+      "file": "assets/math/34c7b563b30bde3c748139530686798e.svg",
+      "bytes": 1139,
+      "sha256": "8b63efc6aed772afceefd8c745e85cf4d89d65bb3f2e27b56e72f86b24e89375",
+      "width": "1.07ex",
+      "height": "2.009ex",
+      "viewBox": "0 -576.1 460.5 865.1",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/031c97167daa03ad4ff7583a3b69f6d0.svg",
+      "file": "assets/math/031c97167daa03ad4ff7583a3b69f6d0.svg",
+      "bytes": 2506,
+      "sha256": "3d6876fe24c9e804ed33caf7d3987298ab5a9e7f4d0071cca84235bd06fd2263",
+      "width": "3.751ex",
+      "height": "2.009ex",
+      "viewBox": "0 -576.1 1614.8 865.1",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/09f57cc12367de76ba80782b57e1874a.svg",
+      "file": "assets/math/09f57cc12367de76ba80782b57e1874a.svg",
+      "bytes": 4504,
+      "sha256": "6b9a1887bac7dfde9b29073ee5cd18dd54704215b34e87c8ade0f0c04ecf28b1",
+      "width": "12.724ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 5478.5 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/7fbcd62054bd83770c4508841ae9c9a4.svg",
+      "file": "assets/math/7fbcd62054bd83770c4508841ae9c9a4.svg",
+      "bytes": 1560,
+      "sha256": "63511223722b3dc89cd2759605f10e96b5d4acd409120fc5d71c4f46957d91a6",
+      "width": "2.328ex",
+      "height": "2.009ex",
+      "viewBox": "0 -576.1 1002.5 865.1",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/67850d816e6af2767aa4bff05c99f028.svg",
+      "file": "assets/math/67850d816e6af2767aa4bff05c99f028.svg",
+      "bytes": 37662,
+      "sha256": "2ea42d954f012547ce502b4eefa600794dd12bf299e5af06d26ed1277cd330ca",
+      "width": "99.999ex",
+      "height": "15.176ex",
+      "viewBox": "-10.5 -3518.2 43055 6534.1",
+      "style": "vertical-align: -7.005ex; margin-left: -0.024ex; max-width: 60000px;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/a36fa86cf02a0ff69acf630903db6273.svg",
+      "file": "assets/math/a36fa86cf02a0ff69acf630903db6273.svg",
+      "bytes": 11606,
+      "sha256": "fc2fb23101c3478d087bd41656831cb16987aa23561fc0881f695fc1a5fb6711",
+      "width": "99.999ex",
+      "height": "5.176ex",
+      "viewBox": "-10.5 -1365.4 43055 2228.5",
+      "style": "vertical-align: -2.005ex; margin-left: -0.024ex; max-width: 60000px;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/490918764b16c5a0a4f87aedb2b38f8c.svg",
+      "file": "assets/math/490918764b16c5a0a4f87aedb2b38f8c.svg",
+      "bytes": 2533,
+      "sha256": "ad4dc5e5041bdc07d55d25db023a43b588d39e6e8cbe1d886b8147c0b46e189e",
+      "width": "2.978ex",
+      "height": "2.343ex",
+      "viewBox": "0 -576.1 1282.4 1008.6",
+      "style": "vertical-align: -1.005ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/fb8f15bcb1f99ced644d28674cdd84fc.svg",
+      "file": "assets/math/fb8f15bcb1f99ced644d28674cdd84fc.svg",
+      "bytes": 6826,
+      "sha256": "3140884383d5d21234117bb174d737dcdb61472a925ca00730c61bf9f59f2676",
+      "width": "13.214ex",
+      "height": "3.009ex",
+      "viewBox": "0 -863.1 5689.3 1295.7",
+      "style": "vertical-align: -1.005ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/93004de17404a915851e967bcfc61fd3.svg",
+      "file": "assets/math/93004de17404a915851e967bcfc61fd3.svg",
+      "bytes": 25207,
+      "sha256": "dd080fdc129019fd0f01df09faee27d8e649aa9af684b47d3b6e83205a7cb63b",
+      "width": "99.999ex",
+      "height": "5.176ex",
+      "viewBox": "-10.5 -1365.4 43055 2228.5",
+      "style": "vertical-align: -2.005ex; margin-left: -0.024ex; max-width: 60000px;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/0f5a975b62d01043dc2b31654a489fda.svg",
+      "file": "assets/math/0f5a975b62d01043dc2b31654a489fda.svg",
+      "bytes": 3990,
+      "sha256": "ffad31b3be7c36c3d9f4316385879807ad2ec50ff5d9287c96b86339d5fdc34f",
+      "width": "9.486ex",
+      "height": "2.176ex",
+      "viewBox": "0 -647.8 4084.3 936.9",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/6f5dde593f0bc27956e14b5eaec2ed17.svg",
+      "file": "assets/math/6f5dde593f0bc27956e14b5eaec2ed17.svg",
+      "bytes": 1504,
+      "sha256": "5183d5b1332adb819180988e3f708c38844f86b9e43c700ee9ccf574a77ff32e",
+      "width": "2.442ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 1051.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/8446aba79315e5af80f42f688ed49301.svg",
+      "file": "assets/math/8446aba79315e5af80f42f688ed49301.svg",
+      "bytes": 39163,
+      "sha256": "bfb8f37494ade40d1049015d78f5b4e5070991cf1cc1612df1d89266b7c147a5",
+      "width": "99.999ex",
+      "height": "15.176ex",
+      "viewBox": "-10.5 -3518.2 43055 6534.1",
+      "style": "vertical-align: -7.005ex; margin-left: -0.024ex; max-width: 60000px;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/4fca06e5c1b100794ebc268fe50e332e.svg",
+      "file": "assets/math/4fca06e5c1b100794ebc268fe50e332e.svg",
+      "bytes": 24612,
+      "sha256": "ca1be619d8619a383474d57748ea7773e1f0df17b23fa56680ba6c6d8b85902a",
+      "width": "99.999ex",
+      "height": "10.843ex",
+      "viewBox": "-10.5 -2585.3 43055 4668.3",
+      "style": "vertical-align: -4.838ex; margin-left: -0.024ex; max-width: 60000px;"
+    }
+  ],
+  "cards": [
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathbf%7Bh%7D_t%5C%5Cin%5C%5Cmathbb%7BR%7D%5E%7Bd%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F3df0574f8df24a87181f1e5a8f72d6ec.svg%22%2C%22id%22%3A%22ezs7q%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathbf{h}_t\\in\\mathbb{R}^{d}",
+        "src": "https://cdn.nlark.com/yuque/__latex/3df0574f8df24a87181f1e5a8f72d6ec.svg",
+        "id": "ezs7q"
+      },
+      "asset": "assets/math/3df0574f8df24a87181f1e5a8f72d6ec.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathbf%7Bh%7D_s%5C%5Cin%5C%5Cmathbb%7BR%7D%5E%7Bd%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F1d18ebc4fd9517411b835409f0b3e52f.svg%22%2C%22id%22%3A%22gV3yb%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathbf{h}_s\\in\\mathbb{R}^{d}",
+        "src": "https://cdn.nlark.com/yuque/__latex/1d18ebc4fd9517411b835409f0b3e52f.svg",
+        "id": "gV3yb"
+      },
+      "asset": "assets/math/1d18ebc4fd9517411b835409f0b3e52f.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22I_%7Bt%2Cs%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fda8e4ab827f34c2e811ae9b2485679b8.svg%22%2C%22id%22%3A%22wvLAT%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "I_{t,s}",
+        "src": "https://cdn.nlark.com/yuque/__latex/da8e4ab827f34c2e811ae9b2485679b8.svg",
+        "id": "wvLAT"
+      },
+      "asset": "assets/math/da8e4ab827f34c2e811ae9b2485679b8.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22I_%7Bt%2Cs%7D%3D%5C%5Csum_%7Bj%3D1%7D%5E%7BH%5E%7BI%7D%7Dw_%7Bt%2Cj%7D%5E%7BI%7D%5C%5Ccdot%5C%5Ctext%7BReLU%7D%5C%5Cleft(%5C%5Cmathbf%7Bq%7D_%7Bt%2Cj%7D%5E%7BI%7D%5C%5Ccdot%5C%5Cmathbf%7Bk%7D_%7Bs%7D%5E%7BI%7D%5C%5Cright)%2C%20%5C%5Ctag%7B1%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F229e88c315f6efe7481f353ce1789e0b.svg%22%2C%22id%22%3A%22oXkja%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "I_{t,s}=\\sum_{j=1}^{H^{I}}w_{t,j}^{I}\\cdot\\text{ReLU}\\left(\\mathbf{q}_{t,j}^{I}\\cdot\\mathbf{k}_{s}^{I}\\right), \\tag{1}",
+        "src": "https://cdn.nlark.com/yuque/__latex/229e88c315f6efe7481f353ce1789e0b.svg",
+        "id": "oXkja"
+      },
+      "asset": "assets/math/229e88c315f6efe7481f353ce1789e0b.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22H%5E%7BI%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F5c9d9add5d1d2d58e5fef7aa83d03a62.svg%22%2C%22id%22%3A%22qOSX6%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "H^{I}",
+        "src": "https://cdn.nlark.com/yuque/__latex/5c9d9add5d1d2d58e5fef7aa83d03a62.svg",
+        "id": "qOSX6"
+      },
+      "asset": "assets/math/5c9d9add5d1d2d58e5fef7aa83d03a62.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathbf%7Bq%7D_%7Bt%2Cj%7D%5E%7BI%7D%5C%5Cin%5C%5Cmathbb%7BR%7D%5E%7Bd%5E%7BI%7D%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F719521e91ae942d7bad55ca5dc95f121.svg%22%2C%22id%22%3A%22jStll%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathbf{q}_{t,j}^{I}\\in\\mathbb{R}^{d^{I}}",
+        "src": "https://cdn.nlark.com/yuque/__latex/719521e91ae942d7bad55ca5dc95f121.svg",
+        "id": "jStll"
+      },
+      "asset": "assets/math/719521e91ae942d7bad55ca5dc95f121.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22w_%7Bt%2Cj%7D%5E%7BI%7D%5C%5Cin%5C%5Cmathbb%7BR%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F241f16eb5b238d4f960fe9df8147157b.svg%22%2C%22id%22%3A%22vm69W%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "w_{t,j}^{I}\\in\\mathbb{R}",
+        "src": "https://cdn.nlark.com/yuque/__latex/241f16eb5b238d4f960fe9df8147157b.svg",
+        "id": "vm69W"
+      },
+      "asset": "assets/math/241f16eb5b238d4f960fe9df8147157b.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathbf%7Bh%7D_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fcd7da655072cb606d866aed0b8354535.svg%22%2C%22id%22%3A%22aens5%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathbf{h}_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/cd7da655072cb606d866aed0b8354535.svg",
+        "id": "aens5"
+      },
+      "asset": "assets/math/cd7da655072cb606d866aed0b8354535.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathbf%7Bk%7D_%7Bs%7D%5E%7BI%7D%5C%5Cin%5C%5Cmathbb%7BR%7D%5E%7Bd%5E%7BI%7D%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F38545d32c8c906cc3439dafca66ff8a9.svg%22%2C%22id%22%3A%22Sfhzj%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathbf{k}_{s}^{I}\\in\\mathbb{R}^{d^{I}}",
+        "src": "https://cdn.nlark.com/yuque/__latex/38545d32c8c906cc3439dafca66ff8a9.svg",
+        "id": "Sfhzj"
+      },
+      "asset": "assets/math/38545d32c8c906cc3439dafca66ff8a9.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathbf%7Bh%7D_s%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fba5076ba9b732b9cd5bacb865db11f51.svg%22%2C%22id%22%3A%22yLFEB%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathbf{h}_s",
+        "src": "https://cdn.nlark.com/yuque/__latex/ba5076ba9b732b9cd5bacb865db11f51.svg",
+        "id": "yLFEB"
+      },
+      "asset": "assets/math/ba5076ba9b732b9cd5bacb865db11f51.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathbf%7Bh%7D_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fcd7da655072cb606d866aed0b8354535.svg%22%2C%22id%22%3A%22b3skP%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathbf{h}_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/cd7da655072cb606d866aed0b8354535.svg",
+        "id": "b3skP"
+      },
+      "asset": "assets/math/cd7da655072cb606d866aed0b8354535.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5C%7BI_%7Bt%2Cs%7D%5C%5C%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F62b64f67a5d8a557659326d2487f512a.svg%22%2C%22id%22%3A%22acyIc%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\{I_{t,s}\\}",
+        "src": "https://cdn.nlark.com/yuque/__latex/62b64f67a5d8a557659326d2487f512a.svg",
+        "id": "acyIc"
+      },
+      "asset": "assets/math/62b64f67a5d8a557659326d2487f512a.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fdf976ff7fcf17d60490267d18a1e3996.svg%22%2C%22id%22%3A%22buGEA%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "k",
+        "src": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+        "id": "buGEA"
+      },
+      "asset": "assets/math/df976ff7fcf17d60490267d18a1e3996.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5C%7B%5C%5Cmathbf%7Bc%7D_s%5C%5C%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fa6ad293ba1de5fa3ef9ca2ddaf226cd6.svg%22%2C%22id%22%3A%22d8QDG%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\{\\mathbf{c}_s\\}",
+        "src": "https://cdn.nlark.com/yuque/__latex/a6ad293ba1de5fa3ef9ca2ddaf226cd6.svg",
+        "id": "d8QDG"
+      },
+      "asset": "assets/math/a6ad293ba1de5fa3ef9ca2ddaf226cd6.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathbf%7Bh%7D_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fcd7da655072cb606d866aed0b8354535.svg%22%2C%22id%22%3A%22axAlg%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathbf{h}_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/cd7da655072cb606d866aed0b8354535.svg",
+        "id": "axAlg"
+      },
+      "asset": "assets/math/cd7da655072cb606d866aed0b8354535.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5C%7B%5C%5Cmathbf%7Bc%7D_s%5C%5C%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fa6ad293ba1de5fa3ef9ca2ddaf226cd6.svg%22%2C%22id%22%3A%22EWa87%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\{\\mathbf{c}_s\\}",
+        "src": "https://cdn.nlark.com/yuque/__latex/a6ad293ba1de5fa3ef9ca2ddaf226cd6.svg",
+        "id": "EWa87"
+      },
+      "asset": "assets/math/a6ad293ba1de5fa3ef9ca2ddaf226cd6.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathbf%7Bu%7D_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F7e4aed712f34784d39d10eca50b423ef.svg%22%2C%22id%22%3A%22XSycW%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathbf{u}_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/7e4aed712f34784d39d10eca50b423ef.svg",
+        "id": "XSycW"
+      },
+      "asset": "assets/math/7e4aed712f34784d39d10eca50b423ef.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathbf%7Bu%7D_t%3D%5C%5Ctext%7BAttn%7D%5C%5Cleft(%5C%5Cmathbf%7Bh%7D_t%2C%5C%5Cleft%5C%5C%7B%5C%5Cmathbf%7Bc%7D_s%5C%5C%2C%5C%5Cmiddle%7C%5C%5C%2CI_%7Bt%2Cs%7D%5C%5Cin%5C%5Ctext%7BTop-k%7D%5C%5Cleft(I_%7Bt%2C%3A%7D%5C%5Cright)%5C%5Cright%5C%5C%7D%5C%5Cright).%20%5C%5Ctag%7B2%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fd08ffbdff9ee6d6a9f234afee19b3200.svg%22%2C%22id%22%3A%22Rr9uV%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathbf{u}_t=\\text{Attn}\\left(\\mathbf{h}_t,\\left\\{\\mathbf{c}_s\\,\\middle|\\,I_{t,s}\\in\\text{Top-k}\\left(I_{t,:}\\right)\\right\\}\\right). \\tag{2}",
+        "src": "https://cdn.nlark.com/yuque/__latex/d08ffbdff9ee6d6a9f234afee19b3200.svg",
+        "id": "Rr9uV"
+      },
+      "asset": "assets/math/d08ffbdff9ee6d6a9f234afee19b3200.svg"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790826320347-1e310afa-5dcc-4278-949c-ab00ee6a4135.png%22%2C%22taskId%22%3A%22u89884f22-6324-407f-b2eb-2fdad5c5434%22%2C%22clientId%22%3A%22u635bf9ed-cf53-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A636.7999877929688%2C%22height%22%3A334%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A117331%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A996%2C%22originHeight%22%3A522%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22INPUTHIDDENH%2COOOO...OOOO%22%2C%22x%22%3A207%2C%22y%22%3A474%2C%22width%22%3A435%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%22OIIOOOOOOOS%22%2C%22x%22%3A283%2C%22y%22%3A57%2C%22width%22%3A375%2C%22height%22%3A46%7D%2C%7B%22text%22%3A%22HIDDENUOOOO.OOOO%22%2C%22x%22%3A241%2C%22y%22%3A9%2C%22width%22%3A386%2C%22height%22%3A33%7D%2C%7B%22text%22%3A%22LGTIGTIOO.OO%22%2C%22x%22%3A20%2C%22y%22%3A193%2C%22width%22%3A257%2C%22height%22%3A36%7D%2C%7B%22text%22%3A%22FCRKFLOOOO%22%2C%22x%22%3A345%2C%22y%22%3A272%2C%22width%22%3A249%2C%22height%22%3A28%7D%2C%7B%22text%22%3A%22CVOOOO%22%2C%22x%22%3A514%2C%22y%22%3A362%2C%22width%22%3A185%2C%22height%22%3A35%7D%2C%7B%22text%22%3A%22MULTI-QUERYATTENTION(COREATTENTION)%22%2C%22x%22%3A303%2C%22y%22%3A127%2C%22width%22%3A399%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22FGLOK%22%2C%22x%22%3A705%2C%22y%22%3A351%2C%22width%22%3A143%2C%22height%22%3A38%7D%2C%7B%22text%22%3A%22TOP-KSELECTOR%22%2C%22x%22%3A493%2C%22y%22%3A205%2C%22width%22%3A154%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22LIGHTNING%22%2C%22x%22%3A777%2C%22y%22%3A258%2C%22width%22%3A98%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22PARTIALLYPAR%22%2C%22x%22%3A713%2C%22y%22%3A394%2C%22width%22%3A124%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22CONCATENATEL%22%2C%22x%22%3A413%2C%22y%22%3A308%2C%22width%22%3A118%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22PPLYROPEAPPLYROPE%22%2C%22x%22%3A702%2C%22y%22%3A416%2C%22width%22%3A174%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22CONCATENATE%22%2C%22x%22%3A115%2C%22y%22%3A237%2C%22width%22%3A97%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22OGE%22%2C%22x%22%3A253%2C%22y%22%3A315%2C%22width%22%3A101%2C%22height%22%3A34%7D%2C%7B%22text%22%3A%22KFO%22%2C%22x%22%3A362%2C%22y%22%3A366%2C%22width%22%3A72%2C%22height%22%3A31%7D%2C%7B%22text%22%3A%22APPLYROPE%22%2C%22x%22%3A204%2C%22y%22%3A358%2C%22width%22%3A95%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22APPLYROPE%22%2C%22x%22%3A332%2C%22y%22%3A403%2C%22width%22%3A91%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22LIL%22%2C%22x%22%3A801%2C%22y%22%3A197%2C%22width%22%3A53%2C%22height%22%3A31%7D%2C%7B%22text%22%3A%22OUTPUTHIDDENUR%22%2C%22x%22%3A175%2C%22y%22%3A16%2C%22width%22%3A258%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22LNDEXER%22%2C%22x%22%3A783%2C%22y%22%3A289%2C%22width%22%3A83%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22%7B9I3%22%2C%22x%22%3A13%2C%22y%22%3A282%2C%22width%22%3A51%2C%22height%22%3A27%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f0f0f0%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22udbb7fad1%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790826320347-1e310afa-5dcc-4278-949c-ab00ee6a4135.png",
+        "taskId": "u89884f22-6324-407f-b2eb-2fdad5c5434",
+        "clientId": "u635bf9ed-cf53-4",
+        "originalType": "binary",
+        "width": 636.7999877929688,
+        "height": 334,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 117331,
+        "from": "paste",
+        "originWidth": 996,
+        "originHeight": 522,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "INPUTHIDDENH,OOOO...OOOO",
+            "x": 207,
+            "y": 474,
+            "width": 435,
+            "height": 30
+          },
+          {
+            "text": "OIIOOOOOOOS",
+            "x": 283,
+            "y": 57,
+            "width": 375,
+            "height": 46
+          },
+          {
+            "text": "HIDDENUOOOO.OOOO",
+            "x": 241,
+            "y": 9,
+            "width": 386,
+            "height": 33
+          },
+          {
+            "text": "LGTIGTIOO.OO",
+            "x": 20,
+            "y": 193,
+            "width": 257,
+            "height": 36
+          },
+          {
+            "text": "FCRKFLOOOO",
+            "x": 345,
+            "y": 272,
+            "width": 249,
+            "height": 28
+          },
+          {
+            "text": "CVOOOO",
+            "x": 514,
+            "y": 362,
+            "width": 185,
+            "height": 35
+          },
+          {
+            "text": "MULTI-QUERYATTENTION(COREATTENTION)",
+            "x": 303,
+            "y": 127,
+            "width": 399,
+            "height": 20
+          },
+          {
+            "text": "FGLOK",
+            "x": 705,
+            "y": 351,
+            "width": 143,
+            "height": 38
+          },
+          {
+            "text": "TOP-KSELECTOR",
+            "x": 493,
+            "y": 205,
+            "width": 154,
+            "height": 22
+          },
+          {
+            "text": "LIGHTNING",
+            "x": 777,
+            "y": 258,
+            "width": 98,
+            "height": 23
+          },
+          {
+            "text": "PARTIALLYPAR",
+            "x": 713,
+            "y": 394,
+            "width": 124,
+            "height": 17
+          },
+          {
+            "text": "CONCATENATEL",
+            "x": 413,
+            "y": 308,
+            "width": 118,
+            "height": 14
+          },
+          {
+            "text": "PPLYROPEAPPLYROPE",
+            "x": 702,
+            "y": 416,
+            "width": 174,
+            "height": 16
+          },
+          {
+            "text": "CONCATENATE",
+            "x": 115,
+            "y": 237,
+            "width": 97,
+            "height": 17
+          },
+          {
+            "text": "OGE",
+            "x": 253,
+            "y": 315,
+            "width": 101,
+            "height": 34
+          },
+          {
+            "text": "KFO",
+            "x": 362,
+            "y": 366,
+            "width": 72,
+            "height": 31
+          },
+          {
+            "text": "APPLYROPE",
+            "x": 204,
+            "y": 358,
+            "width": 95,
+            "height": 19
+          },
+          {
+            "text": "APPLYROPE",
+            "x": 332,
+            "y": 403,
+            "width": 91,
+            "height": 17
+          },
+          {
+            "text": "LIL",
+            "x": 801,
+            "y": 197,
+            "width": 53,
+            "height": 31
+          },
+          {
+            "text": "OUTPUTHIDDENUR",
+            "x": 175,
+            "y": 16,
+            "width": 258,
+            "height": 18
+          },
+          {
+            "text": "LNDEXER",
+            "x": 783,
+            "y": 289,
+            "width": 83,
+            "height": 20
+          },
+          {
+            "text": "{9I3",
+            "x": 13,
+            "y": 282,
+            "width": 51,
+            "height": 27
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f0f0f0",
+        "__spacing": "both",
+        "id": "udbb7fad1",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1790826320347-1e310afa-5dcc-4278-949c-ab00ee6a4135.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fcead1760d9d5723460c4b8d4028f113a.svg%22%2C%22id%22%3A%22HWT48%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "t",
+        "src": "https://cdn.nlark.com/yuque/__latex/cead1760d9d5723460c4b8d4028f113a.svg",
+        "id": "HWT48"
+      },
+      "asset": "assets/math/cead1760d9d5723460c4b8d4028f113a.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22p_%7Bt%2C%3A%7D%5C%5Cin%5C%5Cmathbb%7BR%7D%5E%7Bt%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F4c34455491f7454dcfdc8eae33502069.svg%22%2C%22id%22%3A%22rmcB2%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "p_{t,:}\\in\\mathbb{R}^{t}",
+        "src": "https://cdn.nlark.com/yuque/__latex/4c34455491f7454dcfdc8eae33502069.svg",
+        "id": "rmcB2"
+      },
+      "asset": "assets/math/4c34455491f7454dcfdc8eae33502069.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22p_%7Bt%2C%3A%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F8c767dab48bb1a7cfdb859e05ca7cd07.svg%22%2C%22id%22%3A%22pam3X%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "p_{t,:}",
+        "src": "https://cdn.nlark.com/yuque/__latex/8c767dab48bb1a7cfdb859e05ca7cd07.svg",
+        "id": "pam3X"
+      },
+      "asset": "assets/math/8c767dab48bb1a7cfdb859e05ca7cd07.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathcal%7BL%7D%5E%7BI%7D%3D%5C%5Csum_t%5C%5Cmathbb%7BD%7D_%7B%5C%5Cmathrm%7BKL%7D%7D%5C%5Cleft(p_%7Bt%2C%3A%7D%5C%5C%2C%5C%5Cmiddle%5C%5C%7C%5C%5C%2C%5C%5Ctext%7BSoftmax%7D%5C%5Cleft(I_%7Bt%2C%3A%7D%5C%5Cright)%5C%5Cright).%20%5C%5Ctag%7B3%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F3b8c1799a3d81fa6b8ae53fe8ec406d9.svg%22%2C%22id%22%3A%22XkAje%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathcal{L}^{I}=\\sum_t\\mathbb{D}_{\\mathrm{KL}}\\left(p_{t,:}\\,\\middle\\|\\,\\text{Softmax}\\left(I_{t,:}\\right)\\right). \\tag{3}",
+        "src": "https://cdn.nlark.com/yuque/__latex/3b8c1799a3d81fa6b8ae53fe8ec406d9.svg",
+        "id": "XkAje"
+      },
+      "asset": "assets/math/3b8c1799a3d81fa6b8ae53fe8ec406d9.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathcal%7BS%7D_t%3D%5C%5Cleft%5C%5C%7Bs%5C%5C%2C%5C%5Cmiddle%7C%5C%5C%2CI_%7Bt%2Cs%7D%5C%5Cin%5C%5Ctext%7BTop-k%7D%5C%5Cleft(I_%7Bt%2C%3A%7D%5C%5Cright)%5C%5Cright%5C%5C%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F57085e8fc6daed92b77a4c373d47f567.svg%22%2C%22id%22%3A%22rPbIm%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathcal{S}_t=\\left\\{s\\,\\middle|\\,I_{t,s}\\in\\text{Top-k}\\left(I_{t,:}\\right)\\right\\}",
+        "src": "https://cdn.nlark.com/yuque/__latex/57085e8fc6daed92b77a4c373d47f567.svg",
+        "id": "rPbIm"
+      },
+      "asset": "assets/math/57085e8fc6daed92b77a4c373d47f567.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathcal%7BL%7D%5E%7BI%7D%3D%5C%5Csum_t%5C%5Cmathbb%7BD%7D_%7B%5C%5Cmathrm%7BKL%7D%7D%5C%5Cleft(p_%7Bt%2C%5C%5Cmathcal%7BS%7D_t%7D%5C%5C%2C%5C%5Cmiddle%5C%5C%7C%5C%5C%2C%5C%5Ctext%7BSoftmax%7D%5C%5Cleft(I_%7Bt%2C%5C%5Cmathcal%7BS%7D_t%7D%5C%5Cright)%5C%5Cright).%20%5C%5Ctag%7B4%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fd01fcfb4423e9ff3e1ae27940636a6f1.svg%22%2C%22id%22%3A%22DbFLV%22%7D",
+        "style": "color: #000000"
+      },
+      "value": {
+        "code": "\\mathcal{L}^{I}=\\sum_t\\mathbb{D}_{\\mathrm{KL}}\\left(p_{t,\\mathcal{S}_t}\\,\\middle\\|\\,\\text{Softmax}\\left(I_{t,\\mathcal{S}_t}\\right)\\right). \\tag{4}",
+        "src": "https://cdn.nlark.com/yuque/__latex/d01fcfb4423e9ff3e1ae27940636a6f1.svg",
+        "id": "DbFLV"
+      },
+      "asset": "assets/math/d01fcfb4423e9ff3e1ae27940636a6f1.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathcal%7BL%7D%5E%7BI%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fcc7bfaa9f9b4927ef6793d5b6c775ac2.svg%22%2C%22id%22%3A%22bMlHc%22%7D",
+        "style": "color: #E4495B"
+      },
+      "value": {
+        "code": "\\mathcal{L}^{I}",
+        "src": "https://cdn.nlark.com/yuque/__latex/cc7bfaa9f9b4927ef6793d5b6c775ac2.svg",
+        "id": "bMlHc"
+      },
+      "asset": "assets/math/cc7bfaa9f9b4927ef6793d5b6c775ac2.svg"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790828034698-38366f0c-1fc1-49c1-96f8-96dbdddba715.png%22%2C%22taskId%22%3A%22u8e5e9469-1644-452d-8449-cb61e6ca693%22%2C%22clientId%22%3A%22u2a5c2978-1f41-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A845%2C%22height%22%3A335%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A213548%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1515%2C%22originHeight%22%3A600%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22MULTI-QUERYATTENTION(COREATTENTION)%22%2C%22x%22%3A936%2C%22y%22%3A132%2C%22width%22%3A423%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%22OUTPUTHIDDENUOOOO....OOOO%22%2C%22x%22%3A84%2C%22y%22%3A30%2C%22width%22%3A451%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%22OOOOWIOOTO%22%2C%22x%22%3A971%2C%22y%22%3A60%2C%22width%22%3A379%2C%22height%22%3A49%7D%2C%7B%22text%22%3A%22OO%22%2C%22x%22%3A444%2C%22y%22%3A315%2C%22width%22%3A299%2C%22height%22%3A52%7D%2C%7B%22text%22%3A%22MULTI-HEADATTENTION(COREATTENTION)%22%2C%22x%22%3A193%2C%22y%22%3A147%2C%22width%22%3A397%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22AMHAMODEOFMLA.%22%2C%22x%22%3A217%2C%22y%22%3A557%2C%22width%22%3A328%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22THIDDENHOOOO....OOOO%22%2C%22x%22%3A132%2C%22y%22%3A501%2C%22width%22%3A395%2C%22height%22%3A29%7D%2C%7B%22text%22%3A%22CVKOOOO%22%2C%22x%22%3A1120%2C%22y%22%3A248%2C%22width%22%3A254%2C%22height%22%3A31%7D%2C%7B%22text%22%3A%22PUTHIDDENHTOOOO..%22%2C%22x%22%3A868%2C%22y%22%3A501%2C%22width%22%3A300%2C%22height%22%3A28%7D%2C%7B%22text%22%3A%22FLTIH%E5%B0%8FOOOO%22%2C%22x%22%3A779%2C%22y%22%3A205%2C%22width%22%3A278%2C%22height%22%3A38%7D%2C%7B%22text%22%3A%22BMOAMODEOFMLA.%22%2C%22x%22%3A974%2C%22y%22%3A556%2C%22width%22%3A327%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22OOG%22%2C%22x%22%3A327%2C%22y%22%3A217%2C%22width%22%3A206%2C%22height%22%3A42%7D%2C%7B%22text%22%3A%22CYOOOO%22%2C%22x%22%3A524%2C%22y%22%3A421%2C%22width%22%3A185%2C%22height%22%3A39%7D%2C%7B%22text%22%3A%22OOOO%22%2C%22x%22%3A842%2C%22y%22%3A434%2C%22width%22%3A185%2C%22height%22%3A36%7D%2C%7B%22text%22%3A%22OI(OO%22%2C%22x%22%3A252%2C%22y%22%3A80%2C%22width%22%3A192%2C%22height%22%3A42%7D%2C%7B%22text%22%3A%22YOOOO%22%2C%22x%22%3A1293%2C%22y%22%3A380%2C%22width%22%3A194%2C%22height%22%3A39%7D%2C%7B%22text%22%3A%22O%22%2C%22x%22%3A815%2C%22y%22%3A369%2C%22width%22%3A136%2C%22height%22%3A41%7D%2C%7B%22text%22%3A%22LGITOO%22%2C%22x%22%3A23%2C%22y%22%3A220%2C%22width%22%3A199%2C%22height%22%3A37%7D%2C%7B%22text%22%3A%22WYKCWVCP%22%2C%22x%22%3A477%2C%22y%22%3A364%2C%22width%22%3A243%2C%22height%22%3A33%7D%2C%7B%22text%22%3A%22CONCATENATE%22%2C%22x%22%3A62%2C%22y%22%3A268%2C%22width%22%3A135%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22OOOO%22%2C%22x%22%3A1143%2C%22y%22%3A14%2C%22width%22%3A139%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%22O%22%2C%22x%22%3A1051%2C%22y%22%3A320%2C%22width%22%3A130%2C%22height%22%3A49%7D%2C%7B%22text%22%3A%22AOOTO%22%2C%22x%22%3A40%2C%22y%22%3A322%2C%22width%22%3A235%2C%22height%22%3A35%7D%2C%7B%22text%22%3A%22CONCATENATE%22%2C%22x%22%3A358%2C%22y%22%3A269%2C%22width%22%3A149%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22OUTPUTHIDDEN%22%2C%22x%22%3A827%2C%22y%22%3A20%2C%22width%22%3A132%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22CONCATENATE%22%2C%22x%22%3A1184%2C%22y%22%3A295%2C%22width%22%3A117%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22%E5%85%AD%E5%90%8E%22%2C%22x%22%3A745%2C%22y%22%3A295%2C%22width%22%3A164%2C%22height%22%3A28%7D%2C%7B%22text%22%3A%22APPLYROPE%22%2C%22x%22%3A958%2C%22y%22%3A384%2C%22width%22%3A141%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22KO%22%2C%22x%22%3A332%2C%22y%22%3A325%2C%22width%22%3A90%2C%22height%22%3A31%7D%2C%7B%22text%22%3A%22TOAO%22%2C%22x%22%3A906%2C%22y%22%3A64%2C%22width%22%3A136%2C%22height%22%3A38%7D%2C%7B%22text%22%3A%22APPLYROPE%22%2C%22x%22%3A154%2C%22y%22%3A368%2C%22width%22%3A107%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22ANPLYROPE%22%2C%22x%22%3A1108%2C%22y%22%3A430%2C%22width%22%3A87%2C%22height%22%3A29%7D%2C%7B%22text%22%3A%22OMOOC%22%2C%22x%22%3A97%2C%22y%22%3A429%2C%22width%22%3A133%2C%22height%22%3A28%7D%2C%7B%22text%22%3A%22EKO%22%2C%22x%22%3A1055%2C%22y%22%3A376%2C%22width%22%3A174%2C%22height%22%3A46%7D%2C%7B%22text%22%3A%22PLYROP%22%2C%22x%22%3A323%2C%22y%22%3A401%2C%22width%22%3A59%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22T%22%2C%22x%22%3A222%2C%22y%22%3A47%2C%22width%22%3A298%2C%22height%22%3A40%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f2f2f1%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22ub89d1dcc%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790828034698-38366f0c-1fc1-49c1-96f8-96dbdddba715.png",
+        "taskId": "u8e5e9469-1644-452d-8449-cb61e6ca693",
+        "clientId": "u2a5c2978-1f41-4",
+        "originalType": "binary",
+        "width": 845,
+        "height": 335,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 213548,
+        "from": "paste",
+        "originWidth": 1515,
+        "originHeight": 600,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "MULTI-QUERYATTENTION(COREATTENTION)",
+            "x": 936,
+            "y": 132,
+            "width": 423,
+            "height": 30
+          },
+          {
+            "text": "OUTPUTHIDDENUOOOO....OOOO",
+            "x": 84,
+            "y": 30,
+            "width": 451,
+            "height": 30
+          },
+          {
+            "text": "OOOOWIOOTO",
+            "x": 971,
+            "y": 60,
+            "width": 379,
+            "height": 49
+          },
+          {
+            "text": "OO",
+            "x": 444,
+            "y": 315,
+            "width": 299,
+            "height": 52
+          },
+          {
+            "text": "MULTI-HEADATTENTION(COREATTENTION)",
+            "x": 193,
+            "y": 147,
+            "width": 397,
+            "height": 24
+          },
+          {
+            "text": "AMHAMODEOFMLA.",
+            "x": 217,
+            "y": 557,
+            "width": 328,
+            "height": 24
+          },
+          {
+            "text": "THIDDENHOOOO....OOOO",
+            "x": 132,
+            "y": 501,
+            "width": 395,
+            "height": 29
+          },
+          {
+            "text": "CVKOOOO",
+            "x": 1120,
+            "y": 248,
+            "width": 254,
+            "height": 31
+          },
+          {
+            "text": "PUTHIDDENHTOOOO..",
+            "x": 868,
+            "y": 501,
+            "width": 300,
+            "height": 28
+          },
+          {
+            "text": "FLTIH小OOOO",
+            "x": 779,
+            "y": 205,
+            "width": 278,
+            "height": 38
+          },
+          {
+            "text": "BMOAMODEOFMLA.",
+            "x": 974,
+            "y": 556,
+            "width": 327,
+            "height": 25
+          },
+          {
+            "text": "OOG",
+            "x": 327,
+            "y": 217,
+            "width": 206,
+            "height": 42
+          },
+          {
+            "text": "CYOOOO",
+            "x": 524,
+            "y": 421,
+            "width": 185,
+            "height": 39
+          },
+          {
+            "text": "OOOO",
+            "x": 842,
+            "y": 434,
+            "width": 185,
+            "height": 36
+          },
+          {
+            "text": "OI(OO",
+            "x": 252,
+            "y": 80,
+            "width": 192,
+            "height": 42
+          },
+          {
+            "text": "YOOOO",
+            "x": 1293,
+            "y": 380,
+            "width": 194,
+            "height": 39
+          },
+          {
+            "text": "O",
+            "x": 815,
+            "y": 369,
+            "width": 136,
+            "height": 41
+          },
+          {
+            "text": "LGITOO",
+            "x": 23,
+            "y": 220,
+            "width": 199,
+            "height": 37
+          },
+          {
+            "text": "WYKCWVCP",
+            "x": 477,
+            "y": 364,
+            "width": 243,
+            "height": 33
+          },
+          {
+            "text": "CONCATENATE",
+            "x": 62,
+            "y": 268,
+            "width": 135,
+            "height": 17
+          },
+          {
+            "text": "OOOO",
+            "x": 1143,
+            "y": 14,
+            "width": 139,
+            "height": 30
+          },
+          {
+            "text": "O",
+            "x": 1051,
+            "y": 320,
+            "width": 130,
+            "height": 49
+          },
+          {
+            "text": "AOOTO",
+            "x": 40,
+            "y": 322,
+            "width": 235,
+            "height": 35
+          },
+          {
+            "text": "CONCATENATE",
+            "x": 358,
+            "y": 269,
+            "width": 149,
+            "height": 19
+          },
+          {
+            "text": "OUTPUTHIDDEN",
+            "x": 827,
+            "y": 20,
+            "width": 132,
+            "height": 16
+          },
+          {
+            "text": "CONCATENATE",
+            "x": 1184,
+            "y": 295,
+            "width": 117,
+            "height": 18
+          },
+          {
+            "text": "六后",
+            "x": 745,
+            "y": 295,
+            "width": 164,
+            "height": 28
+          },
+          {
+            "text": "APPLYROPE",
+            "x": 958,
+            "y": 384,
+            "width": 141,
+            "height": 23
+          },
+          {
+            "text": "KO",
+            "x": 332,
+            "y": 325,
+            "width": 90,
+            "height": 31
+          },
+          {
+            "text": "TOAO",
+            "x": 906,
+            "y": 64,
+            "width": 136,
+            "height": 38
+          },
+          {
+            "text": "APPLYROPE",
+            "x": 154,
+            "y": 368,
+            "width": 107,
+            "height": 18
+          },
+          {
+            "text": "ANPLYROPE",
+            "x": 1108,
+            "y": 430,
+            "width": 87,
+            "height": 29
+          },
+          {
+            "text": "OMOOC",
+            "x": 97,
+            "y": 429,
+            "width": 133,
+            "height": 28
+          },
+          {
+            "text": "EKO",
+            "x": 1055,
+            "y": 376,
+            "width": 174,
+            "height": 46
+          },
+          {
+            "text": "PLYROP",
+            "x": 323,
+            "y": 401,
+            "width": 59,
+            "height": 19
+          },
+          {
+            "text": "T",
+            "x": 222,
+            "y": 47,
+            "width": 298,
+            "height": 40
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f2f2f1",
+        "__spacing": "both",
+        "id": "ub89d1dcc",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1790828034698-38366f0c-1fc1-49c1-96f8-96dbdddba715.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22q%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F34c7b563b30bde3c748139530686798e.svg%22%2C%22id%22%3A%22j5f2b%22%7D"
+      },
+      "value": {
+        "code": "q",
+        "src": "https://cdn.nlark.com/yuque/__latex/34c7b563b30bde3c748139530686798e.svg",
+        "id": "j5f2b"
+      },
+      "asset": "assets/math/34c7b563b30bde3c748139530686798e.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F031c97167daa03ad4ff7583a3b69f6d0.svg%22%2C%22id%22%3A%22JgUYS%22%7D"
+      },
+      "value": {
+        "code": "\\pi_{\\mathrm{old}}",
+        "src": "https://cdn.nlark.com/yuque/__latex/031c97167daa03ad4ff7583a3b69f6d0.svg",
+        "id": "JgUYS"
+      },
+      "asset": "assets/math/031c97167daa03ad4ff7583a3b69f6d0.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5C%7Bo_1%2C%5C%5Ccdots%2Co_G%5C%5C%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F09f57cc12367de76ba80782b57e1874a.svg%22%2C%22id%22%3A%22EOqXT%22%7D"
+      },
+      "value": {
+        "code": "\\{o_1,\\cdots,o_G\\}",
+        "src": "https://cdn.nlark.com/yuque/__latex/09f57cc12367de76ba80782b57e1874a.svg",
+        "id": "EOqXT"
+      },
+      "asset": "assets/math/09f57cc12367de76ba80782b57e1874a.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%5C%5Ctheta%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F7fbcd62054bd83770c4508841ae9c9a4.svg%22%2C%22id%22%3A%22yo7cS%22%7D"
+      },
+      "value": {
+        "code": "\\pi_\\theta",
+        "src": "https://cdn.nlark.com/yuque/__latex/7fbcd62054bd83770c4508841ae9c9a4.svg",
+        "id": "yo7cS"
+      },
+      "asset": "assets/math/7fbcd62054bd83770c4508841ae9c9a4.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%5C%5Cmathcal%7BJ%7D_%7B%5C%5Cmathrm%7BGRPO%7D%7D(%5C%5Ctheta)%5Cn%26%3D%5C%5Cmathbb%7BE%7D_%7Bq%5C%5Csim%20P(Q)%2C%5C%5C%7Bo_i%5C%5C%7D_%7Bi%3D1%7D%5E%7BG%7D%5C%5Csim%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D(%5C%5Ccdot%7Cq)%7D%5Cn%5C%5CBigg%5B%5C%5Cfrac%7B1%7D%7BG%7D%5C%5Csum_%7Bi%3D1%7D%5E%7BG%7D%5C%5Cfrac%7B1%7D%7B%7Co_i%7C%7D%5C%5Csum_%7Bt%3D1%7D%5E%7B%7Co_i%7C%7D%5C%5C%5C%5C%5Cn%26%5C%5Cquad%5C%5Cmin%5C%5Cleft(r_%7Bi%2Ct%7D(%5C%5Ctheta)%5C%5Chat%7BA%7D_%7Bi%2Ct%7D%2C%5C%5Ctext%7Bclip%7D%5C%5Cleft(r_%7Bi%2Ct%7D(%5C%5Ctheta)%2C1-%5C%5Cvarepsilon%2C1%2B%5C%5Cvarepsilon%5C%5Cright)%5C%5Chat%7BA%7D_%7Bi%2Ct%7D%5C%5Cright)-%5C%5Cbeta%5C%5Cmathbb%7BD%7D_%7B%5C%5Cmathrm%7BKL%7D%7D%5C%5Cleft(%5C%5Cpi_%5C%5Ctheta(o_%7Bi%2Ct%7D)%5C%5C%2C%5C%5Cmiddle%5C%5C%7C%5C%5C%2C%5C%5Cpi_%7B%5C%5Cmathrm%7Bref%7D%7D(o_%7Bi%2Ct%7D)%5C%5Cright)%5C%5CBigg%5D%2C%5Cn%5C%5Cend%7Baligned%7D%5Cn%5C%5Ctag%7B5%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F67850d816e6af2767aa4bff05c99f028.svg%22%2C%22id%22%3A%22fdrZs%22%7D"
+      },
+      "value": {
+        "code": "\\begin{aligned}\n\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)\n&=\\mathbb{E}_{q\\sim P(Q),\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\mathrm{old}}(\\cdot|q)}\n\\Bigg[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\\\\n&\\quad\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\text{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right)-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta(o_{i,t})\\,\\middle\\|\\,\\pi_{\\mathrm{ref}}(o_{i,t})\\right)\\Bigg],\n\\end{aligned}\n\\tag{5}",
+        "src": "https://cdn.nlark.com/yuque/__latex/67850d816e6af2767aa4bff05c99f028.svg",
+        "id": "fdrZs"
+      },
+      "asset": "assets/math/67850d816e6af2767aa4bff05c99f028.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22r_%7Bi%2Ct%7D(%5C%5Ctheta)%3D%5C%5Cfrac%7B%5C%5Cpi_%5C%5Ctheta(o_%7Bi%2Ct%7D%7Cq%2Co_%7Bi%2C%3Ct%7D)%7D%7B%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D(o_%7Bi%2Ct%7D%7Cq%2Co_%7Bi%2C%3Ct%7D)%7D%20%5C%5Ctag%7B6%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fa36fa86cf02a0ff69acf630903db6273.svg%22%2C%22id%22%3A%22iOOzL%22%7D"
+      },
+      "value": {
+        "code": "r_{i,t}(\\theta)=\\frac{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}{\\pi_{\\mathrm{old}}(o_{i,t}|q,o_{i,<t})} \\tag{6}",
+        "src": "https://cdn.nlark.com/yuque/__latex/a36fa86cf02a0ff69acf630903db6273.svg",
+        "id": "iOOzL"
+      },
+      "asset": "assets/math/a36fa86cf02a0ff69acf630903db6273.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22o_%7Bi%2Ct%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F490918764b16c5a0a4f87aedb2b38f8c.svg%22%2C%22id%22%3A%22cncrD%22%7D"
+      },
+      "value": {
+        "code": "o_{i,t}",
+        "src": "https://cdn.nlark.com/yuque/__latex/490918764b16c5a0a4f87aedb2b38f8c.svg",
+        "id": "cncrD"
+      },
+      "asset": "assets/math/490918764b16c5a0a4f87aedb2b38f8c.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D(%5C%5Ccdot%7Cq%2Co_%7Bi%2C%3Ct%7D)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Ffb8f15bcb1f99ced644d28674cdd84fc.svg%22%2C%22id%22%3A%22IrBf6%22%7D"
+      },
+      "value": {
+        "code": "\\pi_{\\mathrm{old}}(\\cdot|q,o_{i,<t})",
+        "src": "https://cdn.nlark.com/yuque/__latex/fb8f15bcb1f99ced644d28674cdd84fc.svg",
+        "id": "IrBf6"
+      },
+      "asset": "assets/math/fb8f15bcb1f99ced644d28674cdd84fc.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%5C%5Ctheta%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F7fbcd62054bd83770c4508841ae9c9a4.svg%22%2C%22id%22%3A%22XuDp9%22%7D"
+      },
+      "value": {
+        "code": "\\pi_\\theta",
+        "src": "https://cdn.nlark.com/yuque/__latex/7fbcd62054bd83770c4508841ae9c9a4.svg",
+        "id": "XuDp9"
+      },
+      "asset": "assets/math/7fbcd62054bd83770c4508841ae9c9a4.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F031c97167daa03ad4ff7583a3b69f6d0.svg%22%2C%22id%22%3A%22D54V5%22%7D"
+      },
+      "value": {
+        "code": "\\pi_{\\mathrm{old}}",
+        "src": "https://cdn.nlark.com/yuque/__latex/031c97167daa03ad4ff7583a3b69f6d0.svg",
+        "id": "D54V5"
+      },
+      "asset": "assets/math/031c97167daa03ad4ff7583a3b69f6d0.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathbb%7BD%7D_%7B%5C%5Cmathrm%7BKL%7D%7D%5C%5Cleft(%5C%5Cpi_%5C%5Ctheta(o_%7Bi%2Ct%7D)%5C%5C%2C%5C%5Cmiddle%5C%5C%7C%5C%5C%2C%5C%5Cpi_%7B%5C%5Cmathrm%7Bref%7D%7D(o_%7Bi%2Ct%7D)%5C%5Cright)%3D%5C%5Cfrac%7B%5C%5Cpi_%5C%5Ctheta(o_%7Bi%2Ct%7D%7Cq%2Co_%7Bi%2C%3Ct%7D)%7D%7B%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D(o_%7Bi%2Ct%7D%7Cq%2Co_%7Bi%2C%3Ct%7D)%7D%5C%5Cleft(%5C%5Cfrac%7B%5C%5Cpi_%7B%5C%5Cmathrm%7Bref%7D%7D(o_%7Bi%2Ct%7D%7Cq%2Co_%7Bi%2C%3Ct%7D)%7D%7B%5C%5Cpi_%5C%5Ctheta(o_%7Bi%2Ct%7D%7Cq%2Co_%7Bi%2C%3Ct%7D)%7D-%5C%5Clog%5C%5Cfrac%7B%5C%5Cpi_%7B%5C%5Cmathrm%7Bref%7D%7D(o_%7Bi%2Ct%7D%7Cq%2Co_%7Bi%2C%3Ct%7D)%7D%7B%5C%5Cpi_%5C%5Ctheta(o_%7Bi%2Ct%7D%7Cq%2Co_%7Bi%2C%3Ct%7D)%7D-1%5C%5Cright).%20%5C%5Ctag%7B7%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F93004de17404a915851e967bcfc61fd3.svg%22%2C%22id%22%3A%22IomMW%22%7D"
+      },
+      "value": {
+        "code": "\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta(o_{i,t})\\,\\middle\\|\\,\\pi_{\\mathrm{ref}}(o_{i,t})\\right)=\\frac{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}{\\pi_{\\mathrm{old}}(o_{i,t}|q,o_{i,<t})}\\left(\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-\\log\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-1\\right). \\tag{7}",
+        "src": "https://cdn.nlark.com/yuque/__latex/93004de17404a915851e967bcfc61fd3.svg",
+        "id": "IomMW"
+      },
+      "asset": "assets/math/93004de17404a915851e967bcfc61fd3.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%5C%5Ctheta%5C%5Cll%5C%5Cpi_%7B%5C%5Cmathrm%7Bref%7D%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F0f5a975b62d01043dc2b31654a489fda.svg%22%2C%22id%22%3A%22a2sxH%22%7D"
+      },
+      "value": {
+        "code": "\\pi_\\theta\\ll\\pi_{\\mathrm{ref}}",
+        "src": "https://cdn.nlark.com/yuque/__latex/0f5a975b62d01043dc2b31654a489fda.svg",
+        "id": "a2sxH"
+      },
+      "asset": "assets/math/0f5a975b62d01043dc2b31654a489fda.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F031c97167daa03ad4ff7583a3b69f6d0.svg%22%2C%22id%22%3A%22WbAH6%22%7D"
+      },
+      "value": {
+        "code": "\\pi_{\\mathrm{old}}",
+        "src": "https://cdn.nlark.com/yuque/__latex/031c97167daa03ad4ff7583a3b69f6d0.svg",
+        "id": "WbAH6"
+      },
+      "asset": "assets/math/031c97167daa03ad4ff7583a3b69f6d0.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%5C%5Ctheta%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F7fbcd62054bd83770c4508841ae9c9a4.svg%22%2C%22id%22%3A%22E8Y35%22%7D"
+      },
+      "value": {
+        "code": "\\pi_\\theta",
+        "src": "https://cdn.nlark.com/yuque/__latex/7fbcd62054bd83770c4508841ae9c9a4.svg",
+        "id": "E8Y35"
+      },
+      "asset": "assets/math/7fbcd62054bd83770c4508841ae9c9a4.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22M%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F6f5dde593f0bc27956e14b5eaec2ed17.svg%22%2C%22id%22%3A%22l2BFo%22%7D"
+      },
+      "value": {
+        "code": "M",
+        "src": "https://cdn.nlark.com/yuque/__latex/6f5dde593f0bc27956e14b5eaec2ed17.svg",
+        "id": "l2BFo"
+      },
+      "asset": "assets/math/6f5dde593f0bc27956e14b5eaec2ed17.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%5C%5Cmathcal%7BJ%7D_%7B%5C%5Cmathrm%7BGRPO%7D%7D(%5C%5Ctheta)%5Cn%26%3D%5C%5Cmathbb%7BE%7D_%7Bq%5C%5Csim%20P(Q)%2C%5C%5C%7Bo_i%5C%5C%7D_%7Bi%3D1%7D%5E%7BG%7D%5C%5Csim%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D(%5C%5Ccdot%7Cq)%7D%5Cn%5C%5CBigg%5B%5C%5Cfrac%7B1%7D%7BG%7D%5C%5Csum_%7Bi%3D1%7D%5E%7BG%7D%5C%5Cfrac%7B1%7D%7B%7Co_i%7C%7D%5C%5Csum_%7Bt%3D1%7D%5E%7B%7Co_i%7C%7D%5C%5C%5C%5C%5Cn%26%5C%5Cquad%5C%5Cmin%5C%5Cleft(r_%7Bi%2Ct%7D(%5C%5Ctheta)%5C%5Chat%7BA%7D_%7Bi%2Ct%7D%2C%5C%5Ctext%7Bclip%7D%5C%5Cleft(r_%7Bi%2Ct%7D(%5C%5Ctheta)%2C1-%5C%5Cvarepsilon%2C1%2B%5C%5Cvarepsilon%5C%5Cright)%5C%5Chat%7BA%7D_%7Bi%2Ct%7D%5C%5Cright)M_%7Bi%2Ct%7D-%5C%5Cbeta%5C%5Cmathbb%7BD%7D_%7B%5C%5Cmathrm%7BKL%7D%7D%5C%5Cleft(%5C%5Cpi_%5C%5Ctheta(o_%7Bi%2Ct%7D)%5C%5C%2C%5C%5Cmiddle%5C%5C%7C%5C%5C%2C%5C%5Cpi_%7B%5C%5Cmathrm%7Bref%7D%7D(o_%7Bi%2Ct%7D)%5C%5Cright)%5C%5CBigg%5D%2C%5Cn%5C%5Cend%7Baligned%7D%5Cn%5C%5Ctag%7B8%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F8446aba79315e5af80f42f688ed49301.svg%22%2C%22id%22%3A%22UIZsH%22%7D"
+      },
+      "value": {
+        "code": "\\begin{aligned}\n\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)\n&=\\mathbb{E}_{q\\sim P(Q),\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\mathrm{old}}(\\cdot|q)}\n\\Bigg[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\\\\n&\\quad\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\text{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right)M_{i,t}-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta(o_{i,t})\\,\\middle\\|\\,\\pi_{\\mathrm{ref}}(o_{i,t})\\right)\\Bigg],\n\\end{aligned}\n\\tag{8}",
+        "src": "https://cdn.nlark.com/yuque/__latex/8446aba79315e5af80f42f688ed49301.svg",
+        "id": "UIZsH"
+      },
+      "asset": "assets/math/8446aba79315e5af80f42f688ed49301.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22M_%7Bi%2Ct%7D%3D%5Cn%5C%5Cbegin%7Bcases%7D%5Cn0%20%26%20%5C%5Chat%7BA%7D_%7Bi%2Ct%7D%3C0%2C%5C%5Cdfrac%7B1%7D%7B%7Co_i%7C%7D%5C%5Cdisplaystyle%5C%5Csum_%7Bt%3D1%7D%5E%7B%7Co_i%7C%7D%5C%5Clog%5C%5Cdfrac%7B%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D(o_%7Bi%2Ct%7D%7Cq%2Co_%7Bi%2C%3Ct%7D)%7D%7B%5C%5Cpi_%5C%5Ctheta(o_%7Bi%2Ct%7D%7Cq%2Co_%7Bi%2C%3Ct%7D)%7D%3E%5C%5Cdelta%5C%5C%5C%5C%5B4pt%5D%5Cn1%20%26%20%5C%5Ctext%7Botherwise%7D%2C%5Cn%5C%5Cend%7Bcases%7D%5Cn%5C%5Ctag%7B9%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F4fca06e5c1b100794ebc268fe50e332e.svg%22%2C%22id%22%3A%22LNC1k%22%7D"
+      },
+      "value": {
+        "code": "M_{i,t}=\n\\begin{cases}\n0 & \\hat{A}_{i,t}<0,\\dfrac{1}{|o_i|}\\displaystyle\\sum_{t=1}^{|o_i|}\\log\\dfrac{\\pi_{\\mathrm{old}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}>\\delta\\\\[4pt]\n1 & \\text{otherwise},\n\\end{cases}\n\\tag{9}",
+        "src": "https://cdn.nlark.com/yuque/__latex/4fca06e5c1b100794ebc268fe50e332e.svg",
+        "id": "LNC1k"
+      },
+      "asset": "assets/math/4fca06e5c1b100794ebc268fe50e332e.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F031c97167daa03ad4ff7583a3b69f6d0.svg%22%2C%22id%22%3A%22agMYr%22%7D"
+      },
+      "value": {
+        "code": "\\pi_{\\mathrm{old}}",
+        "src": "https://cdn.nlark.com/yuque/__latex/031c97167daa03ad4ff7583a3b69f6d0.svg",
+        "id": "agMYr"
+      },
+      "asset": "assets/math/031c97167daa03ad4ff7583a3b69f6d0.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F031c97167daa03ad4ff7583a3b69f6d0.svg%22%2C%22id%22%3A%22YUnIw%22%7D"
+      },
+      "value": {
+        "code": "\\pi_{\\mathrm{old}}",
+        "src": "https://cdn.nlark.com/yuque/__latex/031c97167daa03ad4ff7583a3b69f6d0.svg",
+        "id": "YUnIw"
+      },
+      "asset": "assets/math/031c97167daa03ad4ff7583a3b69f6d0.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%5C%5Ctheta%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F7fbcd62054bd83770c4508841ae9c9a4.svg%22%2C%22id%22%3A%22VZC40%22%7D"
+      },
+      "value": {
+        "code": "\\pi_\\theta",
+        "src": "https://cdn.nlark.com/yuque/__latex/7fbcd62054bd83770c4508841ae9c9a4.svg",
+        "id": "VZC40"
+      },
+      "asset": "assets/math/7fbcd62054bd83770c4508841ae9c9a4.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%7B%5C%5Cmathrm%7Bold%7D%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F031c97167daa03ad4ff7583a3b69f6d0.svg%22%2C%22id%22%3A%22DIQtU%22%7D"
+      },
+      "value": {
+        "code": "\\pi_{\\mathrm{old}}",
+        "src": "https://cdn.nlark.com/yuque/__latex/031c97167daa03ad4ff7583a3b69f6d0.svg",
+        "id": "DIQtU"
+      },
+      "asset": "assets/math/031c97167daa03ad4ff7583a3b69f6d0.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi_%5C%5Ctheta%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F7fbcd62054bd83770c4508841ae9c9a4.svg%22%2C%22id%22%3A%22LFNhz%22%7D"
+      },
+      "value": {
+        "code": "\\pi_\\theta",
+        "src": "https://cdn.nlark.com/yuque/__latex/7fbcd62054bd83770c4508841ae9c9a4.svg",
+        "id": "LFNhz"
+      },
+      "asset": "assets/math/7fbcd62054bd83770c4508841ae9c9a4.svg"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 [
   {
-    "file": "../notes/deepseek-ai-ii/source.lake",
+    "file": "../notes/deepseek-ai-ii/v3-2/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
     "tocDepth": 2,
@@ -9,13 +9,18 @@
     "seriesOrder": 2,
     "category": "llm",
     "date": "2026-10-01",
-    "description": "DeepSeek mHC 笔记：流形约束超连接、双随机矩阵、Sinkhorn–Knopp，以及内核融合、重计算与 DualPipe 通信优化",
+    "description": "DeepSeek-V3.2 与 mHC 笔记：DSA 稀疏注意力、专家蒸馏、GRPO 稳定性改进，以及流形约束超连接和基础设施优化",
     "tags": [
       "DeepSeek",
+      "DeepSeek-V3.2",
+      "DSA",
+      "GRPO",
       "mHC",
-      "Hyper-Connections",
       "Sinkhorn–Knopp",
       "模型架构"
+    ],
+    "appendFiles": [
+      "../notes/deepseek-ai-ii/source.lake"
     ]
   },
   {

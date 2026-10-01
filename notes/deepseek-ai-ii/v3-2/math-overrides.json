@@ -1,0 +1,42 @@
+{
+  "oXkja": {
+    "from": "I_{t,s}=\\sum_{j=1}^{H^{I}}w_{t,j}^{I}\\cdot\\text{ReLU}\\left(\\mathbf{q}_{t,j}^{I}\\cdot\\mathbf{k}_{s}^{I}\\right), \\tag{1}",
+    "to": "I_{t,s}=\\sum_{j=1}^{H^{I}}w_{t,j}^{I}\\cdot\\text{ReLU}\\left(\\mathbf{q}_{t,j}^{I}\\cdot\\mathbf{k}_{s}^{I}\\right)\\tag{1}",
+    "reason": "移除公式末尾标点，保留论文编号"
+  },
+  "Rr9uV": {
+    "from": "\\mathbf{u}_t=\\text{Attn}\\left(\\mathbf{h}_t,\\left\\{\\mathbf{c}_s\\,\\middle|\\,I_{t,s}\\in\\text{Top-k}\\left(I_{t,:}\\right)\\right\\}\\right). \\tag{2}",
+    "to": "\\mathbf{u}_t=\\text{Attn}\\left(\\mathbf{h}_t,\\left\\{\\mathbf{c}_s\\,\\middle|\\,I_{t,s}\\in\\text{Top-k}\\left(I_{t,:}\\right)\\right\\}\\right)\\tag{2}",
+    "reason": "移除公式末尾标点，保留论文编号"
+  },
+  "XkAje": {
+    "from": "\\mathcal{L}^{I}=\\sum_t\\mathbb{D}_{\\mathrm{KL}}\\left(p_{t,:}\\,\\middle\\|\\,\\text{Softmax}\\left(I_{t,:}\\right)\\right). \\tag{3}",
+    "to": "\\mathcal{L}^{I}=\\sum_t\\mathbb{D}_{\\mathrm{KL}}\\left(p_{t,:}\\,\\middle\\|\\,\\text{Softmax}\\left(I_{t,:}\\right)\\right)\\tag{3}",
+    "reason": "移除公式末尾标点，保留论文编号"
+  },
+  "DbFLV": {
+    "from": "\\mathcal{L}^{I}=\\sum_t\\mathbb{D}_{\\mathrm{KL}}\\left(p_{t,\\mathcal{S}_t}\\,\\middle\\|\\,\\text{Softmax}\\left(I_{t,\\mathcal{S}_t}\\right)\\right). \\tag{4}",
+    "to": "\\mathcal{L}^{I}=\\sum_t\\mathbb{D}_{\\mathrm{KL}}\\left(p_{t,\\mathcal{S}_t}\\,\\middle\\|\\,\\text{Softmax}\\left(I_{t,\\mathcal{S}_t}\\right)\\right)\\tag{4}",
+    "reason": "移除公式末尾标点，保留论文编号"
+  },
+  "fdrZs": {
+    "from": "\\begin{aligned}\n\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)\n&=\\mathbb{E}_{q\\sim P(Q),\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\mathrm{old}}(\\cdot|q)}\n\\Bigg[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\\\\n&\\quad\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\text{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right)-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta(o_{i,t})\\,\\middle\\|\\,\\pi_{\\mathrm{ref}}(o_{i,t})\\right)\\Bigg],\n\\end{aligned}\n\\tag{5}",
+    "to": "\\begin{aligned}\n&\n\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)\n=\\mathbb{E}_{q\\sim P(Q),\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\mathrm{old}}(\\cdot|q)}\n\\\\\n&\\quad\\Bigg[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\text{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right)-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta(o_{i,t})\\,\\middle\\|\\,\\pi_{\\mathrm{ref}}(o_{i,t})\\right)\\Bigg]\n\\end{aligned}\n\\tag{5}",
+    "reason": "保留公式和论文编号，移除末尾标点；长 GRPO 公式将期望与完整表达式分列两行"
+  },
+  "IomMW": {
+    "from": "\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta(o_{i,t})\\,\\middle\\|\\,\\pi_{\\mathrm{ref}}(o_{i,t})\\right)=\\frac{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}{\\pi_{\\mathrm{old}}(o_{i,t}|q,o_{i,<t})}\\left(\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-\\log\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-1\\right). \\tag{7}",
+    "to": "\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta(o_{i,t})\\,\\middle\\|\\,\\pi_{\\mathrm{ref}}(o_{i,t})\\right)=\\frac{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}{\\pi_{\\mathrm{old}}(o_{i,t}|q,o_{i,<t})}\\left(\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-\\log\\frac{\\pi_{\\mathrm{ref}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}-1\\right)\\tag{7}",
+    "reason": "移除公式末尾标点，保留论文编号"
+  },
+  "UIZsH": {
+    "from": "\\begin{aligned}\n\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)\n&=\\mathbb{E}_{q\\sim P(Q),\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\mathrm{old}}(\\cdot|q)}\n\\Bigg[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\\\\n&\\quad\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\text{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right)M_{i,t}-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta(o_{i,t})\\,\\middle\\|\\,\\pi_{\\mathrm{ref}}(o_{i,t})\\right)\\Bigg],\n\\end{aligned}\n\\tag{8}",
+    "to": "\\begin{aligned}\n&\n\\mathcal{J}_{\\mathrm{GRPO}}(\\theta)\n=\\mathbb{E}_{q\\sim P(Q),\\{o_i\\}_{i=1}^{G}\\sim\\pi_{\\mathrm{old}}(\\cdot|q)}\n\\\\\n&\\quad\\Bigg[\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{|o_i|}\\sum_{t=1}^{|o_i|}\\min\\left(r_{i,t}(\\theta)\\hat{A}_{i,t},\\text{clip}\\left(r_{i,t}(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_{i,t}\\right)M_{i,t}-\\beta\\mathbb{D}_{\\mathrm{KL}}\\left(\\pi_\\theta(o_{i,t})\\,\\middle\\|\\,\\pi_{\\mathrm{ref}}(o_{i,t})\\right)\\Bigg]\n\\end{aligned}\n\\tag{8}",
+    "reason": "保留公式和论文编号，移除末尾标点；长 GRPO 公式将期望与完整表达式分列两行"
+  },
+  "LNC1k": {
+    "from": "M_{i,t}=\n\\begin{cases}\n0 & \\hat{A}_{i,t}<0,\\dfrac{1}{|o_i|}\\displaystyle\\sum_{t=1}^{|o_i|}\\log\\dfrac{\\pi_{\\mathrm{old}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}>\\delta\\\\[4pt]\n1 & \\text{otherwise},\n\\end{cases}\n\\tag{9}",
+    "to": "M_{i,t}=\n\\begin{cases}\n0 & \\hat{A}_{i,t}<0,\\dfrac{1}{|o_i|}\\displaystyle\\sum_{t=1}^{|o_i|}\\log\\dfrac{\\pi_{\\mathrm{old}}(o_{i,t}|q,o_{i,<t})}{\\pi_\\theta(o_{i,t}|q,o_{i,<t})}>\\delta\\\\[4pt]\n1 & \\text{otherwise}\n\\end{cases}\n\\tag{9}",
+    "reason": "移除公式末尾标点，保留论文编号"
+  }
+}
