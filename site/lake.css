@@ -181,9 +181,9 @@
 [data-post="deepseek-ai-ii"] .lake-document > :first-child { margin-top: 0; }
 [data-post="deepseek-ai-ii"] .lake-document :is(#u47166d57, #u4cc2ea74, #u947b4cfd, #u5fa3c8bf, #u1d3dd13b) { text-align: center; }
 
-/* Give only the two inline-formula passages extra room on desktop. */
+/* Give only these inline-formula passages extra room on desktop. */
 @media (min-width: 1200px) {
-  [data-post="deepseek-ai-ii"] .lake-document #u4875df5a {
+  [data-post="deepseek-ai-ii"] .lake-document :is(#u4875df5a, #ue4d81327) {
     width: calc(100% + 16px);
   }
 }
