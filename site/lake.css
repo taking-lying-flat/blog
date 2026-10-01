@@ -180,3 +180,14 @@
 [data-post="deepseek-ai-ii"] .lake-document h2 { margin-block: 24px 12px; }
 [data-post="deepseek-ai-ii"] .lake-document > :first-child { margin-top: 0; }
 [data-post="deepseek-ai-ii"] .lake-document :is(#u47166d57, #u4cc2ea74, #u947b4cfd) { text-align: center; }
+
+/* Let mHC's formula-heavy text use the available desktop width. */
+@media (min-width: 1200px) {
+  .post-page.has-paper-toc:has(> [data-post="deepseek-ai-ii"]) {
+    grid-template-columns: minmax(0, 1280px) var(--toc-width);
+    max-width: calc(1352px + var(--toc-width));
+  }
+  .post-page.has-paper-toc.toc-collapsed:has(> [data-post="deepseek-ai-ii"]) {
+    max-width: 1328px;
+  }
+}
