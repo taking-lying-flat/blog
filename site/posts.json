@@ -7,12 +7,18 @@
     "slug": "positional-encoding",
     "category": "llm",
     "date": "2026-10-01",
-    "description": "位置编码笔记：RoFormer 与 RoPE，涵盖二维旋转、相对位置关系、线性注意力、高效实现和长程衰减",
+    "description": "位置编码笔记：RoFormer、RoPE 与 YaRN，涵盖旋转位置编码、相对位置关系、上下文扩展、NTK 插值和注意力温度缩放",
     "tags": [
       "位置编码",
       "RoFormer",
       "RoPE",
-      "Attention"
+      "Attention",
+      "YaRN",
+      "长上下文",
+      "NTK 插值"
+    ],
+    "appendFiles": [
+      "../notes/positional-encoding/yarn/source.lake"
     ]
   },
   {

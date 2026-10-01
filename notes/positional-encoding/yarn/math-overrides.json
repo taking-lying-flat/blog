@@ -1,0 +1,58 @@
+{
+  "Qo5uw": {
+    "from": "\\boldsymbol{q}_m=f_q(\\boldsymbol{x}_m,m)\\in\\mathbb{R}^{|D|},\\quad \\boldsymbol{k}_n=f_k(\\boldsymbol{x}_n,n)\\in\\mathbb{R}^{|D|}.\n\\tag{1}",
+    "to": "\\boldsymbol{q}_m=f_q(\\boldsymbol{x}_m,m)\\in\\mathbb{R}^{|D|},\\quad \\boldsymbol{k}_n=f_k(\\boldsymbol{x}_n,n)\\in\\mathbb{R}^{|D|}\n\\tag{1}"
+  },
+  "uAZhh": {
+    "from": "\\operatorname{softmax}\\left(\\frac{\\boldsymbol{q}_m^{T}\\boldsymbol{k}_n}{\\sqrt{|D|}}\\right),\n\\tag{2}",
+    "to": "\\operatorname{softmax}\\left(\\frac{\\boldsymbol{q}_m^{T}\\boldsymbol{k}_n}{\\sqrt{|D|}}\\right)\n\\tag{2}"
+  },
+  "rmFaW": {
+    "from": "\\big((\\boldsymbol{x}_m)_1,\\ldots,(\\boldsymbol{x}_m)_{|D|}\\big)\\mapsto\\big((\\boldsymbol{x}_m)_1+i(\\boldsymbol{x}_m)_2,\\ldots,((\\boldsymbol{x}_m)_{|D|-1}+i(\\boldsymbol{x}_m)_{|D|})\\big),\n\\tag{3}",
+    "to": "\\big((\\boldsymbol{x}_m)_1,\\ldots,(\\boldsymbol{x}_m)_{|D|}\\big)\\mapsto\\big((\\boldsymbol{x}_m)_1+i(\\boldsymbol{x}_m)_2,\\ldots,((\\boldsymbol{x}_m)_{|D|-1}+i(\\boldsymbol{x}_m)_{|D|})\\big)\n\\tag{3}"
+  },
+  "PKPoA": {
+    "from": "\\big((\\mathbf{q}_m)_1,\\ldots,(\\mathbf{q}_m)_{|D|}\\big)\\mapsto\\big((\\mathbf{q}_m)_1+i(\\mathbf{q}_m)_2,\\ldots,((\\mathbf{q}_m)_{|D|-1}+i(\\mathbf{q}_m)_{|D|})\\big).\n\\tag{4}",
+    "to": "\\big((\\mathbf{q}_m)_1,\\ldots,(\\mathbf{q}_m)_{|D|}\\big)\\mapsto\\big((\\mathbf{q}_m)_1+i(\\mathbf{q}_m)_2,\\ldots,((\\mathbf{q}_m)_{|D|-1}+i(\\mathbf{q}_m)_{|D|})\\big)\n\\tag{4}"
+  },
+  "XC8Fh": {
+    "from": "\\boldsymbol{W}_q,\\boldsymbol{W}_k:\\mathbb{R}^{|D|}\\rightarrow\\mathbb{R}^{|D|}.",
+    "to": "\\boldsymbol{W}_q,\\boldsymbol{W}_k:\\mathbb{R}^{|D|}\\rightarrow\\mathbb{R}^{|D|}"
+  },
+  "kBhWT": {
+    "from": "f_{\\boldsymbol{W}}(\\boldsymbol{x}_m,m,\\boldsymbol{\\theta})=e^{im\\boldsymbol{\\theta}}\\boldsymbol{W}\\boldsymbol{x}_m,\n\\tag{5}",
+    "to": "f_{\\boldsymbol{W}}(\\boldsymbol{x}_m,m,\\boldsymbol{\\theta})=e^{im\\boldsymbol{\\theta}}\\boldsymbol{W}\\boldsymbol{x}_m\n\\tag{5}"
+  },
+  "pU2xH": {
+    "from": "f_q=f_{\\boldsymbol{W}_q},\\quad f_k=f_{\\boldsymbol{W}_k}.\n\\tag{6}",
+    "to": "f_q=f_{\\boldsymbol{W}_q},\\quad f_k=f_{\\boldsymbol{W}_k}\n\\tag{6}"
+  },
+  "IcDbG": {
+    "from": "f'_{\\boldsymbol{W}}(\\boldsymbol{x}_m,m,\\boldsymbol{\\theta})=f_{\\boldsymbol{W}}(\\boldsymbol{x}_m,g(m),\\boldsymbol{h}(\\boldsymbol{\\theta})),\n\\tag{7}",
+    "to": "f'_{\\boldsymbol{W}}(\\boldsymbol{x}_m,m,\\boldsymbol{\\theta})=f_{\\boldsymbol{W}}(\\boldsymbol{x}_m,g(m),\\boldsymbol{h}(\\boldsymbol{\\theta}))\n\\tag{7}"
+  },
+  "kKS3k": {
+    "from": "\\lambda_d=\\frac{2\\pi}{\\theta_d}=2\\pi b^{\\frac{2d}{|D|}}.\n\\tag{8}",
+    "to": "\\lambda_d=\\frac{2\\pi}{\\theta_d}=2\\pi b^{\\frac{2d}{|D|}}\n\\tag{8}"
+  },
+  "VCnCD": {
+    "from": "r(d)=\\frac{L}{\\lambda_d}=\\frac{L}{2\\pi b^{\\frac{2d}{|D|}}}.\n\\tag{10}",
+    "to": "r(d)=\\frac{L}{\\lambda_d}=\\frac{L}{2\\pi b^{\\frac{2d}{|D|}}}\n\\tag{9}"
+  },
+  "njAWI": {
+    "from": "\\gamma(r)=\n\\begin{cases}\n0, & \\text{if } r<\\alpha \\\\\n1, & \\text{if } r>\\beta \\\\\n\\dfrac{r-\\alpha}{\\beta-\\alpha}, & \\text{otherwise}.\n\\end{cases}\n\\tag{11}",
+    "to": "\\gamma(r)=\n\\begin{cases}\n0, & \\text{if } r<\\alpha \\\\\n1, & \\text{if } r>\\beta \\\\\n\\dfrac{r-\\alpha}{\\beta-\\alpha}, & \\text{otherwise}\n\\end{cases}\n\\tag{10}"
+  },
+  "pmEzD": {
+    "from": "g(m)=m\n\\tag{12}",
+    "to": "g(m)=m\n\\tag{11}"
+  },
+  "yWcMU": {
+    "from": "h(\\theta_d)=\\Big(1-\\gamma\\big(r(d)\\big)\\Big)\\frac{\\theta_d}{s}+\\gamma\\big(r(d)\\big)\\theta_d.\n\\tag{13}",
+    "to": "h(\\theta_d)=\\Big(1-\\gamma\\big(r(d)\\big)\\Big)\\frac{\\theta_d}{s}+\\gamma\\big(r(d)\\big)\\theta_d\n\\tag{12}"
+  },
+  "NC0QP": {
+    "from": "\\operatorname{softmax}\\left(\\frac{\\boldsymbol{q}_m^{T}\\boldsymbol{k}_n}{t\\sqrt{|D|}}\\right).\n\\tag{14}",
+    "to": "\\operatorname{softmax}\\left(\\frac{\\boldsymbol{q}_m^{T}\\boldsymbol{k}_n}{t\\sqrt{|D|}}\\right)\n\\tag{13}"
+  }
+}
