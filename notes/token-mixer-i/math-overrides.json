@@ -64,5 +64,60 @@
     "to": "\\mathbf{S}_t\n=\n\\left(\n\\mathbf{D}\n-\n\\mathbf{a}_t\n\\mathbf{b}_t^\\top\n\\right)\n\\mathbf{S}_{t-1}\n+\n\\beta_t\\mathbf{k}_t\n\\mathbf{v}_t^\\top,\n\\qquad\n\\mathrm{s.t.},\n\\quad\n\\mathbf{D}\n=\n\\color{red}{\\operatorname{Diag}(\\boldsymbol{\\alpha}_t)},\n\\quad\n\\mathbf{a}_t\n=\n\\beta_t\\mathbf{k}_t,\n\\quad\n\\mathbf{b}_t\n=\n\\mathbf{k}_t\\odot\\boldsymbol{\\alpha}_t",
     "reason": "在给定 a=beta k、b=k⊙alpha 且保持同一 k、v 定义时，KDA 的写入项仍须包含 beta。",
     "reference": "https://github.com/MoonshotAI/Kimi-Linear/blob/master/tech_report.pdf"
+  },
+  "NOFwB": {
+    "from": "G_r=\\sum_{i=1}^{r}g_i,\\qquad \\gamma_r=\\exp(G_r),\\qquad \\gamma_0=\\mathbf{1}_{d_k}.\n\\tag{18}",
+    "to": "G_r=\\sum_{i=1}^{r}g_i,\\qquad \\gamma_r=\\exp(G_r),\\qquad \\gamma_0=\\mathbf{1}_{d_k}.\n\\tag{17}",
+    "reason": "本文将原论文式（17）作为未编号的行内说明，后续行间公式按出现顺序连续编号"
+  },
+  "oYadg": {
+    "from": "\\hat{\\mathbf{S}}_r=\\left(\\mathbf{I}-\\bar{k}_r\\bar{e}_r^{\\top}\\right)\\hat{\\mathbf{S}}_{r-1}+\\bar{k}_rz_r^{\\top},\\qquad \\bar{k}_r=\\gamma_r^{-1}\\odot k_r,\\qquad \\bar{e}_r=\\gamma_r\\odot e_r.\n\\tag{19}",
+    "to": "\\hat{\\mathbf{S}}_r=\\left(\\mathbf{I}-\\bar{k}_r\\bar{e}_r^{\\top}\\right)\\hat{\\mathbf{S}}_{r-1}+\\bar{k}_rz_r^{\\top},\\qquad \\bar{k}_r=\\gamma_r^{-1}\\odot k_r,\\qquad \\bar{e}_r=\\gamma_r\\odot e_r.\n\\tag{18}",
+    "reason": "本文将原论文式（17）作为未编号的行内说明，后续行间公式按出现顺序连续编号"
+  },
+  "tgo5p": {
+    "from": "\\bar{\\mathbf{E}}=\\gamma\\odot(\\mathbf{B}\\odot\\mathbf{K}),\\qquad \\mathbf{Z}=\\mathbf{W}\\odot\\mathbf{V}.\n\\tag{20}",
+    "to": "\\bar{\\mathbf{E}}=\\gamma\\odot(\\mathbf{B}\\odot\\mathbf{K}),\\qquad \\mathbf{Z}=\\mathbf{W}\\odot\\mathbf{V}.\n\\tag{19}",
+    "reason": "本文将原论文式（17）作为未编号的行内说明，后续行间公式按出现顺序连续编号"
+  },
+  "hotxU": {
+    "from": "\\mathbf{T}=\\operatorname{tril}\\left(\\bar{\\mathbf{E}}\\bar{\\mathbf{K}}^{\\top},-1\\right),\\qquad \\mathbf{A}=(\\mathbf{I}+\\mathbf{T})^{-1}.\n\\tag{21}",
+    "to": "\\mathbf{T}=\\operatorname{tril}\\left(\\bar{\\mathbf{E}}\\bar{\\mathbf{K}}^{\\top},-1\\right),\\qquad \\mathbf{A}=(\\mathbf{I}+\\mathbf{T})^{-1}.\n\\tag{20}",
+    "reason": "本文将原论文式（17）作为未编号的行内说明，后续行间公式按出现顺序连续编号"
+  },
+  "ZIcUk": {
+    "from": "\\mathbf{Y}=\\mathbf{A}\\bar{\\mathbf{E}},\\qquad \\mathbf{U}=\\mathbf{A}\\mathbf{Z}.\n\\tag{22}",
+    "to": "\\mathbf{Y}=\\mathbf{A}\\bar{\\mathbf{E}},\\qquad \\mathbf{U}=\\mathbf{A}\\mathbf{Z}.\n\\tag{21}",
+    "reason": "本文将原论文式（17）作为未编号的行内说明，后续行间公式按出现顺序连续编号"
+  },
+  "XPfFd": {
+    "from": "\\mathbf{S}_{[n+1]}=\\operatorname{Diag}(\\gamma_C)\\mathbf{S}_{[n]}+\\mathbf{K}_{\\mathrm{tail}}^{\\top}\\left(\\mathbf{U}-\\mathbf{Y}\\mathbf{S}_{[n]}\\right),\n\\tag{23}",
+    "to": "\\mathbf{S}_{[n+1]}=\\operatorname{Diag}(\\gamma_C)\\mathbf{S}_{[n]}+\\mathbf{K}_{\\mathrm{tail}}^{\\top}\\left(\\mathbf{U}-\\mathbf{Y}\\mathbf{S}_{[n]}\\right),\n\\tag{22}",
+    "reason": "本文将原论文式（17）作为未编号的行内说明，后续行间公式按出现顺序连续编号"
+  },
+  "AE9Qd": {
+    "from": "\\mathbf{O}_{[n]}=\\mathbf{Q}_{\\gamma}\\mathbf{S}_{[n]}+\\mathbf{A}_{qk}\\left(\\mathbf{U}-\\mathbf{Y}\\mathbf{S}_{[n]}\\right),\n\\tag{24}",
+    "to": "\\mathbf{O}_{[n]}=\\mathbf{Q}_{\\gamma}\\mathbf{S}_{[n]}+\\mathbf{A}_{qk}\\left(\\mathbf{U}-\\mathbf{Y}\\mathbf{S}_{[n]}\\right),\n\\tag{23}",
+    "reason": "本文将原论文式（17）作为未编号的行内说明，后续行间公式按出现顺序连续编号"
+  },
+  "jrIQR": {
+    "from": "(\\mathbf{A}_{qk})_{rs}=\\mathbf{1}_{r\\ge s}\\,q_r^{\\top}\\operatorname{Diag}(\\gamma_r/\\gamma_s)k_s.\n\\tag{25}",
+    "to": "(\\mathbf{A}_{qk})_{rs}=\\mathbf{1}_{r\\ge s}\\,q_r^{\\top}\\operatorname{Diag}(\\gamma_r/\\gamma_s)k_s.\n\\tag{24}",
+    "reason": "本文将原论文式（17）作为未编号的行内说明，后续行间公式按出现顺序连续编号"
+  },
+  "PKAt2": {
+    "from": "\\mathrm{d}\\mathbf{A}\\mathrel{+=}\\mathrm{d}\\mathbf{U}\\mathbf{Z}^{\\top},\\qquad\\qquad \\mathbf{Z}=\\mathbf{W}\\odot\\mathbf{V},\n\\tag{26}",
+    "to": "\\mathrm{d}\\mathbf{A}\\mathrel{+=}\\mathrm{d}\\mathbf{U}\\mathbf{Z}^{\\top},\\qquad\\qquad \\mathbf{Z}=\\mathbf{W}\\odot\\mathbf{V},\n\\tag{25}",
+    "reason": "本文将原论文式（17）作为未编号的行内说明，后续行间公式按出现顺序连续编号"
+  },
+  "hXvxu": {
+    "from": "\\mathrm{d}\\mathbf{A}\\mathrel{+=}\\mathrm{d}\\mathbf{Y}\\bar{\\mathbf{E}}^{\\top},\\qquad\\qquad \\bar{\\mathbf{E}}=\\gamma\\odot(\\mathbf{B}\\odot\\mathbf{K}).\n\\tag{27}",
+    "to": "\\mathrm{d}\\mathbf{A}\\mathrel{+=}\\mathrm{d}\\mathbf{Y}\\bar{\\mathbf{E}}^{\\top},\\qquad\\qquad \\bar{\\mathbf{E}}=\\gamma\\odot(\\mathbf{B}\\odot\\mathbf{K}).\n\\tag{26}",
+    "reason": "本文将原论文式（17）作为未编号的行内说明，后续行间公式按出现顺序连续编号"
+  },
+  "doUWs": {
+    "from": "\\mathrm{d}\\mathbf{T}=-\\operatorname{tril}\\left(\\mathbf{A}^{\\top}\\mathrm{d}\\mathbf{A}\\mathbf{A}^{\\top},-1\\right).\n\\tag{28}",
+    "to": "\\mathrm{d}\\mathbf{T}=-\\operatorname{tril}\\left(\\mathbf{A}^{\\top}\\mathrm{d}\\mathbf{A}\\mathbf{A}^{\\top},-1\\right).\n\\tag{27}",
+    "reason": "本文将原论文式（17）作为未编号的行内说明，后续行间公式按出现顺序连续编号"
   }
 }
