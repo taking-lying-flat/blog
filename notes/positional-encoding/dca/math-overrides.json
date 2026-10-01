@@ -1,0 +1,62 @@
+{
+  "cwVzL": {
+    "from": "P_{\\mathbf{q}}^{\\mathrm{Intra}}=P_{\\mathbf{k}}=[0,1,\\ldots,l-1]\\bmod s.\n\\tag{2}",
+    "to": "P_{\\mathbf{q}}^{\\mathrm{Intra}}=P_{\\mathbf{k}}=[0,1,\\ldots,l-1]\\bmod s\n\\tag{1}",
+    "reason": "DCA 公式独立连续编号，移除公式末尾标点",
+    "reference": "https://arxiv.org/html/2402.17463v2#S3"
+  },
+  "dNwXV": {
+    "from": "M[i][j]=P_{\\mathbf{q}}^{\\mathrm{Intra}}[i]-P_{\\mathbf{k}}[j].\n\\tag{3}",
+    "to": "M[i][j]=P_{\\mathbf{q}}^{\\mathrm{Intra}}[i]-P_{\\mathbf{k}}[j]\n\\tag{2}",
+    "reason": "DCA 公式独立连续编号，移除公式末尾标点",
+    "reference": "https://arxiv.org/html/2402.17463v2#S3"
+  },
+  "BQb9M": {
+    "from": "\\mathbf{q}_i^{\\top}\\mathbf{k}_j=f(\\mathbf{q},P_{\\mathbf{q}}^{\\mathrm{Intra}}[i])^{\\top}f(\\mathbf{k},P_{\\mathbf{k}}[j]).\n\\tag{4}",
+    "to": "\\mathbf{q}_i^{\\top}\\mathbf{k}_j=f(\\mathbf{q},P_{\\mathbf{q}}^{\\mathrm{Intra}}[i])^{\\top}f(\\mathbf{k},P_{\\mathbf{k}}[j])\n\\tag{3}",
+    "reason": "DCA 公式独立连续编号，移除公式末尾标点",
+    "reference": "https://arxiv.org/html/2402.17463v2#S3"
+  },
+  "RemYJ": {
+    "from": "P_{\\mathbf{q}}^{\\mathrm{inter}}",
+    "to": "P_{\\mathbf{q}}^{\\mathrm{Inter}}",
+    "reason": "统一块间位置索引的大小写",
+    "reference": "https://arxiv.org/html/2402.17463v2#S3"
+  },
+  "hJ8sB": {
+    "from": "P_{\\mathbf{q}}^{\\mathrm{Inter}}=[\\underbrace{c-1,c-1,\\ldots,c-1}_{l\\ \\text{elements}}],\n\\tag{5}",
+    "to": "P_{\\mathbf{q}}^{\\mathrm{Inter}}=[\\underbrace{c-1,c-1,\\ldots,c-1}_{l\\ \\text{elements}}]\n\\tag{4}",
+    "reason": "DCA 公式独立连续编号，移除公式末尾标点",
+    "reference": "https://arxiv.org/html/2402.17463v2#S3"
+  },
+  "rHEO5": {
+    "from": "M[i][j]=P_{\\mathbf{q}}^{\\mathrm{Intra}}[i]-P_{\\mathbf{k}}[j]=c-1-P_{\\mathbf{k}}[j]\\geq c-s.\n\\tag{6}",
+    "to": "M[i][j]=P_{\\mathbf{q}}^{\\mathrm{Inter}}[i]-P_{\\mathbf{k}}[j]=c-1-P_{\\mathbf{k}}[j]\\geq c-s\n\\tag{5}",
+    "reason": "DCA 公式独立连续编号，移除公式末尾标点；块间查询位置按定义取 c-1，此处应为 Inter；原论文式（6）的 Intra 与式（5）及等号右侧不一致",
+    "reference": "https://arxiv.org/html/2402.17463v2#S3"
+  },
+  "OqmoB": {
+    "from": "P_{\\mathbf{q}}^{\\mathrm{Succ}}=\\underbrace{\\left[\\overbrace{s,s+1,\\ldots,s+w-1}^{w\\ \\text{elements}},c-1,\\ldots,c-1\\right]}_{\\text{the same for all chunks}},\n\\tag{7}",
+    "to": "P_{\\mathbf{q}}^{\\mathrm{Succ}}=\\underbrace{\\left[\\overbrace{s,s+1,\\ldots,s+w-1}^{w\\ \\text{elements}},c-1,\\ldots,c-1\\right]}_{\\text{the same for all chunks}}\n\\tag{6}",
+    "reason": "DCA 公式独立连续编号，移除公式末尾标点",
+    "reference": "https://arxiv.org/html/2402.17463v2#S3"
+  },
+  "BtYbN": {
+    "from": "M[i][j]=\n\\begin{cases}\nP_{\\mathbf{q}}^{\\mathrm{Intra}}[i]-P_{\\mathbf{k}}[j] & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor=0\\\\\nP_{\\mathbf{q}}^{\\mathrm{Succ}}[i]-P_{\\mathbf{k}}[j] & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor=1\\\\\nP_{\\mathbf{q}}^{\\mathrm{Inter}}[i]-P_{\\mathbf{k}}[j] & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor>1.\n\\end{cases}",
+    "to": "M[i][j]=\n\\begin{cases}\nP_{\\mathbf{q}}^{\\mathrm{Intra}}[i]-P_{\\mathbf{k}}[j] & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor=0\\\\\nP_{\\mathbf{q}}^{\\mathrm{Succ}}[i]-P_{\\mathbf{k}}[j] & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor=1\\\\\nP_{\\mathbf{q}}^{\\mathrm{Inter}}[i]-P_{\\mathbf{k}}[j] & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor>1\n\\end{cases}\n\\tag{7}",
+    "reason": "DCA 公式独立连续编号，移除公式末尾标点",
+    "reference": "https://arxiv.org/html/2402.17463v2#S3"
+  },
+  "hqAhM": {
+    "from": "\\mathbf{q}_i^{T}\\mathbf{k}_j=\n\\begin{cases}\nf(\\mathbf{q},P_{\\mathbf{q}}^{\\mathrm{Intra}}[i])^{T}f(\\mathbf{k},P_{\\mathbf{k}}[j]), & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor=0\\\\\nf(\\mathbf{q},P_{\\mathbf{q}}^{\\mathrm{Succ}}[i])^{T}f(\\mathbf{k},P_{\\mathbf{k}}[j]), & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor=1\\\\\nf(\\mathbf{q},P_{\\mathbf{q}}^{\\mathrm{Inter}}[i])^{T}f(\\mathbf{k},P_{\\mathbf{k}}[j]), & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor>1,\n\\end{cases}\n\\tag{8}",
+    "to": "\\mathbf{q}_i^{T}\\mathbf{k}_j=\n\\begin{cases}\nf(\\mathbf{q},P_{\\mathbf{q}}^{\\mathrm{Intra}}[i])^{T}f(\\mathbf{k},P_{\\mathbf{k}}[j]), & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor=0\\\\\nf(\\mathbf{q},P_{\\mathbf{q}}^{\\mathrm{Succ}}[i])^{T}f(\\mathbf{k},P_{\\mathbf{k}}[j]), & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor=1\\\\\nf(\\mathbf{q},P_{\\mathbf{q}}^{\\mathrm{Inter}}[i])^{T}f(\\mathbf{k},P_{\\mathbf{k}}[j]), & \\text{if }\\lfloor i/s\\rfloor-\\lfloor j/s\\rfloor>1\n\\end{cases}\n\\tag{8}",
+    "reason": "DCA 公式独立连续编号，移除公式末尾标点",
+    "reference": "https://arxiv.org/html/2402.17463v2#S3"
+  },
+  "pX3IO": {
+    "from": "\\mathbf{p}_i=\\operatorname{softmax}\\left(\\left[\\frac{\\mathbf{q}_i^{\\top}\\mathbf{k}_0}{\\sqrt{d}},\\frac{\\mathbf{q}_i^{\\top}\\mathbf{k}_1}{\\sqrt{d}},\\ldots,\\frac{\\mathbf{q}_i^{\\top}\\mathbf{k}_i}{\\sqrt{d}}\\right]\\right).\n\\tag{9}",
+    "to": "\\mathbf{p}_i=\\operatorname{softmax}\\left(\\left[\\frac{\\mathbf{q}_i^{\\top}\\mathbf{k}_0}{\\sqrt{d}},\\frac{\\mathbf{q}_i^{\\top}\\mathbf{k}_1}{\\sqrt{d}},\\ldots,\\frac{\\mathbf{q}_i^{\\top}\\mathbf{k}_i}{\\sqrt{d}}\\right]\\right)\n\\tag{9}",
+    "reason": "DCA 公式独立连续编号，移除公式末尾标点",
+    "reference": "https://arxiv.org/html/2402.17463v2#S3"
+  }
+}

@@ -7,7 +7,7 @@
     "slug": "positional-encoding",
     "category": "llm",
     "date": "2026-10-01",
-    "description": "位置编码笔记：RoFormer、RoPE 与 YaRN，涵盖旋转位置编码、相对位置关系、上下文扩展、NTK 插值和注意力温度缩放",
+    "description": "位置编码笔记：RoFormer、RoPE、YaRN 与 DCA，涵盖旋转位置编码、相对位置关系、上下文扩展、NTK 插值、注意力温度缩放和双分块注意力",
     "tags": [
       "位置编码",
       "RoFormer",
@@ -15,10 +15,13 @@
       "Attention",
       "YaRN",
       "长上下文",
-      "NTK 插值"
+      "NTK 插值",
+      "DCA",
+      "Dual Chunk Attention"
     ],
     "appendFiles": [
-      "../notes/positional-encoding/yarn/source.lake"
+      "../notes/positional-encoding/yarn/source.lake",
+      "../notes/positional-encoding/dca/source.lake"
     ]
   },
   {
