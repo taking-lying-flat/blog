@@ -181,13 +181,15 @@
 [data-post="deepseek-ai-ii"] .lake-document > :first-child { margin-top: 0; }
 [data-post="deepseek-ai-ii"] .lake-document :is(#u47166d57, #u4cc2ea74, #u947b4cfd) { text-align: center; }
 
-/* Let mHC's formula-heavy text use the available desktop width. */
+/* Give only the two inline-formula passages extra room on desktop. */
 @media (min-width: 1200px) {
-  .post-page.has-paper-toc:has(> [data-post="deepseek-ai-ii"]) {
-    grid-template-columns: minmax(0, 1280px) var(--toc-width);
-    max-width: calc(1352px + var(--toc-width));
+  [data-post="deepseek-ai-ii"] .lake-document #u4875df5a {
+    width: calc(100% + 16px);
   }
-  .post-page.has-paper-toc.toc-collapsed:has(> [data-post="deepseek-ai-ii"]) {
-    max-width: 1328px;
+}
+@media (min-width: 1440px) {
+  [data-post="deepseek-ai-ii"] .lake-document #u4ec32556 {
+    width: calc(100% + 64px);
+    margin-left: -48px;
   }
 }

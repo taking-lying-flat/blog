@@ -2,8 +2,8 @@
   "desktop": [
     {
       "width": 1280,
-      "textWidth": 1032,
-      "formulaWidth": 1032,
+      "textWidth": 1024,
+      "formulaWidth": 1024,
       "overflow": false,
       "toc": 5,
       "errors": 0,
@@ -33,12 +33,27 @@
         "20"
       ],
       "chineseMath": [],
-      "images": 3
+      "images": 3,
+      "localChanges": {
+        "u4875df5a": {
+          "before": {
+            "left": 60,
+            "width": 992,
+            "height": 55.65625
+          },
+          "after": {
+            "left": 60,
+            "width": 1008,
+            "height": 55.65625
+          }
+        }
+      },
+      "otherParagraphsUnchanged": true
     },
     {
       "width": 1440,
-      "textWidth": 1144,
-      "formulaWidth": 1144,
+      "textWidth": 1024,
+      "formulaWidth": 1024,
       "overflow": false,
       "toc": 5,
       "errors": 0,
@@ -68,12 +83,39 @@
         "20"
       ],
       "chineseMath": [],
-      "images": 3
+      "images": 3,
+      "localChanges": {
+        "u4875df5a": {
+          "before": {
+            "left": 116,
+            "width": 992,
+            "height": 55.65625
+          },
+          "after": {
+            "left": 116,
+            "width": 1008,
+            "height": 55.65625
+          }
+        },
+        "u4ec32556": {
+          "before": {
+            "left": 84,
+            "width": 1024,
+            "height": 83.484375
+          },
+          "after": {
+            "left": 36,
+            "width": 1088,
+            "height": 55.65625
+          }
+        }
+      },
+      "otherParagraphsUnchanged": true
     },
     {
       "width": 1920,
-      "textWidth": 1280,
-      "formulaWidth": 1280,
+      "textWidth": 1024,
+      "formulaWidth": 1024,
       "overflow": false,
       "toc": 5,
       "errors": 0,
@@ -103,7 +145,34 @@
         "20"
       ],
       "chineseMath": [],
-      "images": 3
+      "images": 3,
+      "localChanges": {
+        "u4875df5a": {
+          "before": {
+            "left": 356,
+            "width": 992,
+            "height": 55.65625
+          },
+          "after": {
+            "left": 356,
+            "width": 1008,
+            "height": 55.65625
+          }
+        },
+        "u4ec32556": {
+          "before": {
+            "left": 324,
+            "width": 1024,
+            "height": 83.484375
+          },
+          "after": {
+            "left": 276,
+            "width": 1088,
+            "height": 55.65625
+          }
+        }
+      },
+      "otherParagraphsUnchanged": true
     }
   ],
   "home": {
