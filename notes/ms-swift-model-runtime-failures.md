@@ -307,13 +307,15 @@ if _has_multiple_sequences(cu_seqlens) and (
 def _check_padding_free(args, config):
     if not args.padding_free:
         return
-
     attention_backend = config.attention_backend.name
-    if attention_backend == "unfused":
-        logger.warning(
-            "Attention backend unfused is not supported in "
-            "padding-free mode. Setting args.padding_free to False."
+    message = None
+    if attention_backend == 'unfused':
+        message = (
+            f'Attention backend "{attention_backend}" '
+            'is not supported in padding-free mode'
         )
+    if message:
+        logger.warning(f'{message}. Setting args.padding_free to False.')
         args.padding_free = False
 ```
 

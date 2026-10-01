@@ -424,7 +424,11 @@ template <bool Varlen = true> struct BlockInfo {
                               : seqlen_k_cache + (params.knew_ptr == nullptr
                                                       ? 0
                                                       : params.seqlen_knew)) {}
+```
 
+随后，`q_offset()` 与 `k_offset()` 将累计序列起点换算为内存偏移，使每条样本使用独立的 `Q/K/V` 地址范围
+
+```cpp
     template <typename index_t>
     __forceinline__ __device__ index_t q_offset(const index_t batch_stride,
                                                 const index_t row_stride,

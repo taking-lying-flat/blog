@@ -111,5 +111,10 @@
     "from": "\\begin{aligned}\n\\text{若 } d &< \\frac{d_{\\text{targ}}}{1.5}, \\quad \\beta \\leftarrow \\frac{\\beta}{2} \\\\\n\\text{若 } d &> d_{\\text{targ}} \\times 1.5, \\quad \\beta \\leftarrow 2\\beta\n\\end{aligned}",
     "to": "\\begin{aligned}\n\\text{if } d &< \\frac{d_{\\text{targ}}}{1.5}, \\quad \\beta \\leftarrow \\frac{\\beta}{2} \\\\\n\\text{if } d &> d_{\\text{targ}} \\times 1.5, \\quad \\beta \\leftarrow 2\\beta\n\\end{aligned}",
     "reason": "公式内的条件及说明文字统一为英文，计算、符号和编号不变。"
+  },
+  "KQd4j": {
+    "from": " \\beta = \\sqrt{\\frac{2\\delta}{x^T H x}}，\\theta_{k+1} = \\theta_k + \\sqrt{\\frac{2\\delta}{x^T H x}}\\,x",
+    "to": " \\beta = \\sqrt{\\frac{2\\delta}{x^T H x}},\\theta_{k+1} = \\theta_k + \\sqrt{\\frac{2\\delta}{x^T H x}}\\,x",
+    "reason": "将公式中的中文标点统一为英文标点，不改变数学含义"
   }
 }

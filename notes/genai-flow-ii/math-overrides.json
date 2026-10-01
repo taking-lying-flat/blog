@@ -16,5 +16,10 @@
     "to": "\\pi_{\\mathrm{mode}}(t;s) = \\left|\\frac{d}{dt}f_{\\mathrm{mode}}^{-1}(t;s)\\right|.",
     "reason": "mode 映射单调递减，密度换元必须取逆映射导数绝对值；s=0 时应为正的均匀密度。",
     "reference": "https://arxiv.org/html/2403.03206v1"
+  },
+  "sKys8": {
+    "from": "\\boldsymbol{Z}^{k+1} = \\mathrm{RectFlow}((Z_0^k, Z_1^k))， \\text{ with } (Z_0^0, Z_1^0) = (X_0, X_1)",
+    "to": "\\boldsymbol{Z}^{k+1} = \\mathrm{RectFlow}((Z_0^k, Z_1^k)), \\text{ with } (Z_0^0, Z_1^0) = (X_0, X_1)",
+    "reason": "将公式中的中文标点统一为英文标点，不改变数学含义"
   }
 }

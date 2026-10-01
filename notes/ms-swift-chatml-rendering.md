@@ -377,11 +377,12 @@ assistant: <think>
 
 ```python
 def _set_loss_scale(self):
-    if not self.disable_ignore_empty_think and self.template_meta is not None:
+    if (not self.disable_ignore_empty_think
+            and getattr(self, 'template_meta', None) is not None):
         template_meta = self.template_meta
         if template_meta.is_thinking and template_meta.non_thinking_prefix:
             if self.loss_scale and 'ignore_empty_think' not in self.loss_scale:
-                self.loss_scale += '+ignore_empty_think'
+                self.loss_scale = self.loss_scale + '+ignore_empty_think'
 ```
 
 - `ignore_empty_think` 在字符串形式的 `ChatML context` 中匹配开头的空思考块，将其权重设为 `0`：
@@ -741,32 +742,56 @@ context_list, loss_scale_list = self._pre_tokenize(
 - `Qwen3-Omni` 继承 `qwen.py` 中的 `Qwen2_5OmniTemplate.replace_tag()`，使用 `omni_v3` 分支：
 
 ```python
-def replace_tag(self, media_type, index, inputs):
+def replace_tag(self, media_type: Literal['image', 'video', 'audio'],
+                index: int, inputs: StdTemplateInputs) -> List[Context]:
     from qwen_omni_utils import fetch_image, fetch_video
-
+    kwargs = (
+        {'image_patch_size': self.processor.image_processor.patch_size}
+        if self.version == 'omni_v3' else {}
+    )
+    sampling_rate = inputs.chat_template_kwargs.get('sampling_rate')
+    if sampling_rate is None:
+        sampling_rate = self.sampling_rate
+    if self.mode == 'vllm':
+        inputs.mm_processor_kwargs['do_resize'] = False
     if media_type == 'image':
         inputs.images[index] = fetch_image(
             {'image': inputs.images[index], **inputs.chat_template_kwargs},
-            image_patch_size=self.processor.image_processor.patch_size,
+            **kwargs,
         )
-        return ['<|vision_start|><|image_pad|><|vision_end|>']
-
+        if self.version == 'omni_v2_5':
+            return ['<|vision_bos|><|IMAGE|><|vision_eos|>']
+        elif self.version == 'omni_v3':
+            return ['<|vision_start|><|image_pad|><|vision_end|>']
     elif media_type == 'audio':
         if self.mode != 'vllm':
-            inputs.audios[index] = load_audio(
-                inputs.audios[index], sampling_rate
-            )
-        return ['<|audio_start|><|audio_pad|><|audio_end|>']
+            inputs.audios[index] = load_audio(inputs.audios[index], sampling_rate)
+        if self.version == 'omni_v2_5':
+            return ['<|audio_bos|><|AUDIO|><|audio_eos|>']
+        elif self.version == 'omni_v3':
+            return ['<|audio_start|><|audio_pad|><|audio_end|>']
+```
 
+视频分支记录实际采样帧率，并替换视频标记；以下节选 `use_audio_in_video=False` 的路径
+
+```python
     elif media_type == 'video':
-        video, sample_fps = fetch_video(
-            {'video': inputs.videos[index], **inputs.chat_template_kwargs},
-            return_video_sample_fps=True,
-            image_patch_size=self.processor.image_processor.patch_size,
+        video = inputs.videos[index]
+        video_inputs = {'video': video, **inputs.chat_template_kwargs}
+        if isinstance(video, list):
+            from qwen_omni_utils import vision_process
+            video_inputs['sample_fps'] = vision_process.FPS
+        _video, sample_fps = fetch_video(
+            video_inputs, return_video_sample_fps=True, **kwargs
         )
-        inputs.videos[index] = video
         inputs.mm_processor_kwargs.setdefault('fps', []).append(sample_fps)
-        return ['<|vision_start|><|video_pad|><|vision_end|>']
+        if isinstance(_video, torch.Tensor):
+            _video = _video.to(torch.uint8)
+        inputs.videos[index] = _video
+        if self.version == 'omni_v2_5':
+            return ['<|vision_bos|><|VIDEO|><|vision_eos|>']
+        elif self.version == 'omni_v3':
+            return ['<|vision_start|><|video_pad|><|vision_end|>']
 ```
 
 - `replace_tag()` 同时完成两项变换：**加载媒体数据**，并将 **标准占位符替换为 `Omni` 专用标记**。示例中的 `user` 消息由此变为：

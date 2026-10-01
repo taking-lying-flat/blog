@@ -58,5 +58,10 @@
     "to": "[\\lambda_T,\\lambda_{t_{\\min}}]",
     "reason": "与正的求解终点一致，避免将无穷 log-SNR 作为均匀采样区间端点。",
     "reference": "https://github.com/LuChengTHU/dpm-solver/blob/main/dpm_solver_pytorch.py"
+  },
+  "agS6A": {
+    "from": "s_{\\theta}(\\mathbf{x},t)，",
+    "to": "s_{\\theta}(\\mathbf{x},t),",
+    "reason": "将公式中的中文标点统一为英文标点，不改变数学含义"
   }
 }

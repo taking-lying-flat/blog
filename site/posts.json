@@ -132,6 +132,7 @@
     "format": "lake",
     "tocDepth": 2,
     "slug": "policy-optimization-i",
+    "removeEmptyParagraphs": true,
     "series": "policy-optimization",
     "seriesOrder": 1,
     "category": "llm",
