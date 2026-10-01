@@ -9,7 +9,7 @@
     "seriesOrder": 2,
     "category": "llm",
     "date": "2026-10-01",
-    "description": "DeepSeek-V3.2 与 mHC 笔记：DSA 稀疏注意力、专家蒸馏、GRPO 稳定性改进，以及流形约束超连接和基础设施优化",
+    "description": "DeepSeek-V3.2、mHC 与 Engram 笔记：DSA 稀疏注意力、GRPO 稳定性改进、流形约束超连接，以及 N-gram 条件记忆与系统优化",
     "tags": [
       "DeepSeek",
       "DeepSeek-V3.2",
@@ -17,10 +17,14 @@
       "GRPO",
       "mHC",
       "Sinkhorn–Knopp",
-      "模型架构"
+      "模型架构",
+      "Engram",
+      "N-gram",
+      "条件记忆"
     ],
     "appendFiles": [
-      "../notes/deepseek-ai-ii/source.lake"
+      "../notes/deepseek-ai-ii/source.lake",
+      "../notes/deepseek-ai-ii/engram/source.lake"
     ]
   },
   {

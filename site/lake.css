@@ -193,3 +193,12 @@
     margin-left: -48px;
   }
 }
+
+[data-post="deepseek-ai-ii"] .lake-document .engram-term { white-space: nowrap; }
+[data-post="deepseek-ai-ii"] .lake-document :is(#u6dcce30a, #u24d1ab97) {
+  text-align: center;
+  line-height: 0;
+}
+[data-post="deepseek-ai-ii"] .lake-document :is(#u6dcce30a, #u24d1ab97) .lake-image {
+  margin-block: 12px;
+}

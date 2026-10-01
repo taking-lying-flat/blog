@@ -1,0 +1,22 @@
+{
+  "DyqMg": {
+    "from": "z_{t,n,k}\\triangleq\\varphi_{n,k}(g_{t,n}),\\quad\\mathbf{e}_{t,n,k}=\\mathbf{E}_{n,k}[z_{t,n,k}]. \\tag{1}",
+    "to": "z_{t,n,k}\\triangleq\\varphi_{n,k}(g_{t,n}),\\quad\\mathbf{e}_{t,n,k}=\\mathbf{E}_{n,k}[z_{t,n,k}] \\tag{1}"
+  },
+  "ABNdy": {
+    "from": "\\mathbf{e}_t\\triangleq\\mathop{\\|}\\limits_{n=2}^{N}\\mathop{\\|}\\limits_{k=1}^{K}\\mathbf{e}_{t,n,k}. \\tag{2}",
+    "to": "\\mathbf{e}_t\\triangleq\\mathop{\\|}\\limits_{n=2}^{N}\\mathop{\\|}\\limits_{k=1}^{K}\\mathbf{e}_{t,n,k} \\tag{2}"
+  },
+  "LZyD6": {
+    "from": "\\alpha_t=\\sigma\\left(\\frac{\\text{RMSNorm}(\\mathbf{h}_t)^{\\top}\\text{RMSNorm}(\\mathbf{k}_t)}{\\sqrt{d}}\\right). \\tag{4}",
+    "to": "\\alpha_t=\\sigma\\left(\\frac{\\text{RMSNorm}(\\mathbf{h}_t)^{\\top}\\text{RMSNorm}(\\mathbf{k}_t)}{\\sqrt{d}}\\right) \\tag{4}"
+  },
+  "JvvGP": {
+    "from": "\\mathbf{Y}=\\text{SiLU}\\left(\\text{Conv1D}(\\text{RMSNorm}(\\tilde{\\mathbf{V}}))\\right)+\\tilde{\\mathbf{V}}, \\tag{5}",
+    "to": "\\mathbf{Y}=\\text{SiLU}\\left(\\text{Conv1D}(\\text{RMSNorm}(\\tilde{\\mathbf{V}}))\\right)+\\tilde{\\mathbf{V}} \\tag{5}"
+  },
+  "fz9Yc": {
+    "from": "\\alpha_t^{(m)}=\\sigma\\left(\\frac{\\text{RMSNorm}(\\mathbf{h}_t^{(m)})^{\\top}\\text{RMSNorm}(\\mathbf{W}_K^{(m)}\\mathbf{e}_t)}{\\sqrt{d}}\\right). \\tag{6}",
+    "to": "\\alpha_t^{(m)}=\\sigma\\left(\\frac{\\text{RMSNorm}(\\mathbf{h}_t^{(m)})^{\\top}\\text{RMSNorm}(\\mathbf{W}_K^{(m)}\\mathbf{e}_t)}{\\sqrt{d}}\\right) \\tag{6}"
+  }
+}
