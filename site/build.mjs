@@ -135,14 +135,28 @@ async function renderLakeMath(code, original) {
 const inlineText = (token) => (token?.children ?? []).map((child) =>
   child.type === 'softbreak' || child.type === 'hardbreak' ? ' ' : child.content).join('');
 const slugify = (label) => label.toLowerCase().replace(/[^\p{L}\p{N}\p{M}_\-\s]/gu, '').replace(/\s/g, '-');
-const plainTitle = (title) => title.replace(/[\u{1D400}-\u{1D7FF}]/gu, (letter) => letter.normalize('NFKC'));
-// Match the upright mathematical bold letters used by the Infra title.
-// Keep the ordinary text as the link's accessible name.
-const indexTitle = (title) => plainTitle(title).replace(/[A-Za-z0-9]/g, (letter) => {
-  const code = letter.codePointAt(0);
-  const offset = code >= 97 ? 0x1d41a - 97 : code >= 65 ? 0x1d400 - 65 : 0x1d7ce - 48;
-  return String.fromCodePoint(code + offset);
-});
+// Normalize decorative title letters so the chosen web font renders every title.
+const plainTitle = (title) => title.replace(/[\u{1D400}-\u{1D7FF}\u210E]/gu,
+  (letter) => letter.normalize('NFKC'));
+function normalizeHeadingText(content) {
+  return content.replace(/<h([1-6])\b[^>]*>[\s\S]*?<\/h\1>/gi, (heading) => {
+    if (plainTitle(heading) === heading) return heading;
+    const parsed = adaptor.parse(heading, 'text/html');
+    const visit = (node) => {
+      const kind = adaptor.kind(node);
+      if (kind === '#text') {
+        adaptor.replace(adaptor.text(plainTitle(adaptor.value(node))), node);
+        return;
+      }
+      if (['#comment', 'svg', 'math', 'pre', 'code'].includes(kind) ||
+          /(?:^|\s)(?:lake-math|math-inline|math-display|equation)(?:\s|$)/
+            .test(adaptor.getAttribute(node, 'class') ?? '')) return;
+      for (const child of [...adaptor.childNodes(node)]) visit(child);
+    };
+    visit(adaptor.body(parsed));
+    return adaptor.innerHTML(adaptor.body(parsed));
+  });
+}
 const dateLabel = (date) => new Intl.DateTimeFormat('zh-CN', {
   dateStyle: 'long', timeZone: 'UTC',
 }).format(new Date(`${date}T00:00:00Z`));
@@ -412,6 +426,12 @@ for (const post of posts) {
   post.content = markdown.renderer.render(tokens, markdown.options, { slug: post.slug });
 }
 
+// Keep the existing anchors while presenting all titles in the same typeface.
+for (const post of posts) {
+  post.title = plainTitle(post.title);
+  post.content = normalizeHeadingText(post.content);
+}
+
 function renderPaperToc(post) {
   if (!post.tocDepth) return '';
   if (![1, 2].includes(post.tocDepth)) throw new Error(`Invalid TOC depth: ${post.slug}`);
@@ -499,7 +519,7 @@ const home = page({
       return `<section class="post-group" data-category="${id}" aria-labelledby="category-${id}">
       <div class="post-group-heading"><h2 id="category-${id}">${escape(title)}</h2><span>${categoryPosts.length} 篇</span></div>
       <div class="post-list">${categoryPosts.map((post) => `<article class="post-entry">
-      <h3><a href="${post.route}" aria-label="${escape(plainTitle(post.title))}">${escape(indexTitle(post.title))}</a></h3>
+      <h3><a href="${post.route}" aria-label="${escape(plainTitle(post.title))}">${escape(post.title)}</a></h3>
       <footer class="entry-footer">
         <div class="entry-details">
           <div class="post-meta">${metadata(post)}</div>
