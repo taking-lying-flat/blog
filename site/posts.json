@@ -1,15 +1,16 @@
 [
   {
-    "file": "../notes/training-infrastructure/megatron/source.lake",
+    "file": "../notes/training-infrastructure/gradient-checkpointing/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
     "tocDepth": 2,
     "slug": "training-infrastructure",
     "category": "llm",
     "date": "2026-10-02",
-    "description": "训练基础设施笔记：Megatron-LM 的张量并行、注意力与词表并行，以及 DeepSpeed ZeRO 的模型状态分片、显存优化和通信量分析",
+    "description": "训练基础设施笔记：梯度检查点的重计算与内存优化、Megatron-LM 的张量并行，以及 DeepSpeed ZeRO 的模型状态分片、显存优化和通信量分析",
     "tags": [
       "训练基础设施",
+      "梯度检查点",
       "Megatron-LM",
       "张量并行",
       "DeepSpeed",
@@ -18,6 +19,7 @@
       "显存优化"
     ],
     "appendFiles": [
+      "../notes/training-infrastructure/megatron/source.lake",
       "../notes/training-infrastructure/source.lake"
     ]
   },

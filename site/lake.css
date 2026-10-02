@@ -211,6 +211,6 @@
 [data-post="positional-encoding"] .lake-document :is(#u0ed08144, #ue04947a2) .lake-image { margin-block: 12px; }
 
 /* Preserve the authored training diagram sizes without an extra inline baseline. */
-[data-post="training-infrastructure"] .lake-document :is(#uae304c25, #uaeafb4cb, #u096235a8, #u9eac8865) { text-align: center; line-height: 0; }
-[data-post="training-infrastructure"] .lake-document :is(#uae304c25, #uaeafb4cb, #u096235a8, #u9eac8865) .lake-image { margin-block: 12px; }
+[data-post="training-infrastructure"] .lake-document :is(#uae304c25, #uaeafb4cb, #u096235a8, #u9eac8865, #udd6093c0, #uff5f8f65, #uac364623, #u0e592e46) { text-align: center; line-height: 0; }
+[data-post="training-infrastructure"] .lake-document :is(#uae304c25, #uaeafb4cb, #u096235a8, #u9eac8865, #udd6093c0, #uff5f8f65, #uac364623, #u0e592e46) .lake-image { margin-block: 12px; }
 [data-post="training-infrastructure"] .lake-document #u9c6bede3 { font-weight: 700; }
