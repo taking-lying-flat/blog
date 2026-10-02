@@ -1,0 +1,7 @@
+{
+  "d1cit": {
+    "from": "X = [X_1, X_2], \\quad A = \\begin{bmatrix} A_1 \\\\ A_2 \\end{bmatrix}.\n\\tag{2}",
+    "to": "X = [X_1, X_2], \\quad A = \\begin{bmatrix} A_1 \\\\ A_2 \\end{bmatrix}\n\\tag{2}",
+    "reason": "移除公式末尾标点，保留原有编号与矩阵划分"
+  }
+}

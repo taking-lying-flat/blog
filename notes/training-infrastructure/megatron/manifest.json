@@ -1,0 +1,1072 @@
+{
+  "source": {
+    "file": "source.lake",
+    "sha256": "646d8c61e143ffdfc8b4e9ba6b0ce435ae3690c6d2bbf9e42517ab87f9835f05",
+    "bytes": 24714,
+    "title": "🚋 𝓜𝓮𝓰𝓪𝓽𝓻𝓸𝓷",
+    "section": "Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism"
+  },
+  "title": "Infra Training Infrastructure",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "counts": {
+    "math": 20,
+    "images": 3,
+    "separators": 0
+  },
+  "assets": [
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/b1c5568a3a92e2de6fdcee9bc3621378.svg",
+      "file": "assets/math/b1c5568a3a92e2de6fdcee9bc3621378.svg",
+      "bytes": 6977,
+      "sha256": "b04e88321e539c0bfff60c0cedfda6dc1de60cd2771c617442fe230c18e6b0bf",
+      "width": "99.999ex",
+      "height": "2.843ex",
+      "viewBox": "-10.5 -863.1 43055 1223.9",
+      "style": "vertical-align: -0.838ex; margin-left: -0.024ex; max-width: 60000px;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/de951302f41d4707b9d80ca1af34dd0f.svg",
+      "file": "assets/math/de951302f41d4707b9d80ca1af34dd0f.svg",
+      "bytes": 1078,
+      "sha256": "72853781717f9c1b961aa5ef04fb750092dc915ef06c75fcc069b6ef6f2066d3",
+      "width": "1.743ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 750.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/94e79ad0c1aabeafef9e2fc4af6adf66.svg",
+      "file": "assets/math/94e79ad0c1aabeafef9e2fc4af6adf66.svg",
+      "bytes": 1518,
+      "sha256": "cf4ee215637f8e67db65af38ce9f05a1a150a5f7c8f8847b362f59aca198731e",
+      "width": "1.98ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 852.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/136f15a5422718a33681cfe195e19424.svg",
+      "file": "assets/math/136f15a5422718a33681cfe195e19424.svg",
+      "bytes": 6331,
+      "sha256": "7714fb3d5d206fe1baca9882c30220b54f8d4bda6284a2f0b2f1e7aa092e6dd7",
+      "width": "99.999ex",
+      "height": "6.176ex",
+      "viewBox": "-10.5 -1580.7 43055 2659.1",
+      "style": "vertical-align: -2.505ex; margin-left: -0.024ex; max-width: 60000px;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/5af84d2ef1be31f296b2a7dd4dca4c39.svg",
+      "file": "assets/math/5af84d2ef1be31f296b2a7dd4dca4c39.svg",
+      "bytes": 7883,
+      "sha256": "59b26f3ed6a0f1613ccdd2723303c4c711064e80fc06b9c33a766c8a44f6d24f",
+      "width": "27.126ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 11679.1 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/4eff67e6b429f86a6ee87a4d914bec28.svg",
+      "file": "assets/math/4eff67e6b429f86a6ee87a4d914bec28.svg",
+      "bytes": 8591,
+      "sha256": "8811c990c40e5a994cf1ddede8acd17e7c494fe8b040449e21b55104e9534868",
+      "width": "55.469ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 23882.2 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/ddce8c59fb4c97ba97ea9c22daf7782c.svg",
+      "file": "assets/math/ddce8c59fb4c97ba97ea9c22daf7782c.svg",
+      "bytes": 3141,
+      "sha256": "6cbe5c3ba1b4db2a6b980c422bc05a8fdcd2ee90bf6470a7042a0a191bdb0baf",
+      "width": "12.764ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 5495.5 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/3471c5337c58fac1675f8ae7d101fc22.svg",
+      "file": "assets/math/3471c5337c58fac1675f8ae7d101fc22.svg",
+      "bytes": 9975,
+      "sha256": "270adab4032c7a6873b094e0ef69953a6fd0760e5b93145cd9b5b82bfe046729",
+      "width": "99.999ex",
+      "height": "2.843ex",
+      "viewBox": "-10.5 -863.1 43055 1223.9",
+      "style": "vertical-align: -0.838ex; margin-left: -0.024ex; max-width: 60000px;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790934946532-9d192acc-5dc3-47e1-95ef-ce0249a5cdfa.png",
+      "file": "assets/images/1790934946532-9d192acc-5dc3-47e1-95ef-ce0249a5cdfa.png",
+      "bytes": 180223,
+      "sha256": "39e0d7b5c71ea9d5faabc2844107381fcabd7a125941b820ca74c628bf249c08",
+      "width": 960,
+      "height": 429
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790935107653-2da202b4-bb11-49d5-a9fe-238c7cef4549.png",
+      "file": "assets/images/1790935107653-2da202b4-bb11-49d5-a9fe-238c7cef4549.png",
+      "bytes": 246979,
+      "sha256": "1b2d163eb2d1f27c620253bcd9f68b804c01628d5549fd1dd263ba5222b679e1",
+      "width": 1124,
+      "height": 532
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790935145845-b8acad9f-cded-4e1c-987f-3a7650f39368.png",
+      "file": "assets/images/1790935145845-b8acad9f-cded-4e1c-987f-3a7650f39368.png",
+      "bytes": 390066,
+      "sha256": "cb324ed35b74c0b30df1ec8753fc2e03e87ca480e81ef1a14a529153a03b9701",
+      "width": 1426,
+      "height": 657
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/ff1b78684db901dd0b7bfa173991deab.svg",
+      "file": "assets/math/ff1b78684db901dd0b7bfa173991deab.svg",
+      "bytes": 1661,
+      "sha256": "51aa4da39ec04f85106608a0a47c0521837d213d1d7b9bc8e46f198ca9eed1c6",
+      "width": "2.064ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 888.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/a770a282bbfa0ae1ec474b7ed311656d.svg",
+      "file": "assets/math/a770a282bbfa0ae1ec474b7ed311656d.svg",
+      "bytes": 1051,
+      "sha256": "d7ca29c4366577d77b915787f62775183f19f1150e202d3692fb0faa1bfa786b",
+      "width": "1.128ex",
+      "height": "1.676ex",
+      "viewBox": "0 -576.1 485.5 721.6",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/6adddf54d32b3d08d3921fc239bcb642.svg",
+      "file": "assets/math/6adddf54d32b3d08d3921fc239bcb642.svg",
+      "bytes": 3705,
+      "sha256": "c2538a905f8418074f2be922a3f53e6923897dce19c726ee30b999c08684b59b",
+      "width": "5.483ex",
+      "height": "2.509ex",
+      "viewBox": "0 -791.3 2360.5 1080.4",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/623fefdf5f9307b3d10336c190348312.svg",
+      "file": "assets/math/623fefdf5f9307b3d10336c190348312.svg",
+      "bytes": 3405,
+      "sha256": "08493b4d186836ca9da5f3e155b3ce5dd0d246727b7a0a822f8dc82a13e297ab",
+      "width": "12.741ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 5485.5 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/346fefb9756055f2f3da3dfd3166736a.svg",
+      "file": "assets/math/346fefb9756055f2f3da3dfd3166736a.svg",
+      "bytes": 5853,
+      "sha256": "0d917838bc6be48c791989afa80a11372de8f10f494095ba35462f69dc19a2e6",
+      "width": "22.062ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 9499 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/ed10b925dc3fac96cd61e92c96d56ca6.svg",
+      "file": "assets/math/ed10b925dc3fac96cd61e92c96d56ca6.svg",
+      "bytes": 8685,
+      "sha256": "2f43b8f163592e5d795e66c56b51c442b649f15881665873d9ca54baf98e8406",
+      "width": "23.515ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 10124.5 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/cb43fdc89d2b1e9b0eae8cdf8202b2cb.svg",
+      "file": "assets/math/cb43fdc89d2b1e9b0eae8cdf8202b2cb.svg",
+      "bytes": 2791,
+      "sha256": "83126fe3e054a2a1cf7b90527317fa066f019fe7f8662dd2e9e9c356048e8d4f",
+      "width": "8.896ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 3830.4 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/d29c2e5f4926e5b0e9a95305650f6e54.svg",
+      "file": "assets/math/d29c2e5f4926e5b0e9a95305650f6e54.svg",
+      "bytes": 1052,
+      "sha256": "2c5450148cf748301eace78fe0ef930aefccdb39b8d869ed4958c9ebca67af47",
+      "width": "0.998ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 429.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/79ce3c7a71877c2ff01695e38ade43ca.svg",
+      "file": "assets/math/79ce3c7a71877c2ff01695e38ade43ca.svg",
+      "bytes": 1095,
+      "sha256": "635909dad16a3a4f66b00371494e4c5091b8ee68eec2ace7a3d87c3f6e607933",
+      "width": "1.09ex",
+      "height": "1.676ex",
+      "viewBox": "0 -576.1 469.5 721.6",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/6a43220d93408d9055be22fe824b262a.svg",
+      "file": "assets/math/6a43220d93408d9055be22fe824b262a.svg",
+      "bytes": 3119,
+      "sha256": "5707363a28eac42ef22c2fb150e860e91cb3316fea5dedae65e3f6ccfa713470",
+      "width": "7.137ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 3073 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/bfb798949377243ef9a27e74c4fc9912.svg",
+      "file": "assets/math/bfb798949377243ef9a27e74c4fc9912.svg",
+      "bytes": 2140,
+      "sha256": "b2cfa70be3b21fae8d160e147e402ef45a74346630472bd82096c1c84c2ba759",
+      "width": "4.928ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 2121.9 936.9",
+      "style": "vertical-align: -0.338ex;"
+    }
+  ],
+  "cards": [
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22Y%20%3D%20%5C%5Coperatorname%7BGeLU%7D(XA)%5Cn%5C%5Ctag%7B1%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fb1c5568a3a92e2de6fdcee9bc3621378.svg%22%2C%22id%22%3A%22XDnka%22%7D"
+      },
+      "value": {
+        "code": "Y = \\operatorname{GeLU}(XA)\n\\tag{1}",
+        "src": "https://cdn.nlark.com/yuque/__latex/b1c5568a3a92e2de6fdcee9bc3621378.svg",
+        "id": "XDnka"
+      },
+      "asset": "assets/math/b1c5568a3a92e2de6fdcee9bc3621378.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22A%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fde951302f41d4707b9d80ca1af34dd0f.svg%22%2C%22id%22%3A%22YGan6%22%7D"
+      },
+      "value": {
+        "code": "A",
+        "src": "https://cdn.nlark.com/yuque/__latex/de951302f41d4707b9d80ca1af34dd0f.svg",
+        "id": "YGan6"
+      },
+      "asset": "assets/math/de951302f41d4707b9d80ca1af34dd0f.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22X%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F94e79ad0c1aabeafef9e2fc4af6adf66.svg%22%2C%22id%22%3A%22YebWe%22%7D"
+      },
+      "value": {
+        "code": "X",
+        "src": "https://cdn.nlark.com/yuque/__latex/94e79ad0c1aabeafef9e2fc4af6adf66.svg",
+        "id": "YebWe"
+      },
+      "asset": "assets/math/94e79ad0c1aabeafef9e2fc4af6adf66.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22X%20%3D%20%5BX_1%2C%20X_2%5D%2C%20%5C%5Cquad%20A%20%3D%20%5C%5Cbegin%7Bbmatrix%7D%20A_1%20%5C%5C%5C%5C%20A_2%20%5C%5Cend%7Bbmatrix%7D.%5Cn%5C%5Ctag%7B2%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F136f15a5422718a33681cfe195e19424.svg%22%2C%22id%22%3A%22d1cit%22%7D"
+      },
+      "value": {
+        "code": "X = [X_1, X_2], \\quad A = \\begin{bmatrix} A_1 \\\\ A_2 \\end{bmatrix}.\n\\tag{2}",
+        "src": "https://cdn.nlark.com/yuque/__latex/136f15a5422718a33681cfe195e19424.svg",
+        "id": "d1cit"
+      },
+      "asset": "assets/math/136f15a5422718a33681cfe195e19424.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22Y%20%3D%20%5C%5Coperatorname%7BGeLU%7D(X_1A_1%20%2B%20X_2A_2)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F5af84d2ef1be31f296b2a7dd4dca4c39.svg%22%2C%22id%22%3A%22kAxtu%22%7D"
+      },
+      "value": {
+        "code": "Y = \\operatorname{GeLU}(X_1A_1 + X_2A_2)",
+        "src": "https://cdn.nlark.com/yuque/__latex/5af84d2ef1be31f296b2a7dd4dca4c39.svg",
+        "id": "kAxtu"
+      },
+      "asset": "assets/math/5af84d2ef1be31f296b2a7dd4dca4c39.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Coperatorname%7BGeLU%7D(X_1A_1%20%2B%20X_2A_2)%20%5C%5Cneq%20%5C%5Coperatorname%7BGeLU%7D(X_1A_1)%20%2B%20%5C%5Coperatorname%7BGeLU%7D(X_2A_2)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F4eff67e6b429f86a6ee87a4d914bec28.svg%22%2C%22id%22%3A%22Swl1r%22%7D"
+      },
+      "value": {
+        "code": "\\operatorname{GeLU}(X_1A_1 + X_2A_2) \\neq \\operatorname{GeLU}(X_1A_1) + \\operatorname{GeLU}(X_2A_2)",
+        "src": "https://cdn.nlark.com/yuque/__latex/4eff67e6b429f86a6ee87a4d914bec28.svg",
+        "id": "Swl1r"
+      },
+      "asset": "assets/math/4eff67e6b429f86a6ee87a4d914bec28.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22A%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fde951302f41d4707b9d80ca1af34dd0f.svg%22%2C%22id%22%3A%22G9Dvv%22%7D"
+      },
+      "value": {
+        "code": "A",
+        "src": "https://cdn.nlark.com/yuque/__latex/de951302f41d4707b9d80ca1af34dd0f.svg",
+        "id": "G9Dvv"
+      },
+      "asset": "assets/math/de951302f41d4707b9d80ca1af34dd0f.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22A%20%3D%20%5BA_1%2C%20A_2%5D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fddce8c59fb4c97ba97ea9c22daf7782c.svg%22%2C%22id%22%3A%22ZH4g6%22%7D"
+      },
+      "value": {
+        "code": "A = [A_1, A_2]",
+        "src": "https://cdn.nlark.com/yuque/__latex/ddce8c59fb4c97ba97ea9c22daf7782c.svg",
+        "id": "ZH4g6"
+      },
+      "asset": "assets/math/ddce8c59fb4c97ba97ea9c22daf7782c.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5BY_1%2C%20Y_2%5D%20%3D%20%5B%5C%5Coperatorname%7BGeLU%7D(XA_1)%2C%20%5C%5Coperatorname%7BGeLU%7D(XA_2)%5D%5Cn%5C%5Ctag%7B3%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F3471c5337c58fac1675f8ae7d101fc22.svg%22%2C%22id%22%3A%22bwtrf%22%7D"
+      },
+      "value": {
+        "code": "[Y_1, Y_2] = [\\operatorname{GeLU}(XA_1), \\operatorname{GeLU}(XA_2)]\n\\tag{3}",
+        "src": "https://cdn.nlark.com/yuque/__latex/3471c5337c58fac1675f8ae7d101fc22.svg",
+        "id": "bwtrf"
+      },
+      "asset": "assets/math/3471c5337c58fac1675f8ae7d101fc22.svg"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790934946532-9d192acc-5dc3-47e1-95ef-ce0249a5cdfa.png%22%2C%22taskId%22%3A%22u105e4440-4611-4d2e-a70f-76c888d3c79%22%2C%22clientId%22%3A%22uac272bee-8d23-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A506%2C%22height%22%3A226%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A180223%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A960%2C%22originHeight%22%3A429%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22stroke%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22Z%3DDROPOUT(YB)%22%2C%22x%22%3A619%2C%22y%22%3A22%2C%22width%22%3A198%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22A%3D%5BA%2CA2%5D%22%2C%22x%22%3A168%2C%22y%22%3A332%2C%22width%22%3A129%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%22%3DGELU(XA%22%2C%22x%22%3A152%2C%22y%22%3A20%2C%22width%22%3A167%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22%E7%A6%8F%22%2C%22x%22%3A385%2C%22y%22%3A218%2C%22width%22%3A15%2C%22height%22%3A63%7D%2C%7B%22text%22%3A%22%E9%87%8F%22%2C%22x%22%3A384%2C%22y%22%3A83%2C%22width%22%3A17%2C%22height%22%3A60%7D%2C%7B%22text%22%3A%221%22%2C%22x%22%3A16%2C%22y%22%3A87%2C%22width%22%3A14%2C%22height%22%3A236%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A824%2C%22y%22%3A141%2C%22width%22%3A12%2C%22height%22%3A76%7D%2C%7B%22text%22%3A%22XA2%22%2C%22x%22%3A271%2C%22y%22%3A243%2C%22width%22%3A50%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22Y2B2%22%2C%22x%22%3A568%2C%22y%22%3A246%2C%22width%22%3A42%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22YB1%22%2C%22x%22%3A563%2C%22y%22%3A111%2C%22width%22%3A51%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22XA%22%2C%22x%22%3A270%2C%22y%22%3A110%2C%22width%22%3A47%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2222%22%2C%22x%22%3A673%2C%22y%22%3A247%2C%22width%22%3A26%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A50%2C%22y%22%3A127%2C%22width%22%3A19%2C%22height%22%3A113%7D%2C%7B%22text%22%3A%22B%22%2C%22x%22%3A711%2C%22y%22%3A357%2C%22width%22%3A36%2C%22height%22%3A37%7D%2C%7B%22text%22%3A%22B1%22%2C%22x%22%3A714%2C%22y%22%3A333%2C%22width%22%3A32%2C%22height%22%3A30%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23e4d8c8%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22uaa1531b3%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790934946532-9d192acc-5dc3-47e1-95ef-ce0249a5cdfa.png",
+        "taskId": "u105e4440-4611-4d2e-a70f-76c888d3c79",
+        "clientId": "uac272bee-8d23-4",
+        "originalType": "binary",
+        "width": 506,
+        "height": 226,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 180223,
+        "from": "paste",
+        "originWidth": 960,
+        "originHeight": 429,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "stroke",
+        "ocrLocations": [
+          {
+            "text": "Z=DROPOUT(YB)",
+            "x": 619,
+            "y": 22,
+            "width": 198,
+            "height": 24
+          },
+          {
+            "text": "A=[A,A2]",
+            "x": 168,
+            "y": 332,
+            "width": 129,
+            "height": 26
+          },
+          {
+            "text": "=GELU(XA",
+            "x": 152,
+            "y": 20,
+            "width": 167,
+            "height": 27
+          },
+          {
+            "text": "福",
+            "x": 385,
+            "y": 218,
+            "width": 15,
+            "height": 63
+          },
+          {
+            "text": "量",
+            "x": 384,
+            "y": 83,
+            "width": 17,
+            "height": 60
+          },
+          {
+            "text": "1",
+            "x": 16,
+            "y": 87,
+            "width": 14,
+            "height": 236
+          },
+          {
+            "text": "",
+            "x": 824,
+            "y": 141,
+            "width": 12,
+            "height": 76
+          },
+          {
+            "text": "XA2",
+            "x": 271,
+            "y": 243,
+            "width": 50,
+            "height": 23
+          },
+          {
+            "text": "Y2B2",
+            "x": 568,
+            "y": 246,
+            "width": 42,
+            "height": 20
+          },
+          {
+            "text": "YB1",
+            "x": 563,
+            "y": 111,
+            "width": 51,
+            "height": 21
+          },
+          {
+            "text": "XA",
+            "x": 270,
+            "y": 110,
+            "width": 47,
+            "height": 22
+          },
+          {
+            "text": "22",
+            "x": 673,
+            "y": 247,
+            "width": 26,
+            "height": 19
+          },
+          {
+            "text": "",
+            "x": 50,
+            "y": 127,
+            "width": 19,
+            "height": 113
+          },
+          {
+            "text": "B",
+            "x": 711,
+            "y": 357,
+            "width": 36,
+            "height": 37
+          },
+          {
+            "text": "B1",
+            "x": 714,
+            "y": 333,
+            "width": 32,
+            "height": 30
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#e4d8c8",
+        "__spacing": "both",
+        "id": "uaa1531b3",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1790934946532-9d192acc-5dc3-47e1-95ef-ce0249a5cdfa.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790935107653-2da202b4-bb11-49d5-a9fe-238c7cef4549.png%22%2C%22taskId%22%3A%22u9aec873c-bff4-423c-9d06-29da56544ce%22%2C%22clientId%22%3A%22uac272bee-8d23-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A494.20001220703125%2C%22height%22%3A234%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A246979%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1124%2C%22originHeight%22%3A532%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22stroke%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22%3DSELF-ATTENTION(X%22%2C%22x%22%3A252%2C%22y%22%3A36%2C%22width%22%3A211%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22G%3DDROPOUT(YB)%22%2C%22x%22%3A781%2C%22y%22%3A94%2C%22width%22%3A194%2C%22height%22%3A28%7D%2C%7B%22text%22%3A%22K%3D%5BK%2CK%22%2C%22x%22%3A416%2C%22y%22%3A446%2C%22width%22%3A125%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22B%3D2%22%2C%22x%22%3A814%2C%22y%22%3A389%2C%22width%22%3A95%2C%22height%22%3A48%7D%2C%7B%22text%22%3A%22SPLITATTENTIONHEADS-%22%2C%22x%22%3A164%2C%22y%22%3A453%2C%22width%22%3A212%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%3DV%2CL%22%2C%22x%22%3A428%2C%22y%22%3A476%2C%22width%22%3A113%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A449%2C%22y%22%3A142%2C%22width%22%3A9%2C%22height%22%3A74%7D%2C%7B%22text%22%3A%22Q%3D%5BQ1Q2%22%2C%22x%22%3A417%2C%22y%22%3A423%2C%22width%22%3A123%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A519%2C%22y%22%3A273%2C%22width%22%3A14%2C%22height%22%3A58%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A521%2C%22y%22%3A136%2C%22width%22%3A11%2C%22height%22%3A76%7D%2C%7B%22text%22%3A%22%E9%A9%AC%22%2C%22x%22%3A377%2C%22y%22%3A148%2C%22width%22%3A19%2C%22height%22%3A44%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A452%2C%22y%22%3A287%2C%22width%22%3A9%2C%22height%22%3A44%7D%2C%7B%22text%22%3A%22YB%22%2C%22x%22%3A718%2C%22y%22%3A174%2C%22width%22%3A66%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A968%2C%22y%22%3A191%2C%22width%22%3A16%2C%22height%22%3A77%7D%2C%7B%22text%22%3A%22Q2%22%2C%22x%22%3A284%2C%22y%22%3A333%2C%22width%22%3A30%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%E4%B8%80%22%2C%22x%22%3A482%2C%22y%22%3A166%2C%22width%22%3A15%2C%22height%22%3A34%7D%2C%7B%22text%22%3A%22Q1%22%2C%22x%22%3A288%2C%22y%22%3A152%2C%22width%22%3A24%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22V%22%2C%22x%22%3A273%2C%22y%22%3A98%2C%22width%22%3A47%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22Z%22%2C%22x%22%3A830%2C%22y%22%3A173%2C%22width%22%3A27%2C%22height%22%3A29%7D%2C%7B%22text%22%3A%22%E5%AD%90%22%2C%22x%22%3A378%2C%22y%22%3A320%2C%22width%22%3A11%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22T%E4%B8%87%22%2C%22x%22%3A285%2C%22y%22%3A378%2C%22width%22%3A29%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22K2%22%2C%22x%22%3A279%2C%22y%22%3A280%2C%22width%22%3A34%2C%22height%22%3A18%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f7f5f3%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22plmXr%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790935107653-2da202b4-bb11-49d5-a9fe-238c7cef4549.png",
+        "taskId": "u9aec873c-bff4-423c-9d06-29da56544ce",
+        "clientId": "uac272bee-8d23-4",
+        "originalType": "binary",
+        "width": 494.20001220703125,
+        "height": 234,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 246979,
+        "from": "paste",
+        "originWidth": 1124,
+        "originHeight": 532,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "stroke",
+        "ocrLocations": [
+          {
+            "text": "=SELF-ATTENTION(X",
+            "x": 252,
+            "y": 36,
+            "width": 211,
+            "height": 21
+          },
+          {
+            "text": "G=DROPOUT(YB)",
+            "x": 781,
+            "y": 94,
+            "width": 194,
+            "height": 28
+          },
+          {
+            "text": "K=[K,K",
+            "x": 416,
+            "y": 446,
+            "width": 125,
+            "height": 27
+          },
+          {
+            "text": "B=2",
+            "x": 814,
+            "y": 389,
+            "width": 95,
+            "height": 48
+          },
+          {
+            "text": "SPLITATTENTIONHEADS-",
+            "x": 164,
+            "y": 453,
+            "width": 212,
+            "height": 17
+          },
+          {
+            "text": "=V,L",
+            "x": 428,
+            "y": 476,
+            "width": 113,
+            "height": 24
+          },
+          {
+            "text": "",
+            "x": 449,
+            "y": 142,
+            "width": 9,
+            "height": 74
+          },
+          {
+            "text": "Q=[Q1Q2",
+            "x": 417,
+            "y": 423,
+            "width": 123,
+            "height": 24
+          },
+          {
+            "text": "",
+            "x": 519,
+            "y": 273,
+            "width": 14,
+            "height": 58
+          },
+          {
+            "text": "",
+            "x": 521,
+            "y": 136,
+            "width": 11,
+            "height": 76
+          },
+          {
+            "text": "马",
+            "x": 377,
+            "y": 148,
+            "width": 19,
+            "height": 44
+          },
+          {
+            "text": "",
+            "x": 452,
+            "y": 287,
+            "width": 9,
+            "height": 44
+          },
+          {
+            "text": "YB",
+            "x": 718,
+            "y": 174,
+            "width": 66,
+            "height": 24
+          },
+          {
+            "text": "",
+            "x": 968,
+            "y": 191,
+            "width": 16,
+            "height": 77
+          },
+          {
+            "text": "Q2",
+            "x": 284,
+            "y": 333,
+            "width": 30,
+            "height": 17
+          },
+          {
+            "text": "一",
+            "x": 482,
+            "y": 166,
+            "width": 15,
+            "height": 34
+          },
+          {
+            "text": "Q1",
+            "x": 288,
+            "y": 152,
+            "width": 24,
+            "height": 17
+          },
+          {
+            "text": "V",
+            "x": 273,
+            "y": 98,
+            "width": 47,
+            "height": 22
+          },
+          {
+            "text": "Z",
+            "x": 830,
+            "y": 173,
+            "width": 27,
+            "height": 29
+          },
+          {
+            "text": "子",
+            "x": 378,
+            "y": 320,
+            "width": 11,
+            "height": 24
+          },
+          {
+            "text": "T万",
+            "x": 285,
+            "y": 378,
+            "width": 29,
+            "height": 18
+          },
+          {
+            "text": "K2",
+            "x": 279,
+            "y": 280,
+            "width": 34,
+            "height": 18
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f7f5f3",
+        "__spacing": "both",
+        "id": "plmXr",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1790935107653-2da202b4-bb11-49d5-a9fe-238c7cef4549.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790935145845-b8acad9f-cded-4e1c-987f-3a7650f39368.png%22%2C%22taskId%22%3A%22u5deac1f4-88a1-42d8-9195-c33206709dd%22%2C%22clientId%22%3A%22uac272bee-8d23-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A527%2C%22height%22%3A243%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A390066%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1426%2C%22originHeight%22%3A657%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22stroke%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22(FORWARD%2BBACKWARD)%22%2C%22x%22%3A784%2C%22y%22%3A600%2C%22width%22%3A396%2C%22height%22%3A39%7D%2C%7B%22text%22%3A%22(FORWARD%2BBACKWARD%22%2C%22x%22%3A214%2C%22y%22%3A594%2C%22width%22%3A391%2C%22height%22%3A37%7D%2C%7B%22text%22%3A%222ALL-REDUCE%22%2C%22x%22%3A844%2C%22y%22%3A548%2C%22width%22%3A270%2C%22height%22%3A38%7D%2C%7B%22text%22%3A%222ALL-REDUCE%22%2C%22x%22%3A268%2C%22y%22%3A541%2C%22width%22%3A272%2C%22height%22%3A41%7D%2C%7B%22text%22%3A%22%E5%A4%A7%22%2C%22x%22%3A153%2C%22y%22%3A83%2C%22width%22%3A32%2C%22height%22%3A234%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A279%2C%22y%22%3A98%2C%22width%22%3A29%2C%22height%22%3A183%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A723%2C%22y%22%3A88%2C%22width%22%3A32%2C%22height%22%3A224%7D%2C%7B%22text%22%3A%22PARALLEL%22%2C%22x%22%3A300%2C%22y%22%3A452%2C%22width%22%3A141%2C%22height%22%3A37%7D%2C%7B%22text%22%3A%22%E5%A4%8F%22%2C%22x%22%3A538%2C%22y%22%3A93%2C%22width%22%3A36%2C%22height%22%3A194%7D%2C%7B%22text%22%3A%22PARALLEL%22%2C%22x%22%3A904%2C%22y%22%3A452%2C%22width%22%3A141%2C%22height%22%3A37%7D%2C%7B%22text%22%3A%22%E5%A4%8F%22%2C%22x%22%3A1180%2C%22y%22%3A103%2C%22width%22%3A35%2C%22height%22%3A195%7D%2C%7B%22text%22%3A%22%E9%87%8F%22%2C%22x%22%3A1067%2C%22y%22%3A121%2C%22width%22%3A39%2C%22height%22%3A148%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A850%2C%22y%22%3A124%2C%22width%22%3A34%2C%22height%22%3A147%7D%2C%7B%22text%22%3A%22MODEL%22%2C%22x%22%3A311%2C%22y%22%3A402%2C%22width%22%3A122%2C%22height%22%3A38%7D%2C%7B%22text%22%3A%22MODEL%22%2C%22x%22%3A920%2C%22y%22%3A400%2C%22width%22%3A118%2C%22height%22%3A37%7D%2C%7B%22text%22%3A%228%22%2C%22x%22%3A958%2C%22y%22%3A113%2C%22width%22%3A41%2C%22height%22%3A144%7D%2C%7B%22text%22%3A%22%E8%87%B3%22%2C%22x%22%3A327%2C%22y%22%3A135%2C%22width%22%3A36%2C%22height%22%3A106%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A429%2C%22y%22%3A123%2C%22width%22%3A35%2C%22height%22%3A142%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A1136%2C%22y%22%3A133%2C%22width%22%3A24%2C%22height%22%3A125%7D%2C%7B%22text%22%3A%22%E4%B8%AD%22%2C%22x%22%3A372%2C%22y%22%3A153%2C%22width%22%3A30%2C%22height%22%3A81%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A1301%2C%22y%22%3A182%2C%22width%22%3A45%2C%22height%22%3A37%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A495%2C%22y%22%3A142%2C%22width%22%3A23%2C%22height%22%3A113%7D%2C%7B%22text%22%3A%22%E4%B9%8B%22%2C%22x%22%3A596%2C%22y%22%3A168%2C%22width%22%3A32%2C%22height%22%3A60%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23efefed%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u23cd0917%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790935145845-b8acad9f-cded-4e1c-987f-3a7650f39368.png",
+        "taskId": "u5deac1f4-88a1-42d8-9195-c33206709dd",
+        "clientId": "uac272bee-8d23-4",
+        "originalType": "binary",
+        "width": 527,
+        "height": 243,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 390066,
+        "from": "paste",
+        "originWidth": 1426,
+        "originHeight": 657,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "stroke",
+        "ocrLocations": [
+          {
+            "text": "(FORWARD+BACKWARD)",
+            "x": 784,
+            "y": 600,
+            "width": 396,
+            "height": 39
+          },
+          {
+            "text": "(FORWARD+BACKWARD",
+            "x": 214,
+            "y": 594,
+            "width": 391,
+            "height": 37
+          },
+          {
+            "text": "2ALL-REDUCE",
+            "x": 844,
+            "y": 548,
+            "width": 270,
+            "height": 38
+          },
+          {
+            "text": "2ALL-REDUCE",
+            "x": 268,
+            "y": 541,
+            "width": 272,
+            "height": 41
+          },
+          {
+            "text": "大",
+            "x": 153,
+            "y": 83,
+            "width": 32,
+            "height": 234
+          },
+          {
+            "text": "",
+            "x": 279,
+            "y": 98,
+            "width": 29,
+            "height": 183
+          },
+          {
+            "text": "",
+            "x": 723,
+            "y": 88,
+            "width": 32,
+            "height": 224
+          },
+          {
+            "text": "PARALLEL",
+            "x": 300,
+            "y": 452,
+            "width": 141,
+            "height": 37
+          },
+          {
+            "text": "夏",
+            "x": 538,
+            "y": 93,
+            "width": 36,
+            "height": 194
+          },
+          {
+            "text": "PARALLEL",
+            "x": 904,
+            "y": 452,
+            "width": 141,
+            "height": 37
+          },
+          {
+            "text": "夏",
+            "x": 1180,
+            "y": 103,
+            "width": 35,
+            "height": 195
+          },
+          {
+            "text": "量",
+            "x": 1067,
+            "y": 121,
+            "width": 39,
+            "height": 148
+          },
+          {
+            "text": "",
+            "x": 850,
+            "y": 124,
+            "width": 34,
+            "height": 147
+          },
+          {
+            "text": "MODEL",
+            "x": 311,
+            "y": 402,
+            "width": 122,
+            "height": 38
+          },
+          {
+            "text": "MODEL",
+            "x": 920,
+            "y": 400,
+            "width": 118,
+            "height": 37
+          },
+          {
+            "text": "8",
+            "x": 958,
+            "y": 113,
+            "width": 41,
+            "height": 144
+          },
+          {
+            "text": "至",
+            "x": 327,
+            "y": 135,
+            "width": 36,
+            "height": 106
+          },
+          {
+            "text": "",
+            "x": 429,
+            "y": 123,
+            "width": 35,
+            "height": 142
+          },
+          {
+            "text": "",
+            "x": 1136,
+            "y": 133,
+            "width": 24,
+            "height": 125
+          },
+          {
+            "text": "中",
+            "x": 372,
+            "y": 153,
+            "width": 30,
+            "height": 81
+          },
+          {
+            "text": "",
+            "x": 1301,
+            "y": 182,
+            "width": 45,
+            "height": 37
+          },
+          {
+            "text": "",
+            "x": 495,
+            "y": 142,
+            "width": 23,
+            "height": 113
+          },
+          {
+            "text": "之",
+            "x": 596,
+            "y": 168,
+            "width": 32,
+            "height": 60
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#efefed",
+        "__spacing": "both",
+        "id": "u23cd0917",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1790935145845-b8acad9f-cded-4e1c-987f-3a7650f39368.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22H%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fff1b78684db901dd0b7bfa173991deab.svg%22%2C%22id%22%3A%22igi0W%22%7D"
+      },
+      "value": {
+        "code": "H",
+        "src": "https://cdn.nlark.com/yuque/__latex/ff1b78684db901dd0b7bfa173991deab.svg",
+        "id": "igi0W"
+      },
+      "asset": "assets/math/ff1b78684db901dd0b7bfa173991deab.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22v%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fa770a282bbfa0ae1ec474b7ed311656d.svg%22%2C%22id%22%3A%22PojoJ%22%7D"
+      },
+      "value": {
+        "code": "v",
+        "src": "https://cdn.nlark.com/yuque/__latex/a770a282bbfa0ae1ec474b7ed311656d.svg",
+        "id": "PojoJ"
+      },
+      "asset": "assets/math/a770a282bbfa0ae1ec474b7ed311656d.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22E_%7BH%20%5C%5Ctimes%20v%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F6adddf54d32b3d08d3921fc239bcb642.svg%22%2C%22id%22%3A%22Y4Ujk%22%7D"
+      },
+      "value": {
+        "code": "E_{H \\times v}",
+        "src": "https://cdn.nlark.com/yuque/__latex/6adddf54d32b3d08d3921fc239bcb642.svg",
+        "id": "Y4Ujk"
+      },
+      "asset": "assets/math/6adddf54d32b3d08d3921fc239bcb642.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22E%20%3D%20%5BE_1%2C%20E_2%5D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F623fefdf5f9307b3d10336c190348312.svg%22%2C%22id%22%3A%22ENXCt%22%7D"
+      },
+      "value": {
+        "code": "E = [E_1, E_2]",
+        "src": "https://cdn.nlark.com/yuque/__latex/623fefdf5f9307b3d10336c190348312.svg",
+        "id": "ENXCt"
+      },
+      "asset": "assets/math/623fefdf5f9307b3d10336c190348312.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5BY_1%2C%20Y_2%5D%20%3D%20%5BXE_1%2C%20XE_2%5D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F346fefb9756055f2f3da3dfd3166736a.svg%22%2C%22id%22%3A%22xF1Qm%22%7D"
+      },
+      "value": {
+        "code": "[Y_1, Y_2] = [XE_1, XE_2]",
+        "src": "https://cdn.nlark.com/yuque/__latex/346fefb9756055f2f3da3dfd3166736a.svg",
+        "id": "xF1Qm"
+      },
+      "asset": "assets/math/346fefb9756055f2f3da3dfd3166736a.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22Y%20%3D%20%5C%5Coperatorname%7Ball-gather%7D(%5BY_1%2C%20Y_2%5D)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fed10b925dc3fac96cd61e92c96d56ca6.svg%22%2C%22id%22%3A%22qfPMm%22%7D"
+      },
+      "value": {
+        "code": "Y = \\operatorname{all-gather}([Y_1, Y_2])",
+        "src": "https://cdn.nlark.com/yuque/__latex/ed10b925dc3fac96cd61e92c96d56ca6.svg",
+        "id": "qfPMm"
+      },
+      "asset": "assets/math/ed10b925dc3fac96cd61e92c96d56ca6.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22b%20%5C%5Ctimes%20s%20%5C%5Ctimes%20v%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fcb43fdc89d2b1e9b0eae8cdf8202b2cb.svg%22%2C%22id%22%3A%22a0ULT%22%7D"
+      },
+      "value": {
+        "code": "b \\times s \\times v",
+        "src": "https://cdn.nlark.com/yuque/__latex/cb43fdc89d2b1e9b0eae8cdf8202b2cb.svg",
+        "id": "a0ULT"
+      },
+      "asset": "assets/math/cb43fdc89d2b1e9b0eae8cdf8202b2cb.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22b%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fd29c2e5f4926e5b0e9a95305650f6e54.svg%22%2C%22id%22%3A%22xsYjz%22%7D"
+      },
+      "value": {
+        "code": "b",
+        "src": "https://cdn.nlark.com/yuque/__latex/d29c2e5f4926e5b0e9a95305650f6e54.svg",
+        "id": "xsYjz"
+      },
+      "asset": "assets/math/d29c2e5f4926e5b0e9a95305650f6e54.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22s%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F79ce3c7a71877c2ff01695e38ade43ca.svg%22%2C%22id%22%3A%22NgTSN%22%7D"
+      },
+      "value": {
+        "code": "s",
+        "src": "https://cdn.nlark.com/yuque/__latex/79ce3c7a71877c2ff01695e38ade43ca.svg",
+        "id": "NgTSN"
+      },
+      "asset": "assets/math/79ce3c7a71877c2ff01695e38ade43ca.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5BY_1%2C%20Y_2%5D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F6a43220d93408d9055be22fe824b262a.svg%22%2C%22id%22%3A%22Yoy8t%22%7D"
+      },
+      "value": {
+        "code": "[Y_1, Y_2]",
+        "src": "https://cdn.nlark.com/yuque/__latex/6a43220d93408d9055be22fe824b262a.svg",
+        "id": "Yoy8t"
+      },
+      "asset": "assets/math/6a43220d93408d9055be22fe824b262a.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22b%20%5C%5Ctimes%20s%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fbfb798949377243ef9a27e74c4fc9912.svg%22%2C%22id%22%3A%22tEHoa%22%7D"
+      },
+      "value": {
+        "code": "b \\times s",
+        "src": "https://cdn.nlark.com/yuque/__latex/bfb798949377243ef9a27e74c4fc9912.svg",
+        "id": "tEHoa"
+      },
+      "asset": "assets/math/bfb798949377243ef9a27e74c4fc9912.svg"
+    }
+  ]
+}
