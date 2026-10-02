@@ -192,6 +192,17 @@ export async function readLake(file, escape, renderMath) {
     content = content.replace(anchor, `$1${to}$2`)
       .replaceAll(`href="#${from}"`, `href="#${to}"`);
   }
+  // Remove explicitly selected blocks while preserving the archived export.
+  for (const { tag, id } of manifest.blockRemovals ?? []) {
+    if (!['p', 'li'].includes(tag) || !/^[\w-]+$/.test(id)) {
+      throw new Error(`Invalid Lake block removal: ${id}`);
+    }
+    const block = new RegExp(`<${tag}\\b[^>]*\\sid="${id}"[^>]*>[\\s\\S]*?<\\/${tag}>`, 'g');
+    if ([...content.matchAll(block)].length !== 1) {
+      throw new Error(`Lake block removal must match once: ${id}`);
+    }
+    content = content.replace(block, '');
+  }
   const text = content.replace(/<[^>]*>/g, '');
   return {
     title: manifest.title,

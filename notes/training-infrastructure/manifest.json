@@ -5,7 +5,7 @@
     "bytes": 48885,
     "title": "🦨 𝓓𝓮𝓮𝓹𝓢𝓹𝓮𝓮𝓭"
   },
-  "title": "Training Infrastructure",
+  "title": "Infra Training Infrastructure",
   "metadata": {
     "doc-version": "1",
     "viewport": "adapt",
@@ -1230,6 +1230,16 @@
         "id": "d0rqS"
       },
       "asset": "assets/math/38b0ebcc3cd17845a7fd86182b093d51.svg"
+    }
+  ],
+  "blockRemovals": [
+    {
+      "tag": "p",
+      "id": "u2434bb38"
+    },
+    {
+      "tag": "p",
+      "id": "udfaf7e43"
     }
   ]
 }
