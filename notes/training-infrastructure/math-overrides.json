@@ -28,5 +28,11 @@
     "to": "\\mathrm{batch}\\times\\mathrm{seq\\_length}\\times\\mathrm{hidden\\_dim}",
     "reason": "统一为整个 batch 的通信量，保留前文 message size 中的 batch 因子；1/12 的相对开销不变。英文变量使用直立字体",
     "reference": "https://arxiv.org/html/1910.02054v3#S8"
+  },
+  "Y01VB": {
+    "from": "2\\Psi+\\frac{14\\Psi}{N_d}\\approx2\\Psi",
+    "to": "2\\Psi+\\frac{14\\Psi}{N_d}",
+    "reason": "保留有限数据并行度下的精确显存表达式，删除缺少大 N_d 条件的渐近近似",
+    "reference": "https://arxiv.org/html/1910.02054v3#S5.SS2"
   }
 }
