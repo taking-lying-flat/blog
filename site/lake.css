@@ -214,3 +214,11 @@
 [data-post="training-infrastructure"] .lake-document :is(#uae304c25, #uaeafb4cb, #u096235a8, #u9eac8865, #udd6093c0, #uff5f8f65, #uac364623, #u0e592e46) { text-align: center; line-height: 0; }
 [data-post="training-infrastructure"] .lake-document :is(#uae304c25, #uaeafb4cb, #u096235a8, #u9eac8865, #udd6093c0, #uff5f8f65, #uac364623, #u0e592e46) .lake-image { margin-block: 12px; }
 [data-post="training-infrastructure"] .lake-document #u9c6bede3 { font-weight: 700; }
+
+/* ToT: display the candidate-generation and evaluation formulas on their own lines. */
+[data-post="chain-of-thought"] .lake-document :is([data-card-id="QMQZx"], [data-card-id="wBbPW"], [data-card-id="uvBkh"], [data-card-id="ESHcz"]) {
+  display: block;
+  margin: 10px auto;
+}
+[data-post="chain-of-thought"] .lake-document #uf65a6c75 { line-height: 0; }
+[data-post="chain-of-thought"] .lake-document #uf65a6c75 .lake-image { margin-block: 12px; }
