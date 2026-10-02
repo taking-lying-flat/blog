@@ -209,3 +209,7 @@
 [data-post="positional-encoding"] .lake-document #u6a37c602 { text-align: center; }
 [data-post="positional-encoding"] .lake-document :is(#u0ed08144, #ue04947a2) { text-align: center; line-height: 0; }
 [data-post="positional-encoding"] .lake-document :is(#u0ed08144, #ue04947a2) .lake-image { margin-block: 12px; }
+
+/* Preserve the authored ZeRO diagram size without an extra inline baseline. */
+[data-post="training-infrastructure"] .lake-document #uae304c25 { text-align: center; line-height: 0; }
+[data-post="training-infrastructure"] .lake-document #uae304c25 .lake-image { margin-block: 12px; }

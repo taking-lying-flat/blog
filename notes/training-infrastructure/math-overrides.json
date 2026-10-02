@@ -1,0 +1,32 @@
+{
+  "Ay3pj": {
+    "from": "batch\\times seq\\_length\\times hidden\\_dim",
+    "to": "\\mathrm{batch}\\times\\mathrm{seq\\_length}\\times\\mathrm{hidden\\_dim}",
+    "reason": "英文多字符变量使用直立字体，统一乘号",
+    "reference": "https://arxiv.org/html/1910.02054v3#S8"
+  },
+  "aZ52Z": {
+    "from": "2\\times message\\_size",
+    "to": "2\\times\\mathrm{message\\_size}",
+    "reason": "英文多字符变量使用直立字体，统一乘号",
+    "reference": "https://arxiv.org/html/1910.02054v3#S8"
+  },
+  "WmfEO": {
+    "from": "12\\times seq\\_length\\times hidden\\_dim",
+    "to": "12\\times\\mathrm{batch}\\times\\mathrm{seq\\_length}\\times\\mathrm{hidden\\_dim}",
+    "reason": "统一为整个 batch 的通信量，保留前文 message size 中的 batch 因子；1/12 的相对开销不变。英文变量使用直立字体",
+    "reference": "https://arxiv.org/html/1910.02054v3#S8"
+  },
+  "C4bZI": {
+    "from": "message\\_size",
+    "to": "\\mathrm{message\\_size}",
+    "reason": "英文多字符变量使用直立字体，统一乘号",
+    "reference": "https://arxiv.org/html/1910.02054v3#S8"
+  },
+  "eUu1u": {
+    "from": "seq\\_length*hidden\\_dim",
+    "to": "\\mathrm{batch}\\times\\mathrm{seq\\_length}\\times\\mathrm{hidden\\_dim}",
+    "reason": "统一为整个 batch 的通信量，保留前文 message size 中的 batch 因子；1/12 的相对开销不变。英文变量使用直立字体",
+    "reference": "https://arxiv.org/html/1910.02054v3#S8"
+  }
+}

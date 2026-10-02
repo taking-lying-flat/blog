@@ -1,5 +1,22 @@
 [
   {
+    "file": "../notes/training-infrastructure/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "training-infrastructure",
+    "category": "llm",
+    "date": "2026-10-02",
+    "description": "训练基础设施笔记：DeepSpeed ZeRO 的模型状态分片、激活检查点、显存优化与通信量分析",
+    "tags": [
+      "训练基础设施",
+      "DeepSpeed",
+      "ZeRO",
+      "分布式训练",
+      "显存优化"
+    ]
+  },
+  {
     "file": "../notes/positional-encoding/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
