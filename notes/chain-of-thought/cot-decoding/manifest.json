@@ -1,0 +1,964 @@
+{
+  "source": {
+    "file": "source.lake",
+    "sha256": "25c35145d7be8f9f4abd26f67249ac99717891f6e8bf08cc8b60d8ac8856d810",
+    "bytes": 27108,
+    "title": "🐿️ 𝓣𝓱𝓸𝓾𝓰𝓱𝓽",
+    "section": "Chain-of-Thought Reasoning Without Prompting"
+  },
+  "title": "Chain of Thought",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "counts": {
+    "math": 11,
+    "images": 3,
+    "separators": 0
+  },
+  "assets": [
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+      "file": "assets/math/df976ff7fcf17d60490267d18a1e3996.svg",
+      "bytes": 1345,
+      "sha256": "87d2618f85a9489b0558599c2a4c2b2826bfd508b4e66eadfca8e21e5ce58013",
+      "width": "1.211ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 521.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790971411084-73d1cfaa-a107-443a-bee0-26fdaaa013f3.png",
+      "file": "assets/images/1790971411084-73d1cfaa-a107-443a-bee0-26fdaaa013f3.png",
+      "bytes": 107992,
+      "sha256": "9fb46d5ff41bbd3c73b14e4bc6eeb5af45b69b0939fcbe93d4bb8d1bb0b6c067",
+      "width": 914,
+      "height": 249
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790972245324-4cc879bf-157c-4237-a75f-5d049c3c98a2.png",
+      "file": "assets/images/1790972245324-4cc879bf-157c-4237-a75f-5d049c3c98a2.png",
+      "bytes": 263341,
+      "sha256": "87fb882471b94341452d4bfc0a4a0dc4ddafcc749860734f4522c71542478251",
+      "width": 1441,
+      "height": 415
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/36c30c6db56f57f64f72678775eb5201.svg",
+      "file": "assets/math/36c30c6db56f57f64f72678775eb5201.svg",
+      "bytes": 14715,
+      "sha256": "089fbccdafa933134fa86e636624b93f44b71290beec004521b751e97cd25cac",
+      "width": "54.006ex",
+      "height": "6.509ex",
+      "viewBox": "0 -1437.2 23252.4 2802.6",
+      "style": "vertical-align: -3.171ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/4bc6c91d824e0184974cfe83d21f2179.svg",
+      "file": "assets/math/4bc6c91d824e0184974cfe83d21f2179.svg",
+      "bytes": 2226,
+      "sha256": "29d0f9c90949e736b54228c212611e3a73c7e9fe47e1f05522696ef689249d0b",
+      "width": "2.384ex",
+      "height": "3.176ex",
+      "viewBox": "0 -934.9 1026.4 1367.4",
+      "style": "vertical-align: -1.005ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/9c1195b74b4fe92ff050ce87a3118597.svg",
+      "file": "assets/math/9c1195b74b4fe92ff050ce87a3118597.svg",
+      "bytes": 2428,
+      "sha256": "3c752e467e8126133acbea4811617eb8b6b8a578fec72cae11bc5c26e2900b72",
+      "width": "2.384ex",
+      "height": "3.176ex",
+      "viewBox": "0 -934.9 1026.4 1367.4",
+      "style": "vertical-align: -1.005ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/cead1760d9d5723460c4b8d4028f113a.svg",
+      "file": "assets/math/cead1760d9d5723460c4b8d4028f113a.svg",
+      "bytes": 1047,
+      "sha256": "64941f8c89c938f3b9f2d0ab61f17eb5c0a0e4bcd441ab9cecd365ad278c8cc9",
+      "width": "0.84ex",
+      "height": "2.009ex",
+      "viewBox": "0 -719.6 361.5 865.1",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/6cbe179fa77b5a6af5c84309f72dd808.svg",
+      "file": "assets/math/6cbe179fa77b5a6af5c84309f72dd808.svg",
+      "bytes": 722,
+      "sha256": "8cf43016abd9c4871e57d5c06b88e5abb17e5337b8a7472a7391d0fff57d84e9",
+      "width": "1.936ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 833.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790972560738-e9883a10-ab6d-4844-b31c-481539a243cd.png",
+      "file": "assets/images/1790972560738-e9883a10-ab6d-4844-b31c-481539a243cd.png",
+      "bytes": 66416,
+      "sha256": "cceb4549909f86e1f9a5a8d52b3f0b05ef9a96668756427b80bc47f69c394a99",
+      "width": 1079,
+      "height": 350
+    }
+  ],
+  "cards": [
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fdf976ff7fcf17d60490267d18a1e3996.svg%22%2C%22id%22%3A%22Kc3av%22%7D"
+      },
+      "value": {
+        "code": "k",
+        "src": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+        "id": "Kc3av"
+      },
+      "asset": "assets/math/df976ff7fcf17d60490267d18a1e3996.svg"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790971411084-73d1cfaa-a107-443a-bee0-26fdaaa013f3.png%22%2C%22taskId%22%3A%22u05b8ccc6-041c-41ff-8587-1e53407ea4a%22%2C%22clientId%22%3A%22u2adce271-bd5f-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A731.2%2C%22height%22%3A199%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A107992%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A914%2C%22originHeight%22%3A249%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22stroke%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22AVE3APPLES%2CMYDADHAS2MOREAPPLESTHANME%2CSOH%22%2C%22x%22%3A509%2C%22y%22%3A76%2C%22width%22%3A378%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22YOUHAVE3APPLES%2CYOURDADHAS2MOREAPPLESTHANYOU%22%2C%22x%22%3A496%2C%22y%22%3A148%2C%22width%22%3A391%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22AS5APPLES.3%2B5%3D8.WEHAVE8APPLESINTOTAL.%22%2C%22x%22%3A499%2C%22y%22%3A94%2C%22width%22%3A332%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22SOHEHAS5APPLES.3%2B5%3D8YOUHAVE8APPLESINTOTAL.%22%2C%22x%22%3A497%2C%22y%22%3A167%2C%22width%22%3A382%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22Q%3ALHAVE3APPLES%2CMYDADHAS2%22%2C%22x%22%3A21%2C%22y%22%3A60%2C%22width%22%3A230%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22MOREAPPLESTHANMEHOWMANY%22%2C%22x%22%3A24%2C%22y%22%3A81%2C%22width%22%3A221%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22QUESTIONINSTANDARDQAFORMAT%22%2C%22x%22%3A24%2C%22y%22%3A22%2C%22width%22%3A233%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22CONTINUEGREEDYDECODIN%22%2C%22x%22%3A500%2C%22y%22%3A15%2C%22width%22%3A186%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22APPLESDOWEHAVEINTOTAL%3F%22%2C%22x%22%3A23%2C%22y%22%3A98%2C%22width%22%3A200%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22WEHAVE5APPLESINTOTAL.%22%2C%22x%22%3A497%2C%22y%22%3A120%2C%22width%22%3A198%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22TOP-3%3AWE%22%2C%22x%22%3A359%2C%22y%22%3A109%2C%22width%22%3A77%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22DECODINGSTEP0%22%2C%22x%22%3A342%2C%22y%22%3A14%2C%22width%22%3A118%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22LANGUAGE%22%2C%22x%22%3A197%2C%22y%22%3A172%2C%22width%22%3A91%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22NCERTAIN%22%2C%22x%22%3A686%2C%22y%22%3A225%2C%22width%22%3A62%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22TOP-4%3AYOU%22%2C%22x%22%3A358%2C%22y%22%3A131%2C%22width%22%3A80%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22THEANSWERIS5.%22%2C%22x%22%3A496%2C%22y%22%3A191%2C%22width%22%3A130%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22TOP-1%3A5-%22%2C%22x%22%3A357%2C%22y%22%3A67%2C%22width%22%3A77%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22CERTAIN%22%2C%22x%22%3A839%2C%22y%22%3A225%2C%22width%22%3A49%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22MODEL%22%2C%22x%22%3A207%2C%22y%22%3A195%2C%22width%22%3A70%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22TOP-5%3ATHE%22%2C%22x%22%3A359%2C%22y%22%3A152%2C%22width%22%3A76%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22TOP-2%3A1%22%2C%22x%22%3A358%2C%22y%22%3A89%2C%22width%22%3A69%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%225APPLES%22%2C%22x%22%3A498%2C%22y%22%3A50%2C%22width%22%3A66%2C%22height%22%3A14%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23efefef%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u46583e80%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790971411084-73d1cfaa-a107-443a-bee0-26fdaaa013f3.png",
+        "taskId": "u05b8ccc6-041c-41ff-8587-1e53407ea4a",
+        "clientId": "u2adce271-bd5f-4",
+        "originalType": "binary",
+        "width": 731.2,
+        "height": 199,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 107992,
+        "from": "paste",
+        "originWidth": 914,
+        "originHeight": 249,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "stroke",
+        "ocrLocations": [
+          {
+            "text": "AVE3APPLES,MYDADHAS2MOREAPPLESTHANME,SOH",
+            "x": 509,
+            "y": 76,
+            "width": 378,
+            "height": 14
+          },
+          {
+            "text": "YOUHAVE3APPLES,YOURDADHAS2MOREAPPLESTHANYOU",
+            "x": 496,
+            "y": 148,
+            "width": 391,
+            "height": 11
+          },
+          {
+            "text": "AS5APPLES.3+5=8.WEHAVE8APPLESINTOTAL.",
+            "x": 499,
+            "y": 94,
+            "width": 332,
+            "height": 14
+          },
+          {
+            "text": "SOHEHAS5APPLES.3+5=8YOUHAVE8APPLESINTOTAL.",
+            "x": 497,
+            "y": 167,
+            "width": 382,
+            "height": 12
+          },
+          {
+            "text": "Q:LHAVE3APPLES,MYDADHAS2",
+            "x": 21,
+            "y": 60,
+            "width": 230,
+            "height": 14
+          },
+          {
+            "text": "MOREAPPLESTHANMEHOWMANY",
+            "x": 24,
+            "y": 81,
+            "width": 221,
+            "height": 12
+          },
+          {
+            "text": "QUESTIONINSTANDARDQAFORMAT",
+            "x": 24,
+            "y": 22,
+            "width": 233,
+            "height": 14
+          },
+          {
+            "text": "CONTINUEGREEDYDECODIN",
+            "x": 500,
+            "y": 15,
+            "width": 186,
+            "height": 14
+          },
+          {
+            "text": "APPLESDOWEHAVEINTOTAL?",
+            "x": 23,
+            "y": 98,
+            "width": 200,
+            "height": 11
+          },
+          {
+            "text": "WEHAVE5APPLESINTOTAL.",
+            "x": 497,
+            "y": 120,
+            "width": 198,
+            "height": 14
+          },
+          {
+            "text": "TOP-3:WE",
+            "x": 359,
+            "y": 109,
+            "width": 77,
+            "height": 17
+          },
+          {
+            "text": "DECODINGSTEP0",
+            "x": 342,
+            "y": 14,
+            "width": 118,
+            "height": 15
+          },
+          {
+            "text": "LANGUAGE",
+            "x": 197,
+            "y": 172,
+            "width": 91,
+            "height": 18
+          },
+          {
+            "text": "NCERTAIN",
+            "x": 686,
+            "y": 225,
+            "width": 62,
+            "height": 13
+          },
+          {
+            "text": "TOP-4:YOU",
+            "x": 358,
+            "y": 131,
+            "width": 80,
+            "height": 17
+          },
+          {
+            "text": "THEANSWERIS5.",
+            "x": 496,
+            "y": 191,
+            "width": 130,
+            "height": 14
+          },
+          {
+            "text": "TOP-1:5-",
+            "x": 357,
+            "y": 67,
+            "width": 77,
+            "height": 18
+          },
+          {
+            "text": "CERTAIN",
+            "x": 839,
+            "y": 225,
+            "width": 49,
+            "height": 13
+          },
+          {
+            "text": "MODEL",
+            "x": 207,
+            "y": 195,
+            "width": 70,
+            "height": 18
+          },
+          {
+            "text": "TOP-5:THE",
+            "x": 359,
+            "y": 152,
+            "width": 76,
+            "height": 15
+          },
+          {
+            "text": "TOP-2:1",
+            "x": 358,
+            "y": 89,
+            "width": 69,
+            "height": 17
+          },
+          {
+            "text": "5APPLES",
+            "x": 498,
+            "y": 50,
+            "width": 66,
+            "height": 14
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#efefef",
+        "__spacing": "both",
+        "id": "u46583e80",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1790971411084-73d1cfaa-a107-443a-bee0-26fdaaa013f3.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fdf976ff7fcf17d60490267d18a1e3996.svg%22%2C%22id%22%3A%22Z7crY%22%7D"
+      },
+      "value": {
+        "code": "k",
+        "src": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+        "id": "Z7crY"
+      },
+      "asset": "assets/math/df976ff7fcf17d60490267d18a1e3996.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fdf976ff7fcf17d60490267d18a1e3996.svg%22%2C%22id%22%3A%22GX9et%22%7D",
+        "style": "color: #5C0036"
+      },
+      "value": {
+        "code": "k",
+        "src": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+        "id": "GX9et"
+      },
+      "asset": "assets/math/df976ff7fcf17d60490267d18a1e3996.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fdf976ff7fcf17d60490267d18a1e3996.svg%22%2C%22id%22%3A%22Bxa9w%22%7D"
+      },
+      "value": {
+        "code": "k",
+        "src": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+        "id": "Bxa9w"
+      },
+      "asset": "assets/math/df976ff7fcf17d60490267d18a1e3996.svg"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790972245324-4cc879bf-157c-4237-a75f-5d049c3c98a2.png%22%2C%22taskId%22%3A%22ua3032f2e-0be3-410e-99db-fd7bb91eea8%22%2C%22clientId%22%3A%22u7db1b4b0-62a2-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A761%2C%22height%22%3A219%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A263341%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1441%2C%22originHeight%22%3A415%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22stroke%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22PRICE.KYLARWANTSTOBYI6GLASSES.HOWMUCHDOESHENEEDTOPAYJFORTHEMN%3F%22%2C%22x%22%3A34%2C%22y%22%3A64%2C%22width%22%3A807%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%22K%3D7%3ACAGEWASBORMIN1964%2CANEVENYEAR.(0.978)%22%2C%22x%22%3A848%2C%22y%22%3A360%2C%22width%22%3A554%2C%22height%22%3A29%7D%2C%7B%22text%22%3A%22K%3D0%3ANICOLASCAGEWASBORNINANODDYEAR.(0%22%2C%22x%22%3A846%2C%22y%22%3A136%2C%22width%22%3A516%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%22NDTHENSUBTRACT40%25OFTHEPRICEOF8GLASSES.16X5%3D808X5%3D4040X04.%22%2C%22x%22%3A42%2C%22y%22%3A335%2C%22width%22%3A819%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22K%3D9%3AWECANCALCULATE...WENEEDTOMULTIPLYTHEPRICEOFONEGLASSBYI6%22%2C%22x%22%3A36%2C%22y%22%3A305%2C%22width%22%3A797%2C%22height%22%3A28%7D%2C%7B%22text%22%3A%22%5BGSM8K%5DONEGLASSCOSTSS5%2CBUTEVERYSECONDGLASSCOSTSONLY609%25OOFTHE%5BYEAN%22%2C%22x%22%3A34%2C%22y%22%3A33%2C%22width%22%3A872%2C%22height%22%3A29%7D%2C%7B%22text%22%3A%22%3D1680-16%3D64KYLARNEEDSTO0PAY%2464FOR16GLASSES.(0.994)%22%2C%22x%22%3A41%2C%22y%22%3A364%2C%22width%22%3A724%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22K%3D2%3AKYLARNEEDSTOPAY%2460FOR16GLASSES.(0.058)%22%2C%22x%22%3A39%2C%22y%22%3A221%2C%22width%22%3A554%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22%25OFTHE%5BYEARPARITYWASNICOLASCAGEBORNINANEVENORODD%22%2C%22x%22%3A723%2C%22y%22%3A35%2C%22width%22%3A685%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22K%3D7%3AIFKVLARBUVS16GLASSESHEWILLPAY%24S60(0.032)%22%2C%22x%22%3A39%2C%22y%22%3A279%2C%22width%22%3A590%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22K%3D1%3A60(0.058)%22%2C%22x%22%3A37%2C%22y%22%3A191%2C%22width%22%3A453%2C%22height%22%3A28%7D%2C%7B%22text%22%3A%22%E4%B8%893%3A1964%2CANEVENYEAR.(0.949)%22%2C%22x%22%3A876%2C%22y%22%3A279%2C%22width%22%3A351%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22K%3D4%3AHEWASBORNINANEVENYEAR(0.%22%2C%22x%22%3A848%2C%22y%22%3A306%2C%22width%22%3A412%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22ALTERNATIVETOP-KPATHS%22%2C%22x%22%3A838%2C%22y%22%3A197%2C%22width%22%3A269%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22ALTERNATIVETOP-KPATHS%3A%22%2C%22x%22%3A38%2C%22y%22%3A164%2C%22width%22%3A261%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22K%E4%B8%891%3AEVEN(0.207)%22%2C%22x%22%3A846%2C%22y%22%3A223%2C%22width%22%3A238%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22K%3D2%3A0DD(0.198)%22%2C%22x%22%3A852%2C%22y%22%3A247%2C%22width%22%3A219%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22K%3D0%3A%2460.00(0.029)%22%2C%22x%22%3A32%2C%22y%22%3A134%2C%22width%22%3A243%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22GREEDYPATH%3A%22%2C%22x%22%3A36%2C%22y%22%3A107%2C%22width%22%3A161%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22GREEDYPATH%3A%22%2C%22x%22%3A845%2C%22y%22%3A109%2C%22width%22%3A149%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22%3FYEAR%3F%22%2C%22x%22%3A799%2C%22y%22%3A66%2C%22width%22%3A160%2C%22height%22%3A22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23ebebeb%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u86874147%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790972245324-4cc879bf-157c-4237-a75f-5d049c3c98a2.png",
+        "taskId": "ua3032f2e-0be3-410e-99db-fd7bb91eea8",
+        "clientId": "u7db1b4b0-62a2-4",
+        "originalType": "binary",
+        "width": 761,
+        "height": 219,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 263341,
+        "from": "paste",
+        "originWidth": 1441,
+        "originHeight": 415,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "stroke",
+        "ocrLocations": [
+          {
+            "text": "PRICE.KYLARWANTSTOBYI6GLASSES.HOWMUCHDOESHENEEDTOPAYJFORTHEMN?",
+            "x": 34,
+            "y": 64,
+            "width": 807,
+            "height": 26
+          },
+          {
+            "text": "K=7:CAGEWASBORMIN1964,ANEVENYEAR.(0.978)",
+            "x": 848,
+            "y": 360,
+            "width": 554,
+            "height": 29
+          },
+          {
+            "text": "K=0:NICOLASCAGEWASBORNINANODDYEAR.(0",
+            "x": 846,
+            "y": 136,
+            "width": 516,
+            "height": 26
+          },
+          {
+            "text": "NDTHENSUBTRACT40%OFTHEPRICEOF8GLASSES.16X5=808X5=4040X04.",
+            "x": 42,
+            "y": 335,
+            "width": 819,
+            "height": 25
+          },
+          {
+            "text": "K=9:WECANCALCULATE...WENEEDTOMULTIPLYTHEPRICEOFONEGLASSBYI6",
+            "x": 36,
+            "y": 305,
+            "width": 797,
+            "height": 28
+          },
+          {
+            "text": "[GSM8K]ONEGLASSCOSTSS5,BUTEVERYSECONDGLASSCOSTSONLY609%OOFTHE[YEAN",
+            "x": 34,
+            "y": 33,
+            "width": 872,
+            "height": 29
+          },
+          {
+            "text": "=1680-16=64KYLARNEEDSTO0PAY$64FOR16GLASSES.(0.994)",
+            "x": 41,
+            "y": 364,
+            "width": 724,
+            "height": 23
+          },
+          {
+            "text": "K=2:KYLARNEEDSTOPAY$60FOR16GLASSES.(0.058)",
+            "x": 39,
+            "y": 221,
+            "width": 554,
+            "height": 25
+          },
+          {
+            "text": "%OFTHE[YEARPARITYWASNICOLASCAGEBORNINANEVENORODD",
+            "x": 723,
+            "y": 35,
+            "width": 685,
+            "height": 27
+          },
+          {
+            "text": "K=7:IFKVLARBUVS16GLASSESHEWILLPAY$S60(0.032)",
+            "x": 39,
+            "y": 279,
+            "width": 590,
+            "height": 22
+          },
+          {
+            "text": "K=1:60(0.058)",
+            "x": 37,
+            "y": 191,
+            "width": 453,
+            "height": 28
+          },
+          {
+            "text": "三3:1964,ANEVENYEAR.(0.949)",
+            "x": 876,
+            "y": 279,
+            "width": 351,
+            "height": 22
+          },
+          {
+            "text": "K=4:HEWASBORNINANEVENYEAR(0.",
+            "x": 848,
+            "y": 306,
+            "width": 412,
+            "height": 27
+          },
+          {
+            "text": "ALTERNATIVETOP-KPATHS",
+            "x": 838,
+            "y": 197,
+            "width": 269,
+            "height": 20
+          },
+          {
+            "text": "ALTERNATIVETOP-KPATHS:",
+            "x": 38,
+            "y": 164,
+            "width": 261,
+            "height": 24
+          },
+          {
+            "text": "K三1:EVEN(0.207)",
+            "x": 846,
+            "y": 223,
+            "width": 238,
+            "height": 25
+          },
+          {
+            "text": "K=2:0DD(0.198)",
+            "x": 852,
+            "y": 247,
+            "width": 219,
+            "height": 27
+          },
+          {
+            "text": "K=0:$60.00(0.029)",
+            "x": 32,
+            "y": 134,
+            "width": 243,
+            "height": 25
+          },
+          {
+            "text": "GREEDYPATH:",
+            "x": 36,
+            "y": 107,
+            "width": 161,
+            "height": 24
+          },
+          {
+            "text": "GREEDYPATH:",
+            "x": 845,
+            "y": 109,
+            "width": 149,
+            "height": 23
+          },
+          {
+            "text": "?YEAR?",
+            "x": 799,
+            "y": 66,
+            "width": 160,
+            "height": 22
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#ebebeb",
+        "__spacing": "both",
+        "id": "u86874147",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1790972245324-4cc879bf-157c-4237-a75f-5d049c3c98a2.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5CDelta_%7Bk%2C%5C%5Cmathrm%7Banswer%7D%7D%20%3D%20%5C%5Cfrac%7B1%7D%7B%7C%5C%5Cmathrm%7Banswer%7D%7C%7D%5C%5Csum_%7Bx_t%5C%5Cin%5C%5Cmathrm%7Banswer%7D%7D%20p(x_t%5E1%5C%5Cmid%20x_%7B%3Ct%7D)%20-%20p(x_t%5E2%5C%5Cmid%20x_%7B%3Ct%7D).%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F36c30c6db56f57f64f72678775eb5201.svg%22%2C%22id%22%3A%22EANdo%22%7D"
+      },
+      "value": {
+        "code": "\\Delta_{k,\\mathrm{answer}} = \\frac{1}{|\\mathrm{answer}|}\\sum_{x_t\\in\\mathrm{answer}} p(x_t^1\\mid x_{<t}) - p(x_t^2\\mid x_{<t}).",
+        "src": "https://cdn.nlark.com/yuque/__latex/36c30c6db56f57f64f72678775eb5201.svg",
+        "id": "EANdo"
+      },
+      "asset": "assets/math/36c30c6db56f57f64f72678775eb5201.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22x_t%5E1%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F4bc6c91d824e0184974cfe83d21f2179.svg%22%2C%22id%22%3A%22c9tE0%22%7D"
+      },
+      "value": {
+        "code": "x_t^1",
+        "src": "https://cdn.nlark.com/yuque/__latex/4bc6c91d824e0184974cfe83d21f2179.svg",
+        "id": "c9tE0"
+      },
+      "asset": "assets/math/4bc6c91d824e0184974cfe83d21f2179.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22x_t%5E2%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F9c1195b74b4fe92ff050ce87a3118597.svg%22%2C%22id%22%3A%22IsC2F%22%7D"
+      },
+      "value": {
+        "code": "x_t^2",
+        "src": "https://cdn.nlark.com/yuque/__latex/9c1195b74b4fe92ff050ce87a3118597.svg",
+        "id": "IsC2F"
+      },
+      "asset": "assets/math/9c1195b74b4fe92ff050ce87a3118597.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fdf976ff7fcf17d60490267d18a1e3996.svg%22%2C%22id%22%3A%22gXURt%22%7D"
+      },
+      "value": {
+        "code": "k",
+        "src": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+        "id": "gXURt"
+      },
+      "asset": "assets/math/df976ff7fcf17d60490267d18a1e3996.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fcead1760d9d5723460c4b8d4028f113a.svg%22%2C%22id%22%3A%22CC0yz%22%7D"
+      },
+      "value": {
+        "code": "t",
+        "src": "https://cdn.nlark.com/yuque/__latex/cead1760d9d5723460c4b8d4028f113a.svg",
+        "id": "CC0yz"
+      },
+      "asset": "assets/math/cead1760d9d5723460c4b8d4028f113a.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5CDelta%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F6cbe179fa77b5a6af5c84309f72dd808.svg%22%2C%22id%22%3A%22fw82W%22%7D"
+      },
+      "value": {
+        "code": "\\Delta",
+        "src": "https://cdn.nlark.com/yuque/__latex/6cbe179fa77b5a6af5c84309f72dd808.svg",
+        "id": "fw82W"
+      },
+      "asset": "assets/math/6cbe179fa77b5a6af5c84309f72dd808.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5CDelta%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F6cbe179fa77b5a6af5c84309f72dd808.svg%22%2C%22id%22%3A%22mF7c3%22%7D"
+      },
+      "value": {
+        "code": "\\Delta",
+        "src": "https://cdn.nlark.com/yuque/__latex/6cbe179fa77b5a6af5c84309f72dd808.svg",
+        "id": "mF7c3"
+      },
+      "asset": "assets/math/6cbe179fa77b5a6af5c84309f72dd808.svg"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1790972560738-e9883a10-ab6d-4844-b31c-481539a243cd.png%22%2C%22taskId%22%3A%22u6d91a703-77d6-4d2f-b28d-f4d89580fcc%22%2C%22clientId%22%3A%22u7db1b4b0-62a2-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A863.2%2C%22height%22%3A280%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A66416%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1079%2C%22originHeight%22%3A350%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22stroke%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22IHAVE3APPLES%2CMYDADHAS2MOREAPPLESTHANME%22%2C%22x%22%3A22%2C%22y%22%3A16%2C%22width%22%3A377%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22HAVE3APPLES%2CMYDAD...WEHAVE8APPLESINTOTAL%22%2C%22x%22%3A124%2C%22y%22%3A143%2C%22width%22%3A330%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22HAVE3APPLES%2CYOURDAD...YOUHAVE8APPLESINTOTAL%22%2C%22x%22%3A138%2C%22y%22%3A244%2C%22width%22%3A331%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22CAGEWASBOMIN%3C1964%2CWHICHISANEVENYEAR.%22%2C%22x%22%3A702%2C%22y%22%3A98%2C%22width%22%3A338%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22OWMANYAPPLESDOWEHAVEINTOTAL%3F%22%2C%22x%22%3A29%2C%22y%22%3A38%2C%22width%22%3A284%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22WASNICOLASCAGEBOMINANEVENORODDYEAR%3F%22%2C%22x%22%3A546%2C%22y%22%3A24%2C%22width%22%3A354%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22-DON'TKNOWBECAUSEWEDON'TKNOWHOWMANYAPPLES..%22%2C%22x%22%3A113%2C%22y%22%3A216%2C%22width%22%3A371%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22WASBORNINANEVENYEAR%22%2C%22x%22%3A696%2C%22y%22%3A117%2C%22width%22%3A283%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22APPLESAREAMETAPHOR.%22%2C%22x%22%3A141%2C%22y%22%3A313%2C%22width%22%3A150%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22WASBOMINANEVENYEAR%22%2C%22x%22%3A686%2C%22y%22%3A297%2C%22width%22%3A166%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22HAVE5APPLESINTOTAL.%22%2C%22x%22%3A133%2C%22y%22%3A196%2C%22width%22%3A171%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22TOP-5%3AHE%22%2C%22x%22%3A540%2C%22y%22%3A305%2C%22width%22%3A88%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22TOP-5%3ATHE%22%2C%22x%22%3A13%2C%22y%22%3A304%2C%22width%22%3A89%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22.%E4%B8%80ANODDYEAR.%22%2C%22x%22%3A748%2C%22y%22%3A84%2C%22width%22%3A202%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22TOP-1%3ANICOLAS%22%2C%22x%22%3A542%2C%22y%22%3A111%2C%22width%22%3A104%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22TOP-4%3AYOU%3C%22%2C%22x%22%3A9%2C%22y%22%3A257%2C%22width%22%3A108%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22IS55YVEARSOLD.%22%2C%22x%22%3A692%2C%22y%22%3A314%2C%22width%22%3A98%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22STEP1%22%2C%22x%22%3A137%2C%22y%22%3A69%2C%22width%22%3A56%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22STEP1%22%2C%22x%22%3A702%2C%22y%22%3A68%2C%22width%22%3A68%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22TOP-3%3AOD%22%2C%22x%22%3A539%2C%22y%22%3A209%2C%22width%22%3A83%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22TOP-2%3AEVE%22%2C%22x%22%3A540%2C%22y%22%3A159%2C%22width%22%3A86%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22%E4%B8%80ANEVENYEAR.%22%2C%22x%22%3A759%2C%22y%22%3A246%2C%22width%22%3A108%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22CAN'TKNOW...%22%2C%22x%22%3A142%2C%22y%22%3A267%2C%22width%22%3A79%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22TOP-3%3AWE%3C%22%2C%22x%22%3A14%2C%22y%22%3A209%2C%22width%22%3A100%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22TOP-4%3A%22%2C%22x%22%3A540%2C%22y%22%3A258%2C%22width%22%3A50%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22ANSWERIS5.%22%2C%22x%22%3A144%2C%22y%22%3A294%2C%22width%22%3A85%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22DONTKNOW...%22%2C%22x%22%3A135%2C%22y%22%3A168%2C%22width%22%3A213%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22STEP0%22%2C%22x%22%3A544%2C%22y%22%3A68%2C%22width%22%3A59%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%E4%B8%80964%2C%22%2C%22x%22%3A662%2C%22y%22%3A258%2C%22width%22%3A74%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22STEPK%22%2C%22x%22%3A795%2C%22y%22%3A59%2C%22width%22%3A133%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22%E4%B8%80EVEN.%22%2C%22x%22%3A727%2C%22y%22%3A266%2C%22width%22%3A123%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22STEP0%22%2C%22x%22%3A17%2C%22y%22%3A69%2C%22width%22%3A63%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22TOP-1%3A%22%2C%22x%22%3A13%2C%22y%22%3A112%2C%22width%22%3A52%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22TOP-2%3A%22%2C%22x%22%3A13%2C%22y%22%3A159%2C%22width%22%3A48%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22APPLES%22%2C%22x%22%3A135%2C%22y%22%3A97%2C%22width%22%3A48%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22%E4%B8%80%22%2C%22x%22%3A119%2C%22y%22%3A117%2C%22width%22%3A60%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22%E4%B8%80N%22%2C%22x%22%3A679%2C%22y%22%3A202%2C%22width%22%3A38%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22%E4%BA%8CN%22%2C%22x%22%3A665%2C%22y%22%3A162%2C%22width%22%3A52%2C%22height%22%3A15%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f5f5f5%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22ue7581669%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1790972560738-e9883a10-ab6d-4844-b31c-481539a243cd.png",
+        "taskId": "u6d91a703-77d6-4d2f-b28d-f4d89580fcc",
+        "clientId": "u7db1b4b0-62a2-4",
+        "originalType": "binary",
+        "width": 863.2,
+        "height": 280,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 66416,
+        "from": "paste",
+        "originWidth": 1079,
+        "originHeight": 350,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "stroke",
+        "ocrLocations": [
+          {
+            "text": "IHAVE3APPLES,MYDADHAS2MOREAPPLESTHANME",
+            "x": 22,
+            "y": 16,
+            "width": 377,
+            "height": 18
+          },
+          {
+            "text": "HAVE3APPLES,MYDAD...WEHAVE8APPLESINTOTAL",
+            "x": 124,
+            "y": 143,
+            "width": 330,
+            "height": 16
+          },
+          {
+            "text": "HAVE3APPLES,YOURDAD...YOUHAVE8APPLESINTOTAL",
+            "x": 138,
+            "y": 244,
+            "width": 331,
+            "height": 17
+          },
+          {
+            "text": "CAGEWASBOMIN<1964,WHICHISANEVENYEAR.",
+            "x": 702,
+            "y": 98,
+            "width": 338,
+            "height": 17
+          },
+          {
+            "text": "OWMANYAPPLESDOWEHAVEINTOTAL?",
+            "x": 29,
+            "y": 38,
+            "width": 284,
+            "height": 15
+          },
+          {
+            "text": "WASNICOLASCAGEBOMINANEVENORODDYEAR?",
+            "x": 546,
+            "y": 24,
+            "width": 354,
+            "height": 16
+          },
+          {
+            "text": "-DON'TKNOWBECAUSEWEDON'TKNOWHOWMANYAPPLES..",
+            "x": 113,
+            "y": 216,
+            "width": 371,
+            "height": 15
+          },
+          {
+            "text": "WASBORNINANEVENYEAR",
+            "x": 696,
+            "y": 117,
+            "width": 283,
+            "height": 16
+          },
+          {
+            "text": "APPLESAREAMETAPHOR.",
+            "x": 141,
+            "y": 313,
+            "width": 150,
+            "height": 15
+          },
+          {
+            "text": "WASBOMINANEVENYEAR",
+            "x": 686,
+            "y": 297,
+            "width": 166,
+            "height": 13
+          },
+          {
+            "text": "HAVE5APPLESINTOTAL.",
+            "x": 133,
+            "y": 196,
+            "width": 171,
+            "height": 14
+          },
+          {
+            "text": "TOP-5:HE",
+            "x": 540,
+            "y": 305,
+            "width": 88,
+            "height": 19
+          },
+          {
+            "text": "TOP-5:THE",
+            "x": 13,
+            "y": 304,
+            "width": 89,
+            "height": 19
+          },
+          {
+            "text": ".一ANODDYEAR.",
+            "x": 748,
+            "y": 84,
+            "width": 202,
+            "height": 16
+          },
+          {
+            "text": "TOP-1:NICOLAS",
+            "x": 542,
+            "y": 111,
+            "width": 104,
+            "height": 15
+          },
+          {
+            "text": "TOP-4:YOU<",
+            "x": 9,
+            "y": 257,
+            "width": 108,
+            "height": 18
+          },
+          {
+            "text": "IS55YVEARSOLD.",
+            "x": 692,
+            "y": 314,
+            "width": 98,
+            "height": 15
+          },
+          {
+            "text": "STEP1",
+            "x": 137,
+            "y": 69,
+            "width": 56,
+            "height": 18
+          },
+          {
+            "text": "STEP1",
+            "x": 702,
+            "y": 68,
+            "width": 68,
+            "height": 19
+          },
+          {
+            "text": "TOP-3:OD",
+            "x": 539,
+            "y": 209,
+            "width": 83,
+            "height": 19
+          },
+          {
+            "text": "TOP-2:EVE",
+            "x": 540,
+            "y": 159,
+            "width": 86,
+            "height": 18
+          },
+          {
+            "text": "一ANEVENYEAR.",
+            "x": 759,
+            "y": 246,
+            "width": 108,
+            "height": 15
+          },
+          {
+            "text": "CAN'TKNOW...",
+            "x": 142,
+            "y": 267,
+            "width": 79,
+            "height": 15
+          },
+          {
+            "text": "TOP-3:WE<",
+            "x": 14,
+            "y": 209,
+            "width": 100,
+            "height": 16
+          },
+          {
+            "text": "TOP-4:",
+            "x": 540,
+            "y": 258,
+            "width": 50,
+            "height": 18
+          },
+          {
+            "text": "ANSWERIS5.",
+            "x": 144,
+            "y": 294,
+            "width": 85,
+            "height": 14
+          },
+          {
+            "text": "DONTKNOW...",
+            "x": 135,
+            "y": 168,
+            "width": 213,
+            "height": 13
+          },
+          {
+            "text": "STEP0",
+            "x": 544,
+            "y": 68,
+            "width": 59,
+            "height": 17
+          },
+          {
+            "text": "一964,",
+            "x": 662,
+            "y": 258,
+            "width": 74,
+            "height": 18
+          },
+          {
+            "text": "STEPK",
+            "x": 795,
+            "y": 59,
+            "width": 133,
+            "height": 18
+          },
+          {
+            "text": "一EVEN.",
+            "x": 727,
+            "y": 266,
+            "width": 123,
+            "height": 18
+          },
+          {
+            "text": "STEP0",
+            "x": 17,
+            "y": 69,
+            "width": 63,
+            "height": 16
+          },
+          {
+            "text": "TOP-1:",
+            "x": 13,
+            "y": 112,
+            "width": 52,
+            "height": 15
+          },
+          {
+            "text": "TOP-2:",
+            "x": 13,
+            "y": 159,
+            "width": 48,
+            "height": 16
+          },
+          {
+            "text": "APPLES",
+            "x": 135,
+            "y": 97,
+            "width": 48,
+            "height": 15
+          },
+          {
+            "text": "一",
+            "x": 119,
+            "y": 117,
+            "width": 60,
+            "height": 16
+          },
+          {
+            "text": "一N",
+            "x": 679,
+            "y": 202,
+            "width": 38,
+            "height": 16
+          },
+          {
+            "text": "二N",
+            "x": 665,
+            "y": 162,
+            "width": 52,
+            "height": 15
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f5f5f5",
+        "__spacing": "both",
+        "id": "ue7581669",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1790972560738-e9883a10-ab6d-4844-b31c-481539a243cd.png"
+    }
+  ]
+}

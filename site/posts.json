@@ -7,14 +7,19 @@
     "slug": "chain-of-thought",
     "category": "llm",
     "date": "2026-10-03",
-    "description": "思维链与推理方法笔记：Tree of Thoughts 的思维分解、候选生成、状态评估，以及广度优先搜索和深度优先搜索",
+    "description": "思维链与推理方法笔记：Tree of Thoughts 的思维分解、候选生成、状态评估与搜索，以及 CoT-Decoding 的候选路径探索和答案置信度筛选",
     "tags": [
       "思维链",
       "CoT",
       "Tree of Thoughts",
       "ToT",
       "推理",
-      "搜索"
+      "搜索",
+      "CoT-Decoding",
+      "解码"
+    ],
+    "appendFiles": [
+      "../notes/chain-of-thought/cot-decoding/source.lake"
     ]
   },
   {

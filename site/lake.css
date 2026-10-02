@@ -227,3 +227,13 @@
 [data-post="chain-of-thought"] .code-block { margin: 8px 0 14px; }
 [data-post="chain-of-thought"] .code-block pre { padding: 12px 16px; line-height: 1.5; }
 [data-post="chain-of-thought"] .code-caption { min-height: 35px; padding: 5px 16px; }
+
+/* CoT-Decoding: center the confidence formula and keep image-only paragraphs compact. */
+[data-post="chain-of-thought"] .lake-document #ubc1618c3 { text-align: center; }
+[data-post="chain-of-thought"] .lake-document :is(#udf9e3b33, #u1bd295d7, #u7fad2fe2) {
+  text-align: center;
+  line-height: 0;
+}
+[data-post="chain-of-thought"] .lake-document :is(#udf9e3b33, #u1bd295d7, #u7fad2fe2) .lake-image {
+  margin-block: 12px;
+}

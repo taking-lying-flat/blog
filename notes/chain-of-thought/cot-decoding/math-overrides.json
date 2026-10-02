@@ -1,0 +1,7 @@
+{
+  "EANdo": {
+    "from": "\\Delta_{k,\\mathrm{answer}} = \\frac{1}{|\\mathrm{answer}|}\\sum_{x_t\\in\\mathrm{answer}} p(x_t^1\\mid x_{<t}) - p(x_t^2\\mid x_{<t}).",
+    "to": "\\Delta_{k,\\mathrm{answer}} = \\frac{1}{|\\mathrm{answer}|}\\sum_{x_t\\in\\mathrm{answer}}\\left[p(x_t^1\\mid x_{<t}) - p(x_t^2\\mid x_{<t})\\right]",
+    "reason": "用括号明确对每个答案 token 的概率差取平均，移除公式末尾句号"
+  }
+}
