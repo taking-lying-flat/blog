@@ -73,5 +73,10 @@
     "from": "​",
     "to": "",
     "reason": "移除不可见的空白字符"
+  },
+  "u67be5e12": {
+    "from": " 𝐆𝐫𝐚𝐝𝐢𝐞𝐧𝐭 𝐂𝐡𝐞𝐜𝐤𝐩𝐨𝐢𝐧𝐭𝐢𝐧𝐠: 𝐓𝐫𝐚𝐢𝐧𝐢𝐧𝐠 𝐃𝐞𝐞𝐩 𝐍𝐞𝐭𝐬 𝐰𝐢𝐭𝐡 𝐒𝐮𝐛𝐥𝐢𝐧𝐞𝐚𝐫 𝐌𝐞𝐦𝐨𝐫𝐲 𝐂𝐨𝐬𝐭",
+    "to": " Training Deep Nets with Sublinear Memory Cost",
+    "reason": "删除用户指定的标题前缀"
   }
 }
