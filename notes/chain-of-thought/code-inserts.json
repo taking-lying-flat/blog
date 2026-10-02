@@ -1,0 +1,34 @@
+[
+  {
+    "id": "tot-code-get-proposals",
+    "after": "u53baa162",
+    "tag": "li",
+    "file": "get_proposals.md",
+    "description": "将模型提出的多条思维分别接到已有路径后面，形成下一步候选",
+    "source": "https://github.com/princeton-nlp/tree-of-thought-llm/blob/8050e67d0e3a0fddc424d7fa5801538722a4c4cc/src/tot/methods/bfs.py#L34-L37"
+  },
+  {
+    "id": "tot-code-get-value",
+    "after": "u39960925",
+    "tag": "li",
+    "file": "get_value.md",
+    "description": "调用模型评估当前状态，解析评分并缓存结果",
+    "source": "https://github.com/princeton-nlp/tree-of-thought-llm/blob/8050e67d0e3a0fddc424d7fa5801538722a4c4cc/src/tot/methods/bfs.py#L6-L14"
+  },
+  {
+    "id": "tot-code-get-votes",
+    "after": "u8e608265",
+    "tag": "li",
+    "file": "get_votes.md",
+    "description": "将候选状态一起交给模型比较，并汇总投票结果",
+    "source": "https://github.com/princeton-nlp/tree-of-thought-llm/blob/8050e67d0e3a0fddc424d7fa5801538722a4c4cc/src/tot/methods/bfs.py#L28-L32"
+  },
+  {
+    "id": "tot-code-solve",
+    "after": "u90508cac",
+    "tag": "li",
+    "file": "solve.md",
+    "description": "solve 中逐层扩展、评估并筛选候选状态，以下省略日志记录",
+    "source": "https://github.com/princeton-nlp/tree-of-thought-llm/blob/8050e67d0e3a0fddc424d7fa5801538722a4c4cc/src/tot/methods/bfs.py#L56-L84"
+  }
+]

@@ -147,6 +147,12 @@
       "sha256": "6e76def4640a300148786ddd5230752e9094b830152511b533b6204488a9d810",
       "width": 1112,
       "height": 372
+    },
+    {
+      "source": "https://raw.githubusercontent.com/princeton-nlp/tree-of-thought-llm/8050e67d0e3a0fddc424d7fa5801538722a4c4cc/LICENSE",
+      "file": "assets/licenses/ToT-LICENSE.txt",
+      "bytes": 1067,
+      "sha256": "cd2d341de1d3781e993e9859b1a36e8bfe12c84507c0a52f21c0220743af475b"
     }
   ],
   "cards": [

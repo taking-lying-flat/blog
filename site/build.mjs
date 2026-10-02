@@ -306,7 +306,10 @@ for (const post of posts) {
     const inserts = JSON.parse(await readFile(path.join(post.directory, 'code-inserts.json'), 'utf8')
       .catch((error) => { if (error.code === 'ENOENT') return '[]'; throw error; }));
     for (const insert of inserts) {
-      if (!/^[\w-]+$/.test(insert.id) || !/^[\w-]+$/.test(insert.after)) {
+      const tag = insert.tag ?? 'p';
+      if (!/^[\w-]+$/.test(insert.id) || !/^[\w-]+$/.test(insert.after) ||
+          !['p', 'li'].includes(tag) ||
+          (insert.description !== undefined && typeof insert.description !== 'string')) {
         throw new Error(`Invalid Lake code anchor: ${post.slug}`);
       }
       const source = await readFile(path.join(post.directory, insert.file), 'utf8');
@@ -316,9 +319,15 @@ for (const post of posts) {
       }
       tokens[0].attrSet('id', insert.id);
       const content = markdown.renderer.render(tokens, markdown.options, { slug: post.slug, codeSourceUrl: insert.source });
-      const anchor = new RegExp(`<p\\b[^>]*\\sid="${insert.after}"[^>]*>[\\s\\S]*?</p>`, 'g');
+      const intro = insert.description ? `<p class="code-intro">${escape(insert.description)}</p>` : '';
+      const addition = intro + content.trim();
+      const anchor = new RegExp(`(<${tag}\\b[^>]*\\sid="${insert.after}"[^>]*>)([\\s\\S]*?)(</${tag}>)`, 'g');
       let matches = 0;
-      post.content = post.content.replace(anchor, (paragraph) => { matches++; return paragraph + content.trim(); });
+      post.content = post.content.replace(anchor, (block, opening, body, closing) => {
+        matches++;
+        // Keep code for a list item inside that item, preserving valid list markup.
+        return tag === 'li' ? opening + body + addition + closing : block + addition;
+      });
       if (matches !== 1) throw new Error(`Missing or repeated Lake code anchor: ${insert.after}`);
     }
     const replacements = JSON.parse(await readFile(path.join(post.directory, 'section-replacements.json'), 'utf8')
