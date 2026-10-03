@@ -7,7 +7,7 @@
     "slug": "chain-of-thought",
     "category": "llm",
     "date": "2026-10-03",
-    "description": "思维链与推理方法笔记：Tree of Thoughts 的思维分解、候选生成、状态评估与搜索，CoT-Decoding 的候选路径探索与答案置信度筛选，以及 CPO 的逐步偏好数据构建和优化目标",
+    "description": "思维链与推理方法笔记：Tree of Thoughts 的思维分解、候选生成、状态评估与搜索，以及 CoT-Decoding 的候选路径探索和答案置信度筛选",
     "tags": [
       "思维链",
       "CoT",
@@ -16,17 +16,12 @@
       "推理",
       "搜索",
       "CoT-Decoding",
-      "解码",
-      "CPO",
-      "偏好优化"
+      "解码"
     ],
     "appendFiles": [
-      "../notes/chain-of-thought/cot-decoding/source.lake",
-      "../notes/chain-of-thought/cpo/source.lake"
+      "../notes/chain-of-thought/cot-decoding/source.lake"
     ],
-    "appendMarkdown": [
-      { "file": "cot-decoding-sampling-note.md", "before": "zpR0z" }
-    ]
+    "appendMarkdown": ["cot-decoding-sampling-note.md"]
   },
   {
     "file": "../notes/training-infrastructure/gradient-checkpointing/source.lake",

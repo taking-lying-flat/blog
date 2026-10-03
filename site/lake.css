@@ -246,12 +246,3 @@
   background: #f6faff;
 }
 [data-post="chain-of-thought"] .cot-sampling-note p:last-child { margin-bottom: 0; }
-
-/* CPO: preserve diagram proportions without adding an inline baseline. */
-[data-post="chain-of-thought"] .lake-document :is(#ue1894d4a, #ub4332a6a) {
-  text-align: center;
-  line-height: 0;
-}
-[data-post="chain-of-thought"] .lake-document :is(#ue1894d4a, #ub4332a6a) .lake-image {
-  margin-block: 12px;
-}
