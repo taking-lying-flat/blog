@@ -257,3 +257,12 @@
 [data-post="chain-of-thought"] .lake-document :is(#u6afe2819, #ud495f5bf) .lake-image {
   margin-block: 12px;
 }
+
+[data-post="chain-of-thought"] .lake-document #uc1b7f8b3 {
+  font: 500 .875em/1.7 var(--mono);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: .16em .32em;
+  white-space: nowrap;
+}
