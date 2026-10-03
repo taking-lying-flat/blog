@@ -1,0 +1,1058 @@
+{
+  "source": {
+    "file": "source.lake",
+    "sha256": "7d14ef4ac1f0ca27b404cdebbe58afa356af2eabaec66299efa09a613abea25b",
+    "bytes": 25027,
+    "title": "无标题文档",
+    "section": "ReAct: Synergizing Reasoning and Acting in Language Models"
+  },
+  "title": "Chain of Thought",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "counts": {
+    "math": 12,
+    "images": 1,
+    "separators": 0
+  },
+  "assets": [
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1791002449665-5ac5ff63-741d-490c-a0cc-812ae7f202a1.png",
+      "file": "assets/images/1791002449665-5ac5ff63-741d-490c-a0cc-812ae7f202a1.png",
+      "bytes": 385250,
+      "sha256": "1970a7cee869c6c246898a2262afc6b08b5ef81a1b19f126adc9ed4ede4a2eb3",
+      "width": 1002,
+      "height": 815
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/cead1760d9d5723460c4b8d4028f113a.svg",
+      "file": "assets/math/cead1760d9d5723460c4b8d4028f113a.svg",
+      "bytes": 1047,
+      "sha256": "64941f8c89c938f3b9f2d0ab61f17eb5c0a0e4bcd441ab9cecd365ad278c8cc9",
+      "width": "0.84ex",
+      "height": "2.009ex",
+      "viewBox": "0 -719.6 361.5 865.1",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/5ead35caa49cb1d1733c96224df38d7a.svg",
+      "file": "assets/math/5ead35caa49cb1d1733c96224df38d7a.svg",
+      "bytes": 2862,
+      "sha256": "80971fedaca1e04924178be56f7ebd1326dc5c2111747d55003aa568493fc978",
+      "width": "6.665ex",
+      "height": "2.509ex",
+      "viewBox": "0 -791.3 2869.7 1080.4",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/f05adbb55b11cd1bd261f765b3c94241.svg",
+      "file": "assets/math/f05adbb55b11cd1bd261f765b3c94241.svg",
+      "bytes": 3851,
+      "sha256": "e53f532b03e52df9d654564a42418d43022613268982a9f15103b945d639bc76",
+      "width": "8.967ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 3860.8 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/a1b851e3e4dd7635fdd7ccde1106ac43.svg",
+      "file": "assets/math/a1b851e3e4dd7635fdd7ccde1106ac43.svg",
+      "bytes": 3399,
+      "sha256": "43a9752aa9330625545c275974b8211ae7c89635092b3e1a84da96dbf19e383f",
+      "width": "7.257ex",
+      "height": "2.676ex",
+      "viewBox": "0 -863.1 3124.7 1152.1",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/cd081ad1a7fab4a1cca1ffcceaaa1771.svg",
+      "file": "assets/math/cd081ad1a7fab4a1cca1ffcceaaa1771.svg",
+      "bytes": 6129,
+      "sha256": "24d2b45e331e09118baf6ec46c5d3aa9bb1617afa9083fbdf32f4d8a41140c6d",
+      "width": "30.038ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 12933.1 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/81bea26cc89b895fecb41d218393e5dc.svg",
+      "file": "assets/math/81bea26cc89b895fecb41d218393e5dc.svg",
+      "bytes": 2846,
+      "sha256": "03091d43877e3aa7596c0dd89837d5772e700d939865283fd2005ee02b90db48",
+      "width": "7.503ex",
+      "height": "2.176ex",
+      "viewBox": "0 -647.8 3230.3 936.9",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/4b95c26ec32222a301891343401b0f7d.svg",
+      "file": "assets/math/4b95c26ec32222a301891343401b0f7d.svg",
+      "bytes": 4024,
+      "sha256": "40a2037e530bc764901e1b8ff10eb59eb55a0a9dc26d8a301e7091eeffecb795",
+      "width": "14.014ex",
+      "height": "3.009ex",
+      "viewBox": "0 -1150.1 6034 1295.7",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/9b4abab2d4d67001988fb0235d36fcd0.svg",
+      "file": "assets/math/9b4abab2d4d67001988fb0235d36fcd0.svg",
+      "bytes": 1608,
+      "sha256": "8a6bb330804fe5e3ac76498b5a1ffc151a04a3b85200fb060e12952ed053d155",
+      "width": "2.405ex",
+      "height": "2.343ex",
+      "viewBox": "0 -863.1 1035.5 1008.6",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/e5aac21db53aa7a9ecc27c8d49066c3d.svg",
+      "file": "assets/math/e5aac21db53aa7a9ecc27c8d49066c3d.svg",
+      "bytes": 3819,
+      "sha256": "e62fdfdac8b95edbd1d9e01fe26fa1371875d67e2f671d35233292a2be2c38f5",
+      "width": "7.382ex",
+      "height": "2.676ex",
+      "viewBox": "-7.5 -863.1 3178.2 1152.1",
+      "style": "vertical-align: -0.671ex; margin-left: -0.017ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/8d5034539339cf61412d9c5cc85f4b6c.svg",
+      "file": "assets/math/8d5034539339cf61412d9c5cc85f4b6c.svg",
+      "bytes": 2201,
+      "sha256": "c66bffda2b455ab94be2230f1e661d2e795b89ee4f647bf524b327dc64f02fe0",
+      "width": "2.136ex",
+      "height": "2.676ex",
+      "viewBox": "-7.5 -863.1 919.6 1152.1",
+      "style": "vertical-align: -0.671ex; margin-left: -0.017ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/a181e1c7043c70d626a61a1bc0ebc218.svg",
+      "file": "assets/math/a181e1c7043c70d626a61a1bc0ebc218.svg",
+      "bytes": 1547,
+      "sha256": "7bb633dfe695153963a212dea310b6c5b0bef15798ef935c237e211d33cfc457",
+      "width": "1.833ex",
+      "height": "2.009ex",
+      "viewBox": "0 -576.1 789.1 865.1",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/989bdc5f467d600702f7e5c5c4cbc927.svg",
+      "file": "assets/math/989bdc5f467d600702f7e5c5c4cbc927.svg",
+      "bytes": 4971,
+      "sha256": "b9ba4233a39703eea70264c3e9ac5a47a8da489bc1a147b358b13026fd80fe3e",
+      "width": "13.826ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 5953 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    }
+  ],
+  "cards": [
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1791002449665-5ac5ff63-741d-490c-a0cc-812ae7f202a1.png%22%2C%22taskId%22%3A%22ue914d365-0e55-40f7-8f5a-4df74cc1403%22%2C%22clientId%22%3A%22udc535f35-e90a-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A801.6%2C%22height%22%3A652%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A385250%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1002%2C%22originHeight%22%3A815%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22YOUAREINTHENIDDLEOFAROOM.LOOKINGQUICKLYAROUND%22%2C%22x%22%3A28%2C%22y%22%3A461%2C%22width%22%3A459%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22AHG%3AONTHOROUNTARTOO3.VOUSEEAAOPLEL%2CABRGADL%2C%22%2C%22x%22%3A518%2C%22y%22%3A552%2C%22width%22%3A428%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22ACT1%3ATHINKIEIRSTINEEDTOFINDAPEPPERSHAKER.MORE%22%2C%22x%22%3A506%2C%22y%22%3A460%2C%22width%22%3A451%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22OCTOBER2005BYAPPLEORIGINALLYDESIGNEDTOCONTROLTHE%22%2C%22x%22%3A522%2C%22y%22%3A99%2C%22width%22%3A435%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22OBS1%3ATHEAPPLEREOTEISAREMOTECONTROLINTRODUCEDIN%22%2C%22x%22%3A522%2C%22y%22%3A82%2C%22width%22%3A434%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%221IKELVTOAOPEARINCABINETS(L-6)COUNTERTOPS(L-3).%22%2C%22x%22%3A507%2C%22y%22%3A475%2C%22width%22%3A452%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22OBS2%3AYOUOPENTHEDRAWER1%2CTHEDRAWER1ISOPEN.INIT%22%2C%22x%22%3A29%2C%22y%22%3A613%2C%22width%22%3A431%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22CANCONTRO1THEPROGRAMAPPLEREMOTEWASORIGINALL%22%2C%22x%22%3A28%2C%22y%22%3A57%2C%22width%22%3A399%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22ENS%2CCBS1%3AYOUPUTPEPPERSHAKER1IN%2FONTHEDRAWER%22%2C%22x%22%3A164%2C%22y%22%3A777%2C%22width%22%3A719%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22ACOUNTERTOP3ASTOVEBURNER1%2CANDATOASTERL.%22%2C%22x%22%3A31%2C%22y%22%3A492%2C%22width%22%3A419%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22MHNHT9.AOOLERENOTEWASORIGINALLYDESIGMGDC0COHETO%22%2C%22x%22%3A513%2C%22y%22%3A139%2C%22width%22%3A449%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22RHOUGHT1%3AINEEDTOSEARCHAPPLEREOTEANDFINDTHE%22%2C%22x%22%3A521%2C%22y%22%3A38%2C%22width%22%3A398%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22YOURTASKISTO%3APUTSOMEPEPPERSHAKERONADRAWER.%22%2C%22x%22%3A30%2C%22y%22%3A507%2C%22width%22%3A418%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22OBS7%3AYOUPICKUPTHEPEPPERSHAKER1FROMTHECOUNTERTOP3%22%2C%22x%22%3A516%2C%22y%22%3A618%2C%22width%22%3A456%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22THOUGHT3%3AFRONTROWISNOTFOUND.INEEDTOSEARCHFRONT%22%2C%22x%22%3A522%2C%22y%22%3A258%2C%22width%22%3A435%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22BNTG.MHINKROU%3ARFINDAOEOOERSHAKERL.NEXT%2CINEEDTO%22%2C%22x%22%3A514%2C%22y%22%3A644%2C%22width%22%3A446%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22VOU%2CVOUSEEACABINET6ACABINETL%2CACOFTEEMACHINEL%22%2C%22x%22%3A31%2C%22y%22%3A475%2C%22width%22%3A462%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22IEERETHEAAENTGOTOCABINETL%2CTHENCABINET2%2C3THENCOUNTERTOPLANDZ%22%2C%22x%22%3A515%2C%22y%22%3A524%2C%22width%22%3A437%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22ACT7%3ATAKEPEPPERSHAKER1FROMCOUNTERTOP3%22%2C%22x%22%3A518%2C%22y%22%3A602%2C%22width%22%3A346%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22OBS2%3ACOULDNOTFIND%5BFRONTROW%5D.SIMILAR%3A%5B'FRONTROW%22%2C%22x%22%3A521%2C%22y%22%3A201%2C%22width%22%3A416%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22OMESTION%3AASIDEFROMTHEAPPLEREMOTEWHATOTNEEDEVCE%22%2C%22x%22%3A27%2C%22y%22%3A36%2C%22width%22%3A452%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22ACT4%3AFINISH%5BKEYBOARDFUNCTIONKEYS%5D%22%2C%22x%22%3A520%2C%22y%22%3A381%2C%22width%22%3A286%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22PROGRAMITWASORIGINALLYDESIGNEDTOINTERACTWITH.%22%2C%22x%22%3A522%2C%22y%22%3A53%2C%22width%22%3A399%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22BS3%3AFRONTRORISADISCONTINUEDMEDIACENTERSOFTWARE%22%2C%22x%22%3A524%2C%22y%22%3A305%2C%22width%22%3A421%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22THEPRONTROYMEDIACENTERPROGRAL.INEEDTOSEARCNERON%22%2C%22x%22%3A520%2C%22y%22%3A156%2C%22width%22%3A436%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22REMOTEORTHEKEYBOARDFUNCTIONKEYS.SOTHEANSWERIS%22%2C%22x%22%3A521%2C%22y%22%3A350%2C%22width%22%3A416%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22....%2CAPEPPERSHAKERLANDAVASEJ.%22%2C%22x%22%3A517%2C%22y%22%3A575%2C%22width%22%3A335%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22EATTOEARTH%2CERONTROWMOTORSPORTS'%2CFRONTROW%22%2C%22x%22%3A523%2C%22y%22%3A216%2C%22width%22%3A390%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22THOUGHT4%3AFRONTROW(SOFTWARE)ISCONTROLLEDBYANAPO%22%2C%22x%22%3A520%2C%22y%22%3A334%2C%22width%22%3A411%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22OBS3%3AONTHESINKBASIN1%2CYOUSEEADISHSPONGE%22%2C%22x%22%3A30%2C%22y%22%3A672%2C%22width%22%3A348%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22OBS2%3AONTHECABINET1%2CYOUSEEAVASE2.%22%2C%22x%22%3A517%2C%22y%22%3A505%2C%22width%22%3A382%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22RNUNEXTANDFINDWHATOTHERDEVICECANCONTROLIT.%22%2C%22x%22%3A518%2C%22y%22%3A169%2C%22width%22%3A401%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22ACT2%3ASEARCH%5BFRONTROW%5D%22%2C%22x%22%3A253%2C%22y%22%3A210%2C%22width%22%3A199%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22(2BREACT(REASON%2BACT)%22%2C%22x%22%3A594%2C%22y%22%3A439%2C%22width%22%3A259%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22ACT11%3APUTPEPPERSHAKER1IN%2FONDRAWER1%22%2C%22x%22%3A435%2C%22y%22%3A764%2C%22width%22%3A404%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22YOUSEEADISHSPONGE2%2CANDASPOON1.%22%2C%22x%22%3A27%2C%22y%22%3A629%2C%22width%22%3A323%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22AET3%3ASEARCHTFRONTROW(SOFTWARE)L%22%2C%22x%22%3A521%2C%22y%22%3A290%2C%22width%22%3A300%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22OBS2%3ACOULDNOTFIND%5BFRON%22%2C%22x%22%3A255%2C%22y%22%3A226%2C%22width%22%3A205%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22DESIGNEDTOINTERACTWITH%22%2C%22x%22%3A30%2C%22y%22%3A76%2C%22width%22%3A200%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22ACT1%3AGOTODRAWER1%22%2C%22x%22%3A26%2C%22y%22%3A554%2C%22width%22%3A191%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22ANSWER%3AIPHONEIPADI%22%2C%22x%22%3A30%2C%22y%22%3A377%2C%22width%22%3A175%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22ERONTROWMEDIACENTERPROGRAM%22%2C%22x%22%3A521%2C%22y%22%3A114%2C%22width%22%3A323%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22CT3%3ASEARCH%5BER%22%2C%22x%22%3A259%2C%22y%22%3A278%2C%22width%22%3A116%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22ACT3%3AGOTOSINKBASIN1%22%2C%22x%22%3A28%2C%22y%22%3A656%2C%22width%22%3A198%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22ACT2OPENDRAWER1%22%2C%22x%22%3A29%2C%22y%22%3A598%2C%22width%22%3A385%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22OUTITIN%2FONDRAWERLL%22%2C%22x%22%3A518%2C%22y%22%3A662%2C%22width%22%3A190%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22BYIPHONE%2CIPADANAIPOA%22%2C%22x%22%3A28%2C%22y%22%3A292%2C%22width%22%3A190%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22(1DREACT(REASON%2BACD)%22%2C%22x%22%3A618%2C%22y%22%3A11%2C%22width%22%3A273%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22SPATU1A1%2CANDASPOON2.%22%2C%22x%22%3A30%2C%22y%22%3A688%2C%22width%22%3A193%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22AOT2%3AGOTOCABINET%22%2C%22x%22%3A508%2C%22y%22%3A490%2C%22width%22%3A403%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22ACT2%3ASEARCHERONTROW%22%2C%22x%22%3A520%2C%22y%22%3A187%2C%22width%22%3A374%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%221%3ATHEAPPLEREMOTEIS%22%2C%22x%22%3A274%2C%22y%22%3A155%2C%22width%22%3A190%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22NATG%3AGOTODRAWEIL%22%2C%22x%22%3A519%2C%22y%22%3A675%2C%22width%22%3A168%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22HOUGHT%3ALETSTHINKSTE%22%2C%22x%22%3A31%2C%22y%22%3A207%2C%22width%22%3A182%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22KEYBOARDFUNCTIONKEVS%22%2C%22x%22%3A522%2C%22y%22%3A367%2C%22width%22%3A288%2C%22height%22%3A7%7D%2C%7B%22text%22%3A%22YSTEPAPPLEREMOTEW%22%2C%22x%22%3A32%2C%22y%22%3A225%2C%22width%22%3A175%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22APOLERVCANBECONTROLLED%22%2C%22x%22%3A30%2C%22y%22%3A275%2C%22width%22%3A192%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22BS1%3ATHEDRAWER1ISCLOSED.%22%2C%22x%22%3A34%2C%22y%22%3A569%2C%22width%22%3A219%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22INTERACTWITHAPPLETV.%22%2C%22x%22%3A30%2C%22y%22%3A258%2C%22width%22%3A179%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22AAT1SEARCH%5BAPPLEREIOTE%22%2C%22x%22%3A521%2C%22y%22%3A68%2C%22width%22%3A382%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22DISCONTIUEDMEDIACENTE%22%2C%22x%22%3A256%2C%22y%22%3A331%2C%22width%22%3A178%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22AET10%3AOPENDRAWERL%22%2C%22x%22%3A521%2C%22y%22%3A720%2C%22width%22%3A159%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22TOUCH.SOTHEANSWERIS%22%2C%22x%22%3A28%2C%22y%22%3A309%2C%22width%22%3A174%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22ROW(SOFTWARE.%22%2C%22x%22%3A521%2C%22y%22%3A275%2C%22width%22%3A343%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22SOFTWARE%5D%22%2C%22x%22%3A521%2C%22y%22%3A231%2C%22width%22%3A331%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22ACT4%3AEINISHLY%22%2C%22x%22%3A251%2C%22y%22%3A384%2C%22width%22%3A116%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22(1B)COR(REASONONLY)%22%2C%22x%22%3A34%2C%22y%22%3A184%2C%22width%22%3A187%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22AKEPEPPERSHAKER%22%2C%22x%22%3A87%2C%22y%22%3A763%2C%22width%22%3A121%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22OBS3%3AFRONTROWISA%22%2C%22x%22%3A255%2C%22y%22%3A313%2C%22width%22%3A165%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22%3ASEARCHAPPLEREMOTE%22%2C%22x%22%3A289%2C%22y%22%3A138%2C%22width%22%3A173%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22RIGINA1ILYDESIGNEATO%22%2C%22x%22%3A34%2C%22y%22%3A242%2C%22width%22%3A165%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22OBS10%3AYOUOPENDRAWE%22%2C%22x%22%3A520%2C%22y%22%3A736%2C%22width%22%3A169%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22NOTHINGHAPPENS.%22%2C%22x%22%3A72%2C%22y%22%3A732%2C%22width%22%3A136%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22OBSG%3ADRAWERIISCLOSEU%22%2C%22x%22%3A518%2C%22y%22%3A689%2C%22width%22%3A193%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22ROW%5D.SIMILAR%3A.%22%2C%22x%22%3A257%2C%22y%22%3A244%2C%22width%22%3A113%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22RIRORRIRORROOOOOIORRORRR%22%2C%22x%22%3A533%2C%22y%22%3A420%2C%22width%22%3A310%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22(1)HOTSPOTA%22%2C%22x%22%3A202%2C%22y%22%3A13%2C%22width%22%3A110%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22..POMNTEWHATOTHETA%22%2C%22x%22%3A115%2C%22y%22%3A21%2C%22width%22%3A323%2C%22height%22%3A38%7D%2C%7B%22text%22%3A%22(2)ALFWORLD%22%2C%22x%22%3A40%2C%22y%22%3A438%2C%22width%22%3A387%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22IPHONE%2CIPADANDIPO%22%2C%22x%22%3A28%2C%22y%22%3A327%2C%22width%22%3A161%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22NOTHINGHAPPENS%22%2C%22x%22%3A79%2C%22y%22%3A782%2C%22width%22%3A114%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%224%3ATAKEOEPPERSHAKER%22%2C%22x%22%3A53%2C%22y%22%3A718%2C%22width%22%3A156%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22AKER1FROMSINKBASIN1%22%2C%22x%22%3A174%2C%22y%22%3A762%2C%22width%22%3A176%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22(SOFTWARE)%5D%22%2C%22x%22%3A255%2C%22y%22%3A295%2C%22width%22%3A84%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22IIIIIIIIIIIIIIIIII%22%2C%22x%22%3A44%2C%22y%22%3A420%2C%22width%22%3A303%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22REMOTECONTROL%22%2C%22x%22%3A252%2C%22y%22%3A174%2C%22width%22%3A128%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%221FROMSINKBA%22%2C%22x%22%3A205%2C%22y%22%3A718%2C%22width%22%3A108%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22NSWER%3AIPOD%22%2C%22x%22%3A37%2C%22y%22%3A143%2C%22width%22%3A90%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22(1A)STAND%22%2C%22x%22%3A67%2C%22y%22%3A115%2C%22width%22%3A88%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22(2A)ACT-ONLY%22%2C%22x%22%3A211%2C%22y%22%3A544%2C%22width%22%3A107%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22(1C)ACT-ONLY%22%2C%22x%22%3A318%2C%22y%22%3A114%2C%22width%22%3A116%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%220BS4%3A%22%2C%22x%22%3A31%2C%22y%22%3A732%2C%22width%22%3A49%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22OUCH%22%2C%22x%22%3A26%2C%22y%22%3A394%2C%22width%22%3A106%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22AT5%3A%22%2C%22x%22%3A32%2C%22y%22%3A765%2C%22width%22%3A42%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22SOFTWARE%22%2C%22x%22%3A255%2C%22y%22%3A349%2C%22width%22%3A81%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22OBS5%3A%22%2C%22x%22%3A31%2C%22y%22%3A780%2C%22width%22%3A47%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22TOUCH.%22%2C%22x%22%3A28%2C%22y%22%3A345%2C%22width%22%3A50%2C%22height%22%3A10%7D%2C%7B%22text%22%3A%22OBS1%3ATH%22%2C%22x%22%3A254%2C%22y%22%3A156%2C%22width%22%3A69%2C%22height%22%3A11%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f7f4f3%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u0e52befd%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1791002449665-5ac5ff63-741d-490c-a0cc-812ae7f202a1.png",
+        "taskId": "ue914d365-0e55-40f7-8f5a-4df74cc1403",
+        "clientId": "udc535f35-e90a-4",
+        "originalType": "binary",
+        "width": 801.6,
+        "height": 652,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 385250,
+        "from": "paste",
+        "originWidth": 1002,
+        "originHeight": 815,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "YOUAREINTHENIDDLEOFAROOM.LOOKINGQUICKLYAROUND",
+            "x": 28,
+            "y": 461,
+            "width": 459,
+            "height": 14
+          },
+          {
+            "text": "AHG:ONTHOROUNTARTOO3.VOUSEEAAOPLEL,ABRGADL,",
+            "x": 518,
+            "y": 552,
+            "width": 428,
+            "height": 18
+          },
+          {
+            "text": "ACT1:THINKIEIRSTINEEDTOFINDAPEPPERSHAKER.MORE",
+            "x": 506,
+            "y": 460,
+            "width": 451,
+            "height": 16
+          },
+          {
+            "text": "OCTOBER2005BYAPPLEORIGINALLYDESIGNEDTOCONTROLTHE",
+            "x": 522,
+            "y": 99,
+            "width": 435,
+            "height": 12
+          },
+          {
+            "text": "OBS1:THEAPPLEREOTEISAREMOTECONTROLINTRODUCEDIN",
+            "x": 522,
+            "y": 82,
+            "width": 434,
+            "height": 16
+          },
+          {
+            "text": "1IKELVTOAOPEARINCABINETS(L-6)COUNTERTOPS(L-3).",
+            "x": 507,
+            "y": 475,
+            "width": 452,
+            "height": 15
+          },
+          {
+            "text": "OBS2:YOUOPENTHEDRAWER1,THEDRAWER1ISOPEN.INIT",
+            "x": 29,
+            "y": 613,
+            "width": 431,
+            "height": 14
+          },
+          {
+            "text": "CANCONTRO1THEPROGRAMAPPLEREMOTEWASORIGINALL",
+            "x": 28,
+            "y": 57,
+            "width": 399,
+            "height": 16
+          },
+          {
+            "text": "ENS,CBS1:YOUPUTPEPPERSHAKER1IN/ONTHEDRAWER",
+            "x": 164,
+            "y": 777,
+            "width": 719,
+            "height": 19
+          },
+          {
+            "text": "ACOUNTERTOP3ASTOVEBURNER1,ANDATOASTERL.",
+            "x": 31,
+            "y": 492,
+            "width": 419,
+            "height": 14
+          },
+          {
+            "text": "MHNHT9.AOOLERENOTEWASORIGINALLYDESIGMGDC0COHETO",
+            "x": 513,
+            "y": 139,
+            "width": 449,
+            "height": 19
+          },
+          {
+            "text": "RHOUGHT1:INEEDTOSEARCHAPPLEREOTEANDFINDTHE",
+            "x": 521,
+            "y": 38,
+            "width": 398,
+            "height": 16
+          },
+          {
+            "text": "YOURTASKISTO:PUTSOMEPEPPERSHAKERONADRAWER.",
+            "x": 30,
+            "y": 507,
+            "width": 418,
+            "height": 14
+          },
+          {
+            "text": "OBS7:YOUPICKUPTHEPEPPERSHAKER1FROMTHECOUNTERTOP3",
+            "x": 516,
+            "y": 618,
+            "width": 456,
+            "height": 14
+          },
+          {
+            "text": "THOUGHT3:FRONTROWISNOTFOUND.INEEDTOSEARCHFRONT",
+            "x": 522,
+            "y": 258,
+            "width": 435,
+            "height": 16
+          },
+          {
+            "text": "BNTG.MHINKROU:RFINDAOEOOERSHAKERL.NEXT,INEEDTO",
+            "x": 514,
+            "y": 644,
+            "width": 446,
+            "height": 17
+          },
+          {
+            "text": "VOU,VOUSEEACABINET6ACABINETL,ACOFTEEMACHINEL",
+            "x": 31,
+            "y": 475,
+            "width": 462,
+            "height": 15
+          },
+          {
+            "text": "IEERETHEAAENTGOTOCABINETL,THENCABINET2,3THENCOUNTERTOPLANDZ",
+            "x": 515,
+            "y": 524,
+            "width": 437,
+            "height": 16
+          },
+          {
+            "text": "ACT7:TAKEPEPPERSHAKER1FROMCOUNTERTOP3",
+            "x": 518,
+            "y": 602,
+            "width": 346,
+            "height": 14
+          },
+          {
+            "text": "OBS2:COULDNOTFIND[FRONTROW].SIMILAR:['FRONTROW",
+            "x": 521,
+            "y": 201,
+            "width": 416,
+            "height": 15
+          },
+          {
+            "text": "OMESTION:ASIDEFROMTHEAPPLEREMOTEWHATOTNEEDEVCE",
+            "x": 27,
+            "y": 36,
+            "width": 452,
+            "height": 22
+          },
+          {
+            "text": "ACT4:FINISH[KEYBOARDFUNCTIONKEYS]",
+            "x": 520,
+            "y": 381,
+            "width": 286,
+            "height": 11
+          },
+          {
+            "text": "PROGRAMITWASORIGINALLYDESIGNEDTOINTERACTWITH.",
+            "x": 522,
+            "y": 53,
+            "width": 399,
+            "height": 16
+          },
+          {
+            "text": "BS3:FRONTRORISADISCONTINUEDMEDIACENTERSOFTWARE",
+            "x": 524,
+            "y": 305,
+            "width": 421,
+            "height": 14
+          },
+          {
+            "text": "THEPRONTROYMEDIACENTERPROGRAL.INEEDTOSEARCNERON",
+            "x": 520,
+            "y": 156,
+            "width": 436,
+            "height": 16
+          },
+          {
+            "text": "REMOTEORTHEKEYBOARDFUNCTIONKEYS.SOTHEANSWERIS",
+            "x": 521,
+            "y": 350,
+            "width": 416,
+            "height": 11
+          },
+          {
+            "text": "....,APEPPERSHAKERLANDAVASEJ.",
+            "x": 517,
+            "y": 575,
+            "width": 335,
+            "height": 14
+          },
+          {
+            "text": "EATTOEARTH,ERONTROWMOTORSPORTS',FRONTROW",
+            "x": 523,
+            "y": 216,
+            "width": 390,
+            "height": 15
+          },
+          {
+            "text": "THOUGHT4:FRONTROW(SOFTWARE)ISCONTROLLEDBYANAPO",
+            "x": 520,
+            "y": 334,
+            "width": 411,
+            "height": 11
+          },
+          {
+            "text": "OBS3:ONTHESINKBASIN1,YOUSEEADISHSPONGE",
+            "x": 30,
+            "y": 672,
+            "width": 348,
+            "height": 14
+          },
+          {
+            "text": "OBS2:ONTHECABINET1,YOUSEEAVASE2.",
+            "x": 517,
+            "y": 505,
+            "width": 382,
+            "height": 14
+          },
+          {
+            "text": "RNUNEXTANDFINDWHATOTHERDEVICECANCONTROLIT.",
+            "x": 518,
+            "y": 169,
+            "width": 401,
+            "height": 17
+          },
+          {
+            "text": "ACT2:SEARCH[FRONTROW]",
+            "x": 253,
+            "y": 210,
+            "width": 199,
+            "height": 13
+          },
+          {
+            "text": "(2BREACT(REASON+ACT)",
+            "x": 594,
+            "y": 439,
+            "width": 259,
+            "height": 17
+          },
+          {
+            "text": "ACT11:PUTPEPPERSHAKER1IN/ONDRAWER1",
+            "x": 435,
+            "y": 764,
+            "width": 404,
+            "height": 16
+          },
+          {
+            "text": "YOUSEEADISHSPONGE2,ANDASPOON1.",
+            "x": 27,
+            "y": 629,
+            "width": 323,
+            "height": 11
+          },
+          {
+            "text": "AET3:SEARCHTFRONTROW(SOFTWARE)L",
+            "x": 521,
+            "y": 290,
+            "width": 300,
+            "height": 11
+          },
+          {
+            "text": "OBS2:COULDNOTFIND[FRON",
+            "x": 255,
+            "y": 226,
+            "width": 205,
+            "height": 14
+          },
+          {
+            "text": "DESIGNEDTOINTERACTWITH",
+            "x": 30,
+            "y": 76,
+            "width": 200,
+            "height": 14
+          },
+          {
+            "text": "ACT1:GOTODRAWER1",
+            "x": 26,
+            "y": 554,
+            "width": 191,
+            "height": 14
+          },
+          {
+            "text": "ANSWER:IPHONEIPADI",
+            "x": 30,
+            "y": 377,
+            "width": 175,
+            "height": 12
+          },
+          {
+            "text": "ERONTROWMEDIACENTERPROGRAM",
+            "x": 521,
+            "y": 114,
+            "width": 323,
+            "height": 11
+          },
+          {
+            "text": "CT3:SEARCH[ER",
+            "x": 259,
+            "y": 278,
+            "width": 116,
+            "height": 14
+          },
+          {
+            "text": "ACT3:GOTOSINKBASIN1",
+            "x": 28,
+            "y": 656,
+            "width": 198,
+            "height": 13
+          },
+          {
+            "text": "ACT2OPENDRAWER1",
+            "x": 29,
+            "y": 598,
+            "width": 385,
+            "height": 14
+          },
+          {
+            "text": "OUTITIN/ONDRAWERLL",
+            "x": 518,
+            "y": 662,
+            "width": 190,
+            "height": 14
+          },
+          {
+            "text": "BYIPHONE,IPADANAIPOA",
+            "x": 28,
+            "y": 292,
+            "width": 190,
+            "height": 14
+          },
+          {
+            "text": "(1DREACT(REASON+ACD)",
+            "x": 618,
+            "y": 11,
+            "width": 273,
+            "height": 19
+          },
+          {
+            "text": "SPATU1A1,ANDASPOON2.",
+            "x": 30,
+            "y": 688,
+            "width": 193,
+            "height": 12
+          },
+          {
+            "text": "AOT2:GOTOCABINET",
+            "x": 508,
+            "y": 490,
+            "width": 403,
+            "height": 16
+          },
+          {
+            "text": "ACT2:SEARCHERONTROW",
+            "x": 520,
+            "y": 187,
+            "width": 374,
+            "height": 14
+          },
+          {
+            "text": "1:THEAPPLEREMOTEIS",
+            "x": 274,
+            "y": 155,
+            "width": 190,
+            "height": 13
+          },
+          {
+            "text": "NATG:GOTODRAWEIL",
+            "x": 519,
+            "y": 675,
+            "width": 168,
+            "height": 16
+          },
+          {
+            "text": "HOUGHT:LETSTHINKSTE",
+            "x": 31,
+            "y": 207,
+            "width": 182,
+            "height": 12
+          },
+          {
+            "text": "KEYBOARDFUNCTIONKEVS",
+            "x": 522,
+            "y": 367,
+            "width": 288,
+            "height": 7
+          },
+          {
+            "text": "YSTEPAPPLEREMOTEW",
+            "x": 32,
+            "y": 225,
+            "width": 175,
+            "height": 12
+          },
+          {
+            "text": "APOLERVCANBECONTROLLED",
+            "x": 30,
+            "y": 275,
+            "width": 192,
+            "height": 12
+          },
+          {
+            "text": "BS1:THEDRAWER1ISCLOSED.",
+            "x": 34,
+            "y": 569,
+            "width": 219,
+            "height": 13
+          },
+          {
+            "text": "INTERACTWITHAPPLETV.",
+            "x": 30,
+            "y": 258,
+            "width": 179,
+            "height": 13
+          },
+          {
+            "text": "AAT1SEARCH[APPLEREIOTE",
+            "x": 521,
+            "y": 68,
+            "width": 382,
+            "height": 17
+          },
+          {
+            "text": "DISCONTIUEDMEDIACENTE",
+            "x": 256,
+            "y": 331,
+            "width": 178,
+            "height": 12
+          },
+          {
+            "text": "AET10:OPENDRAWERL",
+            "x": 521,
+            "y": 720,
+            "width": 159,
+            "height": 15
+          },
+          {
+            "text": "TOUCH.SOTHEANSWERIS",
+            "x": 28,
+            "y": 309,
+            "width": 174,
+            "height": 13
+          },
+          {
+            "text": "ROW(SOFTWARE.",
+            "x": 521,
+            "y": 275,
+            "width": 343,
+            "height": 12
+          },
+          {
+            "text": "SOFTWARE]",
+            "x": 521,
+            "y": 231,
+            "width": 331,
+            "height": 16
+          },
+          {
+            "text": "ACT4:EINISHLY",
+            "x": 251,
+            "y": 384,
+            "width": 116,
+            "height": 13
+          },
+          {
+            "text": "(1B)COR(REASONONLY)",
+            "x": 34,
+            "y": 184,
+            "width": 187,
+            "height": 15
+          },
+          {
+            "text": "AKEPEPPERSHAKER",
+            "x": 87,
+            "y": 763,
+            "width": 121,
+            "height": 12
+          },
+          {
+            "text": "OBS3:FRONTROWISA",
+            "x": 255,
+            "y": 313,
+            "width": 165,
+            "height": 14
+          },
+          {
+            "text": ":SEARCHAPPLEREMOTE",
+            "x": 289,
+            "y": 138,
+            "width": 173,
+            "height": 13
+          },
+          {
+            "text": "RIGINA1ILYDESIGNEATO",
+            "x": 34,
+            "y": 242,
+            "width": 165,
+            "height": 13
+          },
+          {
+            "text": "OBS10:YOUOPENDRAWE",
+            "x": 520,
+            "y": 736,
+            "width": 169,
+            "height": 14
+          },
+          {
+            "text": "NOTHINGHAPPENS.",
+            "x": 72,
+            "y": 732,
+            "width": 136,
+            "height": 11
+          },
+          {
+            "text": "OBSG:DRAWERIISCLOSEU",
+            "x": 518,
+            "y": 689,
+            "width": 193,
+            "height": 19
+          },
+          {
+            "text": "ROW].SIMILAR:.",
+            "x": 257,
+            "y": 244,
+            "width": 113,
+            "height": 13
+          },
+          {
+            "text": "RIRORRIRORROOOOOIORRORRR",
+            "x": 533,
+            "y": 420,
+            "width": 310,
+            "height": 12
+          },
+          {
+            "text": "(1)HOTSPOTA",
+            "x": 202,
+            "y": 13,
+            "width": 110,
+            "height": 14
+          },
+          {
+            "text": "..POMNTEWHATOTHETA",
+            "x": 115,
+            "y": 21,
+            "width": 323,
+            "height": 38
+          },
+          {
+            "text": "(2)ALFWORLD",
+            "x": 40,
+            "y": 438,
+            "width": 387,
+            "height": 17
+          },
+          {
+            "text": "IPHONE,IPADANDIPO",
+            "x": 28,
+            "y": 327,
+            "width": 161,
+            "height": 11
+          },
+          {
+            "text": "NOTHINGHAPPENS",
+            "x": 79,
+            "y": 782,
+            "width": 114,
+            "height": 11
+          },
+          {
+            "text": "4:TAKEOEPPERSHAKER",
+            "x": 53,
+            "y": 718,
+            "width": 156,
+            "height": 13
+          },
+          {
+            "text": "AKER1FROMSINKBASIN1",
+            "x": 174,
+            "y": 762,
+            "width": 176,
+            "height": 13
+          },
+          {
+            "text": "(SOFTWARE)]",
+            "x": 255,
+            "y": 295,
+            "width": 84,
+            "height": 14
+          },
+          {
+            "text": "IIIIIIIIIIIIIIIIII",
+            "x": 44,
+            "y": 420,
+            "width": 303,
+            "height": 12
+          },
+          {
+            "text": "REMOTECONTROL",
+            "x": 252,
+            "y": 174,
+            "width": 128,
+            "height": 13
+          },
+          {
+            "text": "1FROMSINKBA",
+            "x": 205,
+            "y": 718,
+            "width": 108,
+            "height": 13
+          },
+          {
+            "text": "NSWER:IPOD",
+            "x": 37,
+            "y": 143,
+            "width": 90,
+            "height": 11
+          },
+          {
+            "text": "(1A)STAND",
+            "x": 67,
+            "y": 115,
+            "width": 88,
+            "height": 14
+          },
+          {
+            "text": "(2A)ACT-ONLY",
+            "x": 211,
+            "y": 544,
+            "width": 107,
+            "height": 12
+          },
+          {
+            "text": "(1C)ACT-ONLY",
+            "x": 318,
+            "y": 114,
+            "width": 116,
+            "height": 16
+          },
+          {
+            "text": "0BS4:",
+            "x": 31,
+            "y": 732,
+            "width": 49,
+            "height": 11
+          },
+          {
+            "text": "OUCH",
+            "x": 26,
+            "y": 394,
+            "width": 106,
+            "height": 12
+          },
+          {
+            "text": "AT5:",
+            "x": 32,
+            "y": 765,
+            "width": 42,
+            "height": 12
+          },
+          {
+            "text": "SOFTWARE",
+            "x": 255,
+            "y": 349,
+            "width": 81,
+            "height": 12
+          },
+          {
+            "text": "OBS5:",
+            "x": 31,
+            "y": 780,
+            "width": 47,
+            "height": 13
+          },
+          {
+            "text": "TOUCH.",
+            "x": 28,
+            "y": 345,
+            "width": 50,
+            "height": 10
+          },
+          {
+            "text": "OBS1:TH",
+            "x": 254,
+            "y": 156,
+            "width": 69,
+            "height": 11
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f7f4f3",
+        "__spacing": "both",
+        "id": "u0e52befd",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1791002449665-5ac5ff63-741d-490c-a0cc-812ae7f202a1.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fcead1760d9d5723460c4b8d4028f113a.svg%22%2C%22id%22%3A%22i2TPq%22%7D"
+      },
+      "value": {
+        "code": "t",
+        "src": "https://cdn.nlark.com/yuque/__latex/cead1760d9d5723460c4b8d4028f113a.svg",
+        "id": "i2TPq"
+      },
+      "asset": "assets/math/cead1760d9d5723460c4b8d4028f113a.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22o_t%20%5C%5Cin%20%5C%5Cmathcal%7BO%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F5ead35caa49cb1d1733c96224df38d7a.svg%22%2C%22id%22%3A%22LG89z%22%7D"
+      },
+      "value": {
+        "code": "o_t \\in \\mathcal{O}",
+        "src": "https://cdn.nlark.com/yuque/__latex/5ead35caa49cb1d1733c96224df38d7a.svg",
+        "id": "LG89z"
+      },
+      "asset": "assets/math/5ead35caa49cb1d1733c96224df38d7a.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cpi(a_t%20%5C%5Cmid%20c_t)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Ff05adbb55b11cd1bd261f765b3c94241.svg%22%2C%22id%22%3A%22CiIoF%22%7D"
+      },
+      "value": {
+        "code": "\\pi(a_t \\mid c_t)",
+        "src": "https://cdn.nlark.com/yuque/__latex/f05adbb55b11cd1bd261f765b3c94241.svg",
+        "id": "CiIoF"
+      },
+      "asset": "assets/math/f05adbb55b11cd1bd261f765b3c94241.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22a_t%20%5C%5Cin%20%5C%5Cmathcal%7BA%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fa1b851e3e4dd7635fdd7ccde1106ac43.svg%22%2C%22id%22%3A%22KJfmy%22%7D"
+      },
+      "value": {
+        "code": "a_t \\in \\mathcal{A}",
+        "src": "https://cdn.nlark.com/yuque/__latex/a1b851e3e4dd7635fdd7ccde1106ac43.svg",
+        "id": "KJfmy"
+      },
+      "asset": "assets/math/a1b851e3e4dd7635fdd7ccde1106ac43.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22c_t%20%3D%20(o_1%2C%20a_1%2C%20%5C%5Ccdots%2C%20o_%7Bt-1%7D%2C%20a_%7Bt-1%7D%2C%20o_t)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fcd081ad1a7fab4a1cca1ffcceaaa1771.svg%22%2C%22id%22%3A%22YL6at%22%7D"
+      },
+      "value": {
+        "code": "c_t = (o_1, a_1, \\cdots, o_{t-1}, a_{t-1}, o_t)",
+        "src": "https://cdn.nlark.com/yuque/__latex/cd081ad1a7fab4a1cca1ffcceaaa1771.svg",
+        "id": "YL6at"
+      },
+      "asset": "assets/math/cd081ad1a7fab4a1cca1ffcceaaa1771.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22c_t%20%5C%5Cmapsto%20a_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F81bea26cc89b895fecb41d218393e5dc.svg%22%2C%22id%22%3A%22uGwrh%22%7D"
+      },
+      "value": {
+        "code": "c_t \\mapsto a_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/81bea26cc89b895fecb41d218393e5dc.svg",
+        "id": "uGwrh"
+      },
+      "asset": "assets/math/81bea26cc89b895fecb41d218393e5dc.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Chat%7B%5C%5Cmathcal%7BA%7D%7D%20%3D%20%5C%5Cmathcal%7BA%7D%20%5C%5Ccup%20%5C%5Cmathcal%7BL%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F4b95c26ec32222a301891343401b0f7d.svg%22%2C%22id%22%3A%22cUCXc%22%7D"
+      },
+      "value": {
+        "code": "\\hat{\\mathcal{A}} = \\mathcal{A} \\cup \\mathcal{L}",
+        "src": "https://cdn.nlark.com/yuque/__latex/4b95c26ec32222a301891343401b0f7d.svg",
+        "id": "cUCXc"
+      },
+      "asset": "assets/math/4b95c26ec32222a301891343401b0f7d.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathcal%7BL%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F9b4abab2d4d67001988fb0235d36fcd0.svg%22%2C%22id%22%3A%22V4kAo%22%7D"
+      },
+      "value": {
+        "code": "\\mathcal{L}",
+        "src": "https://cdn.nlark.com/yuque/__latex/9b4abab2d4d67001988fb0235d36fcd0.svg",
+        "id": "V4kAo"
+      },
+      "asset": "assets/math/9b4abab2d4d67001988fb0235d36fcd0.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Chat%7Ba%7D_t%20%5C%5Cin%20%5C%5Cmathcal%7BL%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fe5aac21db53aa7a9ecc27c8d49066c3d.svg%22%2C%22id%22%3A%22roTZG%22%7D"
+      },
+      "value": {
+        "code": "\\hat{a}_t \\in \\mathcal{L}",
+        "src": "https://cdn.nlark.com/yuque/__latex/e5aac21db53aa7a9ecc27c8d49066c3d.svg",
+        "id": "roTZG"
+      },
+      "asset": "assets/math/e5aac21db53aa7a9ecc27c8d49066c3d.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Chat%7Ba%7D_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F8d5034539339cf61412d9c5cc85f4b6c.svg%22%2C%22id%22%3A%22aZi1p%22%7D"
+      },
+      "value": {
+        "code": "\\hat{a}_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/8d5034539339cf61412d9c5cc85f4b6c.svg",
+        "id": "aZi1p"
+      },
+      "asset": "assets/math/8d5034539339cf61412d9c5cc85f4b6c.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22c_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fa181e1c7043c70d626a61a1bc0ebc218.svg%22%2C%22id%22%3A%22J1K2t%22%7D"
+      },
+      "value": {
+        "code": "c_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/a181e1c7043c70d626a61a1bc0ebc218.svg",
+        "id": "J1K2t"
+      },
+      "asset": "assets/math/a181e1c7043c70d626a61a1bc0ebc218.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22c_%7Bt%2B1%7D%20%3D%20(c_t%2C%20%5C%5Chat%7Ba%7D_t)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F989bdc5f467d600702f7e5c5c4cbc927.svg%22%2C%22id%22%3A%22wVoKD%22%7D"
+      },
+      "value": {
+        "code": "c_{t+1} = (c_t, \\hat{a}_t)",
+        "src": "https://cdn.nlark.com/yuque/__latex/989bdc5f467d600702f7e5c5c4cbc927.svg",
+        "id": "wVoKD"
+      },
+      "asset": "assets/math/989bdc5f467d600702f7e5c5c4cbc927.svg"
+    }
+  ],
+  "blockRemovals": [
+    {
+      "tag": "p",
+      "id": "uce579823"
+    }
+  ]
+}

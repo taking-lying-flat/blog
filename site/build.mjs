@@ -350,6 +350,13 @@ for (const post of posts) {
   if (post.format === 'lake') {
     Object.assign(post, await readLake(path.join(root, post.file), escape, renderLakeMath));
     post.directories = [post.directory];
+    for (const file of [...(post.prependFiles ?? [])].reverse()) {
+      const addition = await readLake(path.join(root, file), escape, renderLakeMath);
+      post.content = addition.content + post.content;
+      post.readingMinutes += addition.readingMinutes;
+      post.directories.unshift(addition.directory);
+      post.generatedAssets.push(...addition.generatedAssets);
+    }
     for (const file of post.appendFiles ?? []) {
       const addition = await readLake(path.join(root, file), escape, renderLakeMath);
       post.content += addition.content;

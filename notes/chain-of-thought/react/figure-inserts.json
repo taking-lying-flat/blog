@@ -1,0 +1,26 @@
+[
+  {
+    "id": "react-hotpotqa",
+    "before": "uce579823",
+    "asset": "assets/images/1791002449665-5ac5ff63-741d-490c-a0cc-812ae7f202a1.png",
+    "alt": "HotpotQA 问答任务中 Standard、CoT、Act-only 与 ReAct 的对比",
+    "crop": {
+      "x": 0,
+      "y": 0,
+      "width": 1002,
+      "height": 417
+    }
+  },
+  {
+    "id": "react-alfworld",
+    "before": "uc16f6477",
+    "asset": "assets/images/1791002449665-5ac5ff63-741d-490c-a0cc-812ae7f202a1.png",
+    "alt": "ALFWorld 任务中 Act-only 与 ReAct 的行动轨迹对比",
+    "crop": {
+      "x": 0,
+      "y": 434,
+      "width": 1002,
+      "height": 381
+    }
+  }
+]

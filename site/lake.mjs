@@ -173,7 +173,21 @@ export async function readLake(file, escape, renderMath) {
         !asset || !(asset.source === 'user-upload' || /^https:\/\//.test(asset.source))) {
       throw new Error(`Invalid Lake figure: ${figure.id}`);
     }
-    const html = `<figure class="lake-figure" id="${figure.id}"><a href="${escape(asset.file)}"><img src="${escape(asset.file)}" alt="${escape(figure.alt)}" width="${asset.width}" height="${asset.height}" decoding="async"></a>${figure.caption ? `<figcaption>${escape(figure.caption)} · <a href="${escape(figure.source)}">官方来源</a></figcaption>` : ''}</figure>`;
+    let image = `<img src="${escape(asset.file)}" alt="${escape(figure.alt)}" width="${asset.width}" height="${asset.height}" decoding="async">`;
+    let figureStyle = '';
+    if (figure.crop !== undefined) {
+      // Show separate regions of a diagram while keeping the source image intact.
+      const { x, y, width, height } = figure.crop;
+      if (![asset.width, asset.height, x, y, width, height].every(Number.isFinite) ||
+          x < 0 || y < 0 || width <= 0 || height <= 0 ||
+          x + width > asset.width || y + height > asset.height) {
+        throw new Error(`Invalid Lake figure crop: ${figure.id}`);
+      }
+      const sizing = `width:${100 * asset.width / width}%;left:${-100 * x / width}%;top:${-100 * y / height}%;`;
+      image = `<span class="lake-figure-crop" style="aspect-ratio:${width}/${height}"><img src="${escape(asset.file)}" alt="${escape(figure.alt)}" width="${asset.width}" height="${asset.height}" style="${sizing}" decoding="async"></span>`;
+      figureStyle = ` style="width:${width}px"`;
+    }
+    const html = `<figure class="lake-figure" id="${figure.id}"${figureStyle}><a href="${escape(asset.file)}">${image}</a>${figure.caption ? `<figcaption>${escape(figure.caption)} · <a href="${escape(figure.source)}">官方来源</a></figcaption>` : ''}</figure>`;
     const anchor = new RegExp(`<p\\b[^>]*\\sid="${figure.before}"[^>]*>`, 'g');
     let matches = 0;
     content = content.replace(anchor, (opening) => { matches++; return html + opening; });
