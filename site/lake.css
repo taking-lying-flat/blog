@@ -248,3 +248,12 @@
   background: #f6faff;
 }
 [data-post="chain-of-thought"] .cot-sampling-note p:last-child { margin-bottom: 0; }
+
+/* CPO: center the diagrams and avoid an extra inline baseline. */
+[data-post="chain-of-thought"] .lake-document :is(#u6afe2819, #ud495f5bf) {
+  text-align: center;
+  line-height: 0;
+}
+[data-post="chain-of-thought"] .lake-document :is(#u6afe2819, #ud495f5bf) .lake-image {
+  margin-block: 12px;
+}

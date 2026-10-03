@@ -1,0 +1,17 @@
+{
+  "ui3qY": {
+    "from": "z_i^{(j)}\\sim\\pi_\\theta(z_i\\mid s_{i-1})=\\pi_\\theta(z_i\\mid x,z_1,\\cdots,z_{i-1}),\\quad \\text{for }j=1,\\cdots,k. \\tag{2}",
+    "to": "z_i^{(j)}\\sim\\pi_\\theta(z_i\\mid s_{i-1})=\\pi_\\theta(z_i\\mid x,z_1,\\cdots,z_{i-1}),\\quad \\text{for }j=1,\\cdots,k \\tag{1}",
+    "reason": "本节保留的三个公式按出现顺序连续编号，删除公式末尾句点"
+  },
+  "iDZBN": {
+    "from": "\\mathcal{L}_i(\\pi_\\theta;\\pi_{\\mathrm{ref}})=-\\log\\sigma\\left(\\beta\\log\\frac{\\pi_\\theta(z_i^w\\mid x,s_{i-1}^w)}{\\pi_{\\mathrm{ref}}(z_i^w\\mid x,s_{i-1}^w)}-\\beta\\log\\frac{\\pi_\\theta(z_i^l\\mid x,s_{i-1}^w)}{\\pi_{\\mathrm{ref}}(z_i^l\\mid x,s_{i-1}^w)}\\right). \\tag{3}",
+    "to": "\\mathcal{L}_i(\\pi_\\theta;\\pi_{\\mathrm{ref}})=-\\log\\sigma\\left(\\beta\\log\\frac{\\pi_\\theta(z_i^w\\mid x,s_{i-1}^w)}{\\pi_{\\mathrm{ref}}(z_i^w\\mid x,s_{i-1}^w)}-\\beta\\log\\frac{\\pi_\\theta(z_i^l\\mid x,s_{i-1}^w)}{\\pi_{\\mathrm{ref}}(z_i^l\\mid x,s_{i-1}^w)}\\right) \\tag{2}",
+    "reason": "本节保留的三个公式按出现顺序连续编号，删除公式末尾句点"
+  },
+  "h98NC": {
+    "from": "\\mathcal{L}_{\\mathrm{CPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})=\\mathbb{E}_{(x,z_i^w,z_i^l,s_{i-1}^w)\\sim\\mathcal{D}}\\left[\\mathcal{L}_i(\\pi_\\theta;\\pi_{\\mathrm{ref}})\\right]. \\tag{4}",
+    "to": "\\mathcal{L}_{\\mathrm{CPO}}(\\pi_\\theta;\\pi_{\\mathrm{ref}})=\\mathbb{E}_{(x,z_i^w,z_i^l,s_{i-1}^w)\\sim\\mathcal{D}}\\left[\\mathcal{L}_i(\\pi_\\theta;\\pi_{\\mathrm{ref}})\\right] \\tag{3}",
+    "reason": "本节保留的三个公式按出现顺序连续编号，删除公式末尾句点"
+  }
+}
