@@ -1,0 +1,27 @@
+{
+  "VNLh1": {
+    "from": "\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\,\\pi_{\\mathrm{ref}})\n= -\\log \\sigma\\!\\left(\n  \\beta \\log \\frac{\\pi_\\theta(\\hat{y}_w \\mid x)}{\\pi_{\\mathrm{ref}}(\\hat{y}_w \\mid x)}\n  - \\beta \\log \\frac{\\pi_\\theta(\\hat{y}_\\ell \\mid x)}{\\pi_{\\mathrm{ref}}(\\hat{y}_\\ell \\mid x)}\n\\right).",
+    "to": "\\mathcal{L}_{\\mathrm{DPO}}(\\pi_\\theta;\\,\\pi_{\\mathrm{ref}})\n= -\\log \\sigma\\!\\left(\n  \\beta \\log \\frac{\\pi_\\theta(\\hat{y}_w \\mid x)}{\\pi_{\\mathrm{ref}}(\\hat{y}_w \\mid x)}\n  - \\beta \\log \\frac{\\pi_\\theta(\\hat{y}_\\ell \\mid x)}{\\pi_{\\mathrm{ref}}(\\hat{y}_\\ell \\mid x)}\n\\right)\\tag{1}",
+    "reason": "按本篇论文顺序编号，公式居中、编号右对齐"
+  },
+  "rQNwG": {
+    "from": "z_i^{(j)} \\sim \\pi_\\theta\\!\\left(z_i \\mid s_{i-1}\\right)\n= \\pi_\\theta\\!\\left(z_i \\mid x,\\, z_1,\\, \\ldots,\\, z_{i-1}\\right),\\qquad\nj=1,\\ldots,k .",
+    "to": "z_i^{(j)} \\sim \\pi_\\theta\\!\\left(z_i \\mid s_{i-1}\\right)\n= \\pi_\\theta\\!\\left(z_i \\mid x,\\, z_1,\\, \\ldots,\\, z_{i-1}\\right),\\qquad\nj=1,\\ldots,k\\tag{2}",
+    "reason": "按本篇论文顺序编号，公式居中、编号右对齐"
+  },
+  "ariHK": {
+    "from": "\\mathcal{L}_{i}(\\pi_\\theta;\\,\\pi_{\\mathrm{ref}})\n= -\\log \\sigma\\!\\left(\n  \\beta \\log \\frac{\\pi_\\theta\\!\\left(z_i^{w}\\mid x,\\, s_{i-1}^{w}\\right)}{\\pi_{\\mathrm{ref}}\\!\\left(z_i^{w}\\mid x,\\, s_{i-1}^{w}\\right)}\n  \\;-\\;\n  \\beta \\log \\frac{\\pi_\\theta\\!\\left(z_i^{\\ell}\\mid x,\\, s_{i-1}^{w}\\right)}{\\pi_{\\mathrm{ref}}\\!\\left(z_i^{\\ell}\\mid x,\\, s_{i-1}^{w}\\right)}\n\\right)",
+    "to": "\\mathcal{L}_{i}(\\pi_\\theta;\\,\\pi_{\\mathrm{ref}})\n= -\\log \\sigma\\!\\left(\n  \\beta \\log \\frac{\\pi_\\theta\\!\\left(z_i^{w}\\mid x,\\, s_{i-1}^{w}\\right)}{\\pi_{\\mathrm{ref}}\\!\\left(z_i^{w}\\mid x,\\, s_{i-1}^{w}\\right)}\n  \\;-\\;\n  \\beta \\log \\frac{\\pi_\\theta\\!\\left(z_i^{\\ell}\\mid x,\\, s_{i-1}^{w}\\right)}{\\pi_{\\mathrm{ref}}\\!\\left(z_i^{\\ell}\\mid x,\\, s_{i-1}^{w}\\right)}\n\\right)\\tag{3}",
+    "reason": "按本篇论文顺序编号，公式居中、编号右对齐"
+  },
+  "OM5hQ": {
+    "from": "\\mathcal{L}_{\\mathrm{CPO}}(\\pi_\\theta;\\,\\pi_{\\mathrm{ref}})\n= \\mathbb{E}_{(x,\\, z_i^{w},\\, z_i^{\\ell},\\, s_{i-1}^{w}) \\sim \\mathcal{D}}\n\\!\\left[\\, \\mathcal{L}_{i}(\\pi_\\theta;\\,\\pi_{\\mathrm{ref}}) \\,\\right]",
+    "to": "\\mathcal{L}_{\\mathrm{CPO}}(\\pi_\\theta;\\,\\pi_{\\mathrm{ref}})\n= \\mathbb{E}_{(x,\\, z_i^{w},\\, z_i^{\\ell},\\, s_{i-1}^{w}) \\sim \\mathcal{D}}\n\\!\\left[\\, \\mathcal{L}_{i}(\\pi_\\theta;\\,\\pi_{\\mathrm{ref}}) \\,\\right]\\tag{4}",
+    "reason": "按本篇论文顺序编号，公式居中、编号右对齐"
+  },
+  "krCTy": {
+    "from": "z_i^{l}",
+    "to": "z_i^{\\ell}",
+    "reason": "统一正文与损失函数中非偏好思路的下标符号"
+  }
+}
