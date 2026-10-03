@@ -267,18 +267,12 @@
   white-space: nowrap;
 }
 
-/* Reasoning Capacity: keep figure paragraphs compact and analysis headings distinct. */
+/* Reasoning Capacity: compact source figures and a consistent analysis hierarchy. */
 [data-post="reasoning-capacity"] .lake-document h1 { margin-block: 28px 14px; }
 [data-post="reasoning-capacity"] .lake-document h2 { margin-block: 24px 12px; }
 [data-post="reasoning-capacity"] .lake-document > :first-child { margin-top: 0; }
-[data-post="reasoning-capacity"] .lake-document :is(#u24f62aca, #u749712d8, #u2950e40b, #ubd1f6c34) {
-  text-align: center;
-  line-height: 0;
-}
-[data-post="reasoning-capacity"] .lake-document :is(#u24f62aca, #u749712d8, #u2950e40b, #ubd1f6c34) .lake-image {
-  margin-block: 12px;
-}
-[data-post="reasoning-capacity"] .lake-document :is(#u7c422795, #u329d0bda, #u40c414c0, #u4a03435d, #uac93e97b, #u9ef375f0) {
-  margin-block: 18px 8px;
-  font-weight: 700;
-}
+[data-post="reasoning-capacity"] .lake-document #u24f62aca { text-align: center; line-height: 0; }
+[data-post="reasoning-capacity"] .lake-document #u24f62aca .lake-image { margin-block: 12px; }
+[data-post="reasoning-capacity"] #rlvr-deep-analysis h3 { margin: 22px 0 10px; color: #664900; font-size: 18px; }
+[data-post="reasoning-capacity"] #rlvr-deep-analysis h4 { margin: 14px 0 6px; font-size: 16px; }
+[data-post="reasoning-capacity"] #rlvr-deep-analysis .lake-figure { margin: 12px auto 18px; }

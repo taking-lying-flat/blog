@@ -174,7 +174,7 @@ function normalizeEnglishTerms(content) {
       const tex = (adaptor.getAttribute(node, 'aria-label') ??
         (image ? adaptor.getAttribute(image, 'alt') : '') ?? '').trim();
       if (/^[kKpP]$/.test(tex) && previousText &&
-          /(?<![A-Za-z0-9_])top[-‐‑–]\s*$/i.test(adaptor.value(previousText))) {
+          /(?<![A-Za-z0-9_])(?:top[-‐‑–]|pass@)\s*$/i.test(adaptor.value(previousText))) {
         const text = adaptor.value(previousText).trimEnd() + tex + ' ';
         adaptor.replace(adaptor.text(text), previousText);
         adaptor.remove(node);
@@ -191,7 +191,7 @@ function normalizeEnglishTerms(content) {
     const kind = adaptor.kind(node);
     if (kind === '#text') {
       const text = adaptor.value(node);
-      const terms = /(?<![A-Za-z0-9_])(?:top[-‐‑–](?:[kp]|\d+)|n[-‐‑–]grams?)(?![A-Za-z0-9_])/gi;
+      const terms = /(?<![A-Za-z0-9_])(?:top[-‐‑–](?:[kp]|\d+)|n[-‐‑–]grams?|pass@(?:k|\d+))(?![A-Za-z0-9_])/gi;
       let end = 0;
       for (const match of text.matchAll(terms)) {
         if (match.index > end) adaptor.insert(adaptor.text(text.slice(end, match.index)), node);
@@ -395,7 +395,8 @@ for (const post of posts) {
     const replacements = JSON.parse(await readFile(path.join(post.directory, 'section-replacements.json'), 'utf8')
       .catch((error) => { if (error.code === 'ENOENT') return '[]'; throw error; }));
     for (const replacement of replacements) {
-      if (![replacement.id, replacement.start, replacement.before].every((id) => /^[\w-]+$/.test(id)) ||
+      if (![replacement.id, replacement.start].every((id) => /^[\w-]+$/.test(id)) ||
+          (replacement.before !== undefined && !/^[\w-]+$/.test(replacement.before)) ||
           !/^[\w-]+\.md$/.test(replacement.file)) {
         throw new Error(`Invalid Lake section replacement: ${post.slug}`);
       }
@@ -408,7 +409,10 @@ for (const post of posts) {
         }
       }
       const html = markdown.renderer.render(tokens, markdown.options, { slug: post.slug });
-      const anchor = new RegExp(`<p\\b[^>]*\\sid="${replacement.start}"[^>]*>[\\s\\S]*?(?=<p\\b[^>]*\\sid="${replacement.before}"[^>]*>)`, 'g');
+      // A final section ends at the next paper heading, or at the document end.
+      const end = replacement.before
+        ? `(?=<p\\b[^>]*\\sid="${replacement.before}"[^>]*>)` : '(?=<h1\\b|$)';
+      const anchor = new RegExp(`<p\\b[^>]*\\sid="${replacement.start}"[^>]*>[\\s\\S]*?${end}`, 'g');
       if ([...post.content.matchAll(anchor)].length !== 1) {
         throw new Error(`Missing or repeated Lake section: ${replacement.id}`);
       }

@@ -81,6 +81,168 @@
       "sha256": "1666489d6c5b23916081fd26c5e68c292c8c5131b2ff393b47d43254bfefbb58",
       "width": 1265,
       "height": 777
+    },
+    {
+      "source": "https://papers.neurips.cc/paper_files/paper/2025/file/537d5aa768c2d534016a4d06f87bc8fb-Paper-Conference.pdf",
+      "file": "assets/images/neurips-2025-accuracy-distribution.png",
+      "bytes": 24853,
+      "sha256": "6e1415af410f772364d06311a97bf6ada0259214e9ce3ef6bafbbb82e00a1424",
+      "width": 618,
+      "height": 451,
+      "page": 7,
+      "figure": "Figure 5",
+      "crop": {
+        "referencePageHeight": 1400,
+        "x": 635,
+        "y": 510,
+        "width": 262,
+        "height": 191.33333333333331
+      },
+      "sourcePdfSha256": "4e4105170f543b356fabd983539c7f802f6b7f847269da1d020060162e05009f"
+    },
+    {
+      "source": "https://papers.neurips.cc/paper_files/paper/2025/file/537d5aa768c2d534016a4d06f87bc8fb-Paper-Conference.pdf",
+      "file": "assets/images/neurips-2025-solvable-coverage.png",
+      "bytes": 24906,
+      "sha256": "39ac17a3e9701ae8a1fe1a848372376edce20a28a8938fcefec253a84687c02f",
+      "width": 691,
+      "height": 226,
+      "page": 7,
+      "figure": "Table 2",
+      "crop": {
+        "referencePageHeight": 1400,
+        "x": 585,
+        "y": 861,
+        "width": 293,
+        "height": 96
+      },
+      "sourcePdfSha256": "4e4105170f543b356fabd983539c7f802f6b7f847269da1d020060162e05009f"
+    },
+    {
+      "source": "https://papers.neurips.cc/paper_files/paper/2025/file/537d5aa768c2d534016a4d06f87bc8fb-Paper-Conference.pdf",
+      "file": "assets/images/neurips-2025-response-perplexity.png",
+      "bytes": 35654,
+      "sha256": "a270f9f7db593e4f31af54be61f48c03d57fac1025eae045501739d93abcd87d",
+      "width": 787,
+      "height": 587,
+      "page": 8,
+      "figure": "Figure 6",
+      "crop": {
+        "referencePageHeight": 1400,
+        "x": 564,
+        "y": 224,
+        "width": 334,
+        "height": 249
+      },
+      "sourcePdfSha256": "4e4105170f543b356fabd983539c7f802f6b7f847269da1d020060162e05009f"
+    },
+    {
+      "source": "https://papers.neurips.cc/paper_files/paper/2025/file/537d5aa768c2d534016a4d06f87bc8fb-Paper-Conference.pdf",
+      "file": "assets/images/neurips-2025-distillation.png",
+      "bytes": 43784,
+      "sha256": "d2da17c8a28844e5ff341ce4ad7bc169f41dc22aa13e90fe65d92108a54583a2",
+      "width": 420,
+      "height": 580,
+      "page": 8,
+      "figure": "Figure 7",
+      "crop": {
+        "referencePageHeight": 1400,
+        "x": 721,
+        "y": 582,
+        "width": 178,
+        "height": 246
+      },
+      "sourcePdfSha256": "4e4105170f543b356fabd983539c7f802f6b7f847269da1d020060162e05009f"
+    },
+    {
+      "source": "https://papers.neurips.cc/paper_files/paper/2025/file/537d5aa768c2d534016a4d06f87bc8fb-Paper-Conference.pdf",
+      "file": "assets/images/neurips-2025-rl-algorithms.png",
+      "bytes": 131895,
+      "sha256": "ab44e90937457454ff0d344d7f233ad9709314ef7ab64e229892f16f03b5a68f",
+      "width": 1591,
+      "height": 457,
+      "page": 9,
+      "figure": "Figure 8, top",
+      "crop": {
+        "referencePageHeight": 1400,
+        "x": 202,
+        "y": 124,
+        "width": 675,
+        "height": 194
+      },
+      "sourcePdfSha256": "4e4105170f543b356fabd983539c7f802f6b7f847269da1d020060162e05009f"
+    },
+    {
+      "source": "https://papers.neurips.cc/paper_files/paper/2025/file/537d5aa768c2d534016a4d06f87bc8fb-Paper-Conference.pdf",
+      "file": "assets/images/neurips-2025-training-steps.png",
+      "bytes": 120790,
+      "sha256": "8cb634c43ff2974dda94f17d9da62d2f1e7c92d3f982779194e35638706abb2f",
+      "width": 1591,
+      "height": 457,
+      "page": 9,
+      "figure": "Figure 8, bottom",
+      "crop": {
+        "referencePageHeight": 1400,
+        "x": 202,
+        "y": 321,
+        "width": 675,
+        "height": 194
+      },
+      "sourcePdfSha256": "4e4105170f543b356fabd983539c7f802f6b7f847269da1d020060162e05009f"
+    },
+    {
+      "source": "https://papers.neurips.cc/paper_files/paper/2025/file/537d5aa768c2d534016a4d06f87bc8fb-Paper-Conference.pdf",
+      "file": "assets/images/neurips-2025-rollout-kl.png",
+      "bytes": 126468,
+      "sha256": "8e5cddc52ff23f4d62130ba8fd5915535c9873b945b8447e5bd2ceefea53e0e0",
+      "width": 1598,
+      "height": 578,
+      "page": 22,
+      "figure": "Figure 16",
+      "crop": {
+        "referencePageHeight": 1400,
+        "x": 201,
+        "y": 172,
+        "width": 678,
+        "height": 245
+      },
+      "sourcePdfSha256": "4e4105170f543b356fabd983539c7f802f6b7f847269da1d020060162e05009f"
+    },
+    {
+      "source": "https://papers.neurips.cc/paper_files/paper/2025/file/537d5aa768c2d534016a4d06f87bc8fb-Paper-Conference.pdf",
+      "file": "assets/images/neurips-2025-matched-entropy.png",
+      "bytes": 206032,
+      "sha256": "8f074fa370de8448409f07073d12287f29ef1f38d15a66a514d096d9c9277a02",
+      "width": 1473,
+      "height": 1028,
+      "page": 23,
+      "figure": "Figure 18",
+      "crop": {
+        "referencePageHeight": 1400,
+        "x": 225,
+        "y": 632,
+        "width": 625,
+        "height": 436
+      },
+      "sourcePdfSha256": "4e4105170f543b356fabd983539c7f802f6b7f847269da1d020060162e05009f"
+    },
+    {
+      "source": "https://papers.neurips.cc/paper_files/paper/2025/file/537d5aa768c2d534016a4d06f87bc8fb-Paper-Conference.pdf",
+      "file": "assets/images/neurips-2025-model-scaling.png",
+      "bytes": 73648,
+      "sha256": "7414155a73001ddd588fec92471e79a7b6faf446bbe85177344ae2cfdbd5ae7d",
+      "width": 950,
+      "height": 490,
+      "page": 10,
+      "figure": "Figure 9",
+      "crop": {
+        "referencePageHeight": 1400,
+        "x": 493,
+        "y": 413,
+        "width": 403,
+        "height": 208
+      },
+      "sourcePdfSha256": "4e4105170f543b356fabd983539c7f802f6b7f847269da1d020060162e05009f"
     }
   ],
   "cards": [
