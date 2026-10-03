@@ -62,3 +62,11 @@
 }
 .lake-document li::marker { font-family: var(--lake-font); }
 .prose li::marker { font-family: var(--reading); }
+
+/* Keep prose terms together, using the surrounding English text style. */
+:is(.prose, .lake-document) .english-term {
+  font-style: normal;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+}

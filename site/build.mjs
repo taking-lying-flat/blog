@@ -157,6 +157,61 @@ function normalizeHeadingText(content) {
     return adaptor.innerHTML(adaptor.body(parsed));
   });
 }
+// English terms remain prose even when an export splits off k/p as a math card.
+function normalizeEnglishTerms(content) {
+  const parsed = adaptor.parse(content, 'text/html');
+  const body = adaptor.body(parsed);
+  const mathClass = /(?:^|\s)(?:lake-math|math-inline|math-display|equation)(?:\s|$)/;
+  const inlineTags = new Set(['span', 'a', 'strong', 'b', 'em', 'i', 'u', 's', 'small', 'mark']);
+  const excluded = new Set(['#comment', 'pre', 'svg', 'math', 'script', 'style']);
+  let previousText = null;
+  const repair = (node) => {
+    const kind = adaptor.kind(node);
+    if (kind === '#text') { previousText = node; return; }
+    if (excluded.has(kind) || kind === 'code') { previousText = null; return; }
+    if (mathClass.test(adaptor.getAttribute(node, 'class') ?? '')) {
+      const image = adaptor.tags(node, 'img')[0];
+      const tex = (adaptor.getAttribute(node, 'aria-label') ??
+        (image ? adaptor.getAttribute(image, 'alt') : '') ?? '').trim();
+      if (/^[kKpP]$/.test(tex) && previousText &&
+          /(?<![A-Za-z0-9_])top[-‐‑–]\s*$/i.test(adaptor.value(previousText))) {
+        const text = adaptor.value(previousText).trimEnd() + tex + ' ';
+        adaptor.replace(adaptor.text(text), previousText);
+        adaptor.remove(node);
+      }
+      previousText = null;
+      return;
+    }
+    if (!inlineTags.has(kind)) previousText = null;
+    for (const child of [...adaptor.childNodes(node)]) repair(child);
+    if (!inlineTags.has(kind)) previousText = null;
+  };
+  repair(body);
+  const wrap = (node) => {
+    const kind = adaptor.kind(node);
+    if (kind === '#text') {
+      const text = adaptor.value(node);
+      const terms = /(?<![A-Za-z0-9_])(?:top[-‐‑–](?:[kp]|\d+)|n[-‐‑–]grams?)(?![A-Za-z0-9_])/gi;
+      let end = 0;
+      for (const match of text.matchAll(terms)) {
+        if (match.index > end) adaptor.insert(adaptor.text(text.slice(end, match.index)), node);
+        adaptor.insert(adaptor.node('span', { class: 'english-term' },
+          [adaptor.text(match[0])]), node);
+        end = match.index + match[0].length;
+      }
+      if (end) {
+        if (end < text.length) adaptor.insert(adaptor.text(text.slice(end)), node);
+        adaptor.remove(node);
+      }
+      return;
+    }
+    if (excluded.has(kind) || mathClass.test(adaptor.getAttribute(node, 'class') ?? '') ||
+        /(?:^|\s)english-term(?:\s|$)/.test(adaptor.getAttribute(node, 'class') ?? '')) return;
+    for (const child of [...adaptor.childNodes(node)]) wrap(child);
+  };
+  wrap(body);
+  return adaptor.innerHTML(body);
+}
 const dateLabel = (date) => new Intl.DateTimeFormat('zh-CN', {
   dateStyle: 'long', timeZone: 'UTC',
 }).format(new Date(`${date}T00:00:00Z`));
@@ -438,7 +493,7 @@ for (const post of posts) {
 // Keep the existing anchors while presenting all titles in the same typeface.
 for (const post of posts) {
   post.title = plainTitle(post.title);
-  post.content = normalizeHeadingText(post.content);
+  post.content = normalizeEnglishTerms(normalizeHeadingText(post.content));
 }
 
 function renderPaperToc(post) {
