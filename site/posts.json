@@ -1,5 +1,23 @@
 [
   {
+    "file": "../notes/reasoning-capacity/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "reasoning-capacity",
+    "category": "llm",
+    "date": "2026-10-03",
+    "description": "推理能力研究笔记：通过 pass@k 分析 RLVR 的能力边界，比较强化学习与蒸馏，并考察采样效率、训练步数、输出熵和模型规模的影响",
+    "tags": [
+      "推理能力",
+      "RLVR",
+      "强化学习",
+      "pass@k",
+      "蒸馏",
+      "采样效率"
+    ]
+  },
+  {
     "file": "../notes/chain-of-thought/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
