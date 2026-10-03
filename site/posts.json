@@ -20,7 +20,8 @@
     ],
     "appendFiles": [
       "../notes/chain-of-thought/cot-decoding/source.lake"
-    ]
+    ],
+    "appendMarkdown": ["cot-decoding-sampling-note.md"]
   },
   {
     "file": "../notes/training-infrastructure/gradient-checkpointing/source.lake",
