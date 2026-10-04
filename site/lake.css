@@ -305,6 +305,7 @@
 [data-post="spec-decoding-ii"] #attention-masks { width: 780px; }
 [data-post="spec-decoding-ii"] .lake-revised-section > p:has(> strong:only-child) { margin-top: 18px; }
 [data-post="spec-decoding-ii"] .lake-revised-section > p:first-child { margin-top: 0; }
+[data-post="spec-decoding-ii"] #eagle3-ttt-lead { color: #DF2A3F; font-weight: 700; }
 [data-post="spec-decoding-ii"] .code-diagram { width: 720px; max-width: 100%; margin: 12px auto; }
 [data-post="spec-decoding-ii"] .code-diagram pre { padding: 14px 18px; line-height: 1.6; }
 [data-post="spec-decoding-ii"] .lake-document :not(pre) > code {
