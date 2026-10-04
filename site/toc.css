@@ -35,3 +35,9 @@
   .toc-panel nav { max-height: calc(100vh - 170px); }
   .toc-collapsed .post-toc { top: 90px; right: 16px; width: auto; }
 }
+/* Keep the collapsed toggle in the gutter beside a full-width desktop article. */
+@media (min-width: 1152px) and (max-width: 1279px) {
+  .toc-collapsed .post-toc { right: 0; }
+  .toc-collapsed .toc-panel summary { padding: 6px 3px; font-size: 12px; }
+  .toc-collapsed .toc-show { display: none; }
+}
