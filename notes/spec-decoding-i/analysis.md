@@ -14,7 +14,7 @@ p_1(x),\ldots,p_{\gamma+1}(x)\gets
 M_p(\mathrm{prefix}),\ldots,M_p(\mathrm{prefix}+[x_1,\ldots,x_\gamma]) \\[0.2em]
 \triangleright\ \textit{Determine the number of accepted guesses }n \\
 r_1\sim U(0,1),\ldots,r_\gamma\sim U(0,1) \\
-n\gets\min\!\left(\left\{i-1\ \middle|\ 1\le i\le\gamma,\ r_i>\frac{p_i(x_i)}{q_i(x_i)}\right\}\cup\{\gamma\}\right) \\[0.2em]
+n\gets\min\!\left(\left\{i-1\ \middle|\ 1\le i\le\gamma,\ r_i>\frac{p_i(x)}{q_i(x)}\right\}\cup\{\gamma\}\right) \\[0.2em]
 \triangleright\ \textit{Adjust the distribution from }M_p\textit{ if needed} \\
 p'(x)\gets p_{n+1}(x) \\
 \textbf{if }n<\gamma\textbf{ then} \\
@@ -32,10 +32,10 @@ t\sim p'(x) \\
 
 **期望生成量**
 
-- 给定前缀 $`x_{<t}`$，记 $`\beta_{x_{<t}}`$ 为候选 $`x_t\sim q(x_t\mid x_{<t})`$ 被接受的概率，其平均值 $`\alpha=\mathbb{E}[\beta]`$ 衡量草稿模型 $`M_q`$ 对目标模型 $`M_p`$ 的近似程度。沿用各位置接受率独立同分布的简化假设，每轮先接受一段连续候选，再生成一个修正或额外的 token，因此单轮输出数量 $`N`$ 服从以拒绝概率 $`1-\alpha`$ 为终止概率、上限为 $`\gamma+1`$ 的截顶几何分布，其期望为
+- 给定前缀 $`x_{<t}`$，记 $`\beta_{x_{<t}}`$ 为候选 $`x_t\sim q(x_t\mid x_{<t})`$ 被接受的概率，其平均值 $`\alpha=\mathbb{E}[\beta]`$ 衡量草稿模型 $`M_q`$ 对目标模型 $`M_p`$ 的近似程度。沿用各位置接受率独立同分布的简化假设，每轮先接受一段连续候选，再生成一个修正或额外的 token，因此单轮生成的 token 数量服从以拒绝概率 $`1-\alpha`$ 为终止概率、上限为 $`\gamma+1`$ 的截顶几何分布，其期望为
 
 ```math
-\mathbb{E}[N]=\sum_{j=0}^{\gamma}\alpha^j=\frac{1-\alpha^{\gamma+1}}{1-\alpha}\tag{1}
+E(\#\textit{ generated tokens})=\frac{1-\alpha^{\gamma+1}}{1-\alpha}\tag{1}
 ```
 
 - 当 $`0\le\alpha<1`$ 时，上式的分式形式成立；当 $`\alpha=1`$ 时，全部候选均被接受，每轮固定生成 $`\gamma+1`$ 个 token
@@ -75,41 +75,38 @@ D_{\mathrm{LK}}(p,q)=\frac{1}{2}\sum_x\lvert p(x)-q(x)\rvert
 
 - 两个分布的重叠程度越高，平均接受率越大；将其代入式（1），即可得到每轮生成 token 数量的期望
 
-
 **分布对齐**
 
-- 给定固定前缀，记最终输出的 token 为 $`X`$，候选被接受的事件为 $`A`$，则 $`\Pr(A)=\beta`$。由式（4），$`\sum_x\min(p(x),q(x))=\beta`$，因此残差分布的归一化常数为 $`1-\beta`$。当 $`\beta<1`$ 时，拒绝候选后使用的调整分布可写为
+- 对于任意分布 $`p(x)`$ 和 $`q(x)`$，下面证明使用二者进行投机采样得到的 token，与仅从 $`p(x)`$ 采样得到的 token 同分布。设 $`\beta`$ 为接受概率，调整后的分布满足
 
 ```math
-p'(x)=\frac{\max(0,p(x)-q(x))}{\sum_y\max(0,p(y)-q(y))}
-=\frac{p(x)-\min(p(x),q(x))}{1-\beta}\tag{6}
+p'(x)=\operatorname{norm}(\max(0,p(x)-q(x)))
+=\frac{p(x)-\min(q(x),p(x))}{\sum_{x'}\bigl(p(x')-\min(q(x'),p(x'))\bigr)}
+=\frac{p(x)-\min(q(x),p(x))}{1-\beta}\tag{6}
 ```
 
-- 最终输出来自接受候选或拒绝后重采样这两种互斥情况。记 $`A^{\mathrm c}`$ 为拒绝事件，根据全概率公式，有
+- 由前面的接受率推导可知，调整分布 $`p'(x)`$ 的归一化常数为 $`1-\beta`$。将输出概率分为候选被接受和候选被拒绝两部分，有
 
 ```math
-\Pr(X=x)=\Pr(X=x,A)+\Pr(X=x,A^{\mathrm c})\tag{7}
+P(x=x')=P(\textit{guess accepted},x=x')+P(\textit{guess rejected},x=x')\tag{7}
 ```
 
-- 在接受分支中，候选的采样概率乘以接受概率，得到该分支对输出概率的贡献。对于 $`q(x)>0`$，有
+- 候选被接受时，对应的输出概率为
 
 ```math
-\Pr(X=x,A)=q(x)\min\!\left(1,\frac{p(x)}{q(x)}\right)
-=\min(p(x),q(x))\tag{8}
+P(\textit{guess accepted},x=x')=q(x')\min\!\left(1,\frac{p(x')}{q(x')}\right)
+=\min(q(x'),p(x'))\tag{8}
 ```
 
-- 当 $`q(x)=0`$ 时，该 token 不会由草稿模型采样得到，接受分支的贡献也为零，因此 $`\Pr(X=x,A)=\min(p(x),q(x))`$ 对所有 token 均成立
-- 在拒绝分支中，拒绝概率为 $`1-\beta`$，随后从 $`p'`$ 中重新采样。代入式（6），得到
+- 候选被拒绝后，从调整分布 $`p'`$ 中重新采样，对应的输出概率为
 
 ```math
-\Pr(X=x,A^{\mathrm c})=(1-\beta)p'(x)
-=p(x)-\min(p(x),q(x))\tag{9}
+P(\textit{guess rejected},x=x')=(1-\beta)p'(x')
+=p(x')-\min(q(x'),p(x'))\tag{9}
 ```
 
-- 将两个分支的概率代入式（7），即可恢复目标分布
+- 合并两部分，得到
 
 ```math
-\Pr(X=x)=\min(p(x),q(x))+p(x)-\min(p(x),q(x))=p(x)\tag{10}
+P(x=x')=\min(p(x'),q(x'))+p(x')-\min(p(x'),q(x'))=p(x')\tag{10}
 ```
-
-- 当 $`\beta=1`$ 时，$`p=q`$，所有候选均被接受，调整分布不会被使用。上述分布一致性结论对每个固定前缀均成立，不依赖接受率独立同分布的假设，因此逐位置执行投机采样仍保持目标模型的自回归输出分布不变
