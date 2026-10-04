@@ -7,7 +7,8 @@
     "slug": "spec-decoding-i",
     "category": "llm",
     "date": "2026-10-04",
-    "description": "投机解码笔记：Fast Inference from Transformers via Speculative Decoding，介绍草稿生成、并行验证与保持目标输出分布不变的投机采样方法",
+    "description": "投机解码笔记：Fast Inference from Transformers via Speculative Decoding，介绍草稿生成、并行验证、作者伪代码，以及接受率、期望生成量和运算开销的推导",
+    "appendMarkdown": ["analysis.md"],
     "tags": [
       "投机解码",
       "Speculative Decoding",
