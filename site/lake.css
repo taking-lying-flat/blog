@@ -345,3 +345,76 @@
   padding: .12em .3em;
   white-space: nowrap;
 }
+
+/* Local desktop adjustments for inline formulas that nearly fit the previous line. */
+@media (min-width: 1280px) {
+  [data-post="spec-decoding-ii"] #ub854098a,
+  [data-post="training-infrastructure"] #ud5fffc0e,
+  [data-post="positional-encoding"] #uccc541a6,
+  [data-post="positional-encoding"] #u5878511b,
+  [data-post="deepseek-ai-ii"] #u6ffba809,
+  [data-post="deepseek-ai-ii"] #u425b73b5,
+  [data-post="policy-optimization-iv"] #ufb0cc2d6,
+  [data-post="policy-optimization-iv"] #u9cdd064c,
+  [data-post="deepseek-ai-i"] #ue3a60a31,
+  [data-post="qwen35-gated-deltanet"] p:has(.math-inline[aria-label="\\beta_t\\in(0,1)"]),
+  [data-post="token-mixer-i"] #u3c999e91,
+  [data-post="flash-attn"] #ub6ed2942,
+  [data-post="genai-flow-ii"] #u770adff8,
+  [data-post="genai-flow-ii"] #u8366b02f,
+  [data-post="genai-flow-i"] #uf6eeb1c4,
+  [data-post="genai-sakura-iii"] #ua19a4f0c,
+  [data-post="genai-sakura-iii"] #ub461f999,
+  [data-post="genai-sakura-ii"] #ub9e5ae72,
+  [data-post="genai-sakura-ii"] #u6ac9e45f,
+  [data-post="rope"] li:has(.math-inline[aria-label="\\widetilde{\\mathbf q}_m=R_m^{(d)}W_q\\mathbf x_m"]) {
+    width: calc(100% + 16px);
+  }
+  [data-post="spec-decoding-ii"] #ub854098a .lake-math,
+  [data-post="policy-optimization-iv"] #ufb0cc2d6 .lake-math,
+  [data-post="deepseek-ai-i"] #ue3a60a31 .lake-math,
+  [data-post="token-mixer-i"] #u2836a96f .lake-math,
+  [data-post="genai-flow-ii"] #u8366b02f .lake-math,
+  [data-post="infra-quant-i"] #u74939caa .lake-math {
+    margin-inline: .05em;
+  }
+  [data-post="training-infrastructure"] #ud5fffc0e {
+    letter-spacing: -0.3px;
+  }
+  [data-post="training-infrastructure"] #ud5fffc0e .lake-math,
+  [data-post="positional-encoding"] #u5878511b .lake-math,
+  [data-post="policy-optimization-iv"] #u9cdd064c .lake-math,
+  [data-post="genai-sakura-iii"] #ub461f999 .lake-math {
+    margin-inline: .1em;
+  }
+  [data-post="positional-encoding"] #u5878511b,
+  [data-post="genai-sakura-ii"] #u6ac9e45f {
+    letter-spacing: -0.1px;
+  }
+  [data-post="deepseek-ai-ii"] #u425b73b5,
+  [data-post="qwen35-gated-deltanet"] p:has(.math-inline[aria-label="\\beta_t\\in(0,1)"]),
+  [data-post="genai-flow-ii"] #u8366b02f,
+  [data-post="genai-flow-i"] #uf6eeb1c4,
+  [data-post="rope"] li:has(.math-inline[aria-label="\\widetilde{\\mathbf q}_m=R_m^{(d)}W_q\\mathbf x_m"]) {
+    letter-spacing: -0.2px;
+  }
+  [data-post="deepseek-ai-i"] #ue3a60a31,
+  [data-post="flash-attn"] #ub6ed2942 {
+    letter-spacing: 0px;
+  }
+  [data-post="qwen35-gated-deltanet"] p:has(.math-inline[aria-label="\\widetilde{\\mathbf U}_{[t]}-\\overleftarrow{\\mathbf W}_{[t]}\\mathbf S_{[t]}^\\top"]) {
+    width: calc(100% + 48px);
+  }
+  [data-post="qwen35-gated-deltanet"] p:has(.math-inline[aria-label="\\mathbf P=s(\\mathbf Q\\mathbf K^\\top\\odot\\Gamma)"]) {
+    width: calc(100% + 24px);
+  }
+  [data-post="qwen35-gated-deltanet"] p:has(.math-inline[aria-label="T\\,d_kd_v"]),
+  [data-post="genai-flow-i"] #ue0ba5269,
+  [data-post="genai-flow-i"] #u19f66aa3 {
+    width: calc(100% + 8px);
+  }
+  [data-post="flash-attn"] #ub6ed2942 .lake-math,
+  [data-post="genai-flow-i"] #uf6eeb1c4 .lake-math {
+    margin-inline: .15em;
+  }
+}
