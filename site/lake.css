@@ -96,6 +96,13 @@
   vertical-align: text-bottom;
   margin: 16px 0;
 }
+/* Image-only paragraphs need no text baseline beneath the figure. */
+.lake-document :where(p:has(> .lake-image):not(:has(.lake-image-source))) {
+  line-height: 0;
+}
+.lake-document :where(p:has(> .lake-image):not(:has(.lake-image-source))) > .lake-image {
+  margin-block: 12px;
+}
 .lake-document .lake-image-cropped { position: relative; overflow: hidden; }
 .lake-document .lake-image-cropped img { position: absolute; display: block; max-width: none; }
 /* Give Sakura III's DDPM paragraph two extra character widths on desktop. */
