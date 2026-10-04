@@ -117,13 +117,6 @@
   .lake-document :is(#u74939caa, #ub461f999) { width: calc(100% + 32px); }
 }
 @media (min-width: 1280px) {
-  /* Keep EAGLE's next-token distribution and comma on the preceding line. */
-  [data-post="spec-decoding-ii"] .lake-document #uc0a7bcd9 {
-    width: calc(100% + 16px);
-  }
-  [data-post="spec-decoding-ii"] .lake-document #uc0a7bcd9 .lake-math {
-    margin-inline: .1em;
-  }
   .lake-document :is(#u584477c8, #u39839d42) { width: calc(100% + 64px); }
   .lake-document #u0db141a1 { width: calc(100% + 80px); }
 }
@@ -346,12 +339,21 @@
   white-space: nowrap;
 }
 
-/* Local desktop adjustments for inline formulas that nearly fit the previous line. */
-@media (min-width: 1280px) {
+/* Apply these local fits when the article column has enough room, including with the sidebar closed. */
+@container article-reading (min-width: 1024px) {
+  /* Keep EAGLE's next-token distribution and comma on the preceding line. */
+  [data-post="spec-decoding-ii"] .lake-document #uc0a7bcd9 {
+    width: calc(100% + 16px);
+  }
+  [data-post="spec-decoding-ii"] .lake-document #uc0a7bcd9 .lake-math {
+    margin-inline: .1em;
+  }
   [data-post="spec-decoding-ii"] #ub854098a,
   [data-post="training-infrastructure"] #ud5fffc0e,
   [data-post="positional-encoding"] #uccc541a6,
   [data-post="positional-encoding"] #u5878511b,
+  [data-post="deepseek-ai-ii"] #u4875df5a,
+  [data-post="deepseek-ai-ii"] #ue4d81327,
   [data-post="deepseek-ai-ii"] #u6ffba809,
   [data-post="deepseek-ai-ii"] #u425b73b5,
   [data-post="policy-optimization-iv"] #ufb0cc2d6,

@@ -43,6 +43,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .menu span { font-size: 12px; }
 .main { width: 100%; max-width: 828px; min-height: calc(100vh - 158px); margin: auto; padding: 30px 24px 56px; }
 .post-page { max-width: 1072px; }
+@media (min-width: 1152px) {
+  .post-single { container: article-reading / inline-size; }
+}
 h1, h2, h3, h4 { color: var(--ink); line-height: 1.45; }
 h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .post-header { margin: 22px 0 34px; padding-bottom: 26px; }
