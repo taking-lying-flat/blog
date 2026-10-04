@@ -117,6 +117,13 @@
   .lake-document :is(#u74939caa, #ub461f999) { width: calc(100% + 32px); }
 }
 @media (min-width: 1280px) {
+  /* Keep EAGLE's next-token distribution and comma on the preceding line. */
+  [data-post="spec-decoding-ii"] .lake-document #uc0a7bcd9 {
+    width: calc(100% + 16px);
+  }
+  [data-post="spec-decoding-ii"] .lake-document #uc0a7bcd9 .lake-math {
+    margin-inline: .1em;
+  }
   .lake-document :is(#u584477c8, #u39839d42) { width: calc(100% + 64px); }
   .lake-document #u0db141a1 { width: calc(100% + 80px); }
 }
