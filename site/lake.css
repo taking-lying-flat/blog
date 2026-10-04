@@ -305,7 +305,7 @@
 [data-post="spec-decoding-ii"] #attention-masks { width: 780px; }
 [data-post="spec-decoding-ii"] .lake-revised-section > p:has(> strong:only-child) { margin-top: 18px; }
 [data-post="spec-decoding-ii"] .lake-revised-section > p:first-child { margin-top: 0; }
-[data-post="spec-decoding-ii"] .code-diagram { margin: 12px 0; }
+[data-post="spec-decoding-ii"] .code-diagram { width: fit-content; max-width: 100%; margin: 12px auto; }
 [data-post="spec-decoding-ii"] .code-diagram pre { padding: 14px 18px; line-height: 1.6; }
 [data-post="spec-decoding-ii"] .lake-document :not(pre) > code {
   font: 500 .875em/1.7 var(--mono);

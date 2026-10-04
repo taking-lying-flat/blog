@@ -32,11 +32,19 @@
   末位输出 a_it → LMHead → softmax → 采样下一个草稿 token
 ```
 
-**目标模型采样：** 目标模型处理前缀 `How can`，得到最后一个位置的顶层特征 $`f_{\mathrm{can}}`$。该特征经过 LM head 投影为词表上的 logits，再通过 softmax 得到下一 token 的条件概率分布 $`\operatorname{softmax}(\operatorname{LMHead}(f_{\mathrm{can}}))`$，从中采样得到 `I`。因此，`I` 来自目标模型；此时目标模型仅处理了 `How can`，尚未计算将 `I` 作为输入时的特征
+**草稿模型的自回归递推：** 记当前位置的草稿隐状态为 $`a_j`$，历史上下文为 $`\mathcal{H}_j`$。隐状态经 LM head 和 softmax 转化为下一 token 的分布，采样结果的嵌入与当前隐状态拼接，经全连接层投影后作为下一步新增输入。保留历史上下文，并对后续位置重复执行这一过程，可写为
 
-**草稿模型采样：** 草稿模型将融合特征 $`g_{\mathrm{can}}`$ 与已采样 token `I` 的嵌入 $`e_{\mathrm{I}}`$ 拼接，经全连接层投影，并结合历史上下文通过草稿解码器，得到末位隐状态 $`a_{\mathrm{I}}`$。随后复用目标模型的 LM head，计算草稿分布 $`\operatorname{softmax}(\operatorname{LMHead}(a_{\mathrm{I}}))`$，从中采样得到 `do`。该分布由草稿模型的隐状态决定，计算过程中无需再次运行目标模型的 Transformer 层；下一轮以 $`a_{\mathrm{I}}`$ 与 $`e_{\mathrm{do}}`$ 为新增输入，得到 $`a_{\mathrm{do}}`$ 并采样 `it`，如此递推，生成的草稿 token 随后交由目标模型验证
+```math
+\begin{aligned}
+\hat p_{j+1} &= \operatorname{softmax}\!\left(\operatorname{LMHead}(a_j)\right),
+\qquad \hat t_{j+1}\sim\hat p_{j+1} \\
+a_{j+1} &= \operatorname{DraftDecoder}\!\left(
+\operatorname{FC}\!\left([a_j;e_{\hat t_{j+1}}]\right);\mathcal{H}_j\right)
+\end{aligned}
+\tag{3}
+```
 
-TTT 在训练中复现上述将自身输出连续反馈为输入的机制，使草稿模型适应由目标模型融合特征与自身隐状态共同构成的上下文
+其中，$`[\cdot;\cdot]`$ 表示向量拼接，$`\operatorname{DraftDecoder}`$ 返回新增位置的隐状态。每轮将新增输入纳入历史上下文，再重复采样与状态更新，直至完成本轮草稿生成；示例中的隐状态依次为 $`a_{\mathrm{I}}\to a_{\mathrm{do}}\to a_{\mathrm{it}}`$。TTT 在训练阶段展开同一反馈过程，使草稿模型学习基于自身输出继续预测
 
 **注意力掩码**
 
