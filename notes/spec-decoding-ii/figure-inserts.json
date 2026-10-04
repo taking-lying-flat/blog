@@ -1,0 +1,20 @@
+[
+  {
+    "id": "eagle-training",
+    "before": "u41526ebb",
+    "asset": "assets/images/eagle-training.svg",
+    "alt": "EAGLE 的特征预测训练与推理"
+  },
+  {
+    "id": "feature-loss-removal",
+    "before": "u59ff6274",
+    "asset": "assets/images/feature-loss-removal.svg",
+    "alt": "移除特征预测损失后的训练与推理"
+  },
+  {
+    "id": "training-time-test",
+    "before": "u79cecb4c",
+    "asset": "assets/images/training-time-test.svg",
+    "alt": "EAGLE-3 的训练时测试"
+  }
+]

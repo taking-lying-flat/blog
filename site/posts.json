@@ -1,10 +1,31 @@
 [
   {
+    "file": "../notes/spec-decoding-ii/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "spec-decoding-ii",
+    "series": "speculative-decoding",
+    "seriesOrder": 2,
+    "category": "llm",
+    "date": "2026-10-04",
+    "description": "EAGLE-3 笔记：移除特征预测约束、多层特征融合、草稿生成与训练时测试，以及对应的注意力掩码",
+    "tags": [
+      "投机解码",
+      "Speculative Decoding",
+      "EAGLE-3",
+      "训练时测试",
+      "推理加速"
+    ]
+  },
+  {
     "file": "../notes/spec-decoding-i/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
     "tocDepth": 2,
     "slug": "spec-decoding-i",
+    "series": "speculative-decoding",
+    "seriesOrder": 1,
     "category": "llm",
     "date": "2026-10-04",
     "description": "投机解码与投机采样笔记：两篇原始论文的草稿生成、并行验证、作者伪代码，以及接受率与目标分布保持证明",

@@ -1,0 +1,12 @@
+{
+  "HwrHy": {
+    "from": "\\min\\left(1,\\frac{p_{j+i}\\left(\\hat{t}_{j+i}\\right)}{\\hat{p}_{j+i}\\left(\\hat{t}_{j+i}\\right)}\\right)",
+    "to": "\\min\\left(1,\\frac{p_{j+i}\\left(\\hat{t}_{j+i}\\right)}{\\hat{p}_{j+i}\\left(\\hat{t}_{j+i}\\right)}\\right)\\tag{1}",
+    "reason": "本篇论文从（1）开始独立编号，保留原论文符号"
+  },
+  "JUm7b": {
+    "from": "\\operatorname{norm}\\left(\\max\\left(0,p_{j+i}-\\hat{p}_{j+i}\\right)\\right)",
+    "to": "\\operatorname{norm}\\left(\\max\\left(0,p_{j+i}-\\hat{p}_{j+i}\\right)\\right)\\tag{2}",
+    "reason": "本篇论文从（1）开始独立编号，保留原论文符号"
+  }
+}
