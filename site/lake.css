@@ -301,7 +301,7 @@
 [data-post="spec-decoding-ii"] .lake-document > :first-child { margin-top: 0; }
 [data-post="spec-decoding-ii"] .lake-figure { margin-block: 14px; }
 [data-post="spec-decoding-ii"] :is(#eagle-training, #feature-loss-removal, #training-time-test) { width: 600px; }
-[data-post="spec-decoding-ii"] #inference-pipeline { width: 940px; }
+[data-post="spec-decoding-ii"] #inference-pipeline { width: 380px; }
 [data-post="spec-decoding-ii"] #attention-masks { width: 780px; }
 [data-post="spec-decoding-ii"] .lake-revised-section > p:has(> strong:only-child) { margin-top: 18px; }
 [data-post="spec-decoding-ii"] .lake-revised-section > p:first-child { margin-top: 0; }

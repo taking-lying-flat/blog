@@ -495,10 +495,10 @@
     {
       "file": "assets/images/inference-pipeline.svg",
       "source": "https://proceedings.neurips.cc/paper_files/paper/2025/file/c7b5a35ea98b62512a869c19ea7b03cb-Paper-Conference.pdf#page=5",
-      "bytes": 218588,
-      "sha256": "0ca04a66b16ec5e668cb79f7417fd65dbd259c129a3e9626df54d1ae699a9929",
-      "width": 510,
-      "height": 255,
+      "bytes": 781312,
+      "sha256": "3d3f44cd05ad1abf455b9171ab5c4c9a3a74f20f5220fd22092d0a8eb1f64e97",
+      "width": 191,
+      "height": 292,
       "extraction": {
         "page": 5,
         "viewBox": [
@@ -507,8 +507,7 @@
           191,
           292
         ]
-      },
-      "layout": "Original vector modules retained at 1:1 scale; draft steps arranged left to right and inter-step connectors rerouted"
+      }
     },
     {
       "file": "assets/images/attention-masks.svg",
