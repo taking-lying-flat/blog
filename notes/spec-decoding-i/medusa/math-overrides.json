@@ -1,0 +1,27 @@
+{
+  "ctV1y": {
+    "from": "p_t^{(k)}=\\operatorname{softmax}\\left(W_2^{(k)}\\cdot\\left(\\operatorname{SiLU}\\left(W_1^{(k)}\\cdot h_t\\right)+h_t\\right)\\right).",
+    "to": "p_t^{(k)}=\\operatorname{softmax}\\left(W_2^{(k)}\\cdot\\left(\\operatorname{SiLU}\\left(W_1^{(k)}\\cdot h_t\\right)+h_t\\right)\\right)\\tag{1}",
+    "reason": "Medusa 独立公式按正文出现顺序从（1）编号，并删除句末标点"
+  },
+  "Wn8yR": {
+    "from": "\\sum_{k=1}^{K}\\prod_{i=1}^{k}s_i.",
+    "to": "\\sum_{k=1}^{K}\\prod_{i=1}^{k}s_i",
+    "reason": "Medusa 独立公式按正文出现顺序从（1）编号，并删除句末标点"
+  },
+  "FPBSg": {
+    "from": "p_{\\mathrm{original}}\\left(x_{n+k}\\mid x_1,\\ldots,x_{n+k-1}\\right)>\\min\\left(\\epsilon,\\delta\\exp\\left(-H\\left(p_{\\mathrm{original}}\\left(\\cdot\\mid x_1,\\ldots,x_{n+k-1}\\right)\\right)\\right)\\right).",
+    "to": "p_{\\mathrm{original}}\\left(x_{n+k}\\mid x_1,\\ldots,x_{n+k-1}\\right)>\\min\\left(\\epsilon,\\delta\\exp\\left(-H\\left(p_{\\mathrm{original}}\\left(\\cdot\\mid x_1,\\ldots,x_{n+k-1}\\right)\\right)\\right)\\right)\\tag{2}",
+    "reason": "Medusa 独立公式按正文出现顺序从（1）编号，并删除句末标点"
+  },
+  "t5HE9": {
+    "from": "\\mathcal{L}_{\\mathrm{MEDUSA\\text{-}1}}=\\sum_{k=1}^{K}-\\lambda_k\\log p_t^{(k)}\\left(y_{t+k+1}\\right).\\tag{1}",
+    "to": "\\mathcal{L}_{\\mathrm{MEDUSA\\text{-}1}}=\\sum_{k=1}^{K}-\\lambda_k\\log p_t^{(k)}\\left(y_{t+k+1}\\right)\\tag{3}",
+    "reason": "Medusa 独立公式按正文出现顺序从（1）编号，并删除句末标点"
+  },
+  "g0VOw": {
+    "from": "\\mathcal{L}_{\\mathrm{MEDUSA\\text{-}2}}=\\mathcal{L}_{\\mathrm{LM}}+\\lambda_0\\mathcal{L}_{\\mathrm{MEDUSA\\text{-}1}}.\\tag{2}",
+    "to": "\\mathcal{L}_{\\mathrm{MEDUSA\\text{-}2}}=\\mathcal{L}_{\\mathrm{LM}}+\\lambda_0\\mathcal{L}_{\\mathrm{MEDUSA\\text{-}1}}\\tag{4}",
+    "reason": "Medusa 独立公式按正文出现顺序从（1）编号，并删除句末标点"
+  }
+}

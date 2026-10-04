@@ -282,6 +282,22 @@
 [data-post="spec-decoding-i"] .lake-document #ub51ec666 .lake-image { margin-block: 12px; }
 [data-post="spec-decoding-i"] .lake-document #uec74479d { text-align: center; margin-block: 12px; }
 [data-post="spec-decoding-i"] .lake-document #u3803fbf7 { margin-top: 16px; }
+[data-post="spec-decoding-i"] .lake-document #u81004246 {
+  display: grid;
+  grid-template-columns: 1.265fr 1.503fr;
+  align-items: center;
+  gap: 16px;
+  margin: 14px auto;
+  width: 100%;
+}
+[data-post="spec-decoding-i"] .lake-document #u81004246 > .lake-image {
+  display: block;
+  min-width: 0;
+  width: 100% !important;
+  height: auto;
+  margin: 0;
+}
+[data-post="spec-decoding-i"] .lake-document #u81004246 > br { display: none; }
 
 /* Typeset the original algorithm like a paper. */
 [data-post="spec-decoding-i"] .spec-algorithm {

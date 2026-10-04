@@ -34,20 +34,23 @@
     "seriesOrder": 1,
     "category": "llm",
     "date": "2026-10-04",
-    "description": "投机解码与投机采样笔记：两篇原始论文的草稿生成、并行验证、作者伪代码，以及接受率与目标分布保持证明",
+    "description": "投机解码与投机采样笔记：草稿生成、并行验证、作者伪代码与分布保持证明，以及 Medusa 的多预测头、树形注意力、典型性接受和训练策略",
     "appendFiles": [
-      "../notes/spec-decoding-i/accelerating-decoding/source.lake"
+      "../notes/spec-decoding-i/accelerating-decoding/source.lake",
+      "../notes/spec-decoding-i/medusa/source.lake"
     ],
     "appendMarkdown": [
       { "file": "analysis.md", "before": "cgaOi" },
-      "speculative-sampling.md"
+      { "file": "speculative-sampling.md", "before": "uIxWj" }
     ],
     "tags": [
       "投机解码",
       "Speculative Decoding",
       "推理加速",
       "投机采样",
-      "草稿模型"
+      "草稿模型",
+      "Medusa",
+      "树形注意力"
     ]
   },
   {
