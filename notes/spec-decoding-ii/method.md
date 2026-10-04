@@ -13,34 +13,30 @@
 - **训练时测试：** TTT 在训练阶段模拟多步自回归生成，将草稿模型的输出重新送入输入端，使其直接学习处理目标模型特征 $`g`$ 与自身输出 $`a`$ 共同构成的上下文。各轮使用训练数据相应位置的 token 作为监督信号，通过 token 预测损失学习后续预测，而无需恢复顶层特征回归约束
 - **数据规模扩展：** 移除特征约束提高了表示的自由度，TTT 则缓解了输出反馈引起的训练与推理分布偏移。结合多层特征融合，论文在所评估的数据规模范围内观察到：扩大草稿模型的训练数据量，可以进一步提升接受长度与推理加速比
 
-以下沿单条草稿路径展开三轮生成。`S` 记录输入特征序列，`E` 记录与其逐位置配对、向后错开一个 token 的嵌入序列；每对向量经过拼接和全连接层投影后送入草稿解码器。目标模型已处理 `How can` 并采样得到 `I`
-
 ```text 三轮草稿生成
-初始化
-  S = [g_How, g_can]
-  E = [e_can, e_I]
+目标模型：How can → f_can → LMHead → softmax → 采样 I
+初始化：S = [g_How, g_can]，E = [e_can, e_I]
 
 第 1 轮
   配对输入 = [(g_How, e_can), (g_can, e_I)]
-  草稿解码器的末位输出 = a_I
-  LMHead(a_I) → 采样得到 do
-  更新 S = [g_How, g_can, a_I]
-  更新 E = [e_can, e_I, e_do]
+  末位输出 a_I → LMHead → softmax → 采样 do
+  更新 S = [g_How, g_can, a_I]，E = [e_can, e_I, e_do]
 
 第 2 轮
   配对输入 = [(g_How, e_can), (g_can, e_I), (a_I, e_do)]
-  草稿解码器的末位输出 = a_do
-  LMHead(a_do) → 采样得到 it
-  更新 S = [g_How, g_can, a_I, a_do]
-  更新 E = [e_can, e_I, e_do, e_it]
+  末位输出 a_do → LMHead → softmax → 采样 it
+  更新 S = [g_How, g_can, a_I, a_do]，E = [e_can, e_I, e_do, e_it]
 
 第 3 轮
   在历史输入之后新增配对 (a_do, e_it)
-  草稿解码器的末位输出 = a_it
-  LMHead(a_it) → 采样得到下一个草稿 token
+  末位输出 a_it → LMHead → softmax → 采样下一个草稿 token
 ```
 
-从第 2 轮开始，目标模型尚未处理新生成的 token，因此无法提供对应的 $`g_{\mathrm{I}}`$、$`g_{\mathrm{do}}`$，后续生成分别使用 $`a_{\mathrm{I}}`$、$`a_{\mathrm{do}}`$。TTT 在训练中复现的正是这种将自身输出连续反馈为输入的机制，使草稿模型适应后续轮次的混合特征上下文
+**目标模型采样：** 目标模型处理前缀 `How can`，得到最后一个位置的顶层特征 $`f_{\mathrm{can}}`$。该特征经过 LM head 投影为词表上的 logits，再通过 softmax 得到下一 token 的条件概率分布 $`\operatorname{softmax}(\operatorname{LMHead}(f_{\mathrm{can}}))`$，从中采样得到 `I`。因此，`I` 来自目标模型；此时目标模型仅处理了 `How can`，尚未计算将 `I` 作为输入时的特征
+
+**草稿模型采样：** 草稿模型将融合特征 $`g_{\mathrm{can}}`$ 与已采样 token `I` 的嵌入 $`e_{\mathrm{I}}`$ 拼接，经全连接层投影，并结合历史上下文通过草稿解码器，得到末位隐状态 $`a_{\mathrm{I}}`$。随后复用目标模型的 LM head，计算草稿分布 $`\operatorname{softmax}(\operatorname{LMHead}(a_{\mathrm{I}}))`$，从中采样得到 `do`。该分布由草稿模型的隐状态决定，计算过程中无需再次运行目标模型的 Transformer 层；下一轮以 $`a_{\mathrm{I}}`$ 与 $`e_{\mathrm{do}}`$ 为新增输入，得到 $`a_{\mathrm{do}}`$ 并采样 `it`，如此递推，生成的草稿 token 随后交由目标模型验证
+
+TTT 在训练中复现上述将自身输出连续反馈为输入的机制，使草稿模型适应由目标模型融合特征与自身隐状态共同构成的上下文
 
 **注意力掩码**
 
