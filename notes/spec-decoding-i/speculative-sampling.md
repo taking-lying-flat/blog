@@ -37,23 +37,23 @@
 ```math
 \mathbb{P}(X=x)
 =\mathbb{P}(\tilde{x}=x)\mathbb{P}(\tilde{x}\text{ accepted}\mid\tilde{x}=x)
-+\mathbb{P}(\tilde{x}\text{ rejected})\mathbb{P}(X=x\mid\tilde{x}\text{ rejected})\tag{14}
++\mathbb{P}(\tilde{x}\text{ rejected})\mathbb{P}(X=x\mid\tilde{x}\text{ rejected})\tag{4}
 ```
 
 - 对于第一项，代入接受规则，得到
 
 ```math
 \mathbb{P}(\tilde{x}=x)\mathbb{P}(\tilde{x}\text{ accepted}\mid\tilde{x}=x)
-=p(x)\min\!\left(1,\frac{q(x)}{p(x)}\right)=\min(p(x),q(x))\tag{15}
+=p(x)\min\!\left(1,\frac{q(x)}{p(x)}\right)=\min(p(x),q(x))\tag{5}
 ```
 
 - 对于第二项中的条件概率，代入重新采样规则，得到
 
 ```math
-\mathbb{P}(X=x\mid\tilde{x}\text{ rejected})=(q(x)-p(x))_+\tag{16}
+\mathbb{P}(X=x\mid\tilde{x}\text{ rejected})=(q(x)-p(x))_+\tag{6}
 ```
 
-- 其中，$`(\cdot)_+`$ 的归一化方式见式（13）。拒绝概率为
+- 其中，$`(\cdot)_+`$ 的归一化方式见式（3）。拒绝概率为
 
 ```math
 \begin{aligned}
@@ -64,18 +64,18 @@
 &=\sum_{x'}\max(0,q(x')-p(x'))
 =\sum_{x'}\bigl(q(x')-\min(p(x'),q(x'))\bigr)\\
 &=\sum_{x'}\max(0,q(x')-p(x'))
-\end{aligned}\tag{17}
+\end{aligned}\tag{7}
 ```
 
 - 这与 $`(q(x)-p(x))_+`$ 的分母相同，因此
 
 ```math
 \mathbb{P}(\tilde{x}\text{ rejected})\mathbb{P}(X=x\mid\tilde{x}\text{ rejected})
-=\max(0,q(x)-p(x))\tag{18}
+=\max(0,q(x)-p(x))\tag{8}
 ```
 
 - 合并两部分，得到目标分布
 
 ```math
-\mathbb{P}(X=x)=\min(p(x),q(x))+\max(0,q(x)-p(x))=q(x)\tag{19}
+\mathbb{P}(X=x)=\min(p(x),q(x))+\max(0,q(x)-p(x))=q(x)\tag{9}
 ```

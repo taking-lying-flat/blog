@@ -1,17 +1,17 @@
 {
   "MquRR": {
     "from": "\\min\\left(1,\\frac{q(\\tilde{x}_{n+1}\\mid x_1,\\ldots,x_n)}{p(\\tilde{x}_{n+1}\\mid x_1,\\ldots,x_n)}\\right)",
-    "to": "\\min\\left(1,\\frac{q(\\tilde{x}_{n+1}\\mid x_1,\\ldots,x_n)}{p(\\tilde{x}_{n+1}\\mid x_1,\\ldots,x_n)}\\right)\\tag{11}",
-    "reason": "接续当前文章的公式编号，保持原论文符号与表达式"
+    "to": "\\min\\left(1,\\frac{q(\\tilde{x}_{n+1}\\mid x_1,\\ldots,x_n)}{p(\\tilde{x}_{n+1}\\mid x_1,\\ldots,x_n)}\\right)\\tag{1}",
+    "reason": "本篇论文从（1）开始独立编号，保持原论文符号与表达式"
   },
   "l1FIm": {
     "from": "x_{n+1}\\sim\\left(q(x\\mid x_1,\\ldots,x_n)-p(x\\mid x_1,\\ldots,x_n)\\right)_{+}",
-    "to": "x_{n+1}\\sim\\left(q(x\\mid x_1,\\ldots,x_n)-p(x\\mid x_1,\\ldots,x_n)\\right)_{+}\\tag{12}",
-    "reason": "接续当前文章的公式编号，保持原论文符号与表达式"
+    "to": "x_{n+1}\\sim\\left(q(x\\mid x_1,\\ldots,x_n)-p(x\\mid x_1,\\ldots,x_n)\\right)_{+}\\tag{2}",
+    "reason": "本篇论文从（1）开始独立编号，保持原论文符号与表达式"
   },
   "sGfIQ": {
     "from": "\\left(f(x)\\right)_{+}=\\frac{\\max\\left(0,f(x)\\right)}{\\sum_x\\max\\left(0,f(x)\\right)}",
-    "to": "\\left(f(x)\\right)_{+}=\\frac{\\max\\left(0,f(x)\\right)}{\\sum_x\\max\\left(0,f(x)\\right)}\\tag{13}",
-    "reason": "接续当前文章的公式编号，保持原论文符号与表达式"
+    "to": "\\left(f(x)\\right)_{+}=\\frac{\\max\\left(0,f(x)\\right)}{\\sum_x\\max\\left(0,f(x)\\right)}\\tag{3}",
+    "reason": "本篇论文从（1）开始独立编号，保持原论文符号与表达式"
   }
 }
