@@ -1,5 +1,22 @@
 [
   {
+    "file": "../notes/spec-decoding-i/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "spec-decoding-i",
+    "category": "llm",
+    "date": "2026-10-04",
+    "description": "投机解码笔记：Fast Inference from Transformers via Speculative Decoding，介绍草稿生成、并行验证与保持目标输出分布不变的投机采样方法",
+    "tags": [
+      "投机解码",
+      "Speculative Decoding",
+      "推理加速",
+      "投机采样",
+      "草稿模型"
+    ]
+  },
+  {
     "file": "../notes/chain-of-thought/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,

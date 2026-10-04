@@ -266,3 +266,12 @@
   padding: .16em .32em;
   white-space: nowrap;
 }
+
+/* Spec Decoding I: keep the overview figure and sampling equation compact. */
+[data-post="spec-decoding-i"] .lake-document h1 { margin-block: 28px 14px; }
+[data-post="spec-decoding-i"] .lake-document h2 { margin-block: 24px 12px; }
+[data-post="spec-decoding-i"] .lake-document > :first-child { margin-top: 0; }
+[data-post="spec-decoding-i"] .lake-document #ub51ec666 { text-align: center; line-height: 0; }
+[data-post="spec-decoding-i"] .lake-document #ub51ec666 .lake-image { margin-block: 12px; }
+[data-post="spec-decoding-i"] .lake-document #uec74479d { text-align: center; margin-block: 12px; }
+[data-post="spec-decoding-i"] .lake-document #u3803fbf7 { margin-top: 16px; }

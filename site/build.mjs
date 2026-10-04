@@ -190,7 +190,8 @@ function normalizeEnglishTerms(content) {
   const wrap = (node) => {
     const kind = adaptor.kind(node);
     if (kind === '#text') {
-      const text = adaptor.value(node);
+      const original = adaptor.value(node);
+      const text = original.replace(/[ \t]*词元[ \t]*/g, ' token ');
       const terms = /(?<![A-Za-z0-9_])(?:top[-‐‑–](?:[kp]|\d+)|n[-‐‑–]grams?|pass@(?:k|\d+))(?![A-Za-z0-9_])/gi;
       let end = 0;
       for (const match of text.matchAll(terms)) {
@@ -202,6 +203,8 @@ function normalizeEnglishTerms(content) {
       if (end) {
         if (end < text.length) adaptor.insert(adaptor.text(text.slice(end)), node);
         adaptor.remove(node);
+      } else if (text !== original) {
+        adaptor.replace(adaptor.text(text), node);
       }
       return;
     }
