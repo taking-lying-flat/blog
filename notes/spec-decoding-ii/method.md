@@ -32,10 +32,6 @@
   末位输出 a_it → LMHead → softmax → 采样下一个草稿 token
 ```
 
-**目标模型采样：** 目标模型处理前缀 `How can`，得到最后一个位置的顶层特征 $`f_{\mathrm{can}}`$。该特征经过 LM head 投影为词表上的 logits，再通过 softmax 得到下一 token 的条件概率分布 $`\operatorname{softmax}(\operatorname{LMHead}(f_{\mathrm{can}}))`$，从中采样得到 `I`。因此，`I` 来自目标模型；此时目标模型仅处理了 `How can`，尚未计算将 `I` 作为输入时的特征
-
-**草稿模型采样：** 草稿模型将融合特征 $`g_{\mathrm{can}}`$ 与已采样 token `I` 的嵌入 $`e_{\mathrm{I}}`$ 拼接，经全连接层投影，并结合历史上下文通过草稿解码器，得到末位隐状态 $`a_{\mathrm{I}}`$。随后复用目标模型的 LM head，计算草稿分布 $`\operatorname{softmax}(\operatorname{LMHead}(a_{\mathrm{I}}))`$，从中采样得到 `do`。该分布由草稿模型的隐状态决定，计算过程中无需再次运行目标模型的 Transformer 层；下一轮以 $`a_{\mathrm{I}}`$ 与 $`e_{\mathrm{do}}`$ 为新增输入，得到 $`a_{\mathrm{do}}`$ 并采样 `it`，如此递推，生成的草稿 token 随后交由目标模型验证
-
 TTT 在训练中复现上述将自身输出连续反馈为输入的机制，使草稿模型适应由目标模型融合特征与自身隐状态共同构成的上下文
 
 **注意力掩码**
