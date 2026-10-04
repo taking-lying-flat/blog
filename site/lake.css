@@ -359,7 +359,6 @@
   [data-post="deepseek-ai-i"] #ue3a60a31,
   [data-post="qwen35-gated-deltanet"] p:has(.math-inline[aria-label="\\beta_t\\in(0,1)"]),
   [data-post="token-mixer-i"] #u3c999e91,
-  [data-post="flash-attn"] #ub6ed2942,
   [data-post="genai-flow-ii"] #u770adff8,
   [data-post="genai-flow-ii"] #u8366b02f,
   [data-post="genai-flow-i"] #uf6eeb1c4,
@@ -398,8 +397,7 @@
   [data-post="rope"] li:has(.math-inline[aria-label="\\widetilde{\\mathbf q}_m=R_m^{(d)}W_q\\mathbf x_m"]) {
     letter-spacing: -0.2px;
   }
-  [data-post="deepseek-ai-i"] #ue3a60a31,
-  [data-post="flash-attn"] #ub6ed2942 {
+  [data-post="deepseek-ai-i"] #ue3a60a31 {
     letter-spacing: 0px;
   }
   [data-post="qwen35-gated-deltanet"] p:has(.math-inline[aria-label="\\widetilde{\\mathbf U}_{[t]}-\\overleftarrow{\\mathbf W}_{[t]}\\mathbf S_{[t]}^\\top"]) {
@@ -413,7 +411,6 @@
   [data-post="genai-flow-i"] #u19f66aa3 {
     width: calc(100% + 8px);
   }
-  [data-post="flash-attn"] #ub6ed2942 .lake-math,
   [data-post="genai-flow-i"] #uf6eeb1c4 .lake-math {
     margin-inline: .15em;
   }
