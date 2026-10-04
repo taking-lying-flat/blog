@@ -315,6 +315,22 @@
 [data-post="spec-decoding-ii"] #eagle3-ttt-lead { color: #DF2A3F; font-weight: 700; }
 [data-post="spec-decoding-ii"] .code-diagram { width: 720px; max-width: 100%; margin: 12px auto; }
 [data-post="spec-decoding-ii"] .code-diagram pre { padding: 14px 18px; line-height: 1.6; }
+[data-post="spec-decoding-ii"] #PrGSo { width: 940px; }
+[data-post="spec-decoding-ii"] .eagle2-tree-combined {
+  display: grid;
+  grid-template-columns: 617fr 571fr;
+  align-items: center;
+  gap: 12px;
+  width: 960px;
+}
+[data-post="spec-decoding-ii"] .eagle2-tree-combined img { min-width: 0; }
+[data-post="spec-decoding-ii"] :is(#ueb0d034f, #u21d054d6, #u8968370a, #u4895d391, #ube432db6) {
+  font: 500 .875em/1.7 var(--mono);
+  background: #f5f5f5;
+  border-radius: 3px;
+  padding: .12em .3em;
+  white-space: nowrap;
+}
 [data-post="spec-decoding-ii"] .lake-document :not(pre) > code {
   font: 500 .875em/1.7 var(--mono);
   background: #f5f5f5;

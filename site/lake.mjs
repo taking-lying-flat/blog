@@ -113,6 +113,7 @@ export async function readLake(file, escape, renderMath) {
   let mathCount = 0;
   let imageCount = 0;
   let separatorCount = 0;
+  let codeCount = 0;
   content = content.replace(/<card\b[^>]*>[\s\S]*?<\/card>/g, (original) => {
     const card = manifest.cards[index++];
     if (!card || !original.includes(`value="${card.attributes.value}"`)) {
@@ -122,6 +123,11 @@ export async function readLake(file, escape, renderMath) {
     if (card.kind === 'hr') {
       separatorCount++;
       return `<hr class="lake-separator" data-card-id="${id}">`;
+    }
+    if (card.kind === 'codeblock') {
+      if (typeof card.value.code !== 'string') throw new Error(`Invalid Lake code block: ${id}`);
+      codeCount++;
+      return `<div class="code-block code-diagram lake-code-diagram" id="${id}" data-card-id="${id}"><pre><code>${escape(card.value.code)}</code></pre></div>`;
     }
     const asset = renderedCards.get(card.value.id) ?? assets.get(card.asset);
     if (!asset) throw new Error(`Missing Lake asset: ${card.asset}`);
@@ -158,7 +164,7 @@ export async function readLake(file, escape, renderMath) {
     }
     throw new Error(`Unsupported Lake card: ${card.kind}`);
   });
-  if (index !== manifest.cards.length || mathCount !== manifest.counts.math || imageCount !== manifest.counts.images || separatorCount !== (manifest.counts.separators ?? 0)) {
+  if (index !== manifest.cards.length || mathCount !== manifest.counts.math || imageCount !== manifest.counts.images || separatorCount !== (manifest.counts.separators ?? 0) || codeCount !== (manifest.counts.code ?? 0)) {
     throw new Error(`Lake card count mismatch: ${file}`);
   }
   // Lake's paired light/dark color syntax is not a CSS color. The document uses

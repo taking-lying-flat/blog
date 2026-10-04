@@ -9,13 +9,19 @@
     "seriesOrder": 2,
     "category": "llm",
     "date": "2026-10-04",
-    "description": "EAGLE-3 笔记：移除特征预测约束、多层特征融合、草稿生成与训练时测试，以及对应的注意力掩码",
+    "description": "EAGLE 系列笔记：EAGLE 的特征预测与错位 token 输入、EAGLE-2 的动态草稿树，以及 EAGLE-3 的多层特征融合与训练时测试",
     "tags": [
       "投机解码",
       "Speculative Decoding",
+      "EAGLE",
+      "EAGLE-2",
       "EAGLE-3",
+      "动态草稿树",
       "训练时测试",
       "推理加速"
+    ],
+    "prependFiles": [
+      "../notes/spec-decoding-ii/eagle/source.lake"
     ]
   },
   {

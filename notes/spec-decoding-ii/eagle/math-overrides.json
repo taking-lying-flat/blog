@@ -1,0 +1,32 @@
+{
+  "HVkni": {
+    "from": "T_{1:j}\\rightarrow E_{1:j}\\rightarrow f_j\\rightarrow p_{j+1}\\rightarrow t_{j+1}.",
+    "to": "T_{1:j}\\rightarrow E_{1:j}\\rightarrow f_j\\rightarrow p_{j+1}\\rightarrow t_{j+1}\\tag{1}",
+    "reason": "保留原公式符号，移除式末标点，并按每篇论文从（1）独立编号"
+  },
+  "rbLTV": {
+    "from": "L_{\\mathrm{reg}}=\\operatorname{SmoothL1}\\left(f_{i+1},\\operatorname{Draft\\_Model}\\left(T_{2:i+1},F_{1:i}\\right)\\right).",
+    "to": "L_{\\mathrm{reg}}=\\operatorname{SmoothL1}\\left(f_{i+1},\\operatorname{Draft\\_Model}\\left(T_{2:i+1},F_{1:i}\\right)\\right)\\tag{2}",
+    "reason": "保留原公式符号，移除式末标点，并按每篇论文从（1）独立编号"
+  },
+  "bDlax": {
+    "from": "p_{i+2}=\\operatorname{Softmax}\\left(\\operatorname{LM\\_Head}\\left(f_{i+1}\\right)\\right),",
+    "to": "p_{i+2}=\\operatorname{Softmax}\\left(\\operatorname{LM\\_Head}\\left(f_{i+1}\\right)\\right)\\tag{3}",
+    "reason": "保留原公式符号，移除式末标点，并按每篇论文从（1）独立编号"
+  },
+  "ZJbRc": {
+    "from": "\\hat{p}_{i+2}=\\operatorname{Softmax}\\left(\\operatorname{LM\\_Head}\\left(\\hat{f}_{i+1}\\right)\\right),",
+    "to": "\\hat{p}_{i+2}=\\operatorname{Softmax}\\left(\\operatorname{LM\\_Head}\\left(\\hat{f}_{i+1}\\right)\\right)\\tag{4}",
+    "reason": "保留原公式符号，移除式末标点，并按每篇论文从（1）独立编号"
+  },
+  "mmDdH": {
+    "from": "L_{\\mathrm{cls}}=\\operatorname{Cross\\_Entropy}\\left(p_{i+2},\\hat{p}_{i+2}\\right).",
+    "to": "L_{\\mathrm{cls}}=\\operatorname{Cross\\_Entropy}\\left(p_{i+2},\\hat{p}_{i+2}\\right)\\tag{5}",
+    "reason": "保留原公式符号，移除式末标点，并按每篇论文从（1）独立编号"
+  },
+  "aGfrL": {
+    "from": "V_i=\\prod_{t_j\\in\\operatorname{Path}(\\mathrm{root},t_i)}p_j\\approx\\prod_{t_j\\in\\operatorname{Path}(\\mathrm{root},t_i)}c_j.",
+    "to": "V_i=\\prod_{t_j\\in\\operatorname{Path}(\\mathrm{root},t_i)}p_j\\approx\\prod_{t_j\\in\\operatorname{Path}(\\mathrm{root},t_i)}c_j\\tag{1}",
+    "reason": "保留原公式符号，移除式末标点，并按每篇论文从（1）独立编号"
+  }
+}
