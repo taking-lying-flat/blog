@@ -1,27 +1,32 @@
-[作者伪代码 · Algorithm 1](https://proceedings.mlr.press/v202/leviathan23a/leviathan23a.pdf#page=3)
+<figure class="spec-algorithm" aria-labelledby="spec-algorithm-title">
+<figcaption id="spec-algorithm-title"><strong>Algorithm 1</strong> SpeculativeDecodingStep</figcaption>
 
-```text SpeculativeDecodingStep
-Inputs: M_p, M_q, prefix
-▷ Sample γ guesses x_1, ..., x_γ from M_q autoregressively.
-for i = 1 to γ do
-    q_i(x) ← M_q(prefix + [x_1, ..., x_{i−1}])
-    x_i ∼ q_i(x)
-end for
-▷ Run M_p in parallel.
-p_1(x), ..., p_{γ+1}(x) ←
-    M_p(prefix), ..., M_p(prefix + [x_1, ..., x_γ])
-▷ Determine the number of accepted guesses n.
-r_1 ∼ U(0, 1), ..., r_γ ∼ U(0, 1)
-n ← min({i − 1 | 1 ≤ i ≤ γ, r_i > p_i(x_i) / q_i(x_i)} ∪ {γ})
-▷ Adjust the distribution from M_p if needed.
-p′(x) ← p_{n+1}(x)
-if n < γ then
-    p′(x) ← norm(max(0, p_{n+1}(x) − q_{n+1}(x)))
-end if
-▷ Return one token from M_p, and n tokens from M_q.
-t ∼ p′(x)
-return prefix + [x_1, ..., x_n, t]
+```math
+\begin{array}{l}
+\textbf{Inputs:}\ M_p,\ M_q,\ \mathrm{prefix} \\
+\triangleright\ \textit{Sample }\gamma\textit{ guesses }x_1,\ldots,x_\gamma\textit{ from }M_q\textit{ autoregressively} \\
+\textbf{for }i=1\textbf{ to }\gamma\textbf{ do} \\
+\qquad q_i(x)\gets M_q(\mathrm{prefix}+[x_1,\ldots,x_{i-1}]) \\
+\qquad x_i\sim q_i(x) \\
+\textbf{end for} \\[0.2em]
+\triangleright\ \textit{Run }M_p\textit{ in parallel} \\
+p_1(x),\ldots,p_{\gamma+1}(x)\gets
+M_p(\mathrm{prefix}),\ldots,M_p(\mathrm{prefix}+[x_1,\ldots,x_\gamma]) \\[0.2em]
+\triangleright\ \textit{Determine the number of accepted guesses }n \\
+r_1\sim U(0,1),\ldots,r_\gamma\sim U(0,1) \\
+n\gets\min\!\left(\left\{i-1\ \middle|\ 1\le i\le\gamma,\ r_i>\frac{p_i(x_i)}{q_i(x_i)}\right\}\cup\{\gamma\}\right) \\[0.2em]
+\triangleright\ \textit{Adjust the distribution from }M_p\textit{ if needed} \\
+p'(x)\gets p_{n+1}(x) \\
+\textbf{if }n<\gamma\textbf{ then} \\
+\qquad p'(x)\gets\operatorname{norm}\!\left(\max\!\left(0,p_{n+1}(x)-q_{n+1}(x)\right)\right) \\
+\textbf{end if} \\[0.2em]
+\triangleright\ \textit{Return one token from }M_p\textit{, and }n\textit{ tokens from }M_q \\
+t\sim p'(x) \\
+\textbf{return }\mathrm{prefix}+[x_1,\ldots,x_n,t]
+\end{array}
 ```
+
+</figure>
 
 ## 🍄 Analysis
 
@@ -65,24 +70,3 @@ D_{\mathrm{LK}}(p,q)=\frac{1}{2}\sum_x\lvert p(x)-q(x)\rvert
 ```
 
 两个分布的重叠程度越高，平均接受率越大；将其代入式（1），即可得到每轮生成 token 数量的期望
-
-**算术运算与访存开销。** 每轮需要串行执行 $`\gamma`$ 次草稿模型计算，并并行评估目标模型在 $`\gamma+1`$ 个前缀下的分布。遇到拒绝时，被拒绝候选之后的目标模型预测会被丢弃，因此总算术运算量可能高于标准解码
-
-记 $`\hat T`$ 为标准解码中目标模型每生成一个 token 的算术运算量，$`\hat c`$ 为草稿模型与目标模型每个 token 所需算术运算量之比，则每轮的总算术运算量为
-
-```math
-C_{\mathrm{iter}}=\hat T\hat c\gamma+\hat T(\gamma+1)
-=\hat T(\gamma\hat c+\gamma+1)\tag{6}
-```
-
-按平均生成量摊销后，每生成一个 token 的算术运算量相对于标准解码的倍数为
-
-```math
-R_{\mathrm{ops}}=\frac{C_{\mathrm{iter}}}{\hat T\,\mathbb{E}[N]}
-=\frac{\gamma\hat c+\gamma+1}{\mathbb{E}[N]}
-=\frac{(1-\alpha)(\gamma\hat c+\gamma+1)}{1-\alpha^{\gamma+1}}\tag{7}
-```
-
-在草稿长度和模型计算量固定时，接受率越低，摊销后的运算开销越大；当 $`\alpha=1`$ 时，上述倍数为 $`1+\gamma\hat c/(\gamma+1)`$，此时额外运算仅来自草稿模型。对于 Transformer 解码器，不计草稿模型的计算，单轮目标模型的算术运算量可由相同规模 Transformer 编码器处理同一序列的一次前向计算给出上界
-
-目标模型的权重和已有 KV 缓存可在一轮并行验证中复用，因而每轮只需读取一次。按生成 token 数量摊销，读取这些数据所需的内存访问量可降至标准解码的 $`1/\mathbb{E}[N]`$

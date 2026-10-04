@@ -275,3 +275,23 @@
 [data-post="spec-decoding-i"] .lake-document #ub51ec666 .lake-image { margin-block: 12px; }
 [data-post="spec-decoding-i"] .lake-document #uec74479d { text-align: center; margin-block: 12px; }
 [data-post="spec-decoding-i"] .lake-document #u3803fbf7 { margin-top: 16px; }
+
+/* Typeset the original algorithm like a paper, with prose-only indentation. */
+[data-post="spec-decoding-i"] .spec-algorithm {
+  margin: 18px 0;
+  padding: 0 12px 8px;
+  border-block: 1px solid #929292;
+  white-space: normal;
+}
+[data-post="spec-decoding-i"] .spec-algorithm figcaption {
+  padding: 8px 0;
+  border-bottom: 1px solid #c7c7c7;
+  font-family: var(--article-serif);
+  font-size: 16px;
+}
+[data-post="spec-decoding-i"] .spec-algorithm .equation { margin: 10px 0 0; }
+[data-post="spec-decoding-i"] .spec-algorithm .equation mjx-container[display="true"] {
+  min-width: 0;
+  text-align: left;
+}
+[data-post="spec-decoding-i"] #analysis ~ p { text-indent: 2em; }
