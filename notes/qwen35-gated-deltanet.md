@@ -1377,7 +1377,7 @@ b_dA = tl.where(m_A, -b_dA, 0).to(k.dtype.element_ty)
 
 - 行和减列和来自 $`\Gamma_{ij}=e^{\ell_i-\ell_j}`$：行位置贡献正号、列位置贡献负号。`chunk_bwd_dqkwg` 另行计算输出及状态传播中的 gate 梯度，两路相加后再做 chunk 内的后缀和。源码虽然前向存储 $`\widehat g=\ell/\ln2`$ 并调用 `exp2`，手写 backward 返回的是相对于 $`\ell`$ 的梯度，因此末尾的 `chunk_local_cumsum(..., reverse=True)` 不再乘 `RCP_LN2`；这与直接对 `exp2` 自动求导时出现的 $`\ln2`$ 因子相互抵消。
 
-- 前向保存归一化后的 Q/K、原始 V、累计 gate、beta、三角逆 A、初态和序列索引，反向重算 W/U、块入口状态和 `v_new`。若启用了 kernel 内 Q/K 归一化，最外层还要调用 `l2norm_bwd`；融合 beta sigmoid 时再经过 `fused_beta_sigmoid_bwd`，融合衰减门时则由 `gdn_gate_bwd` 回传到 gate 输入、`A_log` 和 `dt_bias`。
+- 前向保存归一化后的 Q/K、原始 V、累计 gate、beta、三角逆 A、初态和序列索引，反向重算 W/U、块入口状态和 `v_new`。若启用 kernel 内 Q/K 归一化，最外层还要调用 `l2norm_bwd`；融合 beta sigmoid 时再经过 `fused_beta_sigmoid_bwd`，融合衰减门时则由 `gdn_gate_bwd` 回传到 gate 输入、`A_log` 和 `dt_bias`。
 
 - **重算 W/U。** 反向入口用保存的 K、V、beta、A 和累计 gate 重建 W/U；上下文并行时，同时展开初始状态供后续重计算使用。下面各段接续同一个反向函数。
 
