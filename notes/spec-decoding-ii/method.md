@@ -4,7 +4,7 @@
 - **首个草稿 token：** 为生成以 `How can I` 为前缀的草稿，除复用 $`g_{\mathrm{how}}`$ 和 $`g_{\mathrm{can}}`$ 外，还引入已采样 token `I` 的嵌入 $`e_{\mathrm{I}}`$，使草稿模型获知采样结果。拼接后的向量经全连接层降至 $`k`$ 维，再输入单层解码器，得到输出 $`a_{\mathrm{I}}`$；随后通过目标模型的 LM head 采样得到 `do`
 - **后续草稿 token：** `I` 尚未作为输入经过目标模型，因此没有对应的 $`g_{\mathrm{I}}`$。草稿模型以自身输出 $`a_{\mathrm{I}}`$ 替代该特征，并与 `do` 的嵌入 $`e_{\mathrm{do}}`$ 拼接，继续生成 $`a_{\mathrm{do}}`$ 和下一个草稿 token `it`。下一步再输入 $`a_{\mathrm{do}}`$ 与 $`e_{\mathrm{it}}`$，依此递推
 
-<figure class="lake-figure" id="inference-pipeline"><a href="assets/images/inference-pipeline.svg"><img src="assets/images/inference-pipeline.svg" alt="EAGLE-3 的多层特征融合与草稿生成流程" width="191" height="292" decoding="async"></a></figure>
+<figure class="lake-figure" id="inference-pipeline"><a href="assets/images/inference-pipeline.svg"><img src="assets/images/inference-pipeline.svg" alt="EAGLE-3 的多层特征融合与草稿生成流程" width="510" height="255" decoding="async"></a></figure>
 
 **训练时测试**
 
