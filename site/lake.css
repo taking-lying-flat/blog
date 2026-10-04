@@ -82,8 +82,8 @@
   margin: 0;
   text-align: center;
 }
-/* Remove the exported blank line after FlashAttention's V-transpose options. */
-.lake-document #u9509cdfc > br { display: none; }
+/* Remove trailing export breaks from the GAE, delta-rule and transpose paragraphs. */
+.lake-document :is(#u3f7c57e0, #u829c456a, #u9509cdfc) > br { display: none; }
 /* The group OBS update is an unnumbered display equation. */
 .lake-document #ue3e6cab9 > [data-card-id="zSMaf"] {
   display: block;

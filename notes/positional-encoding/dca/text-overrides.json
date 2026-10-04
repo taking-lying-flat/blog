@@ -38,5 +38,10 @@
     ],
     "reason": "明确缩放维数与归一化范围",
     "reference": "https://arxiv.org/html/2402.17463v2#S3.SS4"
+  },
+  "u7157b733": {
+    "from": "Softmax 层：",
+    "to": "DCA 使用 softmax 将缩放后的查询与键内积归一化为注意力权重。",
+    "reason": "将标签式开头改为概括下文的完整引导句"
   }
 }

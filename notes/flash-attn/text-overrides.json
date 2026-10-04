@@ -1,0 +1,22 @@
+{
+  "u25cbec34": {
+    "from": "重新组织注意力计算过程：",
+    "to": "FlashAttention 通过分块计算重组注意力运算。",
+    "reason": "将标签式开头改为概括下文的完整引导句"
+  },
+  "ubebaf082": {
+    "from": "标准注意力的实现：",
+    "to": "标准注意力通过查询与键的相似度，对值向量进行加权聚合。",
+    "reason": "将标签式开头改为概括下文的完整引导句"
+  },
+  "ub750d0b3": {
+    "from": "使用 CUDA 实现 FlashAttention，以便对内存访问进行细粒度控制，并将注意力计算中的各项操作融合到单个 GPU 内核中。尽管重计算会增加一定数量的浮点运算，但由于大幅减少 HBM 数据访问，FlashAttention 仍然能够同时获得更快的运行速度和更低的内存占用。",
+    "to": "使用 CUDA 实现 FlashAttention，以便对内存访问进行细粒度控制，并将注意力计算中的各项操作融合到单个 GPU 内核中。尽管重计算会增加一定数量的浮点运算，但由于大幅减少 HBM 数据访问，FlashAttention 仍然能够同时获得更快的运行速度和更低的内存占用",
+    "reason": "统一段落末尾标点样式"
+  },
+  "u759f648e": {
+    "from": "GPU 对异步执行的硬件支持进一步催生 Warp-specialized Kernel。在这种 Kernel 中，一个 CTA 内的不同 Warp 被划分为不同角色：",
+    "to": "GPU 对异步执行的硬件支持进一步催生 Warp-specialized Kernel。在这种 Kernel 中，一个 CTA 内的不同 Warp 被划分为不同角色",
+    "reason": "统一段落末尾标点样式"
+  }
+}
