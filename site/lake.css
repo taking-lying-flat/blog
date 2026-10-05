@@ -405,19 +405,27 @@
 }
 
 /* Original normalizing-flow, Neural ODE and FFJORD algorithms. */
-[data-post="genai-flow-i"] .flow-algorithm {
+[data-post="genai-flow-i"] .flow-algorithm,
+[data-post="genai-flow-ii"] .rf-algorithm {
   margin: 16px 2em;
   padding: 0 4px 8px;
   border-block: 1px solid #929292;
   white-space: normal;
 }
-[data-post="genai-flow-i"] .flow-algorithm figcaption {
+[data-post="genai-flow-i"] .flow-algorithm figcaption,
+[data-post="genai-flow-ii"] .rf-algorithm figcaption {
   padding: 6px 0;
   border-bottom: 1px solid #c7c7c7;
   font: 16px/1.5 var(--article-serif);
 }
 [data-post="genai-flow-i"] .flow-algorithm .equation { margin: 6px 0 0; }
-[data-post="genai-flow-i"] .flow-algorithm .equation mjx-container[display="true"] {
+[data-post="genai-flow-ii"] .rf-algorithm .equation { margin: 6px 0 0; font-size: 15px; }
+[data-post="genai-flow-ii"] .rf-algorithm > p {
+  margin: 8px 10px 0;
+  font: 15px/1.5 var(--article-serif);
+}
+[data-post="genai-flow-i"] .flow-algorithm .equation mjx-container[display="true"],
+[data-post="genai-flow-ii"] .rf-algorithm .equation mjx-container[display="true"] {
   min-width: 0;
   text-align: left;
 }

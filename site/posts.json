@@ -361,6 +361,9 @@
     "category": "generative",
     "date": "2026-09-24",
     "description": "生成模型笔记：Rectified Flow、Flow Matching 与 Stable Diffusion 3。",
+    "appendMarkdown": [
+      { "file": "rectified-flow-algorithm.md", "before": "PJPGj" }
+    ],
     "tags": ["Rectified Flow", "Flow Matching", "Stable Diffusion 3"],
     "numberedEquationBlocks": {
       "mloMS": [
