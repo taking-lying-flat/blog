@@ -5,20 +5,29 @@
     "bytes": 328985
   },
   "title": "Generative Models III",
-  "sectionRemovals": [{"from": "RLaWy", "before": "FS16t"}],
+  "sectionRemovals": [
+    {"from": "RLaWy", "before": "FS16t"},
+    {"from": "gg7Mz", "before": "sMidY"}
+  ],
   "separatorRemovals": ["Qwc5t"],
   "paragraphSplits": [
     { "paragraph": "u1fafc3b9", "before": "u99ac2d1d", "id": "ddim-forward-conditioning" },
     { "paragraph": "u1093eb6a", "before": "ue7481687", "id": "ddim-weighted-objective" }
   ],
   "blockRangeMoves": [
-    { "from": "ddim-forward-conditioning", "until": "u5c387a42", "before": "u584477c8" },
-    { "from": "udf938f6f", "until": "ua1895c15", "before": "ddim-weighted-objective" }
+    { "from": "ddim-forward-conditioning", "until": "u5c387a42", "before": "u584477c8" }
   ],
-  "mathRemovals": ["KxsoF", "J8M0r", "ZsHWZ", "ffdeu", "bzv4V"],
+  "paragraphJoins": [
+    { "into": "u584477c8", "next": "u45bac9bd", "separator": "。" }
+  ],
+  "mathRemovals": ["KxsoF", "J8M0r", "ZsHWZ", "ffdeu", "bzv4V", "PWo3c", "iZYGO"],
   "blockRemovals": [
+    { "tag": "p", "id": "u20223e22" },
+    { "tag": "p", "id": "u56a1c316" },
+    { "tag": "p", "id": "ddim-weighted-objective" },
+    { "tag": "li", "id": "u7585e68f" },
     { "tag": "li", "id": "u2d4c56a5" },
-    { "tag": "li", "id": "ude8e9450", "trimFrom": "ud4b5fa6a" },
+    { "tag": "li", "id": "u39c250f2", "trimFrom": "u46774704" },
     { "tag": "p", "id": "ude24ee84" },
     { "tag": "li", "id": "uc04f2f29" },
     { "tag": "p", "id": "u4876e3fe" },
@@ -39,6 +48,7 @@
     { "item": "u0db141a1", "before": "u5631b30a", "id": "ncsn-dsm-optimum" }
   ],
   "listItemMerges": [
+    { "into": "u39c250f2", "items": ["ude8e9450"] },
     { "into": "u0b50299e", "items": ["uec383790"] },
     { "into": "ncsn-score-equivalent", "items": ["u3848afde"] },
     { "into": "ncsn-dsm-optimum", "items": ["u995588e6"] },
