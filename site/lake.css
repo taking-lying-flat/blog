@@ -430,6 +430,17 @@
   text-align: left;
 }
 
+/* Keep the three Flow Matching theorems in prose with one shared highlight. */
+[data-post="genai-flow-ii"] .fm-theorem {
+  margin: 16px 0;
+  padding: 10px 14px;
+  background: #fff6df;
+  white-space: normal;
+}
+[data-post="genai-flow-ii"] .fm-theorem > p { margin: 0; }
+[data-post="genai-flow-ii"] .fm-theorem > p > strong:first-child { color: #814800; }
+[data-post="genai-flow-ii"] .fm-theorem-result { display: inline-block; }
+
 /* EDM: retain the paper's algorithm steps in compact, selectable LaTeX. */
 [data-post="genai-sakura-iii"] .edm-algorithm,
 [data-post="genai-sakura-iii"] .cm-algorithm {

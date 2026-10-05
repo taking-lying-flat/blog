@@ -28,7 +28,11 @@ u_t(x)=\int u_t(x\mid x_1)\frac{p_t(x\mid x_1)q(x_1)}{p_t(x)}\,dx_1
 
 其中，$`u_t(\cdot\mid x_1):\mathbb R^d\to\mathbb R^d`$ 是生成条件概率路径 $`p_t(\cdot\mid x_1)`$ 的条件向量场。上述聚合方式的关键在于：**得到的边缘向量场 $`u_t`$ 恰好生成边缘概率路径 $`p_t`$**。这建立起条件向量场与边缘向量场之间的联系，使未知且难以直接处理的边缘向量场，可以通过更简单的条件向量场来构造；后者只依赖单个数据样本，因而更易于定义。这一性质由以下定理给出
 
+<div class="fm-theorem">
+
 **Theorem 1.** 若 $`u_t(x\mid x_1)`$ 生成条件概率路径 $`p_t(x\mid x_1)`$，则对任意数据分布 $`q(x_1)`$，式（7）的边缘向量场 $`u_t`$ 生成式（5）的边缘概率路径 $`p_t`$，即二者满足连续性方程 $`\frac{d}{dt}p_t(x)+\operatorname{div}\!\left(p_t(x)u_t(x)\right)=0`$
+
+</div>
 
 尽管上述构造给出 $`p_t`$ 和 $`u_t`$ 的表达式，但二者的定义仍包含难以处理的积分，因此依然难以计算边缘向量场 $`u_t`$，也无法直接构造原始 FM 目标的无偏估计。为此，论文提出一个更简单、且与原始目标具有相同最优解的替代目标，即 **Conditional Flow Matching（CFM）**
 
@@ -36,8 +40,12 @@ u_t(x)=\int u_t(x\mid x_1)\frac{p_t(x\mid x_1)q(x_1)}{p_t(x)}\,dx_1
 \mathcal{L}_{\mathrm{CFM}}(\theta) = \mathbb{E}_{t,\;q(x_1),\;p_t(x\mid x_1)} \left\|v_t(x)-u_t(x\mid x_1)\right\|^2
 ```
 
-其中，$`t\sim\mathcal U[0,1]`$，$`x_1\sim q(x_1)`$，此时 $`x\sim p_t(x\mid x_1)`$。与 FM 目标不同，只要能够高效地从 $`p_t(x\mid x_1)`$ 采样，并计算 $`u_t(x\mid x_1)`$，就能构造 CFM 目标的无偏估计。这两项操作都在单样本层面定义，可以通过选择合适的条件路径及条件向量场实现
+- 其中，$`t\sim\mathcal U[0,1]`$，$`x_1\sim q(x_1)`$，此时 $`x\sim p_t(x\mid x_1)`$。与 FM 目标不同，只要能够高效地从 $`p_t(x\mid x_1)`$ 采样，并计算 $`u_t(x\mid x_1)`$，就能构造 CFM 目标的无偏估计。这两项操作都在单样本层面定义，可以通过选择合适的条件路径及条件向量场实现
 
 **FM 与 CFM 目标关于参数 $`\theta`$ 的梯度完全一致，因此优化 CFM 在期望意义上等价于优化 FM。** 由此，无需显式计算边缘概率路径 $`p_t`$ 或边缘向量场 $`u_t`$，也能训练 CNF 来生成 $`p_t`$，并在 $`t=1`$ 时逼近未知数据分布 $`q`$。训练所需的构造因此归结为条件概率路径及其对应的条件向量场。这一等价性由以下定理给出
 
-**Theorem 2.** 假设对所有 $`x\in\mathbb R^d`$ 和 $`t\in[0,1]`$ 均有 $`p_t(x)>0`$，则 $`\mathcal L_{\mathrm{CFM}}`$ 与 $`\mathcal L_{\mathrm{FM}}`$ 仅相差一个与 $`\theta`$ 无关的常数，因而 $`\nabla_\theta\mathcal L_{\mathrm{FM}}(\theta)=\nabla_\theta\mathcal L_{\mathrm{CFM}}(\theta)`$
+<div class="fm-theorem">
+
+**Theorem 2.** 假设对所有 $`x\in\mathbb R^d`$ 和 $`t\in[0,1]`$ 均有 $`p_t(x)>0`$，则 $`\mathcal L_{\mathrm{CFM}}`$ 与 $`\mathcal L_{\mathrm{FM}}`$ 仅相差一个与 $`\theta`$ 无关的常数，<span class="fm-theorem-result">因而 $`\nabla_\theta\mathcal L_{\mathrm{FM}}(\theta)=\nabla_\theta\mathcal L_{\mathrm{CFM}}(\theta)`$</span>
+
+</div>
