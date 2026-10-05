@@ -26,8 +26,8 @@
   },
   "uc9e6efe0": {
     "from": " 在此基础上，进一步定义一个可训练的生成过程",
-    "to": " 构造可训练的生成过程",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "to": "接下来构造可训练的生成过程",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号",
     "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "uae06d8ba": {
@@ -473,8 +473,8 @@
   },
   "u85f876c9": {
     "from": " 作者进一步构造一族由参数向量",
-    "to": " 考虑一族由参数向量",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "to": "考虑一族由参数向量",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号",
     "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "ub1e5623e": {
@@ -509,8 +509,8 @@
   },
   "u99ac2d1d": {
     "from": " 由 Bayes 公式可进一步导出对应的前向过程仍为高斯分布。但与 DDPM 中的马尔可夫扩散过程不同，这里的前向过程一般依赖于",
-    "to": " 根据 Bayes 公式，可得对应的前向条件分布，它仍为高斯分布。与 DDPM 不同，该分布一般同时依赖",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "to": "该条件分布仍为高斯分布。与 DDPM 不同，它一般同时依赖",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号",
     "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "u5714448e": {
@@ -565,8 +565,8 @@
   },
   "ub4424b5f": {
     "from": " 由前向扩散过程可知，给定",
-    "to": " 给定",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "to": "给定",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号",
     "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "u7d680161": {
@@ -607,8 +607,8 @@
   },
   "u6bcb8a87": {
     "from": " 进一步地，在获得对干净样本",
-    "to": " 将逆条件分布中的",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "to": "将逆条件分布中的",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号",
     "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "u61a73f39": {
@@ -649,26 +649,25 @@
   },
   "ue7481687": {
     "from": " 在给定生成模型的定义之后，模型参数的学习可被表述为一个标准的变分推断问题。通过最小化模型生成路径与真实扩散路径之间的差异，使反向生成过程尽可能逼近真实的逆扩散过程。尽管从形式上看，不同的",
-    "to": " 模型参数通过最小化负变分下界进行学习。不同的",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "to": "不同的",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号",
     "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "ubf069248": {
     "from": "会诱导出不同的目标函数",
     "to": "对应不同的变分目标",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号",
     "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "u60bfcbd2": {
     "from": "，但作者进一步证明，该目标实际上可等价转化为某种加权形式的训练损失",
     "to": [
-      "，其与加权去噪损失 ",
+      "，但它可以转化为某个加权去噪目标 ",
       {
         "math": "L_\\gamma"
-      },
-      " 的关系如下"
+      }
     ],
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号",
     "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "ua306f502": {
@@ -784,5 +783,35 @@
     "to": "具有相同的最优解",
     "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
     "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u01939153": {
+    "from": "1️⃣",
+    "to": "",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号"
+  },
+  "uf129d140": {
+    "from": "2️⃣",
+    "to": "根据 Bayes 公式，可得对应的前向条件分布",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号"
+  },
+  "ud35229ba": {
+    "from": "3️⃣",
+    "to": "",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号"
+  },
+  "u7937130a": {
+    "from": "1️⃣",
+    "to": "",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号"
+  },
+  "uf43c21bb": {
+    "from": "2️⃣",
+    "to": "",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号"
+  },
+  "u9f978628": {
+    "from": "3️⃣",
+    "to": "模型参数通过最小化以下变分目标进行学习",
+    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号"
   }
 }

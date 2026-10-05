@@ -6,6 +6,15 @@
   },
   "title": "Generative Models III",
   "sectionRemovals": [{"from": "RLaWy", "before": "FS16t"}],
+  "separatorRemovals": ["Qwc5t"],
+  "paragraphSplits": [
+    { "paragraph": "u1fafc3b9", "before": "u99ac2d1d", "id": "ddim-forward-conditioning" },
+    { "paragraph": "u1093eb6a", "before": "ue7481687", "id": "ddim-weighted-objective" }
+  ],
+  "blockRangeMoves": [
+    { "from": "ddim-forward-conditioning", "until": "u5c387a42", "before": "u584477c8" },
+    { "from": "udf938f6f", "until": "ua1895c15", "before": "ddim-weighted-objective" }
+  ],
   "mathRemovals": ["KxsoF", "J8M0r", "ZsHWZ", "ffdeu", "bzv4V"],
   "blockRemovals": [
     { "tag": "li", "id": "u2d4c56a5" },

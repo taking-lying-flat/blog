@@ -173,6 +173,23 @@ export async function readLake(file, escape, renderMath) {
     content = content.replace(pattern, (_match, opening, body, listOpening, lead, anchor) =>
       `${opening}${body}${lead}</p>${listOpening}${anchor}`);
   }
+  // Split prose at explicit anchors without changing its inline formulas.
+  for (const { paragraph, before, id } of manifest.paragraphSplits ?? []) {
+    if (![paragraph, before, id].every(value => typeof value === 'string' && /^[\w-]+$/.test(value)) ||
+        content.includes(` id="${id}"`)) {
+      throw new Error(`Invalid Lake paragraph split: ${paragraph}`);
+    }
+    const pattern = new RegExp(`(<p\\b[^>]*\\sid="${paragraph}"[^>]*>)([\\s\\S]*?)<\\/p>`, 'g');
+    if ([...content.matchAll(pattern)].length !== 1) {
+      throw new Error(`Lake paragraph split must match once: ${paragraph}`);
+    }
+    content = content.replace(pattern, (_match, opening, body) => {
+      const anchors = [...body.matchAll(new RegExp(`<span\\b[^>]*\\sid="${before}"[^>]*>`, 'g'))];
+      if (anchors.length !== 1) throw new Error(`Missing Lake paragraph split anchor: ${before}`);
+      const offset = anchors[0].index;
+      return `${opening}${body.slice(0, offset)}</p><p id="${id}">${body.slice(offset)}</p>`;
+    });
+  }
   let index = 0;
   let mathCount = 0;
   let imageCount = 0;
@@ -186,6 +203,7 @@ export async function readLake(file, escape, renderMath) {
     const id = escape(card.value.id);
     if (card.kind === 'hr') {
       separatorCount++;
+      if (manifest.separatorRemovals?.includes(card.value.id)) return '';
       return `<hr class="lake-separator" data-card-id="${id}">`;
     }
     if (card.kind === 'codeblock') {
