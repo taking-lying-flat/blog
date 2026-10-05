@@ -9,7 +9,8 @@
     { "from": "TlZMZ", "before": "fNvjt" }
   ],
   "blockRemovals": [
-    { "tag": "p", "id": "uc9679025" }
+    { "tag": "p", "id": "uc9679025" },
+    { "tag": "p", "id": "u5b916af3" }
   ],
   "metadata": {
     "doc-version": "1",

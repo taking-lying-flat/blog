@@ -5,6 +5,9 @@
     "bytes": 328985
   },
   "title": "Generative Models II",
+  "blockRemovals": [
+    { "tag": "p", "id": "uffa31900" }
+  ],
   "metadata": {
     "doc-version": "1",
     "viewport": "adapt",

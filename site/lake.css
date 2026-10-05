@@ -37,6 +37,12 @@
 /* Lake can export an indented list as a sibling rather than a nested ul. */
 .lake-document ul[data-lake-indent="1"] { margin-left: 2em; list-style-type: circle; }
 .lake-document li { margin: 0 0 4.176px; padding: 0; }
+/* A modest increase for the six generative-model notes; keep paragraph gaps. */
+:is(
+  [data-post="genai-sakura-i"], [data-post="genai-sakura-ii"],
+  [data-post="genai-sakura-iii"], [data-post="genai-sakura-iv"],
+  [data-post="genai-flow-i"], [data-post="genai-flow-ii"]
+) .lake-document { line-height: 1.82; }
 .lake-document .code-block { white-space: normal; }
 [data-post="policy-optimization-i"] .lake-document #u29c5ea7c { margin-bottom: 0; }
 [data-post="policy-optimization-i"] .lake-document #u049fde79 { margin: 0; min-height: 0; line-height: 0; }
@@ -362,6 +368,26 @@
 }
 [data-post="spec-decoding-i"] .spec-algorithm .equation { margin: 10px 0 0; }
 [data-post="spec-decoding-i"] .spec-algorithm .equation mjx-container[display="true"] {
+  min-width: 0;
+  text-align: left;
+}
+
+/* Transcribed AEVB and NCSN algorithms, with independent paper numbering. */
+[data-post="genai-sakura-i"] .generative-algorithm {
+  max-width: 900px;
+  margin: 16px auto;
+  padding: 0 12px 8px;
+  border-block: 1px solid #929292;
+  white-space: normal;
+}
+[data-post="genai-sakura-i"] .generative-algorithm figcaption {
+  padding: 6px 0;
+  border-bottom: 1px solid #c7c7c7;
+  font-family: var(--article-serif);
+  font-size: 16px;
+}
+[data-post="genai-sakura-i"] .generative-algorithm .equation { margin: 6px 0 0; }
+[data-post="genai-sakura-i"] .generative-algorithm .equation mjx-container[display="true"] {
   min-width: 0;
   text-align: left;
 }

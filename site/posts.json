@@ -396,7 +396,8 @@
     "tags": ["DDPM", "Improved DDPM", "DDIM"],
     "moveSections": [{"heading": "nIwyk", "to": "genai-sakura-i"}],
     "appendMarkdown": [
-      {"file": "cosine-schedule-boundary.md", "before": "u55b7b817", "tag": "p"}
+      {"file": "cosine-schedule-boundary.md", "before": "u55b7b817", "tag": "p"},
+      {"file": "ncsn-algorithm.md", "before": "u7c3fd815", "tag": "li"}
     ]
   },
   {
@@ -409,7 +410,10 @@
     "category": "generative",
     "date": "2026-09-23",
     "description": "生成模型笔记：Auto-Encoding Variational Bayes、非平衡热力学扩散模型与 Noise Conditional Score Network。",
-    "tags": ["VAE (AEVB)", "Diffusion Models (2015)", "NCSN"]
+    "tags": ["VAE (AEVB)", "Diffusion Models (2015)", "NCSN"],
+    "appendMarkdown": [
+      {"file": "aevb-algorithm.md", "before": "u43acc958", "tag": "p"}
+    ]
   },
   {
     "file": "../notes/infra-quant-i/source.lake",
