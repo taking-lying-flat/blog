@@ -104,7 +104,7 @@ export async function readLake(file, escape, renderMath) {
     }
   }
   // Restore list boundaries at explicit, direct-child text anchors.
-  for (const { item, before, id } of manifest.listItemSplits ?? []) {
+  for (const { item, before, id, afterText } of manifest.listItemSplits ?? []) {
     if (![item, before, id].every(value => typeof value === 'string' && /^[\w-]+$/.test(value)) ||
         content.includes(` id="${id}"`)) {
       throw new Error(`Invalid Lake list split: ${item}`);
@@ -117,6 +117,16 @@ export async function readLake(file, escape, renderMath) {
       const anchors = [...body.matchAll(new RegExp(`<span\\b[^>]*\\sid="${before}"[^>]*>`, 'g'))];
       if (anchors.length !== 1) throw new Error(`Missing Lake list split anchor: ${before}`);
       const offset = anchors[0].index;
+      if (afterText !== undefined) {
+        if (typeof afterText !== 'string' || !afterText) throw new Error(`Invalid Lake list split text: ${before}`);
+        const textStart = offset + anchors[0][0].length;
+        const prefix = escape(afterText);
+        const textEnd = body.indexOf('</span>', textStart);
+        if (!body.startsWith(prefix, textStart) || textStart + prefix.length > textEnd) {
+          throw new Error(`Missing Lake list split text: ${before}`);
+        }
+        return `${opening}${body.slice(0, textStart)}${prefix}</span></li><li id="${id}"><span>${body.slice(textStart + prefix.length)}</li>`;
+      }
       return `${opening}${body.slice(0, offset)}</li><li id="${id}">${body.slice(offset)}</li>`;
     });
   }

@@ -10288,10 +10288,21 @@
       "id": "u6ea39087"
     }
   ],
+  "listItemParagraphs": [
+    "ufcdc1e3b"
+  ],
+  "listItemSplits": [
+    {
+      "item": "u6dddfc82",
+      "before": "u4c0478b9",
+      "id": "rf-rectification-map",
+      "afterText": "具有确定性依赖关系，因为它由一个 ODE 模型构造得到。"
+    }
+  ],
   "paragraphListItems": [
-    "u4e047887",
     "u67115d40",
     "u489a540b",
-    "u3a5af796"
+    "u3a5af796",
+    "ua0562f7e"
   ]
 }
