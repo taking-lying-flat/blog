@@ -423,8 +423,9 @@ for (const post of posts) {
         () => `<section class="lake-revised-section" id="${replacement.id}">${html.trim()}</section>`);
     }
     for (const entry of post.appendMarkdown ?? []) {
-      const { file, before } = typeof entry === 'string' ? { file: entry } : entry;
-      if (!/^[\w-]+\.md$/.test(file) || (before !== undefined && !/^[\w-]+$/.test(before))) {
+      const { file, before, tag = 'heading' } = typeof entry === 'string' ? { file: entry } : entry;
+      if (!/^[\w-]+\.md$/.test(file) || (before !== undefined && !/^[\w-]+$/.test(before)) ||
+          !['heading', 'p', 'li'].includes(tag) || (before === undefined && tag !== 'heading')) {
         throw new Error(`Invalid Lake Markdown addition: ${file}`);
       }
       const source = await readFile(path.join(post.directory, file), 'utf8');
@@ -446,11 +447,27 @@ for (const post of posts) {
       const html = markdown.renderer.render(tokens, markdown.options, { slug: post.slug });
       const addition = `<section class="lake-revised-section lake-appendix">${html.trim()}</section>`;
       if (before !== undefined) {
-        const anchor = new RegExp(`<h[1-6]\\b[^>]*\\sid="${before}"[^>]*>`, 'g');
+        const anchor = new RegExp(`<${tag === 'heading' ? 'h[1-6]' : tag}\\b[^>]*\\sid="${before}"[^>]*>`, 'g');
         if ([...post.content.matchAll(anchor)].length !== 1) {
           throw new Error(`Missing or repeated Lake Markdown anchor: ${before}`);
         }
-        post.content = post.content.replace(anchor, (heading) => addition + heading);
+        if (tag === 'li') {
+          // Keep an inserted section outside the list, at the selected item boundary.
+          let inserted = 0;
+          post.content = post.content.replace(/(<ul\b[^>]*>)((?:(?!<\/?ul\b)[\s\S])*?)(<\/ul>)/g,
+            (list, opening, items, closing) => {
+              const index = items.search(anchor);
+              if (index < 0) return list;
+              if (/\sid=/.test(opening)) throw new Error(`Cannot split an identified Lake list: ${before}`);
+              inserted++;
+              const prefix = items.slice(0, index);
+              return (prefix.trim() ? opening + prefix + closing : '') +
+                addition + opening + items.slice(index) + closing;
+            });
+          if (inserted !== 1) throw new Error(`Missing or nested Lake list anchor: ${before}`);
+        } else {
+          post.content = post.content.replace(anchor, (opening) => addition + opening);
+        }
       } else {
         post.content += addition;
       }
