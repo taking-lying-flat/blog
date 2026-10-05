@@ -5,9 +5,10 @@
     "bytes": 328985
   },
   "title": "Generative Models III",
-  "sectionRemovals": [{"from": "smbwP", "before": "FS16t"}],
+  "sectionRemovals": [{"from": "RLaWy", "before": "FS16t"}],
   "mathRemovals": ["KxsoF"],
   "blockRemovals": [
+    { "tag": "li", "id": "uc04f2f29" },
     { "tag": "p", "id": "u4876e3fe" },
     { "tag": "li", "id": "u2acc2ae8" },
     { "tag": "blockquote", "id": "uc77bd207" },

@@ -511,10 +511,7 @@
         "u310b13e7",
         "ub3fc0ed0",
         "u03ab1c46",
-        "u38ee4765",
-        "ubaccc106",
-        "u36dd48af",
-        "u3e827005"
+        "u38ee4765"
       ],
       "FS16t": [
         "u91fa7c63",
@@ -591,7 +588,7 @@
       },
       {
         "file": "ddpm-algorithms.md",
-        "before": "RLaWy"
+        "before": "FS16t"
       }
     ]
   },
