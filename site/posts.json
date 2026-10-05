@@ -35,7 +35,8 @@
         "file": "flow-figure-notation.md",
         "before": "ub7da6c07",
         "tag": "p"
-      }
+      },
+      "flow-grpo-stochastic-sampling-proof.md"
     ],
     "tags": [
       "生成模型",
@@ -396,7 +397,10 @@
     "category": "generative",
     "date": "2026-09-23",
     "description": "生成模型笔记：Noise Conditional Score Network、DDPM、Improved DDPM 与 DDIM。",
-    "tags": ["生成模型", "Score Matching", "扩散模型"]
+    "tags": ["生成模型", "Score Matching", "扩散模型"],
+    "appendMarkdown": [
+      {"file": "cosine-schedule-boundary.md", "before": "u55b7b817", "tag": "p"}
+    ]
   },
   {
     "file": "../notes/genai-sakura-i/source.lake",

@@ -63,5 +63,23 @@
     "from": "s_{\\theta}(\\mathbf{x},t)，",
     "to": "s_{\\theta}(\\mathbf{x},t),",
     "reason": "将公式中的中文标点统一为英文标点，不改变数学含义"
+  },
+  "E59iI": {
+    "from": "\\boxed{ \\mathrm{d}\\boldsymbol{x}_{\\pm} = \\underbrace{- \\frac{\\mathrm{d}\\sigma(t)}{\\mathrm{d}t} \\sigma(t)\\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t}_{\\text{probability flow ODE}} \\pm \\underbrace{ \\underbrace{\\beta(t)\\sigma(t)^2 \\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t}_{\\text{deterministic noise decay}} + \\underbrace{\\sqrt{2\\beta(t)}\\sigma(t) \\, \\mathrm{d}\\omega_t}_{\\text{noise injection}} }_{\\text{Langevin diffusion SDE}} }",
+    "to": "\\boxed{ \\mathrm{d}\\boldsymbol{x}_{\\pm} = \\underbrace{- \\frac{\\mathrm{d}\\sigma(t)}{\\mathrm{d}t} \\sigma(t)\\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t}_{\\text{probability flow ODE}} \\underbrace{ \\pm\\underbrace{\\beta(t)\\sigma(t)^2 \\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t}_{\\text{deterministic noise decay}} + \\underbrace{\\sqrt{2\\beta(t)}\\sigma(t) \\, \\mathrm{d}\\omega_t}_{\\text{noise injection}} }_{\\text{Langevin diffusion SDE}} }",
+    "reason": "与 EDM 式 (6) 一致：正负号作用于 score 漂移，噪声增量保持加号",
+    "reference": "https://arxiv.org/abs/2206.00364"
+  },
+  "xr06p": {
+    "from": "t_M=0",
+    "to": "t_M=t_{\\min}>0",
+    "reason": "与本文后续有限 log-SNR 终点约定一致，避免 sigma_0=0 导致奇点",
+    "reference": "https://arxiv.org/abs/2206.00927"
+  },
+  "mAoiU": {
+    "from": "\\boxed{ \\boldsymbol{x}_t = e^{\\int_s^t f(\\tau)\\mathrm{d}\\tau} \\boldsymbol{x}_s + \\int_s^t \\left( e^{\\int_\\tau^t f(r)\\mathrm{d}r} g^2(\\tau) / 2\\sigma_\\tau \\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_\\tau, \\tau) \\right) \\mathrm{d}\\tau }",
+    "to": "\\boxed{ \\boldsymbol{x}_t = e^{\\int_s^t f(\\tau)\\mathrm{d}\\tau} \\boldsymbol{x}_s + \\int_s^t \\left( e^{\\int_\\tau^t f(r)\\mathrm{d}r} \\frac{g^2(\\tau)}{2\\sigma_\\tau} \\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_\\tau, \\tau) \\right) \\mathrm{d}\\tau }",
+    "reason": "用分式消除扩散 ODE 积分中分母范围的歧义",
+    "reference": "https://arxiv.org/abs/2206.00927"
   }
 }

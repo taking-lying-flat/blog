@@ -203,5 +203,65 @@
     "from": "按如下方式迭代计算：",
     "to": "按如下方式迭代计算",
     "reason": "统一段落末尾标点样式"
+  },
+  "u587d0da7": {
+    "from": "。当",
+    "to": "。在遍历性等正则条件下，先令",
+    "reason": "明确先充分混合再取步长极限",
+    "reference": "https://arxiv.org/abs/2011.13456"
+  },
+  "u9934d889": {
+    "from": "且对所有",
+    "to": "，再对所有",
+    "reason": "按顺序取 Langevin 混合与步长极限",
+    "reference": "https://arxiv.org/abs/2011.13456"
+  },
+  "ua5f11152": {
+    "from": "都有",
+    "to": "令",
+    "reason": "按顺序取 Langevin 混合与步长极限",
+    "reference": "https://arxiv.org/abs/2011.13456"
+  },
+  "ua4629a27": {
+    "from": "时，在一定正则条件下，",
+    "to": "时，",
+    "reason": "正则条件已在前文说明",
+    "reference": "https://arxiv.org/abs/2011.13456"
+  },
+  "u7cc67938": {
+    "from": "将成为来自",
+    "to": "的分布收敛于",
+    "reason": "精确性仅在极限下成立",
+    "reference": "https://arxiv.org/abs/2011.13456"
+  },
+  "u5ec97ad2": {
+    "from": "的精确样本",
+    "to": "",
+    "reason": "避免将有限步样本称为精确样本",
+    "reference": "https://arxiv.org/abs/2011.13456"
+  },
+  "u29ade134": {
+    "from": "用于近似时刻 0 处的真实解",
+    "to": [
+      "用于近似时刻 ",
+      {
+        "math": "t_{\\min}"
+      },
+      " 处的真实解"
+    ],
+    "reason": "统一求解器实际积分终点",
+    "reference": "https://arxiv.org/abs/2206.00927"
+  },
+  "uadfed339": {
+    "from": "与时刻 0 处真实解之间的误差，需要在每一步都尽可能减小各个",
+    "to": [
+      "与时刻 ",
+      {
+        "math": "t_{\\min}"
+      },
+      " 处真实解之间的误差，需要在每一步都尽可能减小各个"
+    ],
+    "reason": "统一求解器实际积分终点",
+    "reference": "https://arxiv.org/abs/2206.00927"
   }
 }

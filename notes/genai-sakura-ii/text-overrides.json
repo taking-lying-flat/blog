@@ -158,5 +158,75 @@
     "from": "：",
     "to": "",
     "reason": "统一段落末尾标点样式"
+  },
+  "udf548da8": {
+    "from": "收敛性与校正：当",
+    "to": "收敛性与校正：在遍历性等正则条件下，当",
+    "reason": "明确 Langevin 极限所需的混合条件",
+    "reference": "https://arxiv.org/abs/1907.05600"
+  },
+  "ud4283da5": {
+    "from": "时，",
+    "to": "，并保证链充分混合时，",
+    "reason": "步数发散和步长趋零本身不保证充分混合",
+    "reference": "https://arxiv.org/abs/1907.05600"
+  },
+  "u2689134a": {
+    "from": "的分布等于",
+    "to": "的分布趋于",
+    "reason": "区分有限步分布与极限目标分布",
+    "reference": "https://arxiv.org/abs/1907.05600"
+  },
+  "u46f4e980": {
+    "from": "，严格来说需要 Metropolis–Hastings 校正，但实践里常在小步长、大步数时忽略",
+    "to": "，Metropolis–Hastings 校正可消除固定步长带来的平稳分布偏差，但有限步仍可能存在混合误差；实践中常在小步长、大步数时省略该校正",
+    "reason": "MH 保证目标平稳分布，不保证有限步精确样本",
+    "reference": "https://arxiv.org/abs/1907.05600"
+  },
+  "u4ae9702e": {
+    "from": "固定为常数，于是没有可训练参数，",
+    "to": "预先设定为随时间步变化的序列，不参与训练，因此",
+    "reason": "DDPM 使用固定的线性噪声调度，并非所有时间步的 beta 相同",
+    "reference": "https://arxiv.org/abs/2006.11239"
+  },
+  "u45db7dad": {
+    "from": "为将采样步数从",
+    "to": [
+      "其中均值也需用缩减后的噪声调度重新计算，网络仍接收原始时间步 ",
+      {
+        "math": "S_t"
+      },
+      "，不能直接复用未跳步时的转移均值。为将采样步数从"
+    ],
+    "reason": "稀疏采样需同时重算转移均值和方差",
+    "reference": "https://arxiv.org/abs/2102.09672"
+  },
+  "u56d42a48": {
+    "from": "。具体而言，该族推断分布定义为",
+    "to": [
+      "。对 ",
+      {
+        "math": "t>1"
+      },
+      "，须满足 ",
+      {
+        "math": "0\\leq\\sigma_t^2\\leq1-\\alpha_{t-1}"
+      },
+      "，使条件均值中的根号有定义。具体而言，该族推断分布定义为"
+    ],
+    "reason": "补充 DDIM 非马尔可夫转移的可行方差范围",
+    "reference": "https://arxiv.org/abs/2010.02502"
+  },
+  "uda6710a2": {
+    "from": "用于预测在时刻",
+    "to": "用于预测从原始样本构造时刻",
+    "reason": "网络预测累计扰动噪声，并非单个 Markov 步中新注入的噪声",
+    "reference": "https://arxiv.org/abs/2010.02502"
+  },
+  "u0e5d0b11": {
+    "from": "注入的噪声，",
+    "to": "的受扰动样本所用的累计噪声，",
+    "reason": "与闭式边缘加噪分布中的 epsilon 对齐",
+    "reference": "https://arxiv.org/abs/2010.02502"
   }
 }

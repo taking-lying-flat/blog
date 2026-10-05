@@ -38,5 +38,17 @@
     "to": "\\log q_{\\phi}(z\\mid x^{(i)}) = \\log \\mathcal{N}\\!\\bigl(z;\\mu^{(i)},\\operatorname{diag}((\\sigma^{(i)})^{2})\\bigr).",
     "reason": "标准差为逐维向量；对角高斯的协方差应为 diag(sigma²)，与下文逐维 KL 和采样一致。",
     "reference": "https://arxiv.org/abs/1312.6114"
+  },
+  "XNIML": {
+    "from": "\\epsilon \\sim U(0, I),",
+    "to": "\\epsilon \\sim U(0,1),",
+    "reason": "逆 CDF 使用区间 (0,1) 上的标量均匀分布",
+    "reference": "https://arxiv.org/abs/1312.6114"
+  },
+  "m2GT5": {
+    "from": "p(X^{(T)}",
+    "to": "p(X^{(T)})",
+    "reason": "补齐概率分布表达式的右括号",
+    "reference": "https://proceedings.mlr.press/v37/sohl-dickstein15.pdf"
   }
 }

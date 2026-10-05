@@ -125,5 +125,29 @@
     "to": "\\boldsymbol{\\mu}_{\\theta}(\\mathbf{x}_t, t) = \\tilde{\\boldsymbol{\\mu}}_t \\left( \\mathbf{x}_t, \\frac{1}{\\sqrt{\\bar{\\alpha}_t}}(\\mathbf{x}_t - \\sqrt{1 - \\bar{\\alpha}_t}\\boldsymbol{\\epsilon}_{\\theta}(\\mathbf{x}_t,t)) \\right) = \\frac{1}{\\sqrt{\\alpha_t}} \\left( \\mathbf{x}_t - \\frac{\\beta_t}{\\sqrt{1 - \\bar{\\alpha}_t}} \\boldsymbol{\\epsilon}_{\\theta}(\\mathbf{x}_t, t) \\right)",
     "reason": "补齐噪声预测网络的时间输入，与同式右端和上下文一致。",
     "reference": "https://arxiv.org/abs/2006.11239"
+  },
+  "NsF9q": {
+    "from": "\\sqrt{\\beta_0}",
+    "to": "\\sqrt{\\beta_1}",
+    "reason": "本文采用从 1 开始的噪声步索引，首步记为 beta_1",
+    "reference": "https://arxiv.org/abs/2102.09672"
+  },
+  "uhGOO": {
+    "from": "σt",
+    "to": "\\sigma_t",
+    "reason": "修复噪声参数的下标",
+    "reference": "https://arxiv.org/abs/2010.02502"
+  },
+  "YZaJD": {
+    "from": "p_\\theta(x_{1:T})",
+    "to": "p_\\theta(x_{0:T})",
+    "reason": "生成联合分布必须包含最终输出 x_0",
+    "reference": "https://arxiv.org/abs/2010.02502"
+  },
+  "Axl41": {
+    "from": "\\hat q(x_{t-1}\\mid x_0)",
+    "to": "q_\\sigma(x_{t-1}\\mid x_0)",
+    "reason": "证明中使用同一个 q_sigma，删除未定义的 q_hat",
+    "reference": "https://arxiv.org/abs/2010.02502"
   }
 }
