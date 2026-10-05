@@ -190,5 +190,23 @@
     "from": "\\boxed{ L_{\\text{vlb}} = E_{t \\sim p_t} \\left[ \\frac{L_t}{p_t} \\right], \\text{ where } p_t \\propto \\sqrt{E[L_t^2]} \\text{ and } \\sum p_t = 1 }",
     "to": "\\boxed{ L_{\\text{vlb}} = E_{t \\sim p_t} \\left[ \\frac{L_t}{p_t} \\right], \\quad\\text{where}\\quad p_t \\propto \\sqrt{E[L_t^2]} \\quad\\text{and}\\quad \\sum p_t = 1 }",
     "reason": "修复 where、and 与相邻数学符号粘连"
+  },
+  "EP43g": {
+    "from": "Q",
+    "to": "\\mathcal{Q}",
+    "reason": "依照会议版合并联合分布、终点分布与条件分布，使用 where 衔接并保留原始记号",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
+  },
+  "FVN9c": {
+    "from": "q_\\sigma(\\boldsymbol{x}_{1:T}|\\boldsymbol{x}_0) := q_\\sigma(\\boldsymbol{x}_T|\\boldsymbol{x}_0) \\prod_{t=2}^T q_\\sigma(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t, \\boldsymbol{x}_0)",
+    "to": "\\begin{aligned}\n&q_\\sigma(\\boldsymbol{x}_{1:T}\\mid\\boldsymbol{x}_0)\n:=q_\\sigma(\\boldsymbol{x}_T\\mid\\boldsymbol{x}_0)\n\\prod_{t=2}^{T}q_\\sigma(\\boldsymbol{x}_{t-1}\\mid\\boldsymbol{x}_t,\\boldsymbol{x}_0),\\\\[5pt]\n&\\text{where}\\quad q_\\sigma(\\boldsymbol{x}_T\\mid\\boldsymbol{x}_0)\n=\\mathcal{N}\\!\\left(\\sqrt{\\alpha_T}\\boldsymbol{x}_0,(1-\\alpha_T)\\boldsymbol{I}\\right),\\\\[5pt]\n&q_\\sigma(\\boldsymbol{x}_{t-1}\\mid\\boldsymbol{x}_t,\\boldsymbol{x}_0)\n=\\mathcal{N}\\!\\left(\n\\sqrt{\\alpha_{t-1}}\\boldsymbol{x}_0+\n\\sqrt{1-\\alpha_{t-1}-\\sigma_t^2}\\,\n\\frac{\\boldsymbol{x}_t-\\sqrt{\\alpha_t}\\boldsymbol{x}_0}{\\sqrt{1-\\alpha_t}},\n\\sigma_t^2\\boldsymbol{I}\\right),\\quad t>1\n\\end{aligned}",
+    "reason": "依照会议版合并联合分布、终点分布与条件分布，使用 where 衔接并保留原始记号",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
+  },
+  "aEa0h": {
+    "from": "q_{\\sigma}(x_t\\mid x_{t-1},x_0) = \\frac{ q_{\\sigma}(x_{t-1}\\mid x_t,x_0)\\,q_{\\sigma}(x_t\\mid x_0) }{ q_{\\sigma}(x_{t-1}\\mid x_0) }",
+    "to": "q_\\sigma(\\boldsymbol{x}_t\\mid\\boldsymbol{x}_{t-1},\\boldsymbol{x}_0)=\\frac{q_\\sigma(\\boldsymbol{x}_{t-1}\\mid\\boldsymbol{x}_t,\\boldsymbol{x}_0)\\,q_\\sigma(\\boldsymbol{x}_t\\mid\\boldsymbol{x}_0)}{q_\\sigma(\\boldsymbol{x}_{t-1}\\mid\\boldsymbol{x}_0)}",
+    "reason": "依照会议版合并联合分布、终点分布与条件分布，使用 where 衔接并保留原始记号",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   }
 }

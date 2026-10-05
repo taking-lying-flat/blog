@@ -10,7 +10,7 @@
     {"from": "gg7Mz", "before": "sMidY"}
   ],
   "separatorRemovals": ["Qwc5t"],
-  "listItemParagraphs": ["u3a106068"],
+  "listItemParagraphs": ["u3a106068", "u8fbddd00"],
   "paragraphSplits": [
     { "paragraph": "u1fafc3b9", "before": "u99ac2d1d", "id": "ddim-forward-conditioning" },
     { "paragraph": "u1093eb6a", "before": "ue7481687", "id": "ddim-weighted-objective" }
@@ -19,10 +19,14 @@
     { "from": "ddim-forward-conditioning", "until": "u5c387a42", "before": "u584477c8" }
   ],
   "paragraphJoins": [
+    { "into": "u8fbddd00", "next": "u1fafc3b9", "separator": "。" },
     { "into": "u584477c8", "next": "u45bac9bd", "separator": "。" }
   ],
   "mathRemovals": ["KxsoF", "J8M0r", "ZsHWZ", "ffdeu", "bzv4V", "PWo3c", "iZYGO"],
   "blockRemovals": [
+    { "tag": "li", "id": "u37117502" },
+    { "tag": "p", "id": "uae36796e" },
+    { "tag": "p", "id": "ub46e21f9" },
     { "tag": "p", "id": "u20223e22" },
     { "tag": "p", "id": "u56a1c316" },
     { "tag": "p", "id": "ddim-weighted-objective" },

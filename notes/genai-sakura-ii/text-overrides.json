@@ -255,19 +255,9 @@
   },
   "u56d42a48": {
     "from": "。具体而言，该族推断分布定义为",
-    "to": [
-      "。对 ",
-      {
-        "math": "t>1"
-      },
-      "，须满足 ",
-      {
-        "math": "0\\leq\\sigma_t^2\\leq1-\\alpha_{t-1}"
-      },
-      "，使条件均值中的根号有定义。联合推断分布定义为"
-    ],
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
-    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+    "to": "",
+    "reason": "依照 DDIM 会议版第 3.1 节合并定义与说明，删去额外补充",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   },
   "uda6710a2": {
     "from": "用于预测在时刻",
@@ -473,21 +463,21 @@
   },
   "u85f876c9": {
     "from": " 作者进一步构造一族由参数向量",
-    "to": "考虑一族由参数向量",
-    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号",
-    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+    "to": "考虑由实向量",
+    "reason": "依照 DDIM 会议版第 3.1 节合并定义与说明，删去额外补充",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   },
   "ub1e5623e": {
     "from": "索引的推断分布",
-    "to": "索引的推断分布",
+    "to": "索引的一族推断分布",
     "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
     "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "u2a36e64d": {
     "from": "用于在保持各时刻边缘分布不变的前提下，将原有的马尔可夫推断过程推广为更一般的非马尔可夫形式",
-    "to": "用于构造具有相同边缘分布的非马尔可夫推断过程",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
-    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+    "to": "",
+    "reason": "依照 DDIM 会议版第 3.1 节合并定义与说明，删去额外补充",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   },
   "u54fc91c1": {
     "from": "其中终点分布满足",
@@ -497,33 +487,39 @@
   },
   "uee1f578a": {
     "from": "均值函数经过专门设计，对任意时间步",
-    "to": "上述均值的选择保证，对任意时间步",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
-    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+    "to": "均值函数的选择保证，对任意时间步",
+    "reason": "依照 DDIM 会议版第 3.1 节合并定义与说明，删去额外补充",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   },
   "u8a7adf97": {
     "from": "，该推断过程始终满足与原扩散过程一致的边缘分布",
-    "to": "，该过程都具有与 DDPM 相同的边缘分布",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
-    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+    "to": [
+      "，都有 ",
+      {
+        "math": "q_\\sigma(\\boldsymbol{x}_t\\mid\\boldsymbol{x}_0)=\\mathcal{N}\\!\\left(\\sqrt{\\alpha_t}\\boldsymbol{x}_0,(1-\\alpha_t)\\boldsymbol{I}\\right)"
+      },
+      "，从而使联合推断分布具有所需的边缘分布"
+    ],
+    "reason": "依照 DDIM 会议版第 3.1 节合并定义与说明，删去额外补充",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   },
   "u99ac2d1d": {
     "from": " 由 Bayes 公式可进一步导出对应的前向过程仍为高斯分布。但与 DDPM 中的马尔可夫扩散过程不同，这里的前向过程一般依赖于",
-    "to": "该条件分布仍为高斯分布。与 DDPM 不同，它一般同时依赖",
-    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号",
-    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+    "to": "该条件分布也是高斯分布。与 DDPM 的扩散过程不同，每个时刻的状态可以同时依赖",
+    "reason": "依照 DDIM 会议版第 3.1 节合并定义与说明，删去额外补充",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   },
   "u5714448e": {
     "from": "，因而具有非马尔可夫性。参数",
-    "to": "，因此前向过程一般不满足马尔可夫性。参数",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
-    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+    "to": "，因而前向过程不再具有马尔可夫性。",
+    "reason": "依照 DDIM 会议版第 3.1 节合并定义与说明，删去额外补充",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   },
   "u5b044016": {
     "from": "用于控制过程的随机程度；",
-    "to": "控制过程的随机程度；",
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
-    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+    "to": "的大小控制前向过程的随机程度；",
+    "reason": "依照 DDIM 会议版第 3.1 节合并定义与说明，删去额外补充",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   },
   "u76cfd898": {
     "from": "特别地，当",
@@ -534,22 +530,22 @@
   "u659b0111": {
     "from": "时，前向过程将趋于确定性",
     "to": [
-      "时，给定 ",
+      "时，只要给定 ",
       {
         "math": "x_0"
       },
-      " 和 ",
+      " 和某一时刻的 ",
       {
         "math": "x_t"
       },
-      " 后，",
+      "，",
       {
         "math": "x_{t-1}"
       },
-      " 趋于确定"
+      " 就随之确定"
     ],
-    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
-    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+    "reason": "依照 DDIM 会议版第 3.1 节合并定义与说明，删去额外补充",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   },
   "u816c8cb1": {
     "from": "，其中每一步条件分布",
@@ -791,8 +787,9 @@
   },
   "uf129d140": {
     "from": "2️⃣",
-    "to": "根据 Bayes 公式，可得对应的前向条件分布",
-    "reason": "按 DDIM 论文的叙述顺序衔接正文，删除步骤标号"
+    "to": "根据 Bayes 公式，前向过程为",
+    "reason": "依照 DDIM 会议版第 3.1 节合并定义与说明，删去额外补充",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   },
   "ud35229ba": {
     "from": "3️⃣",
@@ -838,5 +835,11 @@
     "from": "5️⃣",
     "to": "",
     "reason": "按原论文合并连续说明，删除重复损失定义及步骤标号"
+  },
+  "u64ebe2d0": {
+    "from": "，",
+    "to": "，定义为",
+    "reason": "依照 DDIM 会议版第 3.1 节合并定义与说明，删去额外补充",
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=3"
   }
 }
