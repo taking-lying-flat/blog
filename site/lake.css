@@ -126,14 +126,15 @@
 ),
 [data-post="genai-sakura-iv"] .lake-document :is(
   [data-card-id="wrW0B"], [data-card-id="htod0"]
-),
-[data-post="genai-flow-i"] .lake-document :is(
-  [data-card-id="BEwNn"], [data-card-id="fMVPt"]
 ) {
   display: block;
   width: max-content;
   max-width: 100%;
   margin-inline: auto;
+}
+/* Keep these trailing inline expressions on a line with their surrounding prose. */
+[data-post="genai-flow-i"] .lake-document :is(#u30bb5d2a, #u457cdf3e) {
+  text-wrap: balance;
 }
 /* Keep the additional generative assumption within the preceding explanation. */
 [data-post="genai-sakura-i"] .lake-document #uff7263e8 { margin-left: 2em; }
