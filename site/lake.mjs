@@ -336,6 +336,19 @@ export async function readLake(file, escape, renderMath) {
       content = content.replace(/<(ul|ol)\b[^>]*>\s*<\/\1>/g, '');
     }
   }
+  // Restore a single-item list to ordinary prose without changing its contents.
+  for (const id of manifest.listItemParagraphs ?? []) {
+    if (typeof id !== 'string' || !/^[\w-]+$/.test(id)) {
+      throw new Error(`Invalid Lake list paragraph: ${id}`);
+    }
+    const inline = '(?:(?!<\\/?(?:ul|ol|li)\\b)[\\s\\S])*';
+    const pattern = new RegExp(`<ul\\b[^>]*>\\s*(<li\\b[^>]*\\sid="${id}"[^>]*>)(${inline})<\\/li>\\s*<\\/ul>`, 'g');
+    if ([...content.matchAll(pattern)].length !== 1) {
+      throw new Error(`Lake list paragraph must match one single-item list: ${id}`);
+    }
+    content = content.replace(pattern, (_match, opening, body) =>
+      `${opening.replace(/^<li\b/, '<p')}${body}</p>`);
+  }
   // Join adjacent paragraphs without changing inline formatting or formulas.
   for (const { into, next, separator = '' } of manifest.paragraphJoins ?? []) {
     if (![into, next].every(id => typeof id === 'string' && /^[\w-]+$/.test(id)) ||

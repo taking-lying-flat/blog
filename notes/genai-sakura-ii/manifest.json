@@ -10,6 +10,7 @@
     {"from": "gg7Mz", "before": "sMidY"}
   ],
   "separatorRemovals": ["Qwc5t"],
+  "listItemParagraphs": ["u3a106068"],
   "paragraphSplits": [
     { "paragraph": "u1fafc3b9", "before": "u99ac2d1d", "id": "ddim-forward-conditioning" },
     { "paragraph": "u1093eb6a", "before": "ue7481687", "id": "ddim-weighted-objective" }
