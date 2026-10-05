@@ -82,6 +82,25 @@
   margin: 0;
   text-align: center;
 }
+/* These trailing formulas already occupy a separate line in the desktop notes. */
+[data-post="genai-sakura-ii"] .lake-document :is(
+  [data-card-id="AEAsO"], [data-card-id="PXkbE"], [data-card-id="IUyp4"],
+  .math-inline[aria-label="\\bar\\alpha_t=\\prod_{s=1}^{t}(1-\\beta_s)"]
+),
+[data-post="genai-sakura-iii"] .lake-document :is(
+  [data-card-id="hmeD6"], [data-card-id="Ib4aA"], [data-card-id="Lg3op"]
+),
+[data-post="genai-sakura-iv"] .lake-document :is(
+  [data-card-id="wrW0B"], [data-card-id="htod0"]
+),
+[data-post="genai-flow-i"] .lake-document :is(
+  [data-card-id="BEwNn"], [data-card-id="fMVPt"]
+) {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
 /* Remove trailing export breaks from the GAE, delta-rule and transpose paragraphs. */
 .lake-document :is(#u3f7c57e0, #u829c456a, #u9509cdfc) > br { display: none; }
 /* The group OBS update is an unnumbered display equation. */
