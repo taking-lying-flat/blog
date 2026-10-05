@@ -4,7 +4,8 @@
     "sha256": "476057154fddc1ad37cc264598858b6c47dd84842f534a47a91284d7f47e3abe",
     "bytes": 328985
   },
-  "title": "Generative Models II",
+  "title": "Generative Models III",
+  "sectionRemovals": [{"from": "smbwP", "before": "FS16t"}],
   "mathRemovals": ["KxsoF"],
   "blockRemovals": [
     { "tag": "p", "id": "uffa31900" },

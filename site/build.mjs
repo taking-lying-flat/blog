@@ -564,6 +564,60 @@ for (const post of posts) {
   }
 }
 
+// Label existing formula blocks without changing their contents or line layout.
+for (const post of posts) {
+  if (!post.numberedEquationBlocks) continue;
+  const groups = new Map();
+  const selected = new Set();
+  for (const [paper, blocks] of Object.entries(post.numberedEquationBlocks)) {
+    if (!/^[\w-]+$/.test(paper) || !Array.isArray(blocks)) {
+      throw new Error(`Invalid formula block numbering: ${post.slug}`);
+    }
+    const keys = blocks.map(block => {
+      const key = typeof block === 'string' && /^[\w-]+$/.test(block)
+        ? `id:${block}` : typeof block?.math === 'string' ? `math:${block.math.trim()}` : undefined;
+      if (!key || selected.has(key)) throw new Error(`Invalid formula block: ${post.slug}`);
+      selected.add(key);
+      return key;
+    });
+    groups.set(paper, keys);
+  }
+  const parsed = adaptor.parse(post.content, 'text/html');
+  const body = adaptor.body(parsed);
+  const counts = new Map([...groups.keys()].map(paper => [paper, 0]));
+  let paper;
+  const visit = node => {
+    const kind = adaptor.kind(node);
+    if (['#text', '#comment', 'svg', 'pre', 'code'].includes(kind)) return;
+    if (kind === 'h1') paper = adaptor.getAttribute(node, 'id');
+    const classes = (adaptor.getAttribute(node, 'class') ?? '').split(/\s+/);
+    const key = kind === 'p' ? `id:${adaptor.getAttribute(node, 'id')}`
+      : kind === 'div' && classes.includes('equation')
+        ? `math:${(adaptor.getAttribute(node, 'aria-label') ?? '').trim()}` : undefined;
+    if (selected.has(key)) {
+      const index = counts.get(paper);
+      if (groups.get(paper)?.[index] !== key) {
+        throw new Error(`Formula block order changed: ${post.slug}/${key}`);
+      }
+      const number = index + 1;
+      adaptor.setAttribute(node, 'class', [...classes.filter(Boolean), 'lake-numbered-block'].join(' '));
+      adaptor.setAttribute(node, 'data-equation-paper', paper);
+      adaptor.setAttribute(node, 'data-equation-number', String(number));
+      adaptor.append(node, adaptor.node('span', {
+        class: 'lake-block-equation-number', id: `equation-${paper}-${number}`,
+      }, [adaptor.text(`(${number})`)]));
+      counts.set(paper, number);
+      return;
+    }
+    for (const child of [...adaptor.childNodes(node)]) visit(child);
+  };
+  visit(body);
+  if ([...groups].some(([paper, blocks]) => counts.get(paper) !== blocks.length)) {
+    throw new Error(`Missing formula block: ${post.slug}`);
+  }
+  post.content = adaptor.innerHTML(body);
+}
+
 // Number selected display formulas in reading order, restarting for each paper.
 // Keep their existing SVGs so adding a label does not alter the mathematics.
 for (const post of posts) {

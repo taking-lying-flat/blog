@@ -108,10 +108,22 @@
   justify-self: end;
   font: 400 16px/1.4 var(--article-serif);
 }
+/* Add labels beside existing formula blocks without affecting their layout. */
+.lake-document .lake-numbered-block { position: relative; }
+.lake-document .lake-block-equation-number {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 400 16px/1.4 var(--article-serif);
+}
 /* These trailing formulas already occupy a separate line in the desktop notes. */
 [data-post="genai-sakura-ii"] .lake-document [data-card-id="IUyp4"],
+[data-post="genai-sakura-ii"] .lake-document :is(
+  [data-card-id="hmeD6"], [data-card-id="Ib4aA"]
+),
 [data-post="genai-sakura-iii"] .lake-document :is(
-  [data-card-id="hmeD6"], [data-card-id="Ib4aA"], [data-card-id="Lg3op"]
+  [data-card-id="Lg3op"]
 ),
 [data-post="genai-sakura-iv"] .lake-document :is(
   [data-card-id="wrW0B"], [data-card-id="htod0"]
@@ -513,7 +525,7 @@
   [data-post="genai-flow-ii"] #u770adff8,
   [data-post="genai-flow-ii"] #u8366b02f,
   [data-post="genai-flow-i"] #uf6eeb1c4,
-  [data-post="genai-sakura-iii"] #ua19a4f0c,
+  [data-post="genai-sakura-ii"] #ua19a4f0c,
   [data-post="genai-sakura-iii"] #ub461f999,
   [data-post="genai-sakura-ii"] #ub9e5ae72,
   [data-post="genai-sakura-ii"] #u6ac9e45f,

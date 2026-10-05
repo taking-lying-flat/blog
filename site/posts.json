@@ -6,7 +6,7 @@
     "tocDepth": 2,
     "slug": "genai-sakura-iv",
     "series": "generative-models",
-    "seriesOrder": 4,
+    "seriesOrder": 5,
     "category": "generative",
     "date": "2026-10-05",
     "description": "生成模型笔记：Consistency Models 的概率流、一致性蒸馏与独立训练，以及 Flow-GRPO 的在线强化学习、ODE-to-SDE 转换和 KL 正则化",
@@ -365,11 +365,15 @@
     "tocDepth": 2,
     "slug": "genai-flow-i",
     "series": "generative-models",
-    "seriesOrder": 5,
+    "seriesOrder": 2,
     "category": "generative",
     "date": "2026-09-24",
     "description": "生成模型笔记：归一化流、Neural ODE、连续归一化流与 FFJORD。",
-    "tags": ["Normalizing Flows", "Neural ODE", "FFJORD"]
+    "tags": [
+      "Normalizing Flows",
+      "Neural ODE",
+      "FFJORD"
+    ]
   },
   {
     "file": "../notes/genai-sakura-iii/source.lake",
@@ -377,11 +381,20 @@
     "tocDepth": 2,
     "slug": "genai-sakura-iii",
     "series": "generative-models",
-    "seriesOrder": 3,
+    "seriesOrder": 4,
     "category": "generative",
     "date": "2026-09-23",
-    "description": "生成模型笔记：基于 SDE 的得分生成模型、EDM 与 DPM-Solver。",
-    "tags": ["Score-SDE", "EDM", "DPM-Solver"]
+    "description": "生成模型笔记：EDM 与 DPM-Solver。",
+    "tags": [
+      "EDM",
+      "DPM-Solver"
+    ],
+    "moveSections": [
+      {
+        "heading": "KMj1j",
+        "to": "genai-sakura-ii"
+      }
+    ]
   },
   {
     "file": "../notes/genai-sakura-ii/source.lake",
@@ -389,15 +402,125 @@
     "tocDepth": 2,
     "slug": "genai-sakura-ii",
     "series": "generative-models",
-    "seriesOrder": 2,
+    "seriesOrder": 3,
     "category": "generative",
     "date": "2026-09-23",
-    "description": "生成模型笔记：DDPM、Improved DDPM 与 DDIM。",
-    "tags": ["DDPM", "Improved DDPM", "DDIM"],
-    "moveSections": [{"heading": "nIwyk", "to": "genai-sakura-i"}],
+    "description": "生成模型笔记：DDPM、DDIM 与 Score-SDE。",
+    "tags": [
+      "DDPM",
+      "DDIM",
+      "Score-SDE"
+    ],
+    "numberedEquationBlocks": {
+      "yfKpI": [
+        "u85c089d9",
+        "ue5ec11ac",
+        "u42ed0bd0",
+        "ufda810c0",
+        "u2bcc5f50",
+        "u8dede72e",
+        "ue0a0302f",
+        "udd9f0248",
+        "u77b51f1d",
+        "u0416afef",
+        "u6c9c6688",
+        "u88a660d2",
+        "u407d4788",
+        "u08713b14",
+        "uc19dd9a7",
+        "u30930b29",
+        "uc37de8db",
+        "u850c1e6e",
+        "u0c9fa277",
+        "u40551206",
+        "ub0c156d5",
+        "u633952b2",
+        "u646672d4",
+        "uaa8d2173",
+        "ufdaf769a",
+        "ue9437100",
+        "ub8cd8eaa",
+        "u310b13e7",
+        "ub3fc0ed0",
+        "u03ab1c46",
+        "u38ee4765",
+        "ubaccc106",
+        "u36dd48af",
+        "u3e827005"
+      ],
+      "FS16t": [
+        "u91fa7c63",
+        "u82043436",
+        "u97d70523",
+        "ue0708223",
+        "u7c371e1f",
+        "uae2f1918",
+        "uae36796e",
+        "ub46e21f9",
+        "u5c387a42",
+        "u8635655b",
+        "u4f95d3ef",
+        "u56a1c316",
+        "udf938f6f",
+        "u93b60577",
+        "ud603ab57",
+        "u2092b965",
+        "ud2af74c1",
+        "ue9aace9b",
+        "ube1386c4",
+        "u75af1ca2",
+        "u46a5d1d4",
+        "uc73b4192",
+        "ua9681694",
+        "u00c9d700",
+        "uac27d6db",
+        "ua6ffd888",
+        "uc05fca12",
+        "ucddc5d44"
+      ],
+      "KMj1j": [
+        "u4b9df525",
+        "u74d9e20c",
+        "uff45c8d2",
+        "ue3f311be",
+        "ua07a89a9",
+        "ua3f94f9a",
+        "u607098d5",
+        "ua9371ba1",
+        "u53fda684",
+        "u946ccef8",
+        "ud1c3af92",
+        "udce3c5f4",
+        "u50bd1916",
+        "u8cd7b8a8",
+        "uee2a4e88",
+        "u92483f47",
+        "u1c37ac52",
+        "uc0334b8b",
+        "ue7ae6fb8",
+        "u19dc1256",
+        "u9d09c233",
+        "ua4f32267",
+        "ud908f420",
+        "u09e5e64a",
+        "u0b55fe7e",
+        "ucfed2958",
+        "u05c34e7a",
+        "u14b2bbfe"
+      ]
+    },
+    "moveSections": [
+      {
+        "heading": "nIwyk",
+        "to": "genai-sakura-i"
+      }
+    ],
     "appendMarkdown": [
-      {"file": "cosine-schedule-boundary.md", "before": "u55b7b817", "tag": "p"},
-      {"file": "ncsn-algorithm.md", "before": "u7c3fd815", "tag": "li"}
+      {
+        "file": "ncsn-algorithm.md",
+        "before": "u7c3fd815",
+        "tag": "li"
+      }
     ]
   },
   {
