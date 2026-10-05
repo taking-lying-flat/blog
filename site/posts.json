@@ -401,6 +401,9 @@
         "uddf56665",
         "udf39ad51",
         "u28e4b876",
+        {
+          "math": "u_t(x\\mid x_1)=\\frac{\\sigma'_t(x_1)}{\\sigma_t(x_1)}\\bigl(x-\\mu_t(x_1)\\bigr)+\\mu'_t(x_1)"
+        },
         "u8db6fb6d",
         "uc0799a78",
         "u6ad299eb",

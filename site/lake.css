@@ -437,7 +437,15 @@
   background: #fff6df;
   white-space: normal;
 }
-[data-post="genai-flow-ii"] .fm-theorem > p { margin: 0; }
+[data-post="genai-flow-ii"] .fm-theorem > p {
+  margin: 0;
+  line-height: 2.15;
+}
+[data-post="genai-flow-ii"] .fm-theorem .equation {
+  margin: 14px 0;
+  padding: 6px 0;
+  text-align: center;
+}
 [data-post="genai-flow-ii"] .fm-theorem > p > strong:first-child { color: #814800; }
 [data-post="genai-flow-ii"] .fm-theorem-result { display: inline-block; }
 
