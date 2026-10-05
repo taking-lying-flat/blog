@@ -97,6 +97,23 @@ export async function readLake(file, escape, renderMath) {
       content = content.replace(emptyBlock, '');
     }
   }
+  // Restore list boundaries at explicit, direct-child text anchors.
+  for (const { item, before, id } of manifest.listItemSplits ?? []) {
+    if (![item, before, id].every(value => typeof value === 'string' && /^[\w-]+$/.test(value)) ||
+        content.includes(` id="${id}"`)) {
+      throw new Error(`Invalid Lake list split: ${item}`);
+    }
+    const pattern = new RegExp(`(<li\\b[^>]*\\sid="${item}"[^>]*>)([\\s\\S]*?)<\\/li>`, 'g');
+    if ([...content.matchAll(pattern)].length !== 1) {
+      throw new Error(`Lake list split must match once: ${item}`);
+    }
+    content = content.replace(pattern, (_match, opening, body) => {
+      const anchors = [...body.matchAll(new RegExp(`<span\\b[^>]*\\sid="${before}"[^>]*>`, 'g'))];
+      if (anchors.length !== 1) throw new Error(`Missing Lake list split anchor: ${before}`);
+      const offset = anchors[0].index;
+      return `${opening}${body.slice(0, offset)}</li><li id="${id}">${body.slice(offset)}</li>`;
+    });
+  }
   // Join consecutive explanations without losing their formula cards or anchors.
   for (const { into, items } of manifest.listItemMerges ?? []) {
     if (!/^[\w-]+$/.test(into) || !Array.isArray(items) || !items.length ||
@@ -125,6 +142,19 @@ export async function readLake(file, escape, renderMath) {
     }
     content = content.replace(pattern, (_match, opening, body, itemOpening, itemBody) =>
       `${opening}${body}${itemOpening.replace(/^<li\b/, '<span')}${itemBody}</span></p>`);
+  }
+  // Attach a list item's opening objective to its preceding method statement.
+  for (const { paragraph, listItem, before } of manifest.listLeadIns ?? []) {
+    if (![paragraph, listItem, before].every(value => typeof value === 'string' && /^[\w-]+$/.test(value))) {
+      throw new Error(`Invalid Lake list lead-in: ${listItem}`);
+    }
+    const inline = '(?:(?!<\\/?(?:p|ul|ol|li)\\b)[\\s\\S])*';
+    const pattern = new RegExp(`(<p\\b[^>]*\\sid="${paragraph}"[^>]*>)(${inline})<\\/p>(\\s*<ul\\b[^>]*>\\s*<li\\b[^>]*\\sid="${listItem}"[^>]*>)(${inline})(<span\\b[^>]*\\sid="${before}"[^>]*>)`, 'g');
+    if ([...content.matchAll(pattern)].length !== 1) {
+      throw new Error(`Lake list lead-in must match once: ${listItem}`);
+    }
+    content = content.replace(pattern, (_match, opening, body, listOpening, lead, anchor) =>
+      `${opening}${body}${lead}</p>${listOpening}${anchor}`);
   }
   let index = 0;
   let mathCount = 0;

@@ -9,14 +9,25 @@
     { "tag": "p", "id": "uffa31900" },
     { "tag": "li", "id": "ue3dd6f81" },
     { "tag": "p", "id": "ue2114eec" },
+    { "tag": "li", "id": "u5d3338ec" },
+    { "tag": "p", "id": "u4a48d8df" },
+    { "tag": "p", "id": "u6aaba5a8" },
     { "tag": "li", "id": "u7c3fd815", "trimFrom": "u901ae6d5" }
   ],
+  "listItemSplits": [
+    { "item": "uec383790", "before": "u198f06d4", "id": "ncsn-score-equivalent" },
+    { "item": "u0db141a1", "before": "u5631b30a", "id": "ncsn-dsm-optimum" }
+  ],
   "listItemMerges": [
-    { "into": "u0b50299e", "items": ["uec383790", "u3848afde"] },
-    { "into": "u0db141a1", "items": ["u995588e6"] },
+    { "into": "u0b50299e", "items": ["uec383790"] },
+    { "into": "ncsn-score-equivalent", "items": ["u3848afde"] },
+    { "into": "ncsn-dsm-optimum", "items": ["u995588e6"] },
     { "into": "u2043291d", "items": ["uec0deb50", "u1bb2347e"] },
     { "into": "u8f951a11", "items": ["u825c94df"] },
     { "into": "u39839d42", "items": ["u67446f95"] }
+  ],
+  "listLeadIns": [
+    { "paragraph": "u454ac2db", "listItem": "u2043291d", "before": "uca5c4316" }
   ],
   "metadata": {
     "doc-version": "1",

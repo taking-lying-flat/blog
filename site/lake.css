@@ -110,7 +110,7 @@
 }
 /* These trailing formulas already occupy a separate line in the desktop notes. */
 [data-post="genai-sakura-i"] .lake-document :is(
-  [data-card-id="AEAsO"], [data-card-id="PXkbE"]
+  [data-card-id="PXkbE"]
 ),
 [data-post="genai-sakura-ii"] .lake-document [data-card-id="IUyp4"],
 [data-post="genai-sakura-iii"] .lake-document :is(
@@ -129,7 +129,7 @@
 }
 /* Give the promoted formulas their own space above and below. */
 [data-post="genai-sakura-i"] .lake-document :is(
-  [data-card-id="AEAsO"], [data-card-id="PXkbE"]
+  [data-card-id="PXkbE"]
 ),
 [data-post="genai-sakura-ii"] .lake-document [data-card-id="IUyp4"] {
   margin-block: 12px;
