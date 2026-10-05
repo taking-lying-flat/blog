@@ -5,6 +5,12 @@
     "bytes": 147877
   },
   "title": "Generative Models I",
+  "sectionRemovals": [
+    { "from": "TlZMZ", "before": "fNvjt" }
+  ],
+  "blockRemovals": [
+    { "tag": "p", "id": "uc9679025" }
+  ],
   "metadata": {
     "doc-version": "1",
     "viewport": "adapt",

@@ -213,6 +213,24 @@ export async function readLake(file, escape, renderMath) {
     content = content.replace(anchor, `$1${to}$2`)
       .replaceAll(`href="#${from}"`, `href="#${to}"`);
   }
+  // Remove explicitly bounded sections while preserving the archived export.
+  for (const { from, before } of manifest.sectionRemovals ?? []) {
+    const boundaries = [from, before].map((id) => {
+      if (typeof id !== 'string' || !/^[\w-]+$/.test(id)) {
+        throw new Error(`Invalid Lake section removal: ${id}`);
+      }
+      const heading = new RegExp(`<h[1-6]\\b[^>]*\\sid="${id}"[^>]*>`, 'g');
+      const matches = [...content.matchAll(heading)];
+      if (matches.length !== 1) {
+        throw new Error(`Lake section removal boundary must match once: ${id}`);
+      }
+      return matches[0].index;
+    });
+    if (boundaries[0] >= boundaries[1]) {
+      throw new Error(`Invalid Lake section removal order: ${from}, ${before}`);
+    }
+    content = content.slice(0, boundaries[0]) + content.slice(boundaries[1]);
+  }
   // Remove explicitly selected blocks while preserving the archived export.
   for (const { tag, id } of manifest.blockRemovals ?? []) {
     if (!['p', 'li'].includes(tag) || !/^[\w-]+$/.test(id)) {
