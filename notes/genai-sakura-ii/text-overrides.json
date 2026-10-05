@@ -26,8 +26,9 @@
   },
   "uc9e6efe0": {
     "from": " 在此基础上，进一步定义一个可训练的生成过程",
-    "to": " 进一步定义一个可训练的生成过程",
-    "reason": "删除冗余过渡语，让句尾条件分布随正文行内排版"
+    "to": " 构造可训练的生成过程",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "uae06d8ba": {
     "from": " 𝑫𝒊𝒇𝒇𝒖𝒔𝒊𝒐𝒏 𝒎𝒐𝒅𝒆𝒍𝒔 𝒂𝒏𝒅 𝒅𝒆𝒏𝒐𝒊𝒔𝒊𝒏𝒈 𝒂𝒖𝒕𝒐𝒆𝒏𝒄𝒐𝒅𝒆𝒓𝒔",
@@ -202,7 +203,8 @@
   "u0cf72514": {
     "from": "的去噪估计：",
     "to": "的去噪估计",
-    "reason": "统一段落末尾标点样式"
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "u079dbec2": {
     "from": "：",
@@ -262,10 +264,10 @@
       {
         "math": "0\\leq\\sigma_t^2\\leq1-\\alpha_{t-1}"
       },
-      "，使条件均值中的根号有定义。具体而言，该族推断分布定义为"
+      "，使条件均值中的根号有定义。联合推断分布定义为"
     ],
-    "reason": "补充 DDIM 非马尔可夫转移的可行方差范围",
-    "reference": "https://arxiv.org/abs/2010.02502"
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
   },
   "uda6710a2": {
     "from": "用于预测在时刻",
@@ -438,5 +440,349 @@
     "from": "因此作者取",
     "to": "选取权重",
     "reason": "衔接损失量级平衡与权重选择"
+  },
+  "ubf1a4e67": {
+    "from": " 由于生成模型旨在逼近推断过程的逆过程，为减少生成模型在采样时所需的迭代次数，有必要重新思考推断过程的构造方式",
+    "to": "为减少采样所需的迭代次数，DDIM 从推断过程的构造入手，进而定义相应的逆向生成过程",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u1e451310": {
+    "from": "DDIM 的理论基础在于如下关键事实：",
+    "to": "",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u386ccd03": {
+    "from": "。由于存在多种具有相同边缘分布的联合推断过程，论文得以将原有马尔可夫扩散过程推广为非马尔可夫形式",
+    "to": "。具有相同边缘分布的联合推断分布并不唯一，因此可以将马尔可夫推断过程推广为非马尔可夫形式",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u96bfc4e2": {
+    "from": "，并在保持训练目标",
+    "to": "，并继续使用相同形式的去噪目标",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "ud3f75f07": {
+    "from": "不变的前提下，构造出新的逆向生成过程",
+    "to": "",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u85f876c9": {
+    "from": " 作者进一步构造一族由参数向量",
+    "to": " 考虑一族由参数向量",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "ub1e5623e": {
+    "from": "索引的推断分布",
+    "to": "索引的推断分布",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u2a36e64d": {
+    "from": "用于在保持各时刻边缘分布不变的前提下，将原有的马尔可夫推断过程推广为更一般的非马尔可夫形式",
+    "to": "用于构造具有相同边缘分布的非马尔可夫推断过程",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u54fc91c1": {
+    "from": "其中终点分布满足",
+    "to": "其中，终点分布为",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "uee1f578a": {
+    "from": "均值函数经过专门设计，对任意时间步",
+    "to": "上述均值的选择保证，对任意时间步",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u8a7adf97": {
+    "from": "，该推断过程始终满足与原扩散过程一致的边缘分布",
+    "to": "，该过程都具有与 DDPM 相同的边缘分布",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u99ac2d1d": {
+    "from": " 由 Bayes 公式可进一步导出对应的前向过程仍为高斯分布。但与 DDPM 中的马尔可夫扩散过程不同，这里的前向过程一般依赖于",
+    "to": " 根据 Bayes 公式，可得对应的前向条件分布，它仍为高斯分布。与 DDPM 不同，该分布一般同时依赖",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u5714448e": {
+    "from": "，因而具有非马尔可夫性。参数",
+    "to": "，因此前向过程一般不满足马尔可夫性。参数",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u5b044016": {
+    "from": "用于控制过程的随机程度；",
+    "to": "控制过程的随机程度；",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u76cfd898": {
+    "from": "特别地，当",
+    "to": "当",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u659b0111": {
+    "from": "时，前向过程将趋于确定性",
+    "to": [
+      "时，给定 ",
+      {
+        "math": "x_0"
+      },
+      " 和 ",
+      {
+        "math": "x_t"
+      },
+      " 后，",
+      {
+        "math": "x_{t-1}"
+      },
+      " 趋于确定"
+    ],
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u816c8cb1": {
+    "from": "，其中每一步条件分布",
+    "to": "，使每一步转移分布",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u491e40e8": {
+    "from": "的构造都利用已知的逆条件分布",
+    "to": "利用已知的逆条件分布",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "ub4424b5f": {
+    "from": " 由前向扩散过程可知，给定",
+    "to": " 给定",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u7d680161": {
+    "from": "及高斯噪声",
+    "to": "和高斯噪声",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u93bc298d": {
+    "from": "据此，模型",
+    "to": "模型",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u6d41fb0f": {
+    "from": "在不显式利用",
+    "to": "在未知",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u8508dad0": {
+    "from": "的情况下，仅通过",
+    "to": "的情况下，仅根据",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u60db1181": {
+    "from": "对噪声项",
+    "to": "预测噪声",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "uee4f78ee": {
+    "from": "进行估计。进一步地，对上述关系进行重排，可得到对原始样本",
+    "to": "。重排上述关系，即得原始样本",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u6bcb8a87": {
+    "from": " 进一步地，在获得对干净样本",
+    "to": " 将逆条件分布中的",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u61a73f39": {
+    "from": "的估计之后，便可以据此构造对应的反向生成过程。其基本思想是：从终点的标准高斯先验",
+    "to": "替换为上述估计，即可构造反向生成过程。从标准高斯先验采样",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u7836a639": {
+    "from": "出发，沿时间步逐步执行反向采样，并在每一步利用模型给出的去噪估计",
+    "to": "后，每一步将",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "ufd01afed": {
+    "from": "来近似刻画从",
+    "to": "代入逆条件分布，得到从",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u57e86843": {
+    "from": "的条件分布。在",
+    "to": "的转移核。在",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u1d72cfca": {
+    "from": "时额外加入一个协方差为",
+    "to": "时加入协方差为",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u3109bd3f": {
+    "from": "的高斯扰动，其作用是保证生成过程在整个空间上都具有良好的支撑。且其逐步反向转移分布为",
+    "to": "的非退化高斯噪声，以保证生成分布具有全空间支撑。逐步转移分布为",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "ue7481687": {
+    "from": " 在给定生成模型的定义之后，模型参数的学习可被表述为一个标准的变分推断问题。通过最小化模型生成路径与真实扩散路径之间的差异，使反向生成过程尽可能逼近真实的逆扩散过程。尽管从形式上看，不同的",
+    "to": " 模型参数通过最小化负变分下界进行学习。不同的",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "ubf069248": {
+    "from": "会诱导出不同的目标函数",
+    "to": "对应不同的变分目标",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u60bfcbd2": {
+    "from": "，但作者进一步证明，该目标实际上可等价转化为某种加权形式的训练损失",
+    "to": [
+      "，其与加权去噪损失 ",
+      {
+        "math": "L_\\gamma"
+      },
+      " 的关系如下"
+    ],
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "ua306f502": {
+    "from": "Theorem 1.   对任意",
+    "to": "Theorem 1. 对任意",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "ubbcf7605": {
+    "from": "，都存在某个权重向量",
+    "to": "，都存在权重向量",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u4f1b58d8": {
+    "from": "以及常数",
+    "to": "及与模型参数无关的常数",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u61830fee": {
+    "from": "这一定理表明，变分目标",
+    "to": "因此，最小化",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u34607e66": {
+    "from": "本质上可以写成某个加权损失",
+    "to": "等价于最小化相应的",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "uffa41e6a": {
+    "from": "与一个常数项之和。由于常数项不影响优化过程，因此从优化角度来看，最小化",
+    "to": "",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u8deffadd": {
+    "from": "与最小化相应的",
+    "to": "",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "uac2b7804": {
+    "from": "是等价的",
+    "to": "",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "udded1611": {
+    "from": "进一步地，变分目标",
+    "to": "对于",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u0975f893": {
+    "from": "具有一个特殊性质：如果模型",
+    "to": "，若模型",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u07d168e2": {
+    "from": "，那么",
+    "to": "，则",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "udf862164": {
+    "from": "的最优解将不依赖于权重",
+    "to": "的最优解不依赖于正权重",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u256d4478": {
+    "from": "。这是因为，此时全局最优可以通过分别优化求和中的每一项来实现，因此各项前的权重并不会改变最终的最优解",
+    "to": "，因为各时间步的损失可以独立优化，而正权重不会改变各项的最优解",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u8af014cd": {
+    "from": "这一性质带来两点重要推论。一方面，它解释为什么在 DDPM 中可以使用",
+    "to": "在这一不共享参数的前提下，DDPM 使用的",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u4f452df3": {
+    "from": "作为变分下界的替代目标函数；另一方面，由于根据定理 1，",
+    "to": "既可作为原变分目标的代理目标，也可用于优化",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u46774704": {
+    "from": "与某个",
+    "to": "：由其与",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u9662b8da": {
+    "from": "是等价的，因此",
+    "to": "的等价关系可知，",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u6c1d9445": {
+    "from": "的最优解也与",
+    "to": "与",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
+  },
+  "u6d67522e": {
+    "from": "的最优解一致。由此可知，当模型",
+    "to": "具有相同的最优解",
+    "reason": "精简 DDIM 第 3 节的重复表述，保留原有公式并明确等价关系的条件",
+    "reference": "https://openreview.net/forum?id=St1giarCHLP"
   }
 }

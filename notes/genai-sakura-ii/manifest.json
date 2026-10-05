@@ -6,8 +6,10 @@
   },
   "title": "Generative Models III",
   "sectionRemovals": [{"from": "RLaWy", "before": "FS16t"}],
-  "mathRemovals": ["KxsoF", "J8M0r"],
+  "mathRemovals": ["KxsoF", "J8M0r", "ZsHWZ", "ffdeu", "bzv4V"],
   "blockRemovals": [
+    { "tag": "li", "id": "u2d4c56a5" },
+    { "tag": "li", "id": "ude8e9450", "trimFrom": "ud4b5fa6a" },
     { "tag": "p", "id": "ude24ee84" },
     { "tag": "li", "id": "uc04f2f29" },
     { "tag": "p", "id": "u4876e3fe" },
