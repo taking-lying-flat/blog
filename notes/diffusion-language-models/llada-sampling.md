@@ -10,20 +10,20 @@ The paper's floor schedule is retained; this is not a literal code transcription
 
 ```math
 \begin{array}{r l}
-&\textbf{Require:}\ p_\theta,\ \text{prompt }p_0,\ \text{answer length }L,\ \text{sampling steps }N\\
-1:&r_1\gets[\mathrm M,\ldots,\mathrm M]\quad\text{(length }L\text{)}\\
-2:&\textbf{for }t\gets 1\textbf{ down to }1/N\textbf{ step }1/N\textbf{ do}\\
-3:&\quad s\gets t-1/N\\
-4:&\quad r_0\gets\arg\max_{r_0}p_\theta(r_0\mid p_0,r_t)\\
-5:&\quad\textbf{for }i\gets 1\textbf{ to }L\textbf{ do}\\
-6:&\qquad\textbf{if }r_t^i\ne\mathrm M\textbf{ then}\\
-7:&\qquad\quad r_0^i\gets r_t^i\\
-8:&\qquad\textbf{else}\\
-9:&\qquad\quad\text{With probability }s/t,\text{ set }r_0^i\gets\mathrm M\\
-10:&\qquad\textbf{end if}\\
-11:&\quad\textbf{end for}\\
-12:&\quad r_s\gets r_0\\
-13:&\textbf{end for}\\
+&\textbf{Require:}\ p_\theta,\ \text{prompt }p_0,\ \text{answer length }L,\ \text{sampling steps }N\\[-0.25em]
+1:&r_1\gets[\mathrm M,\ldots,\mathrm M]\quad\text{(length }L\text{)}\\[-0.25em]
+2:&\textbf{for }t\gets 1\textbf{ down to }1/N\textbf{ step }1/N\textbf{ do}\\[-0.25em]
+3:&\quad s\gets t-1/N\\[-0.25em]
+4:&\quad r_0\gets\arg\max_{r_0}p_\theta(r_0\mid p_0,r_t)\\[-0.25em]
+5:&\quad\textbf{for }i\gets 1\textbf{ to }L\textbf{ do}\\[-0.25em]
+6:&\qquad\textbf{if }r_t^i\ne\mathrm M\textbf{ then}\\[-0.25em]
+7:&\qquad\quad r_0^i\gets r_t^i\\[-0.25em]
+8:&\qquad\textbf{else}\\[-0.25em]
+9:&\qquad\quad\text{With probability }s/t,\text{ set }r_0^i\gets\mathrm M\\[-0.25em]
+10:&\qquad\textbf{end if}\\[-0.25em]
+11:&\quad\textbf{end for}\\[-0.25em]
+12:&\quad r_s\gets r_0\\[-0.25em]
+13:&\textbf{end for}\\[-0.25em]
 14:&\textbf{return }r_0
 \end{array}
 ```
@@ -40,26 +40,26 @@ The paper's floor schedule is retained; this is not a literal code transcription
 
 ```math
 \begin{array}{r l}
-&\textbf{Require:}\ p_\theta,\ \text{prompt }p_0,\ \text{answer length }L,\ \text{sampling steps }N\\
-1:&r_1\gets[\mathrm M,\ldots,\mathrm M]\quad\text{(length }L\text{)}\\
-2:&\textbf{for }t\gets 1\textbf{ down to }1/N\textbf{ step }1/N\textbf{ do}\\
-3:&\quad s\gets t-1/N\\
-4:&\quad\textbf{for }i\gets 1\textbf{ to }L\textbf{ do}\\
-5:&\qquad\textbf{if }r_t^i\ne\mathrm M\textbf{ then}\\
-6:&\qquad\quad r_0^i\gets r_t^i,\quad c^i\gets 1\\
-7:&\qquad\textbf{else}\\
-8:&\qquad\quad r_0^i\gets\arg\max_{r_0^i}p_\theta(r_0^i\mid p_0,r_t)\\
-9:&\qquad\quad c^i\gets p_\theta(r_0^i\mid p_0,r_t)\\
-10:&\qquad\textbf{end if}\\
-11:&\quad\textbf{end for}\\
-12:&\quad n_{\mathrm{un}}\gets\lfloor L(1-s)\rfloor\\
-13:&\quad\textbf{for }i\gets 1\textbf{ to }L\textbf{ do}\\
-14:&\qquad\textbf{if }i\in\operatorname{Lowest}_{L-n_{\mathrm{un}}}\!\left(\{(j,c^j):r_t^j=\mathrm M\}\right)\textbf{ then}\\
-15:&\qquad\quad r_0^i\gets\mathrm M\\
-16:&\qquad\textbf{end if}\\
-17:&\quad\textbf{end for}\\
-18:&\quad r_s\gets r_0\\
-19:&\textbf{end for}\\
+&\textbf{Require:}\ p_\theta,\ \text{prompt }p_0,\ \text{answer length }L,\ \text{sampling steps }N\\[-0.25em]
+1:&r_1\gets[\mathrm M,\ldots,\mathrm M]\quad\text{(length }L\text{)}\\[-0.25em]
+2:&\textbf{for }t\gets 1\textbf{ down to }1/N\textbf{ step }1/N\textbf{ do}\\[-0.25em]
+3:&\quad s\gets t-1/N\\[-0.25em]
+4:&\quad\textbf{for }i\gets 1\textbf{ to }L\textbf{ do}\\[-0.25em]
+5:&\qquad\textbf{if }r_t^i\ne\mathrm M\textbf{ then}\\[-0.25em]
+6:&\qquad\quad r_0^i\gets r_t^i,\quad c^i\gets 1\\[-0.25em]
+7:&\qquad\textbf{else}\\[-0.25em]
+8:&\qquad\quad r_0^i\gets\arg\max_{r_0^i}p_\theta(r_0^i\mid p_0,r_t)\\[-0.25em]
+9:&\qquad\quad c^i\gets p_\theta(r_0^i\mid p_0,r_t)\\[-0.25em]
+10:&\qquad\textbf{end if}\\[-0.25em]
+11:&\quad\textbf{end for}\\[-0.25em]
+12:&\quad n_{\mathrm{un}}\gets\lfloor L(1-s)\rfloor\\[-0.25em]
+13:&\quad\textbf{for }i\gets 1\textbf{ to }L\textbf{ do}\\[-0.25em]
+14:&\qquad\textbf{if }i\in\operatorname{Lowest}_{L-n_{\mathrm{un}}}\!\left(\{(j,c^j):r_t^j=\mathrm M\}\right)\textbf{ then}\\[-0.25em]
+15:&\qquad\quad r_0^i\gets\mathrm M\\[-0.25em]
+16:&\qquad\textbf{end if}\\[-0.25em]
+17:&\quad\textbf{end for}\\[-0.25em]
+18:&\quad r_s\gets r_0\\[-0.25em]
+19:&\textbf{end for}\\[-0.25em]
 20:&\textbf{return }r_0
 \end{array}
 ```

@@ -323,18 +323,18 @@
 [data-post="diffusion-language-models"] .lake-document h2 { margin-block: 24px 12px; }
 [data-post="diffusion-language-models"] .lake-document > :first-child { margin-top: 0; }
 [data-post="diffusion-language-models"] .llada-algorithm {
-  margin: 18px 0;
-  padding: 0 12px 8px;
+  margin: 12px 0;
+  padding: 0 12px 6px;
   border-block: 1px solid #929292;
   white-space: normal;
 }
 [data-post="diffusion-language-models"] .llada-algorithm figcaption {
-  padding: 8px 0;
+  padding: 5px 0;
   border-bottom: 1px solid #c7c7c7;
   font-family: var(--article-serif);
   font-size: 16px;
 }
-[data-post="diffusion-language-models"] .llada-algorithm .equation { margin: 10px 0 0; }
+[data-post="diffusion-language-models"] .llada-algorithm .equation { margin: 6px 0 0; }
 [data-post="diffusion-language-models"] .llada-algorithm .equation mjx-container[display="true"] {
   min-width: 0;
   text-align: left;

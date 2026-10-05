@@ -5,14 +5,14 @@
 
 ```math
 \begin{array}{r l}
-&\textbf{Require:}\ \text{mask predictor }p_\theta,\ \text{pair data distribution }p_{\mathrm{data}}\\
-1:&\textbf{repeat}\\
-2:&\quad(p_0,r_0)\sim p_{\mathrm{data}}\\
-3:&\quad t\sim U(0,1]\\
-4:&\quad r_t\sim q_{t\mid 0}(r_t\mid r_0)\\
-5:&\quad\displaystyle\mathcal L\gets-\frac{1}{tL'}\sum_{i=1}^{L'}\mathbf 1[r_t^i=\mathrm M]\log p_\theta(r_0^i\mid p_0,r_t)\\
-6:&\quad\text{Calculate }\nabla_\theta\mathcal L\text{ and run optimizer}\\
-7:&\textbf{until }\text{converged}\\
+&\textbf{Require:}\ \text{mask predictor }p_\theta,\ \text{pair data distribution }p_{\mathrm{data}}\\[-0.25em]
+1:&\textbf{repeat}\\[-0.25em]
+2:&\quad(p_0,r_0)\sim p_{\mathrm{data}}\\[-0.25em]
+3:&\quad t\sim U(0,1]\\[-0.25em]
+4:&\quad r_t\sim q_{t\mid 0}(r_t\mid r_0)\\[-0.25em]
+5:&\quad\displaystyle\mathcal L\gets-\frac{1}{tL'}\sum_{i=1}^{L'}\mathbf 1[r_t^i=\mathrm M]\log p_\theta(r_0^i\mid p_0,r_t)\\[-0.25em]
+6:&\quad\text{Calculate }\nabla_\theta\mathcal L\text{ and run optimizer}\\[-0.25em]
+7:&\textbf{until }\text{converged}\\[-0.25em]
 8:&\textbf{return }p_\theta
 \end{array}
 ```
