@@ -5,5 +5,10 @@
     "before": "sMidY",
     "beforeTag": "h2",
     "file": "sampling.md"
+  },
+  {
+    "id": "ddim-proof-conclusion",
+    "start": "ubde5a813",
+    "file": "proof-conclusion.md"
   }
 ]
