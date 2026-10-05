@@ -10,7 +10,8 @@
     { "from": "ua8e13424", "until": "u9570be46", "before": "WRjcF" }
   ],
   "paragraphJoins": [
-    { "into": "uada3f50c", "next": "u9da16c0f", "separator": "。" }
+    { "into": "uada3f50c", "next": "u9da16c0f", "separator": "。" },
+    { "into": "u8bf53617", "next": "u01e1fdbb", "separator": "。" }
   ],
   "blockRemovals": [
     { "tag": "p", "id": "uc510a26c" },
