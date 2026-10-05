@@ -410,6 +410,24 @@
   text-align: left;
 }
 
+/* Original normalizing-flow, Neural ODE and FFJORD algorithms. */
+[data-post="genai-flow-i"] .flow-algorithm {
+  margin: 16px 0;
+  padding: 0 8px 8px;
+  border-block: 1px solid #929292;
+  white-space: normal;
+}
+[data-post="genai-flow-i"] .flow-algorithm figcaption {
+  padding: 6px 0;
+  border-bottom: 1px solid #c7c7c7;
+  font: 16px/1.5 var(--article-serif);
+}
+[data-post="genai-flow-i"] .flow-algorithm .equation { margin: 6px 0 0; }
+[data-post="genai-flow-i"] .flow-algorithm .equation mjx-container[display="true"] {
+  min-width: 0;
+  text-align: left;
+}
+
 /* DDPM: training and sampling side by side, transcribed from Algorithms 1–2. */
 [data-post="genai-sakura-ii"] .ddpm-algorithms {
   display: grid;
