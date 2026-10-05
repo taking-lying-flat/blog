@@ -45,14 +45,6 @@
     {
       "tag": "p",
       "id": "u39d3d46e"
-    },
-    {
-      "tag": "p",
-      "id": "u5e5b718e"
-    },
-    {
-      "tag": "p",
-      "id": "u586c23b4"
     }
   ],
   "separatorRemovals": [
@@ -63,7 +55,11 @@
     "ua54b0c44",
     "u67dc5627",
     "u98bda7ac",
-    "u181b3839"
+    "u181b3839",
+    "u02de2558",
+    "u9c595009",
+    "uf52208f3",
+    "ua99bb348"
   ],
   "paragraphSplits": [
     {
@@ -97,11 +93,6 @@
     {
       "into": "u7afa5e46",
       "next": "ud9b00355",
-      "separator": "。"
-    },
-    {
-      "into": "uc5b1124a",
-      "next": "u940c4a9d",
       "separator": "。"
     }
   ],
