@@ -37,13 +37,25 @@
     {
       "tag": "p",
       "id": "sde-smld-convergence"
+    },
+    {
+      "tag": "p",
+      "id": "ue2f29d3b"
+    },
+    {
+      "tag": "p",
+      "id": "u39d3d46e"
     }
   ],
   "separatorRemovals": [
     "UKXYz"
   ],
   "paragraphListItems": [
-    "u42176bdc"
+    "u42176bdc",
+    "ua54b0c44",
+    "u67dc5627",
+    "u98bda7ac",
+    "u181b3839"
   ],
   "paragraphSplits": [
     {
@@ -78,14 +90,6 @@
       "into": "u7afa5e46",
       "next": "ud9b00355",
       "separator": "。"
-    },
-    {
-      "into": "u42b3be2a",
-      "next": "ue3f311be"
-    },
-    {
-      "into": "u42b3be2a",
-      "next": "ue2f29d3b"
     }
   ],
   "metadata": {
