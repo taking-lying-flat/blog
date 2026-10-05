@@ -379,11 +379,21 @@
         "ue40135e7",
         "ueba28bad",
         "u52e2bde5",
-        "uc4370558",
-        "u7a7f19ec",
-        "u57ee316c",
-        "uad41eccb",
-        "u36184568",
+        {
+          "math": "\\mathcal{L}_{\\mathrm{FM}}(\\theta)=\\mathbb{E}_{t,\\,p_t(x)}\\|v_t(x)-u_t(x)\\|^2"
+        },
+        {
+          "math": "p_t(x)=\\int p_t(x\\mid x_1)q(x_1)\\,dx_1"
+        },
+        {
+          "math": "p_1(x)=\\int p_1(x\\mid x_1)q(x_1)\\,dx_1 \\approx q(x)."
+        },
+        {
+          "math": "u_t(x)=\\int u_t(x\\mid x_1)\\frac{p_t(x\\mid x_1)q(x_1)}{p_t(x)}\\,dx_1"
+        },
+        {
+          "math": "\\mathcal{L}_{\\mathrm{CFM}}(\\theta) = \\mathbb{E}_{t,\\;q(x_1),\\;p_t(x\\mid x_1)} \\left\\|v_t(x)-u_t(x\\mid x_1)\\right\\|^2"
+        },
         "ub034e248",
         "ua95401fa",
         "uff3beb55",
