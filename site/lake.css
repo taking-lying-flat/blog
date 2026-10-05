@@ -121,8 +121,9 @@
 [data-post="genai-sakura-ii"] .lake-document :is(
   [data-card-id="hmeD6"], [data-card-id="Ib4aA"]
 ),
+[data-post="genai-sakura-iii"] .lake-document [data-card-id="wrW0B"],
 [data-post="genai-sakura-iv"] .lake-document :is(
-  [data-card-id="wrW0B"], [data-card-id="htod0"]
+  [data-card-id="htod0"]
 ) {
   display: block;
   width: max-content;
@@ -640,4 +641,4 @@
 [data-post="genai-sakura-iv"] .lake-document h2 { margin-block: 24px 12px; }
 [data-post="genai-sakura-iv"] .lake-document > :first-child { margin-top: 0; }
 [data-post="genai-sakura-iv"] .lake-document .lake-image { display: block; margin: 12px auto; height: auto; }
-[data-post="genai-sakura-iv"] #ubf506b44 .lake-image { width: min(100%, 900px) !important; }
+[data-post="genai-sakura-iii"] #ubf506b44 .lake-image { width: min(100%, 900px) !important; }

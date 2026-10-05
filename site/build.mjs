@@ -63,6 +63,8 @@ function groupBySeries(categoryPosts) {
 }
 const readingOrder = categories.flatMap(({ id }) =>
   groupBySeries(posts.filter(post => post.category === id)));
+const categoryReadingOrders = new Map(categories.map(({ id }) =>
+  [id, readingOrder.filter(post => post.category === id)]));
 const codeCaptions = JSON.parse(await readFile(path.join(root, 'code-captions.json'), 'utf8'));
 // Render article headings as written; code captions belong to the code block.
 // Repository-authored HTML tables are rendered alongside Markdown.
@@ -798,9 +800,13 @@ await mkdir(path.join(output, 'archives'), { recursive: true });
 await mkdir(path.join(output, 'assets'), { recursive: true });
 await writeFile(path.join(output, 'index.html'), home);
 await writeFile(path.join(output, 'archives/index.html'), archives);
-for (const [index, post] of readingOrder.entries()) {
-  const previous = readingOrder[index - 1];
-  const next = readingOrder[index + 1];
+for (const post of readingOrder) {
+  const categoryPosts = categoryReadingOrders.get(post.category);
+  const index = categoryPosts.indexOf(post);
+  const previous = categoryPosts.length > 1
+    ? categoryPosts[(index - 1 + categoryPosts.length) % categoryPosts.length] : undefined;
+  const next = categoryPosts.length > 1
+    ? categoryPosts[(index + 1) % categoryPosts.length] : undefined;
   const toc = renderPaperToc(post);
   const article = page({
     title: `${post.title} · Blog`, description: post.description, route: post.route, type: 'article', pageClass: 'post-page', hasToc: Boolean(toc),
@@ -813,10 +819,10 @@ for (const [index, post] of readingOrder.entries()) {
       <footer class="post-footer">
         <div class="post-topics" aria-label="文章主题">${post.tags.map((tag) => `<span>${escape(tag)}</span>`).join('')}</div>
         <div class="post-actions"><a href="#top">返回顶部 ↑</a></div>
-        <nav class="post-pagination" aria-label="文章翻页">
+        ${previous || next ? `<nav class="post-pagination" aria-label="同类文章翻页">
           ${previous ? `<a href="../${previous.slug}/"><span>← 上一篇</span>${escape(previous.title)}</a>` : ''}
           ${next ? `<a class="post-next" href="../${next.slug}/"><span>下一篇 →</span>${escape(next.title)}</a>` : ''}
-        </nav>
+        </nav>` : ''}
         <a class="back-link" href="../../">← 全部文章</a>
       </footer>
     </article>${toc}`,

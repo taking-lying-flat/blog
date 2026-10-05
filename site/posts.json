@@ -5,11 +5,12 @@
     "removeEmptyParagraphs": true,
     "tocDepth": 2,
     "slug": "genai-sakura-iv",
+    "moveSections": [{"heading": "KxUOB", "to": "genai-sakura-iii"}],
     "series": "generative-models",
-    "seriesOrder": 5,
+    "seriesOrder": 6,
     "category": "generative",
     "date": "2026-10-05",
-    "description": "生成模型笔记：Consistency Models 的概率流、一致性蒸馏与独立训练，以及 Flow-GRPO 的在线强化学习、ODE-to-SDE 转换和 KL 正则化",
+    "description": "生成模型笔记：Flow-GRPO 的在线强化学习、ODE-to-SDE 转换、KL 正则化与附录证明",
     "appendMarkdown": [
       {
         "file": "cm-parameterization.md",
@@ -38,10 +39,7 @@
       },
       "flow-grpo-stochastic-sampling-proof.md"
     ],
-    "tags": [
-      "Consistency Models",
-      "Flow-GRPO"
-    ]
+    "tags": ["Flow-GRPO"]
   },
   {
     "file": "../notes/diffusion-language-models/source.lake",
@@ -353,7 +351,7 @@
     "tocDepth": 2,
     "slug": "genai-flow-ii",
     "series": "generative-models",
-    "seriesOrder": 6,
+    "seriesOrder": 5,
     "category": "generative",
     "date": "2026-09-24",
     "description": "生成模型笔记：Rectified Flow、Flow Matching 与 Stable Diffusion 3。",
@@ -489,11 +487,8 @@
     "seriesOrder": 4,
     "category": "generative",
     "date": "2026-09-23",
-    "description": "生成模型笔记：EDM 与 DPM-Solver。",
-    "tags": [
-      "EDM",
-      "DPM-Solver"
-    ],
+    "description": "生成模型笔记：EDM、DPM-Solver 与 Consistency Models 的一致性蒸馏及独立训练。",
+    "tags": ["EDM", "DPM-Solver", "Consistency Models"],
     "appendMarkdown": [
       {"file": "sde-examples-heading.md", "before": "ucd7e3920", "tag": "p"},
       {"file": "edm-heun-algorithm.md", "before": "u41879e58", "tag": "p"},
