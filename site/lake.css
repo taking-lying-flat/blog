@@ -118,7 +118,6 @@
   font: 400 16px/1.4 var(--article-serif);
 }
 /* These trailing formulas already occupy a separate line in the desktop notes. */
-[data-post="genai-sakura-ii"] .lake-document [data-card-id="IUyp4"],
 [data-post="genai-sakura-ii"] .lake-document :is(
   [data-card-id="hmeD6"], [data-card-id="Ib4aA"]
 ),
@@ -135,10 +134,6 @@
   width: max-content;
   max-width: 100%;
   margin-inline: auto;
-}
-/* Give the promoted formulas their own space above and below. */
-[data-post="genai-sakura-ii"] .lake-document [data-card-id="IUyp4"] {
-  margin-block: 12px;
 }
 /* Keep the additional generative assumption within the preceding explanation. */
 [data-post="genai-sakura-i"] .lake-document #uff7263e8 { margin-left: 2em; }

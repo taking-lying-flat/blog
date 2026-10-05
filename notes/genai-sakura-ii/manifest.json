@@ -8,6 +8,8 @@
   "sectionRemovals": [{"from": "smbwP", "before": "FS16t"}],
   "mathRemovals": ["KxsoF"],
   "blockRemovals": [
+    { "tag": "p", "id": "u4876e3fe" },
+    { "tag": "li", "id": "u2acc2ae8" },
     { "tag": "blockquote", "id": "uc77bd207" },
     { "tag": "p", "id": "u52b46207" },
     { "tag": "p", "id": "uffa31900" },

@@ -1,4 +1,29 @@
 {
+  "uc9e6efe0": {
+    "from": " 在此基础上，进一步定义一个可训练的生成过程",
+    "to": " 进一步定义一个可训练的生成过程",
+    "reason": "删除冗余过渡语，让句尾条件分布随正文行内排版"
+  },
+  "uae06d8ba": {
+    "from": " 𝑫𝒊𝒇𝒇𝒖𝒔𝒊𝒐𝒏 𝒎𝒐𝒅𝒆𝒍𝒔 𝒂𝒏𝒅 𝒅𝒆𝒏𝒐𝒊𝒔𝒊𝒏𝒈 𝒂𝒖𝒕𝒐𝒆𝒏𝒄𝒐𝒅𝒆𝒓𝒔",
+    "to": " Diffusion Models And Denoising Autoencoders",
+    "reason": "对齐小标题的单词首字母大写格式"
+  },
+  "ued8d6159": {
+    "from": " 𝑩𝑨𝑪𝑲𝑮𝑹𝑶𝑼𝑵𝑫",
+    "to": " Background",
+    "reason": "对齐小标题的单词首字母大写格式"
+  },
+  "u0063799a": {
+    "from": " 𝑽𝑨𝑹𝑰𝑨𝑻𝑰𝑶𝑵𝑨𝑳 𝑰𝑵𝑭𝑬𝑹𝑬𝑵𝑪𝑬 𝑭𝑶𝑹 𝑵𝑶𝑵-𝑴𝑨𝑹𝑲𝑶𝑽𝑰𝑨𝑵 𝑭𝑶𝑹𝑾𝑨𝑹𝑫 𝑷𝑹𝑶𝑪𝑬𝑺𝑺𝑬𝑺",
+    "to": " Variational Inference For Non-Markovian Forward Processes",
+    "reason": "对齐小标题的单词首字母大写格式"
+  },
+  "u534bd401": {
+    "from": " 𝑺𝑨𝑴𝑷𝑳𝑰𝑵𝑮 𝑭𝑹𝑶𝑴 𝑮𝑬𝑵𝑬𝑹𝑨𝑳𝑰𝒁𝑬𝑫 𝑮𝑬𝑵𝑬𝑹𝑨𝑻𝑰𝑽𝑬 𝑷𝑹𝑶𝑪𝑬𝑺𝑺𝑬𝑺",
+    "to": " Sampling From Generalized Generative Processes",
+    "reason": "对齐小标题的单词首字母大写格式"
+  },
   "ue6c7d0f9": {
     "from": "证明：若假设对于任意",
     "to": "证明：对某个",

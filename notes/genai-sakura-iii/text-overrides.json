@@ -1,4 +1,24 @@
 {
+  "ud0ccccb2": {
+    "from": " 𝑩𝑨𝑪𝑲𝑮𝑹𝑶𝑼𝑵𝑫",
+    "to": " Background",
+    "reason": "对齐迁移至第三篇的 Score-SDE 小标题格式"
+  },
+  "u6e02d9f5": {
+    "from": " 𝑺𝑪𝑶𝑹𝑬-𝑩𝑨𝑺𝑬𝑫 𝑮𝑬𝑵𝑬𝑹𝑨𝑻𝑰𝑽𝑬 𝑴𝑶𝑫𝑬𝑳𝑰𝑵𝑮 𝑾𝑰𝑻𝑯 𝑺𝑫𝑬𝑺",
+    "to": " Score-Based Generative Modeling With SDEs",
+    "reason": "对齐小标题的单词首字母大写格式并保留 SDE 缩写"
+  },
+  "ua843ea46": {
+    "from": " 𝑺𝑶𝑳𝑽𝑰𝑵𝑮 𝑻𝑯𝑬 𝑹𝑬𝑽𝑬𝑹𝑺𝑬 𝑺𝑫𝑬",
+    "to": " Solving The Reverse SDE",
+    "reason": "对齐小标题的单词首字母大写格式并保留 SDE 缩写"
+  },
+  "u37953c33": {
+    "from": " 𝑺𝑫𝑬𝒔 𝑰𝑵 𝑻𝑯𝑬 𝑾𝑰𝑳𝑫",
+    "to": " SDEs In The Wild",
+    "reason": "对齐小标题的单词首字母大写格式并保留 SDE 缩写"
+  },
   "u3e82b815": {
     "from": "时，若",
     "to": "时，令",
