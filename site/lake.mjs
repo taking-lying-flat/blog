@@ -332,6 +332,26 @@ export async function readLake(file, escape, renderMath) {
       content = content.replace(/<(ul|ol)\b[^>]*>\s*<\/\1>/g, '');
     }
   }
+  // Move whole ranges after rendering cards so their source order stays valid.
+  for (const { from, until, before } of manifest.blockRangeMoves ?? []) {
+    const positions = [from, until, before].map(id => {
+      if (typeof id !== 'string' || !/^[\w-]+$/.test(id)) {
+        throw new Error(`Invalid Lake block move anchor: ${id}`);
+      }
+      const pattern = new RegExp(`<(?:p|h[1-6]|ul|ol|blockquote)\\b[^>]*\\sid="${id}"[^>]*>`, 'g');
+      const matches = [...content.matchAll(pattern)];
+      if (matches.length !== 1) throw new Error(`Lake block move anchor must match once: ${id}`);
+      return matches[0].index;
+    });
+    const [start, end, target] = positions;
+    if (start >= end || (target >= start && target < end)) {
+      throw new Error(`Invalid Lake block move range: ${from}, ${until}, ${before}`);
+    }
+    const moved = content.slice(start, end);
+    content = content.slice(0, start) + content.slice(end);
+    const destination = target >= end ? target - moved.length : target;
+    content = content.slice(0, destination) + moved + content.slice(destination);
+  }
   const text = content.replace(/<[^>]*>/g, '');
   return {
     title: manifest.title,

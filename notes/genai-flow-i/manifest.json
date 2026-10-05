@@ -5,7 +5,10 @@
     "bytes": 224118
   },
   "title": "Generative Models II",
-  "paragraphListItems": ["ubf7a8c55"],
+  "paragraphListItems": ["ubf7a8c55", "u95a0f7c2", "u665d0e01"],
+  "blockRangeMoves": [
+    { "from": "ua8e13424", "until": "u9570be46", "before": "WRjcF" }
+  ],
   "paragraphJoins": [
     { "into": "uada3f50c", "next": "u9da16c0f", "separator": "。" }
   ],
