@@ -6,13 +6,13 @@
 
 **Fokker–Planck 方程将随机动力学转化为边缘密度的演化方程**
 
-考虑从数据向噪声演化的正向 SDE
+- 考虑从数据向噪声演化的正向 SDE
 
 ```math
 \mathrm dx_t=f_{\mathrm{SDE}}(x_t,t)\,\mathrm dt+\sigma_t\,\mathrm dw_t\tag{13}
 ```
 
-其 Fokker–Planck 方程与原 ODE 的连续性方程分别为
+- 其 Fokker–Planck 方程与原 ODE 的连续性方程分别为
 
 ```math
 \begin{aligned}
@@ -27,13 +27,13 @@
 \nabla^2\!\left(\sigma_t^2p_t(x)\right)=\sigma_t^2\nabla\!\cdot\!\left(p_t(x)\nabla\log p_t(x)\right)\tag{15}
 ```
 
-取下述漂移，代入式（14）后，score 对应的概率通量与扩散项恰好抵消
+- 取下述漂移，代入式（14）后，score 对应的概率通量与扩散项恰好抵消
 
 ```math
 f_{\mathrm{SDE}}(x,t)=v_t(x)+\frac{\sigma_t^2}{2}\nabla\log p_t(x)\tag{16}
 ```
 
-因此，在初始分布相同且密度演化方程解唯一时，下述正向 SDE 与原 ODE 在各时刻具有相同的边缘分布
+- 因此，在初始分布相同且密度演化方程解唯一时，下述正向 SDE 与原 ODE 在各时刻具有相同的边缘分布
 
 ```math
 \mathrm dx_t=\left[v_t(x_t)+\frac{\sigma_t^2}{2}\nabla\log p_t(x_t)\right]\mathrm dt+\sigma_t\,\mathrm dw_t\tag{17}
@@ -51,13 +51,13 @@ f_{\mathrm{SDE}}(x,t)=v_t(x)+\frac{\sigma_t^2}{2}\nabla\log p_t(x)\tag{16}
 \end{aligned}\tag{18}
 ```
 
-这就得到正文式（9）；相同边缘分布不要求两种过程具有相同的样本轨迹
+- 这就得到正文式（9）；相同边缘分布不要求两种过程具有相同的样本轨迹
 
 **高斯插值路径将不可直接计算的 score 表示为流匹配速度场的函数**
 
 - 设 $`x_0\sim\mathcal X_0`$ 与 $`x_1\sim\mathcal N(0,I)`$ 相互独立，$`x_t=\alpha_t x_0+\beta_t x_1`$，$`\dot\alpha_t`$、$`\dot\beta_t`$ 表示时间导数。这里 $`\beta_t`$ 为插值系数，与 GRPO 目标中的 KL 权重 $`\beta`$ 区分
 
-给定 $`x_0`$ 后，条件密度及其 score 为
+- 给定 $`x_0`$ 后，条件密度及其 score 为
 
 ```math
 \begin{aligned}
@@ -72,7 +72,7 @@ p_{t\mid0}(x_t\mid x_0)&=\mathcal N(x_t\mid\alpha_t x_0,\beta_t^2I)\\
 \nabla\log p_t(x_t)=\mathbb E\!\left[\nabla\log p_{t\mid0}(x_t\mid x_0)\mid x_t\right]=-\frac1{\beta_t}\mathbb E[x_1\mid x_t]\tag{20}
 ```
 
-流匹配的理想速度场是路径导数的条件期望。利用 $`x_0=(x_t-\beta_t x_1)/\alpha_t`$，在 $`\alpha_t,\beta_t>0`$ 的内部时间区间有
+- 流匹配的理想速度场是路径导数的条件期望。利用 $`x_0=(x_t-\beta_t x_1)/\alpha_t`$，在 $`\alpha_t,\beta_t>0`$ 的内部时间区间有
 
 ```math
 \begin{aligned}
@@ -83,7 +83,7 @@ v_t(x)
 \end{aligned}\tag{21}
 ```
 
-代入 Rectified Flow 的 $`\alpha_t=1-t`$、$`\beta_t=t`$，整理得到
+- 代入 Rectified Flow 的 $`\alpha_t=1-t`$、$`\beta_t=t`$，整理得到
 
 ```math
 v_t(x)=-\frac{x}{1-t}-\frac{t}{1-t}\nabla\log p_t(x)
@@ -93,7 +93,7 @@ v_t(x)=-\frac{x}{1-t}-\frac{t}{1-t}\nabla\log p_t(x)
 
 **将 score 代回逆时间 SDE，即可仅使用速度网络构造随机转移**
 
-将式（22）代入式（18），得到正文式（10）所用的生成动力学
+- 将式（22）代入式（18），得到正文式（10）所用的生成动力学
 
 ```math
 \mathrm dx_t=\left[v_t(x_t)+\frac{\sigma_t^2}{2t}\left(x_t+(1-t)v_t(x_t)\right)\right]\mathrm dt+\sigma_t\,\mathrm d\bar w_t\tag{23}
@@ -105,6 +105,6 @@ v_t(x)=-\frac{x}{1-t}-\frac{t}{1-t}\nabla\log p_t(x)
 x_{t+\Delta t}=x_t+\left[v_\theta(x_t,t)+\frac{\sigma_t^2}{2t}\left(x_t+(1-t)v_\theta(x_t,t)\right)\right]\Delta t+\sigma_t\sqrt{|\Delta t|}\,\epsilon\tag{24}
 ```
 
-给定当前状态后，式（24）为各向同性高斯转移，其均值由漂移更新确定，协方差为 $`\sigma_t^2|\Delta t|I`$，因而可直接计算 GRPO 所需的转移密度比以及正文式（12）的 KL 散度
+- 给定当前状态后，式（24）为各向同性高斯转移，其均值由漂移更新确定，协方差为 $`\sigma_t^2|\Delta t|I`$，因而可直接计算 GRPO 所需的转移密度比以及正文式（12）的 KL 散度
 
 - 上述边缘分布等价性针对精确速度场与连续时间过程；实际采样包含网络近似和时间离散化误差，$`t=0`$ 与 $`t=1`$ 的端点按正文所述调度处理

@@ -39,12 +39,8 @@
       "flow-grpo-stochastic-sampling-proof.md"
     ],
     "tags": [
-      "生成模型",
       "Consistency Models",
-      "一致性蒸馏",
-      "Flow-GRPO",
-      "Flow Matching",
-      "GRPO"
+      "Flow-GRPO"
     ]
   },
   {
@@ -361,7 +357,7 @@
     "category": "generative",
     "date": "2026-09-24",
     "description": "生成模型笔记：Rectified Flow、Flow Matching 与 Stable Diffusion 3。",
-    "tags": ["生成模型", "Rectified Flow", "Flow Matching"]
+    "tags": ["Rectified Flow", "Flow Matching", "Stable Diffusion 3"]
   },
   {
     "file": "../notes/genai-flow-i/source.lake",
@@ -373,7 +369,7 @@
     "category": "generative",
     "date": "2026-09-24",
     "description": "生成模型笔记：归一化流、Neural ODE、连续归一化流与 FFJORD。",
-    "tags": ["生成模型", "Normalizing Flows", "Neural ODE"]
+    "tags": ["Normalizing Flows", "Neural ODE", "FFJORD"]
   },
   {
     "file": "../notes/genai-sakura-iii/source.lake",
@@ -385,7 +381,7 @@
     "category": "generative",
     "date": "2026-09-23",
     "description": "生成模型笔记：基于 SDE 的得分生成模型、EDM 与 DPM-Solver。",
-    "tags": ["生成模型", "SDE", "扩散模型"]
+    "tags": ["Score-SDE", "EDM", "DPM-Solver"]
   },
   {
     "file": "../notes/genai-sakura-ii/source.lake",
@@ -397,7 +393,7 @@
     "category": "generative",
     "date": "2026-09-23",
     "description": "生成模型笔记：Noise Conditional Score Network、DDPM、Improved DDPM 与 DDIM。",
-    "tags": ["生成模型", "Score Matching", "扩散模型"],
+    "tags": ["NCSN", "DDPM", "Improved DDPM", "DDIM"],
     "appendMarkdown": [
       {"file": "cosine-schedule-boundary.md", "before": "u55b7b817", "tag": "p"}
     ]
@@ -412,7 +408,7 @@
     "category": "generative",
     "date": "2026-09-23",
     "description": "生成模型笔记：Auto-Encoding Variational Bayes、重参数化技巧与非平衡热力学扩散模型。",
-    "tags": ["生成模型", "VAE", "扩散模型"]
+    "tags": ["VAE (AEVB)", "Diffusion Models (2015)"]
   },
   {
     "file": "../notes/infra-quant-i/source.lake",
