@@ -5,6 +5,36 @@
     "bytes": 293679
   },
   "title": "Generative Models IV",
+  "blockRemovals": [
+    {
+      "tag": "p",
+      "id": "u1aaeebee"
+    },
+    {
+      "tag": "li",
+      "id": "u3fdf508c"
+    },
+    {
+      "tag": "li",
+      "id": "u3c38dffd"
+    },
+    {
+      "tag": "li",
+      "id": "u30996c4e"
+    },
+    {
+      "tag": "p",
+      "id": "u683a1329"
+    },
+    {
+      "tag": "p",
+      "id": "u9d09c233"
+    },
+    {
+      "tag": "p",
+      "id": "ucbcfa258"
+    }
+  ],
   "metadata": {
     "doc-version": "1",
     "viewport": "adapt",

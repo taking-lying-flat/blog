@@ -1,6 +1,6 @@
 以 $`L_1`$ 为目标训练的模型，不仅适用于 DDPM 的马尔可夫推断过程，也适用于由 $`\sigma`$ 参数化的非马尔可夫前向过程。因此，可以直接使用预训练的 DDPM 模型，通过改变 $`\sigma`$ 选择符合采样需求的生成过程
 
-**Denoising Diffusion Implicit Models：**由前文定义的生成分布 $`p_\theta(x_{0:T})`$，对 $`t>1`$，可从 $`x_t`$ 生成 $`x_{t-1}`$
+**Denoising Diffusion Implicit Models：** 由前文定义的生成分布 $`p_\theta(x_{0:T})`$，对 $`t>1`$，可从 $`x_t`$ 生成 $`x_{t-1}`$
 
 ```math
 x_{t-1} = \sqrt{\alpha_{t-1}}\underbrace{\left(\frac{x_t-\sqrt{1-\alpha_t}\,\epsilon_\theta^{(t)}(x_t)}{\sqrt{\alpha_t}}\right)}_{\text{predicted }x_0} + \underbrace{\sqrt{1-\alpha_{t-1}-\sigma_t^2}\,\epsilon_\theta^{(t)}(x_t)}_{\text{direction pointing to }x_t} + \underbrace{\sigma_t\epsilon_t}_{\text{random noise}}
@@ -22,9 +22,7 @@ x_{t-1} = \sqrt{\alpha_{t-1}}\underbrace{\left(\frac{x_t-\sqrt{1-\alpha_t}\,\eps
 
 - 与前文相同的论证表明，仍可使用以 $`L_1`$ 训练的模型，只需将采样更新中的相邻时间步改为所选轨迹中的相邻时间步。这一构造同时适用于 DDPM、DDIM 及上述其他生成过程，使训练步数与实际采样步数可以分别选择
 
-### Relevance To Neural ODEs
-
-将 DDIM 的确定性更新式重写为如下形式，可以看出它与求解常微分方程的 Euler 方法之间的关系
+**Relevance To Neural ODEs：** 将 DDIM 的确定性更新式重写为如下形式，可以看出它与求解常微分方程的 Euler 方法之间的关系
 
 ```math
 \frac{x_{t-\Delta t}}{\sqrt{\alpha_{t-\Delta t}}}=\frac{x_t}{\sqrt{\alpha_t}}+\left(\sqrt{\frac{1-\alpha_{t-\Delta t}}{\alpha_{t-\Delta t}}}-\sqrt{\frac{1-\alpha_t}{\alpha_t}}\right)\epsilon_\theta^{(t)}(x_t)

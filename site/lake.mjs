@@ -137,7 +137,7 @@ export async function readLake(file, escape, renderMath) {
     }
   }
   // Use semantic list items for indented explanations, preserving inline cards.
-  for (const id of manifest.paragraphListItems ?? []) {
+  const paragraphListItem = (id) => {
     if (typeof id !== 'string' || !/^[\w-]+$/.test(id)) {
       throw new Error(`Invalid Lake paragraph list item: ${id}`);
     }
@@ -146,7 +146,8 @@ export async function readLake(file, escape, renderMath) {
       throw new Error(`Lake paragraph list item must match once: ${id}`);
     }
     content = content.replace(pattern, '<ul><li$1>$2</li></ul>');
-  }
+  };
+  for (const id of manifest.paragraphListItems ?? []) paragraphListItem(id);
   // Join an adjacent single-item list to its paragraph, preserving inline cards.
   for (const { paragraph, listItem } of manifest.paragraphMerges ?? []) {
     if (!/^[\w-]+$/.test(paragraph) || !/^[\w-]+$/.test(listItem)) {
@@ -386,6 +387,8 @@ export async function readLake(file, escape, renderMath) {
     const destination = target >= end ? target - moved.length : target;
     content = content.slice(0, destination) + moved + content.slice(destination);
   }
+  // Split or moved paragraphs can become list items once their final position exists.
+  for (const id of manifest.paragraphListItemsAfterMoves ?? []) paragraphListItem(id);
   const text = content.replace(/<[^>]*>/g, '');
   return {
     title: manifest.title,

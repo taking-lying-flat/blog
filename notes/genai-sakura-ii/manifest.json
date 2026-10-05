@@ -11,13 +11,11 @@
   ],
   "separatorRemovals": ["Qwc5t"],
   "paragraphListItems": [
-    "u1fc4bede", "u8b7b0920", "u9c631934", "uac2d5159", "u217effc4",
+    "u1fc4bede", "ua1895c15", "u8b7b0920", "u9c631934", "uac2d5159", "u217effc4",
     "u6f07c689", "u67c6b158", "ua0fa25d5"
   ],
-  "listItemParagraphs": [
-    "u3a106068", "u8fbddd00",
-    "u39c250f2"
-  ],
+  "paragraphListItemsAfterMoves": ["ddim-forward-conditioning"],
+  "listItemParagraphs": ["u3a106068", "u8fbddd00"],
   "paragraphSplits": [
     { "paragraph": "u1fafc3b9", "before": "u99ac2d1d", "id": "ddim-forward-conditioning" },
     { "paragraph": "u1093eb6a", "before": "ue7481687", "id": "ddim-weighted-objective" }
