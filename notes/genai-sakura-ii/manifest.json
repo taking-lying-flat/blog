@@ -24,6 +24,10 @@
   ],
   "mathRemovals": ["KxsoF", "J8M0r", "ZsHWZ", "ffdeu", "bzv4V", "PWo3c", "iZYGO"],
   "blockRemovals": [
+    { "tag": "p", "id": "ucb622be3" },
+    { "tag": "li", "id": "u631a08df" },
+    { "tag": "li", "id": "uf063830b", "trimFrom": "udcc758f1" },
+    { "tag": "h2", "id": "AIuso" },
     { "tag": "li", "id": "u37117502" },
     { "tag": "p", "id": "uae36796e" },
     { "tag": "p", "id": "ub46e21f9" },

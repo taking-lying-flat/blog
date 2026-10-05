@@ -1,9 +1,9 @@
 {
   "tHfpD": {
-    "to": "\\begin{aligned}\nH(0)&=H(M)+\\int_M^0 \\epsilon_\\theta\\!\\left(\\frac{H(\\lambda)}{\\sqrt{1+\\lambda^2}},\\,t(\\lambda)\\right)\\,d\\lambda,\\\\\nH(M)&=\\sqrt{1+M^2}\\,x_T,\\qquad x_T\\sim\\mathcal N(\\mathbf 0,\\mathbf I).\n\\end{aligned}",
-    "reason": "由 λ²=(1−α)/α 及 H=x/√α 直接反解网络输入和初始状态尺度；DPM-Solver 会议版式 (4.1) 给出对应 DDIM 更新。",
+    "to": "\\begin{aligned}\n\\frac{\\boldsymbol{x}_{t-\\Delta t}}{\\sqrt{\\alpha_{t-\\Delta t}}}\n&=\\frac{\\boldsymbol{x}_t}{\\sqrt{\\alpha_t}}\n+\\left(\\sqrt{\\frac{1-\\alpha_{t-\\Delta t}}{\\alpha_{t-\\Delta t}}}\n-\\sqrt{\\frac{1-\\alpha_t}{\\alpha_t}}\\right)\n\\epsilon_\\theta^{(t)}(\\boldsymbol{x}_t),\\\\[6pt]\nd\\bar{\\boldsymbol{x}}(t)\n&=\\epsilon_\\theta^{(t)}\\!\\left(\\frac{\\bar{\\boldsymbol{x}}(t)}{\\sqrt{\\sigma(t)^2+1}}\\right)\\,d\\sigma(t),\\\\[6pt]\n&\\text{where}\\quad\n\\sigma(t)=\\sqrt{\\frac{1-\\alpha_t}{\\alpha_t}},\\qquad\n\\bar{\\boldsymbol{x}}(t)=\\frac{\\boldsymbol{x}_t}{\\sqrt{\\alpha_t}}\n\\end{aligned}",
+    "reason": "以会议版式 (13)–(14) 的 Euler 更新和微分形式展示 ODE，恢复 sigma(t) 与 bar{x}(t) 记号",
     "from": "H(0) = \\int_{M}^{0} \\epsilon_\\theta(H(\\lambda)\\sqrt{\\lambda^2 - 1})\\mathrm{d}\\lambda + H(M), \\quad H(M) \\sim \\mathcal{N}(\\mathbf{0}, \\boldsymbol{I})",
-    "reference": "https://proceedings.neurips.cc/paper_files/paper/2022/file/260a14acce2a89dad36adc8eefe7c59e-Paper-Conference.pdf#page=7"
+    "reference": "https://arxiv.org/pdf/2010.02502v3#page=6"
   },
   "TWYcx": {
     "to": "q_{\\sigma}(x_t\\mid x_0)=\\mathcal N\\!\\left(\\sqrt{\\alpha_t}x_0,(1-\\alpha_t)I\\right),",

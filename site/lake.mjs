@@ -315,7 +315,7 @@ export async function readLake(file, escape, renderMath) {
   }
   // Remove selected blocks, or their tails from an explicit inline anchor.
   for (const { tag, id, trimFrom } of manifest.blockRemovals ?? []) {
-    if (!['p', 'li', 'blockquote'].includes(tag) || !/^[\w-]+$/.test(id) ||
+    if (!['p', 'li', 'blockquote', 'h2'].includes(tag) || !/^[\w-]+$/.test(id) ||
         (trimFrom !== undefined && !/^[\w-]+$/.test(trimFrom))) {
       throw new Error(`Invalid Lake block removal: ${id}`);
     }
