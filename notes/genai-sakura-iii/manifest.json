@@ -134,7 +134,18 @@
       "into": "u7afa5e46",
       "next": "ud9b00355",
       "separator": "。"
+    },
+    {
+      "into": "u2f5288e1",
+      "next": "u670793c8",
+      "separator": "。"
     }
+  ],
+  "mathRemovals": [
+    "ONhcn"
+  ],
+  "listItemParagraphs": [
+    "u670793c8"
   ],
   "metadata": {
     "doc-version": "1",

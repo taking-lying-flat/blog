@@ -43,9 +43,8 @@
   },
   "RAD1J": {
     "from": "\\boxed{ \\tilde{\\boldsymbol{x}}_{t_M} - \\boldsymbol{x}_0 = \\mathcal{O}(h_{\\max}^k), \\text{ where } h_{max} = \\max_{1 \\le i \\le M}(\\lambda_{t_i} - \\lambda_{t_{i-1}}). }",
-    "to": "\\boxed{ \\tilde{\\boldsymbol{x}}_{t_M} - \\boldsymbol{x}_{t_{\\min}} = \\mathcal{O}(h_{\\max}^k), \\text{ where } h_{max} = \\max_{1 \\le i \\le M}(\\lambda_{t_i} - \\lambda_{t_{i-1}}). }",
-    "reason": "数值收敛误差比较相同有限终点的 ODE 精确解，不包含模型误差、初始分布近似和最终去噪误差。",
-    "reference": "https://github.com/LuChengTHU/dpm-solver/blob/main/dpm_solver_pytorch.py"
+    "to": "{ \\tilde{\\boldsymbol{x}}_{t_M} - \\boldsymbol{x}_{t_{\\min}} = \\mathcal{O}(h_{\\max}^k), \\text{ where } h_{max} = \\max_{1 \\le i \\le M}(\\lambda_{t_i} - \\lambda_{t_{i-1}}). }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
   },
   "eV1Wy": {
     "from": "\\lambda_{t_i}=\\lambda_T+\\frac{i}{M}(\\lambda_0-\\lambda_T),\\quad i=0,\\dots,M.",
@@ -66,9 +65,8 @@
   },
   "E59iI": {
     "from": "\\boxed{ \\mathrm{d}\\boldsymbol{x}_{\\pm} = \\underbrace{- \\frac{\\mathrm{d}\\sigma(t)}{\\mathrm{d}t} \\sigma(t)\\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t}_{\\text{probability flow ODE}} \\pm \\underbrace{ \\underbrace{\\beta(t)\\sigma(t)^2 \\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t}_{\\text{deterministic noise decay}} + \\underbrace{\\sqrt{2\\beta(t)}\\sigma(t) \\, \\mathrm{d}\\omega_t}_{\\text{noise injection}} }_{\\text{Langevin diffusion SDE}} }",
-    "to": "\\boxed{ \\mathrm{d}\\boldsymbol{x}_{\\pm} = \\underbrace{- \\frac{\\mathrm{d}\\sigma(t)}{\\mathrm{d}t} \\sigma(t)\\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t}_{\\text{probability flow ODE}} \\underbrace{ \\pm\\underbrace{\\beta(t)\\sigma(t)^2 \\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t}_{\\text{deterministic noise decay}} + \\underbrace{\\sqrt{2\\beta(t)}\\sigma(t) \\, \\mathrm{d}\\omega_t}_{\\text{noise injection}} }_{\\text{Langevin diffusion SDE}} }",
-    "reason": "与 EDM 式 (6) 一致：正负号作用于 score 漂移，噪声增量保持加号",
-    "reference": "https://arxiv.org/abs/2206.00364"
+    "to": "{ \\mathrm{d}\\boldsymbol{x}_{\\pm} = \\underbrace{- \\frac{\\mathrm{d}\\sigma(t)}{\\mathrm{d}t} \\sigma(t)\\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t}_{\\text{probability flow ODE}} \\underbrace{ \\pm\\underbrace{\\beta(t)\\sigma(t)^2 \\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t}_{\\text{deterministic noise decay}} + \\underbrace{\\sqrt{2\\beta(t)}\\sigma(t) \\, \\mathrm{d}\\omega_t}_{\\text{noise injection}} }_{\\text{Langevin diffusion SDE}} }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
   },
   "xr06p": {
     "from": "t_M=0",
@@ -78,13 +76,92 @@
   },
   "mAoiU": {
     "from": "\\boxed{ \\boldsymbol{x}_t = e^{\\int_s^t f(\\tau)\\mathrm{d}\\tau} \\boldsymbol{x}_s + \\int_s^t \\left( e^{\\int_\\tau^t f(r)\\mathrm{d}r} g^2(\\tau) / 2\\sigma_\\tau \\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_\\tau, \\tau) \\right) \\mathrm{d}\\tau }",
-    "to": "\\boxed{ \\boldsymbol{x}_t = e^{\\int_s^t f(\\tau)\\mathrm{d}\\tau} \\boldsymbol{x}_s + \\int_s^t \\left( e^{\\int_\\tau^t f(r)\\mathrm{d}r} \\frac{g^2(\\tau)}{2\\sigma_\\tau} \\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_\\tau, \\tau) \\right) \\mathrm{d}\\tau }",
-    "reason": "用分式消除扩散 ODE 积分中分母范围的歧义",
-    "reference": "https://arxiv.org/abs/2206.00927"
+    "to": "{ \\boldsymbol{x}_t = e^{\\int_s^t f(\\tau)\\mathrm{d}\\tau} \\boldsymbol{x}_s + \\int_s^t \\left( e^{\\int_\\tau^t f(r)\\mathrm{d}r} \\frac{g^2(\\tau)}{2\\sigma_\\tau} \\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_\\tau, \\tau) \\right) \\mathrm{d}\\tau }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
   },
   "DtPAL": {
     "from": "\\boxed{ \\tilde{\\boldsymbol{x}}_{t_i} = \\frac{\\alpha_{t_i}}{\\alpha_{t_{i-1}}} \\tilde{\\boldsymbol{x}}_{t_{i-1}} - \\sigma_{t_i}(e^{h_i} - 1)\\boldsymbol{\\epsilon}_\\theta(\\tilde{\\boldsymbol{x}}_{t_{i-1}}, t_{i-1}), \\quad \\text{where } h_i = \\lambda_{t_i} - \\lambda_{t_{i-1}}. }",
-    "to": "\\boxed{ \\tilde{\\boldsymbol{x}}_{t_i} = \\frac{\\alpha_{t_i}}{\\alpha_{t_{i-1}}} \\tilde{\\boldsymbol{x}}_{t_{i-1}} - \\sigma_{t_i}(e^{h_i} - 1)\\boldsymbol{\\epsilon}_\\theta(\\tilde{\\boldsymbol{x}}_{t_{i-1}}, t_{i-1}), \\quad \\text{where}\\quad h_i = \\lambda_{t_i} - \\lambda_{t_{i-1}}. }",
-    "reason": "修复 where 与步长定义粘连"
+    "to": "{ \\tilde{\\boldsymbol{x}}_{t_i} = \\frac{\\alpha_{t_i}}{\\alpha_{t_{i-1}}} \\tilde{\\boldsymbol{x}}_{t_{i-1}} - \\sigma_{t_i}(e^{h_i} - 1)\\boldsymbol{\\epsilon}_\\theta(\\tilde{\\boldsymbol{x}}_{t_{i-1}}, t_{i-1}), \\quad \\text{where}\\quad h_i = \\lambda_{t_i} - \\lambda_{t_{i-1}}. }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "WAQP0": {
+    "from": "\\boxed{ \\mathrm{d}\\boldsymbol{x} = - \\frac{\\mathrm{d}\\sigma(t)}{\\mathrm{d}t} \\sigma(t) \\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t }",
+    "to": "{ \\mathrm{d}\\boldsymbol{x} = - \\frac{\\mathrm{d}\\sigma(t)}{\\mathrm{d}t} \\sigma(t) \\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma(t)) \\, \\mathrm{d}t }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "L3nMY": {
+    "from": "\\boxed{ \\mathbb{E}_{\\boldsymbol{y} \\sim p_{\\text{data}}} \\mathbb{E}_{\\boldsymbol{n} \\sim \\mathcal{N}(\\mathbf{0}, \\sigma^2 \\mathbf{I})} \\| D(\\boldsymbol{y} + \\boldsymbol{n}; \\sigma) - \\boldsymbol{y} \\|_2^2, \\text{ then } \\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma) = (D(\\boldsymbol{x}; \\sigma) - \\boldsymbol{x}) / \\sigma^2 }",
+    "to": "{ \\mathbb{E}_{\\boldsymbol{y} \\sim p_{\\text{data}}} \\mathbb{E}_{\\boldsymbol{n} \\sim \\mathcal{N}(\\mathbf{0}, \\sigma^2 \\mathbf{I})} \\| D(\\boldsymbol{y} + \\boldsymbol{n}; \\sigma) - \\boldsymbol{y} \\|_2^2, \\text{ then } \\nabla_{\\boldsymbol{x}} \\log p(\\boldsymbol{x}; \\sigma) = (D(\\boldsymbol{x}; \\sigma) - \\boldsymbol{x}) / \\sigma^2 }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "f6u08": {
+    "from": "\\boxed{ \\mathrm{d}\\boldsymbol{x} = \\left[ \\frac{1}{s(t)} \\frac{\\mathrm{d}s(t)}{\\mathrm{d}t} \\boldsymbol{x} - s(t)^2 \\frac{\\mathrm{d}\\sigma(t)}{\\mathrm{d}t} \\sigma(t) \\nabla_{\\boldsymbol{x}} \\log p \\left( \\frac{\\boldsymbol{x}}{s(t)}; \\sigma(t) \\right) \\right] \\mathrm{d}t }",
+    "to": "{ \\mathrm{d}\\boldsymbol{x} = \\left[ \\frac{1}{s(t)} \\frac{\\mathrm{d}s(t)}{\\mathrm{d}t} \\boldsymbol{x} - s(t)^2 \\frac{\\mathrm{d}\\sigma(t)}{\\mathrm{d}t} \\sigma(t) \\nabla_{\\boldsymbol{x}} \\log p \\left( \\frac{\\boldsymbol{x}}{s(t)}; \\sigma(t) \\right) \\right] \\mathrm{d}t }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "NsuCA": {
+    "from": "\\boxed{ \\mathbb{E}_{\\sigma, \\boldsymbol{y}, \\boldsymbol{n}} \\left[ \\lambda(\\sigma) \\| D(\\boldsymbol{y} + \\boldsymbol{n}; \\sigma) - \\boldsymbol{y} \\|_2^2 \\right], \\text{ where } \\sigma \\sim p_{\\text{train}}, \\boldsymbol{y} \\sim p_{\\text{data}}, \\text{ and } \\boldsymbol{n} \\sim \\mathcal{N}(\\mathbf{0}, \\sigma^2 \\mathbf{I}) }",
+    "to": "{ \\mathbb{E}_{\\sigma, \\boldsymbol{y}, \\boldsymbol{n}} \\left[ \\lambda(\\sigma) \\| D(\\boldsymbol{y} + \\boldsymbol{n}; \\sigma) - \\boldsymbol{y} \\|_2^2 \\right], \\text{ where } \\sigma \\sim p_{\\text{train}}, \\boldsymbol{y} \\sim p_{\\text{data}}, \\text{ and } \\boldsymbol{n} \\sim \\mathcal{N}(\\mathbf{0}, \\sigma^2 \\mathbf{I}) }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "qdeA5": {
+    "from": "\\boxed{ \\mathbb{E}_{\\sigma, \\boldsymbol{y}, \\boldsymbol{n}} \\left[ \\underbrace{\\lambda(\\sigma) c_{\\text{out}}(\\sigma)^2}_{\\text{effective weight}} \\bigg\\| \\underbrace{F_\\theta(c_{\\text{in}}(\\sigma) \\cdot (\\boldsymbol{y} + \\boldsymbol{n}); c_{\\text{noise}}(\\sigma))}_{\\text{network output}} - \\underbrace{\\frac{1}{c_{\\text{out}}(\\sigma)} (\\boldsymbol{y} - c_{\\text{skip}}(\\sigma) \\cdot (\\boldsymbol{y} + \\boldsymbol{n}))}_{\\text{effective training target}} \\bigg\\|_2^2 \\right] }",
+    "to": "{ \\mathbb{E}_{\\sigma, \\boldsymbol{y}, \\boldsymbol{n}} \\left[ \\underbrace{\\lambda(\\sigma) c_{\\text{out}}(\\sigma)^2}_{\\text{effective weight}} \\bigg\\| \\underbrace{F_\\theta(c_{\\text{in}}(\\sigma) \\cdot (\\boldsymbol{y} + \\boldsymbol{n}); c_{\\text{noise}}(\\sigma))}_{\\text{network output}} - \\underbrace{\\frac{1}{c_{\\text{out}}(\\sigma)} (\\boldsymbol{y} - c_{\\text{skip}}(\\sigma) \\cdot (\\boldsymbol{y} + \\boldsymbol{n}))}_{\\text{effective training target}} \\bigg\\|_2^2 \\right] }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "ZlFQb": {
+    "from": "\\boxed{ q_{0t}(\\boldsymbol{x}_t|\\boldsymbol{x}_0) = \\mathcal{N}(\\boldsymbol{x}_t|\\alpha(t)\\boldsymbol{x}_0, \\sigma^2(t)\\boldsymbol{I}) }",
+    "to": "{ q_{0t}(\\boldsymbol{x}_t|\\boldsymbol{x}_0) = \\mathcal{N}(\\boldsymbol{x}_t|\\alpha(t)\\boldsymbol{x}_0, \\sigma^2(t)\\boldsymbol{I}) }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "wyNvo": {
+    "from": "\\boxed{ \\mathrm{d}\\boldsymbol{x}_t = f(t)\\boldsymbol{x}_t\\mathrm{d}t + g(t)\\mathrm{d}\\boldsymbol{w}_t, \\quad \\boldsymbol{x}_0 \\sim q_0(\\boldsymbol{x}_0) }",
+    "to": "{ \\mathrm{d}\\boldsymbol{x}_t = f(t)\\boldsymbol{x}_t\\mathrm{d}t + g(t)\\mathrm{d}\\boldsymbol{w}_t, \\quad \\boldsymbol{x}_0 \\sim q_0(\\boldsymbol{x}_0) }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "OV5lq": {
+    "from": "\\boxed{ f(t) = \\frac{\\mathrm{d} \\log \\alpha_t}{\\mathrm{d}t}, \\quad g^2(t) = \\frac{\\mathrm{d}\\sigma_t^2}{\\mathrm{d}t} - 2\\frac{\\mathrm{d}\\log \\alpha_t}{\\mathrm{d}t}\\sigma_t^2 }",
+    "to": "{ f(t) = \\frac{\\mathrm{d} \\log \\alpha_t}{\\mathrm{d}t}, \\quad g^2(t) = \\frac{\\mathrm{d}\\sigma_t^2}{\\mathrm{d}t} - 2\\frac{\\mathrm{d}\\log \\alpha_t}{\\mathrm{d}t}\\sigma_t^2 }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "pyG6I": {
+    "from": "\\boxed{ \\mathrm{d}\\boldsymbol{x}_t = [f(t)\\boldsymbol{x}_t - g^2(t)\\nabla_{\\boldsymbol{x}} \\log q_t(\\boldsymbol{x}_t)]\\mathrm{d}t + g(t)\\mathrm{d}\\bar{\\boldsymbol{w}}_t, \\quad \\boldsymbol{x}_T \\sim q_T(\\boldsymbol{x}_T) }",
+    "to": "{ \\mathrm{d}\\boldsymbol{x}_t = [f(t)\\boldsymbol{x}_t - g^2(t)\\nabla_{\\boldsymbol{x}} \\log q_t(\\boldsymbol{x}_t)]\\mathrm{d}t + g(t)\\mathrm{d}\\bar{\\boldsymbol{w}}_t, \\quad \\boldsymbol{x}_T \\sim q_T(\\boldsymbol{x}_T) }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "Bvkm8": {
+    "from": "\\boxed{\n\\begin{aligned}\n\\mathcal{L}(\\theta; \\omega(t)) &:= \\frac{1}{2} \\int_0^T \\omega(t) \\mathbb{E}_{q_t(\\boldsymbol{x}_t)} \\left[ \\| \\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_t, t) + \\sigma_t \\nabla_{\\boldsymbol{x}} \\log q_t(\\boldsymbol{x}_t) \\|_2^2 \\right] \\mathrm{d}t \\\\\n&= \\frac{1}{2} \\int_0^T \\omega(t) \\mathbb{E}_{q_0(\\boldsymbol{x}_0)} \\mathbb{E}_{q(\\boldsymbol{\\epsilon})} \\left[ \\| \\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_t, t) - \\boldsymbol{\\epsilon} \\|_2^2 \\right] \\mathrm{d}t + C\n\\end{aligned}\n}",
+    "to": "{\n\\begin{aligned}\n\\mathcal{L}(\\theta; \\omega(t)) &:= \\frac{1}{2} \\int_0^T \\omega(t) \\mathbb{E}_{q_t(\\boldsymbol{x}_t)} \\left[ \\| \\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_t, t) + \\sigma_t \\nabla_{\\boldsymbol{x}} \\log q_t(\\boldsymbol{x}_t) \\|_2^2 \\right] \\mathrm{d}t \\\\\n&= \\frac{1}{2} \\int_0^T \\omega(t) \\mathbb{E}_{q_0(\\boldsymbol{x}_0)} \\mathbb{E}_{q(\\boldsymbol{\\epsilon})} \\left[ \\| \\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_t, t) - \\boldsymbol{\\epsilon} \\|_2^2 \\right] \\mathrm{d}t + C\n\\end{aligned}\n}",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "XTz2M": {
+    "from": "\\boxed{ \\mathrm{d}\\boldsymbol{x}_t = \\left[ f(t)\\boldsymbol{x}_t + \\frac{g^2(t)}{\\sigma_t}\\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_t, t) \\right] \\mathrm{d}t + g(t)\\mathrm{d}\\bar{\\boldsymbol{w}}_t, \\quad \\boldsymbol{x}_T \\sim \\mathcal{N}(\\boldsymbol{0}, \\tilde{\\sigma}^2\\boldsymbol{I}) }",
+    "to": "{ \\mathrm{d}\\boldsymbol{x}_t = \\left[ f(t)\\boldsymbol{x}_t + \\frac{g^2(t)}{\\sigma_t}\\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_t, t) \\right] \\mathrm{d}t + g(t)\\mathrm{d}\\bar{\\boldsymbol{w}}_t, \\quad \\boldsymbol{x}_T \\sim \\mathcal{N}(\\boldsymbol{0}, \\tilde{\\sigma}^2\\boldsymbol{I}) }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "ESuUz": {
+    "from": "\\boxed{ \\frac{\\mathrm{d}\\boldsymbol{x}_t}{\\mathrm{d}t} = f(t)\\boldsymbol{x}_t - \\frac{1}{2}g^2(t)\\nabla_{\\boldsymbol{x}} \\log q_t(\\boldsymbol{x}_t), \\quad \\boldsymbol{x}_T \\sim q_T(\\boldsymbol{x}_T) }",
+    "to": "{ \\frac{\\mathrm{d}\\boldsymbol{x}_t}{\\mathrm{d}t} = f(t)\\boldsymbol{x}_t - \\frac{1}{2}g^2(t)\\nabla_{\\boldsymbol{x}} \\log q_t(\\boldsymbol{x}_t), \\quad \\boldsymbol{x}_T \\sim q_T(\\boldsymbol{x}_T) }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "uK3hE": {
+    "from": "\\boxed{ \\frac{\\mathrm{d}\\boldsymbol{x}_t}{\\mathrm{d}t} = \\boldsymbol{h}_\\theta(\\boldsymbol{x}_t, t) := f(t)\\boldsymbol{x}_t + \\frac{g^2(t)}{2\\sigma_t}\\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_t, t), \\quad \\boldsymbol{x}_T \\sim \\mathcal{N}(\\boldsymbol{0}, \\tilde{\\sigma}^2\\boldsymbol{I}) }",
+    "to": "{ \\frac{\\mathrm{d}\\boldsymbol{x}_t}{\\mathrm{d}t} = \\boldsymbol{h}_\\theta(\\boldsymbol{x}_t, t) := f(t)\\boldsymbol{x}_t + \\frac{g^2(t)}{2\\sigma_t}\\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_t, t), \\quad \\boldsymbol{x}_T \\sim \\mathcal{N}(\\boldsymbol{0}, \\tilde{\\sigma}^2\\boldsymbol{I}) }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "umfpE": {
+    "from": "\\boxed{ g^2(t) = \\frac{\\mathrm{d}\\sigma_t^2}{\\mathrm{d}t} - 2\\frac{\\mathrm{d}\\log \\alpha_t}{\\mathrm{d}t}\\sigma_t^2 = 2\\sigma_t^2\\left(\\frac{\\mathrm{d}\\log \\sigma_t}{\\mathrm{d}t} - \\frac{\\mathrm{d}\\log \\alpha_t}{\\mathrm{d}t}\\right) = -2\\sigma_t^2\\frac{\\mathrm{d}\\lambda_t}{\\mathrm{d}t}. }",
+    "to": "{ g^2(t) = \\frac{\\mathrm{d}\\sigma_t^2}{\\mathrm{d}t} - 2\\frac{\\mathrm{d}\\log \\alpha_t}{\\mathrm{d}t}\\sigma_t^2 = 2\\sigma_t^2\\left(\\frac{\\mathrm{d}\\log \\sigma_t}{\\mathrm{d}t} - \\frac{\\mathrm{d}\\log \\alpha_t}{\\mathrm{d}t}\\right) = -2\\sigma_t^2\\frac{\\mathrm{d}\\lambda_t}{\\mathrm{d}t}. }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "KTSkv": {
+    "from": "\\boxed{ \\boldsymbol{x}_t = \\frac{\\alpha_t}{\\alpha_s}\\boldsymbol{x}_s - \\alpha_t \\int_s^t \\left(\\frac{\\mathrm{d}\\lambda_\\tau}{\\mathrm{d}\\tau}\\right) \\frac{\\sigma_\\tau}{\\alpha_\\tau} \\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_\\tau, \\tau)\\mathrm{d}\\tau. }",
+    "to": "{ \\boldsymbol{x}_t = \\frac{\\alpha_t}{\\alpha_s}\\boldsymbol{x}_s - \\alpha_t \\int_s^t \\left(\\frac{\\mathrm{d}\\lambda_\\tau}{\\mathrm{d}\\tau}\\right) \\frac{\\sigma_\\tau}{\\alpha_\\tau} \\boldsymbol{\\epsilon}_\\theta(\\boldsymbol{x}_\\tau, \\tau)\\mathrm{d}\\tau. }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
+  },
+  "OdNny": {
+    "from": "\\boxed{ \\epsilon_\\theta(x, t) := \\tilde{\\epsilon}_\\theta\\left(x, \\frac{(N-1)t}{T}\\right), \\quad \\forall x \\in \\mathbb{R}^d, t \\in [0, T]. }",
+    "to": "{ \\epsilon_\\theta(x, t) := \\tilde{\\epsilon}_\\theta\\left(x, \\frac{(N-1)t}{T}\\right), \\quad \\forall x \\in \\mathbb{R}^d, t \\in [0, T]. }",
+    "reason": "仅删除公式外框，保留公式内容与换行"
   }
 }
