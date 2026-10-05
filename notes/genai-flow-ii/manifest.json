@@ -10286,6 +10286,17 @@
     {
       "tag": "p",
       "id": "u6ea39087"
+    },
+    {
+      "tag": "p",
+      "id": "ube62ae22"
+    }
+  ],
+  "paragraphJoins": [
+    {
+      "into": "ue40135e7",
+      "next": "u3ec18f66",
+      "separator": "　　"
     }
   ],
   "listItemParagraphs": [
