@@ -495,7 +495,9 @@
       "DPM-Solver"
     ],
     "appendMarkdown": [
-      {"file": "sde-examples-heading.md", "before": "ucd7e3920", "tag": "p"}
+      {"file": "sde-examples-heading.md", "before": "ucd7e3920", "tag": "p"},
+      {"file": "edm-heun-algorithm.md", "before": "u41879e58", "tag": "p"},
+      {"file": "edm-stochastic-algorithm.md", "before": "Z8Obz"}
     ],
     "moveSections": [
       {

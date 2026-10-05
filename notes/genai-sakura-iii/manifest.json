@@ -85,6 +85,26 @@
     {
       "tag": "li",
       "id": "u11b8f61f"
+    },
+    {
+      "tag": "li",
+      "id": "uf4e5e2db"
+    },
+    {
+      "tag": "p",
+      "id": "ua69e186f"
+    },
+    {
+      "tag": "p",
+      "id": "ub33e64cf"
+    },
+    {
+      "tag": "p",
+      "id": "u78b55b9c"
+    },
+    {
+      "tag": "p",
+      "id": "u0f8ef346"
     }
   ],
   "separatorRemovals": [
@@ -142,7 +162,8 @@
     }
   ],
   "mathRemovals": [
-    "ONhcn"
+    "ONhcn",
+    "q3TC6"
   ],
   "listItemParagraphs": [
     "u670793c8"

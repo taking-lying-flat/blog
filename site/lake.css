@@ -121,9 +121,6 @@
 [data-post="genai-sakura-ii"] .lake-document :is(
   [data-card-id="hmeD6"], [data-card-id="Ib4aA"]
 ),
-[data-post="genai-sakura-iii"] .lake-document :is(
-  [data-card-id="Lg3op"]
-),
 [data-post="genai-sakura-iv"] .lake-document :is(
   [data-card-id="wrW0B"], [data-card-id="htod0"]
 ) {
@@ -421,6 +418,27 @@
 }
 [data-post="genai-flow-i"] .flow-algorithm .equation { margin: 6px 0 0; }
 [data-post="genai-flow-i"] .flow-algorithm .equation mjx-container[display="true"] {
+  min-width: 0;
+  text-align: left;
+}
+
+/* EDM: retain the paper's algorithm steps in compact, selectable LaTeX. */
+[data-post="genai-sakura-iii"] .edm-algorithm {
+  margin: 16px 2em;
+  padding: 0 4px 8px;
+  border-block: 1px solid #929292;
+  white-space: normal;
+}
+[data-post="genai-sakura-iii"] .edm-algorithm figcaption {
+  padding: 6px 0;
+  border-bottom: 1px solid #c7c7c7;
+  font: 16px/1.5 var(--article-serif);
+}
+[data-post="genai-sakura-iii"] .edm-algorithm .equation {
+  margin: 6px 0 0;
+  font-size: 15px;
+}
+[data-post="genai-sakura-iii"] .edm-algorithm .equation mjx-container[display="true"] {
   min-width: 0;
   text-align: left;
 }
