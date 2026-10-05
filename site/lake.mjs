@@ -136,6 +136,20 @@ export async function readLake(file, escape, renderMath) {
         `${opening}${body}${itemOpening.replace(/^<li\b/, '<span')}${itemBody}</span></li>`);
     }
   }
+  // Join adjacent paragraphs without changing inline formatting or formulas.
+  for (const { into, next, separator = '' } of manifest.paragraphJoins ?? []) {
+    if (![into, next].every(id => typeof id === 'string' && /^[\w-]+$/.test(id)) ||
+        into === next || typeof separator !== 'string') {
+      throw new Error(`Invalid Lake paragraph join: ${into}`);
+    }
+    const inline = '(?:(?!<\\/?p\\b)[\\s\\S])*';
+    const pattern = new RegExp(`(<p\\b[^>]*\\sid="${into}"[^>]*>)(${inline})<\\/p>\\s*(<p\\b[^>]*\\sid="${next}"[^>]*>)(${inline})<\\/p>`, 'g');
+    if ([...content.matchAll(pattern)].length !== 1) {
+      throw new Error(`Lake paragraph join must match adjacent paragraphs once: ${into}, ${next}`);
+    }
+    content = content.replace(pattern, (_match, opening, body, nextOpening, nextBody) =>
+      `${opening}${body}${escape(separator)}${nextOpening.replace(/^<p\b/, '<span')}${nextBody}</span></p>`);
+  }
   // Use semantic list items for indented explanations, preserving inline cards.
   for (const id of manifest.paragraphListItems ?? []) {
     if (typeof id !== 'string' || !/^[\w-]+$/.test(id)) {

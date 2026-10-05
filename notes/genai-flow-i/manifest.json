@@ -6,6 +6,9 @@
   },
   "title": "Generative Models II",
   "paragraphListItems": ["ubf7a8c55"],
+  "paragraphJoins": [
+    { "into": "uada3f50c", "next": "u9da16c0f", "separator": "。" }
+  ],
   "blockRemovals": [
     { "tag": "p", "id": "u074b4d48" },
     { "tag": "li", "id": "u3c7b894a" },
