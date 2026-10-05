@@ -633,5 +633,10 @@
     "from": "，并利用所谓的 stiff order conditions 去近似前",
     "to": "，并利用 stiff order conditions 去近似前",
     "reason": "删除用户指定的赘词"
+  },
+  "u877a653b": {
+    "from": "。",
+    "to": "",
+    "reason": "拆出后半段为无序列表，去掉段落末尾句号"
   }
 }

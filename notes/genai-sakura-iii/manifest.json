@@ -173,13 +173,20 @@
     "uf52208f3",
     "ua99bb348",
     "u9f2818b8",
-    "ud2bfdf78"
+    "ud2bfdf78",
+    "u512ed79c",
+    "u535ed590"
   ],
   "paragraphSplits": [
     {
       "paragraph": "uec06f9b1",
       "before": "u587d0da7",
       "id": "sde-smld-convergence"
+    },
+    {
+      "paragraph": "uaaf5e134",
+      "before": "u877a653b",
+      "id": "dpm-ode-variation"
     }
   ],
   "paragraphListItemsAfterMoves": [
@@ -187,7 +194,8 @@
     "ufddaadd3",
     "u7afa5e46",
     "u42b3be2a",
-    "u4cbed6fd"
+    "u4cbed6fd",
+    "dpm-ode-variation"
   ],
   "paragraphLabels": [
     {
