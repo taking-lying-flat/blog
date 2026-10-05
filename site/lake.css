@@ -109,9 +109,6 @@
   font: 400 16px/1.4 var(--article-serif);
 }
 /* These trailing formulas already occupy a separate line in the desktop notes. */
-[data-post="genai-sakura-i"] .lake-document :is(
-  [data-card-id="PXkbE"]
-),
 [data-post="genai-sakura-ii"] .lake-document [data-card-id="IUyp4"],
 [data-post="genai-sakura-iii"] .lake-document :is(
   [data-card-id="hmeD6"], [data-card-id="Ib4aA"], [data-card-id="Lg3op"]
@@ -128,9 +125,6 @@
   margin-inline: auto;
 }
 /* Give the promoted formulas their own space above and below. */
-[data-post="genai-sakura-i"] .lake-document :is(
-  [data-card-id="PXkbE"]
-),
 [data-post="genai-sakura-ii"] .lake-document [data-card-id="IUyp4"] {
   margin-block: 12px;
 }
