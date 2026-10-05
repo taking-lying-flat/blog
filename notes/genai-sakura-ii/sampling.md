@@ -1,8 +1,6 @@
 以 $`L_1`$ 为目标训练的模型，不仅适用于 DDPM 的马尔可夫推断过程，也适用于由 $`\sigma`$ 参数化的非马尔可夫前向过程。因此，可以直接使用预训练的 DDPM 模型，通过改变 $`\sigma`$ 选择符合采样需求的生成过程
 
-### Denoising Diffusion Implicit Models
-
-由前文定义的生成分布 $`p_\theta(x_{0:T})`$，对 $`t>1`$，可从 $`x_t`$ 生成 $`x_{t-1}`$
+**Denoising Diffusion Implicit Models：**由前文定义的生成分布 $`p_\theta(x_{0:T})`$，对 $`t>1`$，可从 $`x_t`$ 生成 $`x_{t-1}`$
 
 ```math
 x_{t-1} = \sqrt{\alpha_{t-1}}\underbrace{\left(\frac{x_t-\sqrt{1-\alpha_t}\,\epsilon_\theta^{(t)}(x_t)}{\sqrt{\alpha_t}}\right)}_{\text{predicted }x_0} + \underbrace{\sqrt{1-\alpha_{t-1}-\sigma_t^2}\,\epsilon_\theta^{(t)}(x_t)}_{\text{direction pointing to }x_t} + \underbrace{\sigma_t\epsilon_t}_{\text{random noise}}
