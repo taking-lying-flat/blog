@@ -136,6 +136,17 @@ export async function readLake(file, escape, renderMath) {
         `${opening}${body}${itemOpening.replace(/^<li\b/, '<span')}${itemBody}</span></li>`);
     }
   }
+  // Use semantic list items for indented explanations, preserving inline cards.
+  for (const id of manifest.paragraphListItems ?? []) {
+    if (typeof id !== 'string' || !/^[\w-]+$/.test(id)) {
+      throw new Error(`Invalid Lake paragraph list item: ${id}`);
+    }
+    const pattern = new RegExp(`<p\\b([^>]*\\sid="${id}"[^>]*)>([\\s\\S]*?)<\\/p>`, 'g');
+    if ([...content.matchAll(pattern)].length !== 1) {
+      throw new Error(`Lake paragraph list item must match once: ${id}`);
+    }
+    content = content.replace(pattern, '<ul><li$1>$2</li></ul>');
+  }
   // Join an adjacent single-item list to its paragraph, preserving inline cards.
   for (const { paragraph, listItem } of manifest.paragraphMerges ?? []) {
     if (!/^[\w-]+$/.test(paragraph) || !/^[\w-]+$/.test(listItem)) {

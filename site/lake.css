@@ -132,14 +132,8 @@
   max-width: 100%;
   margin-inline: auto;
 }
-/* Keep these trailing inline expressions on a line with their surrounding prose. */
-[data-post="genai-flow-i"] .lake-document #u30bb5d2a {
-  text-wrap: balance;
-}
 /* Keep the additional generative assumption within the preceding explanation. */
 [data-post="genai-sakura-i"] .lake-document #uff7263e8 { margin-left: 2em; }
-/* Align the lower-bound explanation with the surrounding indented prose. */
-[data-post="genai-flow-i"] .lake-document #ubf7a8c55 { margin-left: 2em; }
 /* Keep the three score-matching methods readable around their objectives. */
 [data-post="genai-sakura-i"] .lake-document :is(
   #u40bf6aad, #ue5697ec4, #u454ac2db

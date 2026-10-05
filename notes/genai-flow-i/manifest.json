@@ -5,7 +5,9 @@
     "bytes": 224118
   },
   "title": "Generative Models II",
+  "paragraphListItems": ["ubf7a8c55"],
   "blockRemovals": [
+    { "tag": "p", "id": "u074b4d48" },
     { "tag": "li", "id": "u3c7b894a" },
     { "tag": "li", "id": "ud736dd70" },
     { "tag": "p", "id": "u726b1e64" },
