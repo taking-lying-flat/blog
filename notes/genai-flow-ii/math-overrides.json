@@ -46,5 +46,10 @@
     "from": "\\text{where} ~ \\epsilon_\\Theta := \\frac{-2}{\\lambda'_t b_t}(v_\\Theta - \\frac{a'_t}{a_t}z).",
     "to": "\\text{where}\\quad \\epsilon_\\Theta := \\frac{-2}{\\lambda'_t b_t}(v_\\Theta - \\frac{a'_t}{a_t}z).",
     "reason": "使用显式数学间距，避免 where 与噪声预测符号粘连"
+  },
+  "P7yuU": {
+    "from": "\\boxed{v^X(x, t) = \\mathbb{E}[X_1 - X_0 \\mid X_t = x]}",
+    "to": "{v^X(x, t) = \\mathbb{E}[X_1 - X_0 \\mid X_t = x]}",
+    "reason": "按既定排版去除公式边框，数学内容保持不变"
   }
 }
