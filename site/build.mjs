@@ -564,6 +564,54 @@ for (const post of posts) {
   }
 }
 
+// Number selected display formulas in reading order, restarting for each paper.
+// Keep their existing SVGs so adding a label does not alter the mathematics.
+for (const post of posts) {
+  if (!post.numberedEquations) continue;
+  const groups = Object.entries(post.numberedEquations);
+  const selected = new Set(groups.flatMap(([, cards]) => cards));
+  if (groups.some(([paper, cards]) => !/^[\w-]+$/.test(paper) ||
+      !Array.isArray(cards) || cards.some(id => !/^[\w-]+$/.test(id))) ||
+      selected.size !== groups.reduce((sum, [, cards]) => sum + cards.length, 0)) {
+    throw new Error(`Invalid equation numbering: ${post.slug}`);
+  }
+  const parsed = adaptor.parse(post.content, 'text/html');
+  const body = adaptor.body(parsed);
+  const counts = new Map(groups.map(([paper]) => [paper, 0]));
+  let paper;
+  const visit = (node) => {
+    const kind = adaptor.kind(node);
+    if (kind === 'h1') paper = adaptor.getAttribute(node, 'id');
+    const id = kind === 'span' ? adaptor.getAttribute(node, 'data-card-id') : undefined;
+    if (selected.has(id)) {
+      const index = counts.get(paper);
+      if (post.numberedEquations[paper]?.[index] !== id ||
+          !(adaptor.getAttribute(node, 'class') ?? '').split(/\s+/).includes('lake-math') ||
+          adaptor.tags(node, 'img').length !== 1) {
+        throw new Error(`Equation numbering order or format changed: ${post.slug}/${id}`);
+      }
+      const number = index + 1;
+      const row = adaptor.node('span', {
+        class: 'lake-equation-row', 'data-equation-paper': paper,
+        'data-equation-number': String(number), id: `equation-${paper}-${number}`,
+      });
+      adaptor.replace(row, node);
+      adaptor.append(row, node);
+      adaptor.append(row, adaptor.node('span', { class: 'lake-equation-number' },
+        [adaptor.text(`(${number})`)]));
+      counts.set(paper, number);
+      return;
+    }
+    if (['#text', '#comment', 'svg', 'pre', 'code'].includes(kind)) return;
+    for (const child of [...adaptor.childNodes(node)]) visit(child);
+  };
+  visit(body);
+  if (groups.some(([paper, cards]) => counts.get(paper) !== cards.length)) {
+    throw new Error(`Missing numbered equation: ${post.slug}`);
+  }
+  post.content = adaptor.innerHTML(body);
+}
+
 // Keep the existing anchors while presenting all titles in the same typeface.
 for (const post of posts) {
   post.title = plainTitle(post.title);

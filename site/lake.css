@@ -88,6 +88,26 @@
   margin: 0;
   text-align: center;
 }
+/* Symmetric gutters keep archived equations centered and their labels flush right. */
+.lake-document .lake-equation-row {
+  display: grid;
+  grid-template-columns: minmax(2.5em, 1fr) minmax(0, max-content) minmax(2.5em, 1fr);
+  align-items: center;
+  width: 100%;
+  margin: 12px 0;
+  white-space: normal;
+}
+[data-post] .lake-document .lake-equation-row > .lake-math {
+  grid-column: 2;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+}
+.lake-document .lake-equation-number {
+  grid-column: 3;
+  justify-self: end;
+  font: 400 16px/1.4 var(--article-serif);
+}
 /* These trailing formulas already occupy a separate line in the desktop notes. */
 [data-post="genai-sakura-i"] .lake-document :is(
   [data-card-id="AEAsO"], [data-card-id="PXkbE"]
