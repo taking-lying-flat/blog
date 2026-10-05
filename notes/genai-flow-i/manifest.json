@@ -6,14 +6,15 @@
   },
   "title": "Generative Models II",
   "paragraphListItems": ["ubf7a8c55", "u95a0f7c2", "u665d0e01"],
-  "blockRangeMoves": [
-    { "from": "ua8e13424", "until": "u9570be46", "before": "WRjcF" }
-  ],
   "paragraphJoins": [
     { "into": "uada3f50c", "next": "u9da16c0f", "separator": "。" },
-    { "into": "u8bf53617", "next": "u01e1fdbb", "separator": "。" }
+    { "into": "u8bf53617", "next": "u01e1fdbb", "separator": "。" },
+    { "into": "u2743b6d6", "next": "u1b16cbea", "separator": "。" }
   ],
   "blockRemovals": [
+    { "tag": "p", "id": "ua8e13424" },
+    { "tag": "li", "id": "u91bca2c5" },
+    { "tag": "li", "id": "uec8292ba" },
     { "tag": "p", "id": "uc510a26c" },
     { "tag": "p", "id": "ub9ace9ae" },
     { "tag": "li", "id": "u932423f4" },
