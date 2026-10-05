@@ -1,0 +1,172 @@
+{
+  "lPOab": {
+    "from": "\\mathrm{d}\\mathbf{x}_t = \\boldsymbol{\\mu}(\\mathbf{x}_t, t) \\, \\mathrm{d}t + \\sigma(t) \\, \\mathrm{d}\\mathbf{w}_t,",
+    "to": "\\mathrm{d}\\mathbf{x}_t = \\boldsymbol{\\mu}(\\mathbf{x}_t, t) \\, \\mathrm{d}t + \\sigma(t) \\, \\mathrm{d}\\mathbf{w}_t\\tag{1}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "tHxVB": {
+    "from": "dx_t=\\left[\\mu(x_t,t)-\\frac{1}{2}\\sigma(t)^2\\nabla \\log p_t(x_t)\\right]dt. ",
+    "to": "dx_t=\\left[\\mu(x_t,t)-\\frac{1}{2}\\sigma(t)^2\\nabla \\log p_t(x_t)\\right]dt\\tag{2}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "sW8Nk": {
+    "from": "p_t(\\mathbf{x}) = p_{\\mathrm{data}}(\\mathbf{x}) \\otimes \\mathcal{N}(\\mathbf{0}, t^2 \\boldsymbol{I}), \\quad \\pi(\\mathbf{x}) = \\mathcal{N}(\\mathbf{0}, T^2 \\boldsymbol{I})",
+    "to": "p_t(\\mathbf{x}) = p_{\\mathrm{data}}(\\mathbf{x}) \\otimes \\mathcal{N}(\\mathbf{0}, t^2 \\boldsymbol{I}), \\quad \\pi(\\mathbf{x}) = \\mathcal{N}(\\mathbf{0}, T^2 \\boldsymbol{I})\\tag{3}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "a1j3H": {
+    "from": "\\frac{dx_t}{dt}=-t\\,s_\\phi(x_t,t). ",
+    "to": "\\frac{dx_t}{dt}=-t\\,s_\\phi(x_t,t)\\tag{4}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "kD2EN": {
+    "from": "f_\\theta(x,t)= \\begin{cases} x, & t=\\epsilon,\\\\ F_\\theta(x,t), & t\\in(\\epsilon,T]. \\end{cases}",
+    "to": "f_\\theta(x,t)= \\begin{cases} x, & t=\\epsilon,\\\\ F_\\theta(x,t), & t\\in(\\epsilon,T] \\end{cases}\\tag{5}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "GqFhk": {
+    "from": "f_\\theta(x,t)=c_{\\text{skip}}(t)x+c_{\\text{out}}(t)F_\\theta(x,t)",
+    "to": "f_\\theta(x,t)=c_{\\text{skip}}(t)x+c_{\\text{out}}(t)F_\\theta(x,t)\\tag{6}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "AKdRw": {
+    "from": "c_{\\mathrm{skip}}(t) = \\frac{\\sigma_{\\mathrm{data}}^2}{(t - \\epsilon)^2 + \\sigma_{\\mathrm{data}}^2}, \\quad c_{\\mathrm{out}}(t) = \\frac{\\sigma_{\\mathrm{data}}(t - \\epsilon)}{\\sqrt{\\sigma_{\\mathrm{data}}^2 + t^2}},",
+    "to": "c_{\\mathrm{skip}}(t) = \\frac{\\sigma_{\\mathrm{data}}^2}{(t - \\epsilon)^2 + \\sigma_{\\mathrm{data}}^2}, \\quad c_{\\mathrm{out}}(t) = \\frac{\\sigma_{\\mathrm{data}}(t - \\epsilon)}{\\sqrt{\\sigma_{\\mathrm{data}}^2 + t^2}}\\tag{7}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "pm1xh": {
+    "from": "\\frac{dx_t}{dt}=-t\\,s_\\phi(x_t,t). ",
+    "to": "\\frac{dx_t}{dt}=-t\\,s_\\phi(x_t,t)\\tag{8}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "GikXD": {
+    "from": "t_i = \\left( \\epsilon^{1/\\rho} + \\frac{i-1}{N-1} \\left( T^{1/\\rho} - \\epsilon^{1/\\rho} \\right) \\right)^\\rho, \\quad \\rho = 7.",
+    "to": "t_i = \\left( \\epsilon^{1/\\rho} + \\frac{i-1}{N-1} \\left( T^{1/\\rho} - \\epsilon^{1/\\rho} \\right) \\right)^\\rho, \\quad \\rho = 7\\tag{9}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "k7S3d": {
+    "from": "\\hat{x}^{\\phi}_{t_n}:=x_{t_{n+1}}+(t_n-t_{n+1})\\Phi(x_{t_{n+1}},t_{n+1};\\phi)",
+    "to": "\\hat{x}^{\\phi}_{t_n}:=x_{t_{n+1}}+(t_n-t_{n+1})\\Phi(x_{t_{n+1}},t_{n+1};\\phi)\\tag{10}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "ZzyJD": {
+    "from": "\\hat{x}^{\\phi}_{t_n}=x_{t_{n+1}}-(t_n-t_{n+1})t_{n+1}s_\\phi(x_{t_{n+1}},t_{n+1}).",
+    "to": "\\hat{x}^{\\phi}_{t_n}=x_{t_{n+1}}-(t_n-t_{n+1})t_{n+1}s_\\phi(x_{t_{n+1}},t_{n+1})\\tag{11}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "K8zSD": {
+    "from": "\\boldsymbol{\\theta}^- \\leftarrow \\mathrm{stopgrad}(\\mu \\boldsymbol{\\theta}^- + (1 - \\mu)\\boldsymbol{\\theta}).",
+    "to": "\\boldsymbol{\\theta}^- \\leftarrow \\mathrm{stopgrad}(\\mu \\boldsymbol{\\theta}^- + (1 - \\mu)\\boldsymbol{\\theta})\\tag{13}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "YmnTk": {
+    "from": "\\nabla \\log p_t(x_t) = -\\mathbb{E}\\left[\\frac{x_t-x}{t^2}\\,\\middle|\\,x_t\\right]",
+    "to": "\\nabla \\log p_t(x_t) = -\\mathbb{E}\\left[\\frac{x_t-x}{t^2}\\,\\middle|\\,x_t\\right]\\tag{15}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "rQXPr": {
+    "from": "x_t=(1-t)x_0+tx_1,\\qquad t\\in[0,1].\\tag{1}",
+    "to": "x_t=(1-t)x_0+tx_1,\\qquad t\\in[0,1]\\tag{1}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "h1wT0": {
+    "from": "\\mathcal{L}(\\theta)=\\mathbb{E}_{t,\\,x_0\\sim\\mathcal{X}_0,\\,x_1\\sim\\mathcal{X}_1}\\left[\\left\\|v-v_\\theta(x_t,t)\\right\\|^2\\right].\\tag{2}",
+    "to": "\\mathcal{L}(\\theta)=\\mathbb{E}_{t,\\,x_0\\sim\\mathcal{X}_0,\\,x_1\\sim\\mathcal{X}_1}\\!\\left[\\left\\|v-v_\\theta(x_t,t)\\right\\|^2\\right],\\qquad v=x_1-x_0\\tag{2}",
+    "reason": "补全原文速度目标 v=x1-x0 的定义"
+  },
+  "Ikmth": {
+    "from": "\\max_{\\theta}\\mathbb{E}_{(s_0,a_0,\\ldots,s_T,a_T)\\sim\\pi_\\theta}\\left[\\sum_{t=0}^{T}\\left(R(s_t,a_t)-\\beta D_{\\mathrm{KL}}\\left(\\pi_\\theta(\\cdot\\mid s_t)\\,\\|\\,\\pi_{\\mathrm{ref}}(\\cdot\\mid s_t)\\right)\\right)\\right].\\tag{3}",
+    "to": "\\max_{\\theta}\\mathbb{E}_{(s_T,a_T,\\ldots,s_1,a_1)\\sim\\pi_\\theta}\\!\\left[\\sum_{t=1}^{T}\\left(R(s_t,a_t)-\\beta D_{\\mathrm{KL}}\\!\\left(\\pi_\\theta(\\cdot\\mid s_t)\\,\\|\\,\\pi_{\\mathrm{ref}}(\\cdot\\mid s_t)\\right)\\right)\\right]\\tag{3}",
+    "reason": "在统一反向层级索引下仅对 T 次真实转移求和"
+  },
+  "PxihG": {
+    "from": "\\hat{A}_t^i=\\frac{R(x_0^i,c)-\\operatorname{mean}\\left(\\{R(x_0^i,c)\\}_{i=1}^{G}\\right)}{\\operatorname{std}\\left(\\{R(x_0^i,c)\\}_{i=1}^{G}\\right)}.\\tag{4}",
+    "to": "\\hat{A}_t^i=\\frac{r(x_0^i,c)-\\operatorname{mean}\\left(\\{r(x_0^j,c)\\}_{j=1}^{G}\\right)}{\\operatorname{std}\\left(\\{r(x_0^j,c)\\}_{j=1}^{G}\\right)}\\tag{4}",
+    "reason": "组内统计用哑指标 j；图像奖励沿用前文的 r，与转移奖励 R 区分"
+  },
+  "TD6ig": {
+    "from": "\\mathcal{J}_{\\mathrm{Flow\\text{-}GRPO}}(\\theta)=\\mathbb{E}_{c\\sim\\mathcal{C},\\,\\{x^i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid c)}\\left[f(r,\\hat{A},\\theta,\\varepsilon,\\beta)\\right].\\tag{5}",
+    "to": "\\mathcal{J}_{\\mathrm{Flow\\text{-}GRPO}}(\\theta)=\\mathbb{E}_{c\\sim\\mathcal{C},\\,\\{x^i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid c)}\\left[f(r,\\hat{A},\\theta,\\varepsilon,\\beta)\\right]\\tag{5}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "D8ile": {
+    "from": "f(r,\\hat{A},\\theta,\\varepsilon,\\beta)=\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{T}\\sum_{t=0}^{T-1}\\left(\\min\\left(r_t^i(\\theta)\\hat{A}_t^i,\\operatorname{clip}\\left(r_t^i(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_t^i\\right)-\\beta D_{\\mathrm{KL}}\\left(\\pi_\\theta\\,\\|\\,\\pi_{\\mathrm{ref}}\\right)\\right),",
+    "to": "f(r,\\hat A,\\theta,\\varepsilon,\\beta)=\\frac1G\\sum_{i=1}^G\\frac1T\\sum_{t=1}^T\\Bigl[\\min\\!\\bigl(r_t^i(\\theta)\\hat A_t^i,\\operatorname{clip}(r_t^i(\\theta),1-\\varepsilon,1+\\varepsilon)\\hat A_t^i\\bigr)-\\beta D_{\\mathrm{KL}}(\\pi_\\theta\\,\\|\\,\\pi_{\\mathrm{ref}})\\Bigr]\\tag{6}",
+    "reason": "统一求和为 t=1..T，避免使用 x_-1；桌面宽度内保持单行"
+  },
+  "B6pKq": {
+    "from": "r_t^i(\\theta)=\\frac{p_\\theta\\left(x_{t-1}^i\\mid x_t^i,c\\right)}{p_{\\theta_{\\mathrm{old}}}\\left(x_{t-1}^i\\mid x_t^i,c\\right)}.",
+    "to": "r_t^i(\\theta)=\\frac{p_\\theta\\left(x_{t-1}^i\\mid x_t^i,c\\right)}{p_{\\theta_{\\mathrm{old}}}\\left(x_{t-1}^i\\mid x_t^i,c\\right)}\\tag{7}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "Z21rd": {
+    "from": "\\mathrm{d}x_t=v_t\\,\\mathrm{d}t.\\tag{6}",
+    "to": "\\mathrm{d}x_t=v_t\\,\\mathrm{d}t\\tag{8}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "zUuKg": {
+    "from": "\\mathrm{d}x_t=\\left(v_t(x_t)-\\frac{\\sigma_t^2}{2}\\nabla\\log p_t(x_t)\\right)\\mathrm{d}t+\\sigma_t\\,\\mathrm{d}w.\\tag{7}",
+    "to": "\\mathrm{d}x_t=\\left(v_t(x_t)-\\frac{\\sigma_t^2}{2}\\nabla\\log p_t(x_t)\\right)\\mathrm{d}t+\\sigma_t\\,\\mathrm{d}w\\tag{9}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "L0FyJ": {
+    "from": "\\mathrm{d}x_t=\\left[v_t(x_t)+\\frac{\\sigma_t^2}{2t}\\left(x_t+(1-t)v_t(x_t)\\right)\\right]\\mathrm{d}t+\\sigma_t\\,\\mathrm{d}w.\\tag{8}",
+    "to": "\\mathrm{d}x_t=\\left[v_t(x_t)+\\frac{\\sigma_t^2}{2t}\\left(x_t+(1-t)v_t(x_t)\\right)\\right]\\mathrm{d}t+\\sigma_t\\,\\mathrm{d}w\\tag{10}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点"
+  },
+  "GkBnT": {
+    "from": "x_{t+\\Delta t}=x_t+\\left[v_\\theta(x_t,t)+\\frac{\\sigma_t^2}{2t}\\left(x_t+(1-t)v_\\theta(x_t,t)\\right)\\right]\\Delta t+\\sigma_t\\sqrt{\\Delta t}\\,\\epsilon.\\tag{9}",
+    "to": "x_{t+\\Delta t}=x_t+\\left[v_\\theta(x_t,t)+\\frac{\\sigma_t^2}{2t}\\left(x_t+(1-t)v_\\theta(x_t,t)\\right)\\right]\\Delta t+\\sigma_t\\sqrt{|\\Delta t|}\\,\\epsilon\\tag{11}",
+    "reason": "逆时间步长为负，噪声项必须使用 sqrt(abs(dt))；对齐作者实现 sqrt(-dt)"
+  },
+  "EUtaA": {
+    "from": "D_{\\mathrm{KL}}\\left(\\pi_\\theta\\,\\|\\,\\pi_{\\mathrm{ref}}\\right)=\\frac{\\left\\|\\bar{x}_{t+\\Delta t,\\theta}-\\bar{x}_{t+\\Delta t,\\mathrm{ref}}\\right\\|^2}{2\\sigma_t^2\\Delta t}=\\frac{\\Delta t}{2}\\left(\\frac{\\sigma_t(1-t)}{2t}+\\frac{1}{\\sigma_t}\\right)^2\\left\\|v_\\theta(x_t,t)-v_{\\mathrm{ref}}(x_t,t)\\right\\|^2.",
+    "to": "\\begin{aligned}D_{\\mathrm{KL}}(\\pi_\\theta\\,\\|\\,\\pi_{\\mathrm{ref}})&=\\frac{\\|\\bar{x}_{t+\\Delta t,\\theta}-\\bar{x}_{t+\\Delta t,\\mathrm{ref}}\\|^2}{2\\sigma_t^2|\\Delta t|}\\\\&=\\frac{|\\Delta t|}{2}\\left(\\frac{\\sigma_t(1-t)}{2t}+\\frac1{\\sigma_t}\\right)^2\\|v_\\theta(x_t,t)-v_{\\mathrm{ref}}(x_t,t)\\|^2\\end{aligned}\\tag{12}",
+    "reason": "KL 使用正方差 sigma²abs(dt)，结果非负；仅将必要的长等式换行"
+  },
+  "VTNA1": {
+    "from": "t_{\\tau_1},\\tau_2,\\ldots,\\tau_{N-1}",
+    "to": "\\tau_1,\\tau_2,\\ldots,\\tau_{N-1}",
+    "reason": "采样时间点为 tau，不是 t_tau；对齐原文 Algorithm 1"
+  },
+  "L75Jo": {
+    "from": "\\mathcal{L}(\\boldsymbol{\\theta}, \\boldsymbol{\\theta}^-)",
+    "to": "\\mathcal L_{\\mathrm{CT}}^N(\\theta,\\theta^-)",
+    "reason": "明确该段讨论离散时间 CT 损失"
+  },
+  "od7dd": {
+    "from": "\\mathcal{L}(\\boldsymbol{\\theta}, \\boldsymbol{\\theta}^-) \\geqslant O(\\Delta t)",
+    "to": "\\mathcal L_{\\mathrm{CT}}^N(\\theta,\\theta^-)=\\Omega(\\Delta t)",
+    "reason": "以标准渐近下界记号明确原文 >=O 的含义；适用条件在正文与定理中给出"
+  },
+  "PH1Cs": {
+    "from": "P(s_{t+1}\\mid s_t,a_t)\\triangleq\\left(\\delta_c,\\delta_{t-1},\\delta_{x_{t-1}}\\right).",
+    "to": "P(s_{t-1}\\mid s_t,a_t)\\triangleq\\left(\\delta_c,\\delta_{t-1},\\delta_{x_{t-1}}\\right)",
+    "reason": "下一状态对应噪声层级 t-1，避免 t+1 与分布中的 t-1 混用"
+  },
+  "htod0": {
+    "from": "\\rho_0(s_0)\\triangleq\\left(p(c),\\delta_T,\\mathcal{N}(0,I)\\right).",
+    "to": "\\rho_0(s_T)\\triangleq\\left(p(c),\\delta_T,\\mathcal{N}(0,I)\\right)",
+    "reason": "初始状态位于最大噪声层级 T"
+  },
+  "X4D6w": {
+    "from": "t=0",
+    "to": "t=1",
+    "reason": "终止奖励在生成 x0 的最后一次转移上给出"
+  },
+  "QZizO": {
+    "from": "f:(x_t,t)\\mapsto x_\\epsilon.",
+    "to": "f:(x_t,t)\\mapsto x_\\epsilon",
+    "reason": "删除段落末尾附着在公式中的标点"
+  },
+  "wrW0B": {
+    "from": "f(x_t,t)=f(x_{t'},t').",
+    "to": "f(x_t,t)=f(x_{t'},t')",
+    "reason": "删除段落末尾附着在公式中的标点"
+  },
+  "BUGa9": {
+    "from": "f_\\theta(x,t)\\equiv 0.",
+    "to": "f_\\theta(x,t)\\equiv 0",
+    "reason": "删除段落末尾附着在公式中的标点"
+  }
+}

@@ -481,3 +481,10 @@
     margin-inline: .15em;
   }
 }
+
+/* GenAI Sakura IV: keep the imported figures proportional and equations readable. */
+[data-post="genai-sakura-iv"] .lake-document h1 { margin-block: 28px 14px; }
+[data-post="genai-sakura-iv"] .lake-document h2 { margin-block: 24px 12px; }
+[data-post="genai-sakura-iv"] .lake-document > :first-child { margin-top: 0; }
+[data-post="genai-sakura-iv"] .lake-document .lake-image { display: block; margin: 12px auto; height: auto; }
+[data-post="genai-sakura-iv"] #ubf506b44 .lake-image { width: min(100%, 900px) !important; }

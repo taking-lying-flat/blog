@@ -1,5 +1,52 @@
 [
   {
+    "file": "../notes/genai-sakura-iv/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "genai-sakura-iv",
+    "series": "genai-sakura",
+    "seriesOrder": 4,
+    "category": "generative",
+    "date": "2026-10-05",
+    "description": "生成模型笔记：Consistency Models 的概率流、一致性蒸馏与独立训练，以及 Flow-GRPO 的在线强化学习、ODE-to-SDE 转换和 KL 正则化",
+    "appendMarkdown": [
+      {
+        "file": "cm-parameterization.md",
+        "before": "ud983ec12",
+        "tag": "p"
+      },
+      {
+        "file": "cm-distillation-loss.md",
+        "before": "u1cd990c4",
+        "tag": "p"
+      },
+      {
+        "file": "cm-distillation-bound.md",
+        "before": "ud3c98c67",
+        "tag": "p"
+      },
+      {
+        "file": "cm-training-equivalence.md",
+        "before": "uccabb3cf",
+        "tag": "p"
+      },
+      {
+        "file": "flow-figure-notation.md",
+        "before": "ub7da6c07",
+        "tag": "p"
+      }
+    ],
+    "tags": [
+      "生成模型",
+      "Consistency Models",
+      "一致性蒸馏",
+      "Flow-GRPO",
+      "Flow Matching",
+      "GRPO"
+    ]
+  },
+  {
     "file": "../notes/diffusion-language-models/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
