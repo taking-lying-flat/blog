@@ -22,6 +22,11 @@
         "tag": "p"
       },
       {
+        "file": "cm-distillation-algorithm.md",
+        "before": "ufb9fcdd3",
+        "tag": "p"
+      },
+      {
         "file": "cm-distillation-bound.md",
         "before": "f2cD1"
       },
@@ -31,7 +36,7 @@
         "tag": "p"
       },
       {
-        "file": "cm-training-algorithms.md",
+        "file": "cm-training-algorithm.md",
         "before": "wia23"
       },
       {

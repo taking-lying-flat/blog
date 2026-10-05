@@ -447,22 +447,6 @@
   text-align: left;
 }
 
-[data-post="genai-sakura-iii"] .cm-training-algorithms {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-  margin: 16px 2em;
-}
-[data-post="genai-sakura-iii"] .cm-training-algorithms .cm-algorithm {
-  min-width: 0;
-  margin: 0;
-}
-@media (max-width: 1000px) {
-  [data-post="genai-sakura-iii"] .cm-training-algorithms {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
 /* DDPM: training and sampling side by side, transcribed from Algorithms 1–2. */
 [data-post="genai-sakura-ii"] .ddpm-algorithms {
   display: grid;
@@ -603,6 +587,8 @@
   [data-post="genai-flow-i"] #uf6eeb1c4,
   [data-post="genai-sakura-ii"] #ua19a4f0c,
   [data-post="genai-sakura-iii"] #ub461f999,
+  [data-post="genai-sakura-iii"] #u8a43648e,
+  [data-post="genai-sakura-iii"] #ub0be2ae7,
   [data-post="genai-sakura-ii"] #ub9e5ae72,
   [data-post="genai-sakura-ii"] #u6ac9e45f,
   [data-post="rope"] li:has(.math-inline[aria-label="\\widetilde{\\mathbf q}_m=R_m^{(d)}W_q\\mathbf x_m"]) {
