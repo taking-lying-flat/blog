@@ -533,6 +533,37 @@ for (const post of posts) {
   post.content = markdown.renderer.render(tokens, markdown.options, { slug: post.slug });
 }
 
+// Move complete paper sections without rewriting their archived Lake sources.
+for (const post of posts) {
+  for (const { heading, to } of post.moveSections ?? []) {
+    const target = posts.find(candidate => candidate.slug === to);
+    if (!target || target === post || post.format !== 'lake' || target.format !== 'lake' ||
+        !/^[\w-]+$/.test(heading)) throw new Error(`Invalid paper section move: ${heading}`);
+    const pattern = new RegExp(`<h1\\b[^>]*\\sid="${heading}"[^>]*>[\\s\\S]*?(?=<h1\\b|$)`, 'g');
+    const matches = [...post.content.matchAll(pattern)];
+    if (matches.length !== 1) throw new Error(`Paper section must match once: ${heading}`);
+    const section = matches[0][0];
+    const ids = new Set([...section.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]));
+    for (const id of ids) {
+      if (target.content.includes(` id="${id}"`)) throw new Error(`Duplicate moved anchor: ${id}`);
+    }
+    // Assets remain with the original archive; keep their URLs valid from the new page.
+    const addition = section.replace(/(\s(?:src|href))="(assets\/[^\"]+)"/g,
+      (_match, attribute, url) => `${attribute}="../${post.slug}/${url}"`)
+      .replace(/\shref="#([^"]+)"/g, (match, id) => ids.has(id)
+        ? match : ` href="../${post.slug}/#${id}"`);
+    post.content = post.content.replace(section, '').replace(/\shref="#([^"]+)"/g,
+      (match, id) => ids.has(id) ? ` href="../${target.slug}/#${id}"` : match);
+    target.content += addition;
+    const text = section.replace(/<[^>]*>/g, '');
+    const minutes = Math.max(1, Math.ceil(
+      (text.match(/\p{Script=Han}/gu)?.length ?? 0) / 300 +
+      (text.match(/[A-Za-z]+/g)?.length ?? 0) / 200));
+    post.readingMinutes = Math.max(1, post.readingMinutes - minutes);
+    target.readingMinutes += minutes;
+  }
+}
+
 // Keep the existing anchors while presenting all titles in the same typeface.
 for (const post of posts) {
   post.title = plainTitle(post.title);
