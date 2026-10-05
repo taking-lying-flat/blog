@@ -1,1 +1,1 @@
-## Examples: VE, VP SDEs And Beyond
+## 🦊 Examples: VE, VP SDEs And Beyond
