@@ -400,6 +400,7 @@ for (const post of posts) {
     for (const replacement of replacements) {
       if (![replacement.id, replacement.start].every((id) => /^[\w-]+$/.test(id)) ||
           (replacement.before !== undefined && !/^[\w-]+$/.test(replacement.before)) ||
+          !['p', 'h1', 'h2', 'h3'].includes(replacement.beforeTag ?? 'p') ||
           !/^[\w-]+\.md$/.test(replacement.file)) {
         throw new Error(`Invalid Lake section replacement: ${post.slug}`);
       }
@@ -414,7 +415,7 @@ for (const post of posts) {
       const html = markdown.renderer.render(tokens, markdown.options, { slug: post.slug });
       // A final section ends at the next paper heading, or at the document end.
       const end = replacement.before
-        ? `(?=<p\\b[^>]*\\sid="${replacement.before}"[^>]*>)` : '(?=<h1\\b|$)';
+        ? `(?=<${replacement.beforeTag ?? 'p'}\\b[^>]*\\sid="${replacement.before}"[^>]*>)` : '(?=<h1\\b|$)';
       const anchor = new RegExp(`<p\\b[^>]*\\sid="${replacement.start}"[^>]*>[\\s\\S]*?${end}`, 'g');
       if ([...post.content.matchAll(anchor)].length !== 1) {
         throw new Error(`Missing or repeated Lake section: ${replacement.id}`);

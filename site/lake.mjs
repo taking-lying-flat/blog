@@ -336,18 +336,21 @@ export async function readLake(file, escape, renderMath) {
       content = content.replace(/<(ul|ol)\b[^>]*>\s*<\/\1>/g, '');
     }
   }
-  // Restore a single-item list to ordinary prose without changing its contents.
-  for (const id of manifest.listItemParagraphs ?? []) {
-    if (typeof id !== 'string' || !/^[\w-]+$/.test(id)) {
-      throw new Error(`Invalid Lake list paragraph: ${id}`);
+  // Restore complete lists to ordinary prose without changing their contents.
+  for (const entry of manifest.listItemParagraphs ?? []) {
+    const ids = Array.isArray(entry) ? entry : [entry];
+    if (!ids.length || ids.some(id => typeof id !== 'string' || !/^[\w-]+$/.test(id))) {
+      throw new Error(`Invalid Lake list paragraph: ${entry}`);
     }
     const inline = '(?:(?!<\\/?(?:ul|ol|li)\\b)[\\s\\S])*';
-    const pattern = new RegExp(`<ul\\b[^>]*>\\s*(<li\\b[^>]*\\sid="${id}"[^>]*>)(${inline})<\\/li>\\s*<\\/ul>`, 'g');
+    const items = ids.map(id => `<li\\b[^>]*\\sid="${id}"[^>]*>${inline}<\\/li>\\s*`).join('');
+    const pattern = new RegExp(`<ul\\b[^>]*>\\s*${items}<\\/ul>`, 'g');
     if ([...content.matchAll(pattern)].length !== 1) {
-      throw new Error(`Lake list paragraph must match one single-item list: ${id}`);
+      throw new Error(`Lake list paragraphs must match one complete list: ${ids.join(', ')}`);
     }
-    content = content.replace(pattern, (_match, opening, body) =>
-      `${opening.replace(/^<li\b/, '<p')}${body}</p>`);
+    content = content.replace(pattern, html => html
+      .replace(/^<ul\b[^>]*>\s*|<\/ul>$/g, '')
+      .replace(/<li\b/g, '<p').replace(/<\/li>/g, '</p>'));
   }
   // Join adjacent paragraphs without changing inline formatting or formulas.
   for (const { into, next, separator = '' } of manifest.paragraphJoins ?? []) {

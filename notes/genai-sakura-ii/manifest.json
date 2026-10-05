@@ -10,7 +10,13 @@
     {"from": "gg7Mz", "before": "sMidY"}
   ],
   "separatorRemovals": ["Qwc5t"],
-  "listItemParagraphs": ["u3a106068", "u8fbddd00"],
+  "listItemParagraphs": [
+    "u3a106068", "u8fbddd00",
+    ["u8f7bd67e", "u1b4a82d2"],
+    ["u18d80f1d", "u20b0336b", "u8da6366c"],
+    ["ueb9c2c6f", "ub9e5ae72"],
+    "uadd55737", "u39c250f2"
+  ],
   "paragraphSplits": [
     { "paragraph": "u1fafc3b9", "before": "u99ac2d1d", "id": "ddim-forward-conditioning" },
     { "paragraph": "u1093eb6a", "before": "ue7481687", "id": "ddim-weighted-objective" }
