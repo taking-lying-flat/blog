@@ -415,6 +415,34 @@
   text-align: left;
 }
 
+/* DDPM: training and sampling side by side, transcribed from Algorithms 1–2. */
+[data-post="genai-sakura-ii"] .ddpm-algorithms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 18px 0;
+}
+[data-post="genai-sakura-ii"] .ddpm-algorithm {
+  min-width: 0;
+  margin: 0;
+  padding: 0 8px 8px;
+  border-block: 1px solid #929292;
+  white-space: normal;
+}
+[data-post="genai-sakura-ii"] .ddpm-algorithm figcaption {
+  padding: 6px 0;
+  border-bottom: 1px solid #c7c7c7;
+  font: 16px/1.5 var(--article-serif);
+}
+[data-post="genai-sakura-ii"] .ddpm-algorithm .equation { margin: 6px 0 0; }
+[data-post="genai-sakura-ii"] .ddpm-algorithm .equation mjx-container[display="true"] {
+  min-width: 0;
+  text-align: left;
+}
+@media (max-width: 760px) {
+  [data-post="genai-sakura-ii"] .ddpm-algorithms { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* LLaDA: paper-style LaTeX algorithms, scoped to the diffusion article. */
 [data-post="diffusion-language-models"] .lake-document h1 { margin-block: 28px 14px; }
 [data-post="diffusion-language-models"] .lake-document h2 { margin-block: 24px 12px; }

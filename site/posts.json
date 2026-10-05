@@ -520,6 +520,10 @@
         "file": "ncsn-algorithm.md",
         "before": "u7c3fd815",
         "tag": "li"
+      },
+      {
+        "file": "ddpm-algorithms.md",
+        "before": "RLaWy"
       }
     ]
   },
