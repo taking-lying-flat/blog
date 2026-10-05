@@ -13,6 +13,9 @@
     { "into": "uada3f50c", "next": "u9da16c0f", "separator": "。" }
   ],
   "blockRemovals": [
+    { "tag": "p", "id": "uc510a26c" },
+    { "tag": "p", "id": "ub9ace9ae" },
+    { "tag": "li", "id": "u932423f4" },
     { "tag": "p", "id": "u313e0e29" },
     { "tag": "li", "id": "u3bd09949" },
     { "tag": "li", "id": "u43c9afa6" },
