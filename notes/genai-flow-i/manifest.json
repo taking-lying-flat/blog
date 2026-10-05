@@ -10,6 +10,11 @@
     { "into": "uada3f50c", "next": "u9da16c0f", "separator": "。" }
   ],
   "blockRemovals": [
+    { "tag": "p", "id": "u313e0e29" },
+    { "tag": "li", "id": "u3bd09949" },
+    { "tag": "li", "id": "u43c9afa6" },
+    { "tag": "li", "id": "u50995c89" },
+    { "tag": "p", "id": "u217e2ae9" },
     { "tag": "p", "id": "u074b4d48" },
     { "tag": "li", "id": "u3c7b894a" },
     { "tag": "li", "id": "ud736dd70" },
