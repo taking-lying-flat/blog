@@ -247,16 +247,25 @@ export async function readLake(file, escape, renderMath) {
     }
     content = content.slice(0, boundaries[0]) + content.slice(boundaries[1]);
   }
-  // Remove explicitly selected blocks while preserving the archived export.
-  for (const { tag, id } of manifest.blockRemovals ?? []) {
-    if (!['p', 'li'].includes(tag) || !/^[\w-]+$/.test(id)) {
+  // Remove selected blocks, or their tails from an explicit inline anchor.
+  for (const { tag, id, trimFrom } of manifest.blockRemovals ?? []) {
+    if (!['p', 'li'].includes(tag) || !/^[\w-]+$/.test(id) ||
+        (trimFrom !== undefined && !/^[\w-]+$/.test(trimFrom))) {
       throw new Error(`Invalid Lake block removal: ${id}`);
     }
     const block = new RegExp(`<${tag}\\b[^>]*\\sid="${id}"[^>]*>[\\s\\S]*?<\\/${tag}>`, 'g');
     if ([...content.matchAll(block)].length !== 1) {
       throw new Error(`Lake block removal must match once: ${id}`);
     }
-    content = content.replace(block, '');
+    content = content.replace(block, (html) => {
+      if (trimFrom === undefined) return '';
+      const start = new RegExp(`<span\\b[^>]*\\sid="${trimFrom}"[^>]*>`, 'g');
+      const matches = [...html.matchAll(start)];
+      if (matches.length !== 1) {
+        throw new Error(`Lake tail removal anchor must match once: ${id}/${trimFrom}`);
+      }
+      return html.slice(0, matches[0].index) + `</${tag}>`;
+    });
   }
   const text = content.replace(/<[^>]*>/g, '');
   return {

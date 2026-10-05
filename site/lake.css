@@ -144,6 +144,11 @@
   line-height: 1.9;
 }
 [data-post="genai-sakura-i"] .lake-document :is(
+  #u40bf6aad, #ue5697ec4, #u454ac2db
+) + ul {
+  line-height: 1.9;
+}
+[data-post="genai-sakura-i"] .lake-document :is(
   [data-card-id="Dz85y"], [data-card-id="RrZPF"], [data-card-id="Utb9e"],
   [data-card-id="Ku91N"], [data-card-id="ps927"]
 ) {

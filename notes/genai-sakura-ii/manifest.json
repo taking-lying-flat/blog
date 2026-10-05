@@ -6,7 +6,10 @@
   },
   "title": "Generative Models II",
   "blockRemovals": [
-    { "tag": "p", "id": "uffa31900" }
+    { "tag": "p", "id": "uffa31900" },
+    { "tag": "li", "id": "ue3dd6f81" },
+    { "tag": "p", "id": "ue2114eec" },
+    { "tag": "li", "id": "u7c3fd815", "trimFrom": "u901ae6d5" }
   ],
   "listItemMerges": [
     { "into": "u0b50299e", "items": ["uec383790", "u3848afde"] },
@@ -14,11 +17,6 @@
     { "into": "u2043291d", "items": ["uec0deb50", "u1bb2347e"] },
     { "into": "u8f951a11", "items": ["u825c94df"] },
     { "into": "u39839d42", "items": ["u67446f95"] }
-  ],
-  "paragraphMerges": [
-    { "paragraph": "u40bf6aad", "listItem": "u0b50299e" },
-    { "paragraph": "ue5697ec4", "listItem": "u0db141a1" },
-    { "paragraph": "u454ac2db", "listItem": "u2043291d" }
   ],
   "metadata": {
     "doc-version": "1",
