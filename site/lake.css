@@ -447,6 +447,11 @@
   text-align: left;
 }
 
+[data-post="genai-sakura-iii"] .cm-algorithm > p {
+  margin: 8px 10px 0;
+  font: 15px/1.5 var(--article-serif);
+}
+
 /* DDPM: training and sampling side by side, transcribed from Algorithms 1–2. */
 [data-post="genai-sakura-ii"] .ddpm-algorithms {
   display: grid;
