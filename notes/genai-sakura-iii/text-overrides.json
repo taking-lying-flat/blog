@@ -628,5 +628,10 @@
     "from": "一种获得高阶求解器的直接思路，是将传统的显式 Runge–Kutta（RK）方法直接应用于扩散 ODE。具体而言，RK 方法通常将解写为如下积分形式",
     "to": "一种获得高阶求解器的直接思路，是将传统的显式 Runge–Kutta（RK）方法直接应用于扩散 ODE。RK 方法通常将解写为如下积分形式",
     "reason": "删除用户指定的赘余过渡词并整理标点"
+  },
+  "u85485c23": {
+    "from": "，并利用所谓的 stiff order conditions 去近似前",
+    "to": "，并利用 stiff order conditions 去近似前",
+    "reason": "删除用户指定的赘词"
   }
 }
