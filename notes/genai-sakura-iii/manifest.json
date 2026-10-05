@@ -113,6 +113,14 @@
     {
       "tag": "p",
       "id": "u5b58ce20"
+    },
+    {
+      "tag": "li",
+      "id": "ud1bd068b"
+    },
+    {
+      "tag": "li",
+      "id": "u319fbdba"
     }
   ],
   "separatorRemovals": [
@@ -168,6 +176,11 @@
     {
       "into": "u2f5288e1",
       "next": "u670793c8",
+      "separator": "。"
+    },
+    {
+      "into": "u4e5900d8",
+      "next": "uc68c564c",
       "separator": "。"
     }
   ],
