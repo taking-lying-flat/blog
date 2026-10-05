@@ -43,43 +43,50 @@
     "UKXYz"
   ],
   "paragraphListItems": [
-    "u7afa5e46",
     "u42176bdc"
   ],
   "paragraphSplits": [
     {
-      "paragraph": "ud15c85e9",
-      "before": "uae85cebb",
-      "id": "sde-smld-noise-range"
-    },
-    {
       "paragraph": "uec06f9b1",
       "before": "u587d0da7",
       "id": "sde-smld-convergence"
-    },
-    {
-      "paragraph": "u151ed2ee",
-      "before": "uafbe3716",
-      "id": "sde-ddpm-transition"
-    },
-    {
-      "paragraph": "sde-ddpm-transition",
-      "before": "u23b07ef3",
-      "id": "sde-ddpm-marginal"
     }
   ],
   "paragraphListItemsAfterMoves": [
-    "sde-smld-noise-range",
-    "sde-ddpm-transition",
-    "sde-ddpm-marginal",
     "uec06f9b1",
-    "ud15c85e9",
     "ufddaadd3",
-    "ud9b00355",
-    "u151ed2ee",
+    "u7afa5e46",
     "u42b3be2a",
-    "ue2f29d3b",
     "u4cbed6fd"
+  ],
+  "paragraphLabels": [
+    {
+      "paragraph": "ud15c85e9",
+      "text": "SMLD："
+    },
+    {
+      "paragraph": "u151ed2ee",
+      "text": "DDPM："
+    }
+  ],
+  "paragraphJoins": [
+    {
+      "into": "ud15c85e9",
+      "next": "u4b9df525"
+    },
+    {
+      "into": "u7afa5e46",
+      "next": "ud9b00355",
+      "separator": "。"
+    },
+    {
+      "into": "u42b3be2a",
+      "next": "ue3f311be"
+    },
+    {
+      "into": "u42b3be2a",
+      "next": "ue2f29d3b"
+    }
   ],
   "metadata": {
     "doc-version": "1",

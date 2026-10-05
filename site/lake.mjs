@@ -387,6 +387,17 @@ export async function readLake(file, escape, renderMath) {
     const destination = target >= end ? target - moved.length : target;
     content = content.slice(0, destination) + moved + content.slice(destination);
   }
+  // Keep short method labels on the same line as their introductory paragraph.
+  for (const { paragraph, text: label } of manifest.paragraphLabels ?? []) {
+    if (!/^[\w-]+$/.test(paragraph) || typeof label !== 'string' || !label.trim()) {
+      throw new Error(`Invalid Lake paragraph label: ${paragraph}`);
+    }
+    const opening = new RegExp(`<p\\b[^>]*\\sid="${paragraph}"[^>]*>`, 'g');
+    if ([...content.matchAll(opening)].length !== 1) {
+      throw new Error(`Lake paragraph label must match once: ${paragraph}`);
+    }
+    content = content.replace(opening, match => `${match}<strong>${escape(label)}</strong> `);
+  }
   // Split or moved paragraphs can become list items once their final position exists.
   for (const id of manifest.paragraphListItemsAfterMoves ?? []) paragraphListItem(id);
   const text = content.replace(/<[^>]*>/g, '');

@@ -458,8 +458,6 @@
       "DPM-Solver"
     ],
     "appendMarkdown": [
-      {"file": "smld-heading.md", "before": "ud15c85e9", "tag": "li"},
-      {"file": "ddpm-heading.md", "before": "u151ed2ee", "tag": "li"},
       {"file": "sde-examples-heading.md", "before": "ucd7e3920", "tag": "p"}
     ],
     "moveSections": [
@@ -544,13 +542,10 @@
         {"math": "\\begin{aligned}\nJ_\\sigma(\\epsilon_\\theta)\n&=\\sum_{t=1}^{T}\\frac{\\kappa_t^2(1-\\alpha_t)}{2\\sigma_t^2\\alpha_t}\\,\\mathbb E_{x_0,\\epsilon_t}\\!\\left[\\left\\|\\epsilon_\\theta^{(t)}(x_t)-\\epsilon_t\\right\\|_2^2\\right]+C\n=L_\\gamma(\\epsilon_\\theta)+C\\\\[6pt]\n&\\text{where}\\quad\\gamma_t=\\frac{\\kappa_t^2(1-\\alpha_t)}{2\\sigma_t^2\\alpha_t},\\quad\\kappa_1:=1,\\quad t=1,\\ldots,T\n\\end{aligned}"}
       ],
       "KMj1j": [
-        "u4b9df525",
         "u74d9e20c",
         "uff45c8d2",
-        "ue3f311be",
         "ua07a89a9",
         "ua3f94f9a",
-        "u607098d5",
         "ua9371ba1",
         "u53fda684",
         "u946ccef8",
