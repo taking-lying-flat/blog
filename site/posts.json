@@ -457,6 +457,11 @@
       "EDM",
       "DPM-Solver"
     ],
+    "appendMarkdown": [
+      {"file": "smld-heading.md", "before": "ud15c85e9", "tag": "li"},
+      {"file": "ddpm-heading.md", "before": "u151ed2ee", "tag": "li"},
+      {"file": "sde-examples-heading.md", "before": "ucd7e3920", "tag": "p"}
+    ],
     "moveSections": [
       {
         "heading": "KMj1j",

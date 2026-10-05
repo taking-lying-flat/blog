@@ -33,6 +33,10 @@
     {
       "tag": "p",
       "id": "ucbcfa258"
+    },
+    {
+      "tag": "p",
+      "id": "sde-smld-convergence"
     }
   ],
   "separatorRemovals": [
@@ -66,10 +70,16 @@
   ],
   "paragraphListItemsAfterMoves": [
     "sde-smld-noise-range",
-    "sde-smld-convergence",
     "sde-ddpm-transition",
     "sde-ddpm-marginal",
-    "uec06f9b1"
+    "uec06f9b1",
+    "ud15c85e9",
+    "ufddaadd3",
+    "ud9b00355",
+    "u151ed2ee",
+    "u42b3be2a",
+    "ue2f29d3b",
+    "u4cbed6fd"
   ],
   "metadata": {
     "doc-version": "1",
