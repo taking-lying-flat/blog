@@ -6,6 +6,8 @@
   },
   "title": "Generative Models II",
   "blockRemovals": [
+    { "tag": "p", "id": "ue079a6db" },
+    { "tag": "p", "id": "u3dd48db0" },
     { "tag": "p", "id": "ue42bca8a" },
     { "tag": "p", "id": "u19d23dc8" },
     { "tag": "p", "id": "ubc2c422c" },
