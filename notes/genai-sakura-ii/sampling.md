@@ -10,9 +10,7 @@ x_{t-1} = \sqrt{\alpha_{t-1}}\underbrace{\left(\frac{x_t-\sqrt{1-\alpha_t}\,\eps
 
 - **当所有 $`\sigma_t=0`$ 时，除 $`t=1`$ 外，前向过程在给定 $`x_{t-1}`$ 和 $`x_0`$ 后是确定性的；生成过程中的随机噪声项也随之消失**。此时，模型通过固定映射将潜变量 $`x_T`$ 转换为样本 $`x_0`$，形成隐式概率模型，称为去噪扩散隐式模型（DDIM）。它沿用 DDPM 的训练目标，而对应的前向过程不再是扩散过程
 
-### Accelerated Generation Processes
-
-上述前向过程包含 $`T`$ 步，生成过程也相应需要执行 $`T`$ 步采样。但只要边缘分布 $`q_\sigma(x_t\mid x_0)`$ 保持不变，去噪目标 $`L_1`$ 就不依赖具体的前向过程，因此可以构造长度小于 $`T`$ 的前向过程，**无需重新训练即可缩短生成链**
+**Accelerated Generation Processes：** 上述前向过程包含 $`T`$ 步，生成过程也相应需要执行 $`T`$ 步采样。但只要边缘分布 $`q_\sigma(x_t\mid x_0)`$ 保持不变，去噪目标 $`L_1`$ 就不依赖具体的前向过程，因此可以构造长度小于 $`T`$ 的前向过程，**无需重新训练即可缩短生成链**
 
 - 将前向过程定义在潜变量子集 $`\{x_{\tau_1},\ldots,x_{\tau_S}\}`$ 上，其中 $`\tau`$ 是 $`[1,\ldots,T]`$ 中长度为 $`S`$ 的严格递增子序列。在这些变量上构造顺序前向过程，并保持边缘分布 $`q(x_{\tau_i}\mid x_0)=\mathcal N(\sqrt{\alpha_{\tau_i}}x_0,(1-\alpha_{\tau_i})I)`$。生成过程按 $`\operatorname{reversed}(\tau)`$ 的顺序采样，该序列称为**采样轨迹**；当其长度远小于 $`T`$ 时，所需的迭代次数显著减少
 
@@ -42,4 +40,4 @@ d\bar x(t)=\epsilon_\theta^{(t)}\!\left(\frac{\bar x(t)}{\sqrt{\sigma(t)^2+1}}\r
 \frac{x_{t-\Delta t}}{\sqrt{\alpha_{t-\Delta t}}}=\frac{x_t}{\sqrt{\alpha_t}}+\frac12\left(\frac{1-\alpha_{t-\Delta t}}{\alpha_{t-\Delta t}}-\frac{1-\alpha_t}{\alpha_t}\right)\sqrt{\frac{\alpha_t}{1-\alpha_t}}\,\epsilon_\theta^{(t)}(x_t)
 ```
 
-- 当 $`\alpha_t`$ 与 $`\alpha_{t-\Delta t}`$ 足够接近时，两种更新近似一致；在较少采样步数下，离散化方式会带来差异。DDIM 直接相对于 $`\sigma(t)`$ 取 Euler 步，而上述 probability flow ODE 的离散化相对于 $`t`$ 取步
+- 当 $`\alpha_t`$ 与 $`\alpha_{t-\Delta t}`$ 足够接近时，两种更新近似一致；在较少采样步数下，离散化方式会带来差异
