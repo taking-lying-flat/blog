@@ -97,6 +97,22 @@ export async function readLake(file, escape, renderMath) {
       content = content.replace(emptyBlock, '');
     }
   }
+  // Join consecutive explanations without losing their formula cards or anchors.
+  for (const { into, items } of manifest.listItemMerges ?? []) {
+    if (!/^[\w-]+$/.test(into) || !Array.isArray(items) || !items.length ||
+        items.some(id => !/^[\w-]+$/.test(id) || id === into)) {
+      throw new Error(`Invalid Lake list merge: ${into}`);
+    }
+    const inline = '(?:(?!<\\/?(?:p|ul|ol|li)\\b)[\\s\\S])*';
+    for (const id of items) {
+      const pattern = new RegExp(`(<li\\b[^>]*\\sid="${into}"[^>]*>)(${inline})<\\/li>\\s*(<li\\b[^>]*\\sid="${id}"[^>]*>)(${inline})<\\/li>`, 'g');
+      if ([...content.matchAll(pattern)].length !== 1) {
+        throw new Error(`Lake list merge must match adjacent items once: ${into}, ${id}`);
+      }
+      content = content.replace(pattern, (_match, opening, body, itemOpening, itemBody) =>
+        `${opening}${body}${itemOpening.replace(/^<li\b/, '<span')}${itemBody}</span></li>`);
+    }
+  }
   // Join an adjacent single-item list to its paragraph, preserving inline cards.
   for (const { paragraph, listItem } of manifest.paragraphMerges ?? []) {
     if (!/^[\w-]+$/.test(paragraph) || !/^[\w-]+$/.test(listItem)) {

@@ -136,27 +136,12 @@
 }
 /* Keep the additional generative assumption within the preceding explanation. */
 [data-post="genai-sakura-i"] .lake-document #uff7263e8 { margin-left: 2em; }
-/* Supporting derivations sit below the two main NCSN training steps. */
-[data-post="genai-sakura-i"] .lake-document :is(#u825c94df, #u67446f95) {
-  margin-left: 2em;
-  list-style-type: circle;
-}
 /* Keep the three score-matching methods readable around their objectives. */
 [data-post="genai-sakura-i"] .lake-document :is(
   #u40bf6aad, #ue5697ec4, #u454ac2db
 ) {
   margin-block: 18px 8px;
   line-height: 1.9;
-}
-[data-post="genai-sakura-i"] .lake-document :is(
-  #u40bf6aad, #ue5697ec4, #u454ac2db
-) + ul {
-  line-height: 1.9;
-}
-[data-post="genai-sakura-i"] .lake-document :is(
-  #u40bf6aad, #ue5697ec4, #u454ac2db
-) + ul > li {
-  margin-bottom: 8px;
 }
 [data-post="genai-sakura-i"] .lake-document :is(
   [data-card-id="Dz85y"], [data-card-id="RrZPF"], [data-card-id="Utb9e"],
@@ -196,7 +181,7 @@
   /* Keep the quantization projection and AWQ search endings on their lines. */
   .lake-document :is(#u85c0c527, #uf2442aea) { width: calc(100% + 32px); }
   /* Small, local adjustments keep short formulas with the preceding text. */
-  .lake-document :is(#u7c3fd815, #ub6a9714d, #u8adcd7c0, #u19c78a7f, #uec06f9b1) {
+  .lake-document :is(#ub6a9714d, #u8adcd7c0, #u19c78a7f, #uec06f9b1) {
     width: calc(100% + 16px);
   }
   .lake-document :is(#u74939caa, #ub461f999) { width: calc(100% + 32px); }
