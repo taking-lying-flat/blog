@@ -9,6 +9,12 @@ const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 export async function readLake(file, escape, renderMath) {
   const directory = path.dirname(file);
   const manifest = JSON.parse(await readFile(path.join(directory, 'manifest.json'), 'utf8'));
+  const mathRemovals = new Set(manifest.mathRemovals ?? []);
+  for (const id of mathRemovals) {
+    if (!manifest.cards.some(card => card.kind === 'math' && card.value.id === id)) {
+      throw new Error(`Missing Lake formula selected for removal: ${id}`);
+    }
+  }
   const source = await readFile(file);
   if (sha256(source) !== manifest.source.sha256) throw new Error(`Lake source changed: ${file}`);
   const overrides = JSON.parse(await readFile(path.join(directory, 'math-overrides.json'), 'utf8')
@@ -180,6 +186,7 @@ export async function readLake(file, escape, renderMath) {
     if (!asset) throw new Error(`Missing Lake asset: ${card.asset}`);
     if (card.kind === 'math') {
       mathCount++;
+      if (mathRemovals.has(card.value.id)) return '';
       if (asset.html) {
         const code = overrides[card.value.id]?.to ?? card.value.code;
         return `<span class="lake-math lake-math-numbered" data-card-id="${id}" role="math" aria-label="${escape(code)}">${asset.html}</span>`;

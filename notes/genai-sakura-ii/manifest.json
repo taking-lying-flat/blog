@@ -5,6 +5,7 @@
     "bytes": 328985
   },
   "title": "Generative Models II",
+  "mathRemovals": ["KxsoF"],
   "blockRemovals": [
     { "tag": "p", "id": "uffa31900" },
     { "tag": "li", "id": "ue3dd6f81" },
