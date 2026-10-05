@@ -149,5 +149,46 @@
     "to": "q_\\sigma(x_{t-1}\\mid x_0)",
     "reason": "证明中使用同一个 q_sigma，删除未定义的 q_hat",
     "reference": "https://arxiv.org/abs/2010.02502"
+  },
+  "By0Y1": {
+    "from": "\\begin{aligned}\nL_{t-1} - C &= \\mathbb{E}_{\\mathbf{x}_0, \\boldsymbol{\\epsilon}} \\left[ \\frac{1}{2\\sigma_t^2} \\left\\| \\tilde{\\boldsymbol{\\mu}}_t \\left( \\mathbf{x}_t(\\mathbf{x}_0, \\boldsymbol{\\epsilon}), \\frac{1}{\\sqrt{\\bar{\\alpha}_t}}(\\mathbf{x}_t(\\mathbf{x}_0, \\boldsymbol{\\epsilon}) - \\sqrt{1 - \\bar{\\alpha}_t}\\boldsymbol{\\epsilon}) \\right) - \\boldsymbol{\\mu}_\\theta(\\mathbf{x}_t(\\mathbf{x}_0, \\boldsymbol{\\epsilon}), t) \\right\\|^2 \\right] \\\\\n&= \\mathbb{E}_{\\mathbf{x}_0, \\boldsymbol{\\epsilon}} \\left[ \\frac{1}{2\\sigma_t^2} \\left\\| \\frac{1}{\\sqrt{\\alpha_t}} \\left( \\mathbf{x}_t(\\mathbf{x}_0, \\boldsymbol{\\epsilon}) - \\frac{\\beta_t}{\\sqrt{1 - \\bar{\\alpha}_t}} \\boldsymbol{\\epsilon} \\right) - \\boldsymbol{\\mu}_\\theta(\\mathbf{x}_t(\\mathbf{x}_0, \\boldsymbol{\\epsilon}), t) \\right\\|^2 \\right]\n\\end{aligned}",
+    "to": "\\begin{aligned}\nL_{t-1} - C &= \\mathbb{E}_{\\mathbf{x}_0, \\boldsymbol{\\epsilon}} \\left[ \\frac{1}{2\\sigma_t^2} \\left\\| \\tilde{\\boldsymbol{\\mu}}_t \\left( \\mathbf{x}_t(\\mathbf{x}_0, \\boldsymbol{\\epsilon}), \\frac{1}{\\sqrt{\\bar{\\alpha}_t}}(\\mathbf{x}_t(\\mathbf{x}_0, \\boldsymbol{\\epsilon}) - \\sqrt{1 - \\bar{\\alpha}_t}\\boldsymbol{\\epsilon}) \\right) - \\boldsymbol{\\mu}_\\theta(\\mathbf{x}_t(\\mathbf{x}_0, \\boldsymbol{\\epsilon}), t) \\right\\|^2 \\right] \\\\\n&= \\mathbb{E}_{\\mathbf{x}_0, \\boldsymbol{\\epsilon}} \\left[ \\frac{1}{2\\sigma_t^2} \\left\\| \\frac{1}{\\sqrt{\\alpha_t}} \\left( \\mathbf{x}_t(\\mathbf{x}_0, \\boldsymbol{\\epsilon}) - \\frac{\\beta_t}{\\sqrt{1 - \\bar{\\alpha}_t}} \\boldsymbol{\\epsilon} \\right) - \\boldsymbol{\\mu}_\\theta(\\mathbf{x}_t(\\mathbf{x}_0, \\boldsymbol{\\epsilon}), t) \\right\\|^2 \\right]\n\\end{aligned}",
+    "reason": "重新渲染旧公式图片，恢复源码中的对齐列和续行缩进，数学内容不变"
+  },
+  "HIAlH": {
+    "from": "\\delta_+(x) = \\begin{cases} \\infty & \\text{if } x = 1 \\\\ x + \\frac{1}{255} & \\text{if } x < 1 \\end{cases} \\qquad \\delta_-(x) = \\begin{cases} -\\infty & \\text{if } x = -1 \\\\ x - \\frac{1}{255} & \\text{if } x > -1 \\end{cases}",
+    "to": "\\delta_+(x)=\\begin{cases}\n\\infty & \\text{if}\\quad x=1\\\\[3pt]\nx+\\frac{1}{255} & \\text{if}\\quad x<1\n\\end{cases}\n\\qquad\n\\delta_-(x)=\\begin{cases}\n-\\infty & \\text{if}\\quad x=-1\\\\[3pt]\nx-\\frac{1}{255} & \\text{if}\\quad x>-1\n\\end{cases}",
+    "reason": "分段函数按值与条件分列对齐，显式保留 if 与条件之间的间距"
+  },
+  "JzONN": {
+    "from": "\\boxed{\n\\begin{aligned}\nL_{\\text{vlb}} &:= L_0 + L_1 + \\dots + L_{T-1} + L_T \\\\\nL_0 &:= -\\log p_\\theta(x_0|x_1) \\\\\nL_{t-1} &:= D_{KL}(q(x_{t-1}|x_t, x_0) \\parallel p_\\theta(x_{t-1}|x_t)) \\\\\nL_T &:= D_{KL}(q(x_T|x_0) \\parallel p(x_T))\n\\end{aligned}\n}",
+    "to": "\\boxed{\n\\begin{aligned}\nL_{\\text{vlb}} &:= L_0 + L_1 + \\dots + L_{T-1} + L_T \\\\\nL_0 &:= -\\log p_\\theta(x_0|x_1) \\\\\nL_{t-1} &:= D_{KL}(q(x_{t-1}|x_t, x_0) \\parallel p_\\theta(x_{t-1}|x_t)) \\\\\nL_T &:= D_{KL}(q(x_T|x_0) \\parallel p(x_T))\n\\end{aligned}\n}",
+    "reason": "重新渲染旧公式图片，恢复源码中的对齐列和续行缩进，数学内容不变"
+  },
+  "Go5lC": {
+    "from": "\\boxed{\n\\begin{aligned}\n\\bar{\\alpha}_t &= \\frac{f(t)}{f(0)}, \\quad f(t) = \\cos\\left( \\frac{t/T + s}{1 + s} \\cdot \\frac{\\pi}{2} \\right)^2 \\\\\n\\beta_t &= 1 - \\frac{\\bar{\\alpha}_t}{\\bar{\\alpha}_{t-1}}\n\\end{aligned}\n}",
+    "to": "\\boxed{\n\\begin{aligned}\n\\bar{\\alpha}_t &= \\frac{f(t)}{f(0)}, \\quad f(t) = \\cos\\left( \\frac{t/T + s}{1 + s} \\cdot \\frac{\\pi}{2} \\right)^2 \\\\\n\\beta_t &= 1 - \\frac{\\bar{\\alpha}_t}{\\bar{\\alpha}_{t-1}}\n\\end{aligned}\n}",
+    "reason": "重新渲染旧公式图片，恢复源码中的对齐列和续行缩进，数学内容不变"
+  },
+  "E35V3": {
+    "from": "\\begin{aligned}\nJ_\\sigma(\\epsilon_\\theta) &:= \\mathbb{E}_{\\boldsymbol{x}_{0:T} \\sim q_\\sigma(\\boldsymbol{x}_{0:T})} [\\log q_\\sigma(\\boldsymbol{x}_{1:T}|\\boldsymbol{x}_0) - \\log p_\\theta(\\boldsymbol{x}_{0:T})] \\\\\n&= \\mathbb{E}_{\\boldsymbol{x}_{0:T} \\sim q_\\sigma(\\boldsymbol{x}_{0:T})} \\left[ \\log q_\\sigma(\\boldsymbol{x}_T|\\boldsymbol{x}_0) + \\sum_{t=2}^T \\log q_\\sigma(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t, \\boldsymbol{x}_0) - \\sum_{t=1}^T \\log p_\\theta^{(t)}(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t) - \\log p_\\theta(\\boldsymbol{x}_T) \\right]\n\\end{aligned}",
+    "to": "\\begin{aligned}\nJ_\\sigma(\\epsilon_\\theta) &:= \\mathbb{E}_{\\boldsymbol{x}_{0:T} \\sim q_\\sigma(\\boldsymbol{x}_{0:T})} [\\log q_\\sigma(\\boldsymbol{x}_{1:T}|\\boldsymbol{x}_0) - \\log p_\\theta(\\boldsymbol{x}_{0:T})] \\\\\n&= \\mathbb{E}_{\\boldsymbol{x}_{0:T} \\sim q_\\sigma(\\boldsymbol{x}_{0:T})} \\left[ \\log q_\\sigma(\\boldsymbol{x}_T|\\boldsymbol{x}_0) + \\sum_{t=2}^T \\log q_\\sigma(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t, \\boldsymbol{x}_0) - \\sum_{t=1}^T \\log p_\\theta^{(t)}(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t) - \\log p_\\theta(\\boldsymbol{x}_T) \\right]\n\\end{aligned}",
+    "reason": "重新渲染旧公式图片，恢复源码中的对齐列和续行缩进，数学内容不变"
+  },
+  "YXWuo": {
+    "from": "p_\\theta(x_0\\mid x_1)=\\prod_{i=1}^D \\int_{\\delta^-(x_0^i)}^{\\delta^+(x_0^i)} \\mathcal N\\!\\big(x;\\mu_\\theta^i(x_1,1),\\sigma_1^2\\big)\\,dx",
+    "to": "p_\\theta(x_0\\mid x_1)=\\prod_{i=1}^D \\int_{\\delta_-(x_0^i)}^{\\delta_+(x_0^i)} \\mathcal N\\!\\big(x;\\mu_\\theta^i(x_1,1),\\sigma_1^2\\big)\\,dx",
+    "reason": "积分上下限的 δ 下标与下方定义及 DDPM 原论文式 (13) 一致",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf#page=4"
+  },
+  "H7ycN": {
+    "from": "p_\\theta^{(t)}(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t) = \\begin{cases} \\mathcal{N}(f_\\theta^{(1)}(\\boldsymbol{x}_1), \\sigma_1^2 \\boldsymbol{I}) & \\text{if } t = 1 \\\\ q_\\sigma(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t, f_\\theta^{(t)}(\\boldsymbol{x}_t)) & \\text{otherwise,} \\end{cases}",
+    "to": "p_\\theta^{(t)}(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t) = \\begin{cases} \\mathcal{N}(f_\\theta^{(1)}(\\boldsymbol{x}_1), \\sigma_1^2 \\boldsymbol{I}) & \\text{if}\\quad t = 1 \\\\ q_\\sigma(\\boldsymbol{x}_{t-1}|\\boldsymbol{x}_t, f_\\theta^{(t)}(\\boldsymbol{x}_t)) & \\text{otherwise,} \\end{cases}",
+    "reason": "显式保留分段条件 if 与变量之间的间距"
+  },
+  "ylJ1Q": {
+    "from": "\\boxed{ L_{\\text{vlb}} = E_{t \\sim p_t} \\left[ \\frac{L_t}{p_t} \\right], \\text{ where } p_t \\propto \\sqrt{E[L_t^2]} \\text{ and } \\sum p_t = 1 }",
+    "to": "\\boxed{ L_{\\text{vlb}} = E_{t \\sim p_t} \\left[ \\frac{L_t}{p_t} \\right], \\quad\\text{where}\\quad p_t \\propto \\sqrt{E[L_t^2]} \\quad\\text{and}\\quad \\sum p_t = 1 }",
+    "reason": "修复 where、and 与相邻数学符号粘连"
   }
 }

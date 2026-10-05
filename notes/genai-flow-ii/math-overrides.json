@@ -21,5 +21,30 @@
     "from": "\\boldsymbol{Z}^{k+1} = \\mathrm{RectFlow}((Z_0^k, Z_1^k))， \\text{ with } (Z_0^0, Z_1^0) = (X_0, X_1)",
     "to": "\\boldsymbol{Z}^{k+1} = \\mathrm{RectFlow}((Z_0^k, Z_1^k)), \\text{ with } (Z_0^0, Z_1^0) = (X_0, X_1)",
     "reason": "将公式中的中文标点统一为英文标点，不改变数学含义"
+  },
+  "AOU53": {
+    "from": "\\begin{aligned}\n\\frac{d}{dt} p_t(x) &= \\int \\left( \\frac{d}{dt} p_t(x|x_1) \\right) q(x_1) dx_1 = - \\int \\mathrm{div} \\left( u_t(x|x_1) p_t(x|x_1) \\right) q(x_1) dx_1 \\\\\n&= -\\mathrm{div} \\left( \\int u_t(x|x_1) p_t(x|x_1) q(x_1) dx_1 \\right) = -\\mathrm{div}(u_t(x) p_t(x)),\n\\end{aligned}",
+    "to": "\\begin{aligned}\n\\frac{d}{dt} p_t(x) &= \\int \\left( \\frac{d}{dt} p_t(x|x_1) \\right) q(x_1) dx_1 = - \\int \\mathrm{div} \\left( u_t(x|x_1) p_t(x|x_1) \\right) q(x_1) dx_1 \\\\\n&= -\\mathrm{div} \\left( \\int u_t(x|x_1) p_t(x|x_1) q(x_1) dx_1 \\right) = -\\mathrm{div}(u_t(x) p_t(x)),\n\\end{aligned}",
+    "reason": "重新渲染旧公式图片，恢复源码中的对齐列和续行缩进，数学内容不变"
+  },
+  "BJ8VS": {
+    "from": "\\begin{aligned}\n\\|v_t(x) - u_t(x)\\|^2 &= \\|v_t(x)\\|^2 - 2\\langle v_t(x), u_t(x)\\rangle + \\|u_t(x)\\|^2 \\\\\n\\|v_t(x) - u_t(x|x_1)\\|^2 &= \\|v_t(x)\\|^2 - 2\\langle v_t(x), u_t(x|x_1)\\rangle + \\|u_t(x|x_1)\\|^2\n\\end{aligned}",
+    "to": "\\begin{aligned}\n\\|v_t(x) - u_t(x)\\|^2 &= \\|v_t(x)\\|^2 - 2\\langle v_t(x), u_t(x)\\rangle + \\|u_t(x)\\|^2 \\\\\n\\|v_t(x) - u_t(x|x_1)\\|^2 &= \\|v_t(x)\\|^2 - 2\\langle v_t(x), u_t(x|x_1)\\rangle + \\|u_t(x|x_1)\\|^2\n\\end{aligned}",
+    "reason": "重新渲染旧公式图片，恢复源码中的对齐列和续行缩进，数学内容不变"
+  },
+  "tEg6R": {
+    "from": "\\begin{aligned}\n\\mathbb{E}_{p_t(x)}\\|v_t(x)\\|^2 &= \\int \\|v_t(x)\\|^2 p_t(x)dx = \\int \\|v_t(x)\\|^2 p_t(x|x_1)q(x_1)dx_1 dx \\\\\n&= \\mathbb{E}_{q(x_1),p_t(x|x_1)}\\|v_t(x)\\|^2,\n\\end{aligned}",
+    "to": "\\begin{aligned}\n\\mathbb{E}_{p_t(x)}\\|v_t(x)\\|^2 &= \\int \\|v_t(x)\\|^2 p_t(x)dx = \\int \\|v_t(x)\\|^2 p_t(x|x_1)q(x_1)dx_1 dx \\\\\n&= \\mathbb{E}_{q(x_1),p_t(x|x_1)}\\|v_t(x)\\|^2,\n\\end{aligned}",
+    "reason": "重新渲染旧公式图片，恢复源码中的对齐列和续行缩进，数学内容不变"
+  },
+  "Xz20E": {
+    "from": "\\begin{aligned}\n\\mathbb{E}_{p_t(x)} \\langle v_t(x), u_t(x) \\rangle &= \\int \\left\\langle v_t(x), \\frac{\\int u_t(x|x_1)p_t(x|x_1)q(x_1)dx_1}{p_t(x)} \\right\\rangle p_t(x)dx \\\\\n&= \\int \\left\\langle v_t(x), \\int u_t(x|x_1)p_t(x|x_1)q(x_1)dx_1 \\right\\rangle dx \\\\\n&= \\int \\langle v_t(x), u_t(x|x_1) \\rangle p_t(x|x_1)q(x_1)dx_1 dx \\\\\n&= \\mathbb{E}_{q(x_1),p_t(x|x_1)} \\langle v_t(x), u_t(x|x_1) \\rangle,\n\\end{aligned}",
+    "to": "\\begin{aligned}\n\\mathbb{E}_{p_t(x)} \\langle v_t(x), u_t(x) \\rangle &= \\int \\left\\langle v_t(x), \\frac{\\int u_t(x|x_1)p_t(x|x_1)q(x_1)dx_1}{p_t(x)} \\right\\rangle p_t(x)dx \\\\\n&= \\int \\left\\langle v_t(x), \\int u_t(x|x_1)p_t(x|x_1)q(x_1)dx_1 \\right\\rangle dx \\\\\n&= \\int \\langle v_t(x), u_t(x|x_1) \\rangle p_t(x|x_1)q(x_1)dx_1 dx \\\\\n&= \\mathbb{E}_{q(x_1),p_t(x|x_1)} \\langle v_t(x), u_t(x|x_1) \\rangle,\n\\end{aligned}",
+    "reason": "重新渲染旧公式图片，恢复源码中的对齐列和续行缩进，数学内容不变"
+  },
+  "gKKd5": {
+    "from": "\\text{where} ~ \\epsilon_\\Theta := \\frac{-2}{\\lambda'_t b_t}(v_\\Theta - \\frac{a'_t}{a_t}z).",
+    "to": "\\text{where}\\quad \\epsilon_\\Theta := \\frac{-2}{\\lambda'_t b_t}(v_\\Theta - \\frac{a'_t}{a_t}z).",
+    "reason": "使用显式数学间距，避免 where 与噪声预测符号粘连"
   }
 }

@@ -105,9 +105,9 @@
 }
 .lake-document .lake-image-cropped { position: relative; overflow: hidden; }
 .lake-document .lake-image-cropped img { position: absolute; display: block; max-width: none; }
-/* Give Sakura III's DDPM paragraph two extra character widths on desktop. */
+/* Small local fits must stay clear of the table-of-contents column. */
 @media (min-width: 1152px) {
-  .lake-document #u151ed2ee { width: calc(100% + 32px); }
+  .lake-document #u151ed2ee { width: calc(100% + 16px); }
   /* Keep the quantization projection and AWQ search endings on their lines. */
   .lake-document :is(#u85c0c527, #uf2442aea) { width: calc(100% + 32px); }
   /* Small, local adjustments keep short formulas with the preceding text. */
@@ -115,10 +115,6 @@
     width: calc(100% + 16px);
   }
   .lake-document :is(#u74939caa, #ub461f999) { width: calc(100% + 32px); }
-}
-@media (min-width: 1280px) {
-  .lake-document :is(#u584477c8, #u39839d42) { width: calc(100% + 64px); }
-  .lake-document #u0db141a1 { width: calc(100% + 80px); }
 }
 @media (max-width: 640px) {
   .lake-document h1 { font-size: 26px; line-height: 36px; margin: 36px 0 18px; }

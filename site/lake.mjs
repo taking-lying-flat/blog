@@ -49,7 +49,8 @@ export async function readLake(file, escape, renderMath) {
     const code = overrides[card.value.id]?.to ?? card.value.code;
     // Numbered equations need responsive MathJax layout, not a fixed-width image.
     const original = assets.get(card.asset) ?? { width: '100%' };
-    if (card.asset && !invalidMath.has(card.asset) && code === card.value.code &&
+    // An explicit override can repair a stale SVG without changing its LaTeX.
+    if (card.asset && !invalidMath.has(card.asset) && !Object.hasOwn(overrides, card.value.id) &&
         !/\\(?:mathcal|mathscr|tag)\b/.test(code)) continue;
     const key = JSON.stringify([code, original.width]);
     if (!generated.has(key)) {
