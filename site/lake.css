@@ -425,7 +425,7 @@
 [data-post="genai-flow-i"] .flow-algorithm .equation { margin: 6px 0 0; }
 [data-post="genai-flow-i"] .flow-algorithm .equation mjx-container[display="true"] {
   min-width: 0;
-  text-align: center;
+  text-align: left;
 }
 
 /* DDPM: training and sampling side by side, transcribed from Algorithms 1–2. */
