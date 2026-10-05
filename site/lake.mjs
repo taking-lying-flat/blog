@@ -303,6 +303,9 @@ export async function readLake(file, escape, renderMath) {
       }
       return html.slice(0, matches[0].index) + `</${tag}>`;
     });
+    if (tag === 'li') {
+      content = content.replace(/<(ul|ol)\b[^>]*>\s*<\/\1>/g, '');
+    }
   }
   const text = content.replace(/<[^>]*>/g, '');
   return {
