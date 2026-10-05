@@ -134,6 +134,13 @@
 [data-post="genai-sakura-ii"] .lake-document [data-card-id="IUyp4"] {
   margin-block: 12px;
 }
+/* Keep the additional generative assumption within the preceding explanation. */
+[data-post="genai-sakura-i"] .lake-document #uff7263e8 { margin-left: 2em; }
+/* Supporting derivations sit below the two main NCSN training steps. */
+[data-post="genai-sakura-i"] .lake-document :is(#u825c94df, #u67446f95) {
+  margin-left: 2em;
+  list-style-type: circle;
+}
 /* Keep the three score-matching methods readable around their objectives. */
 [data-post="genai-sakura-i"] .lake-document :is(
   #u40bf6aad, #ue5697ec4, #u454ac2db
