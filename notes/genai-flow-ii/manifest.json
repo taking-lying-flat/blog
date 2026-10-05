@@ -10205,5 +10205,23 @@
       },
       "asset": "assets/math/09f20158c71efc9b091145e22e75850d.svg"
     }
+  ],
+  "blockRemovals": [
+    {
+      "tag": "p",
+      "id": "u94fa7fc3"
+    },
+    {
+      "tag": "li",
+      "id": "uf668bde6"
+    },
+    {
+      "tag": "li",
+      "id": "u56fce528"
+    },
+    {
+      "tag": "p",
+      "id": "u3bdf5881"
+    }
   ]
 }
