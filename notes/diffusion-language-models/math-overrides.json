@@ -1,0 +1,32 @@
+{
+  "ZJtrz": {
+    "from": "\\underbrace{\\max_{\\theta}\\mathbb{E}_{p_{\\mathrm{data}}(x)}\\log p_\\theta(x)\\;\\Longleftrightarrow\\;\\min_{\\theta}\\operatorname{KL}\\left(p_{\\mathrm{data}}(x)\\,\\|\\,p_\\theta(x)\\right)}_{\\text{生成式建模原则}}.\\tag{1}",
+    "to": "\\underbrace{\\max_{\\theta}\\mathbb{E}_{p_{\\mathrm{data}}(x)}\\log p_\\theta(x)\\;\\Longleftrightarrow\\;\\min_{\\theta}\\operatorname{KL}\\left(p_{\\mathrm{data}}(x)\\,\\|\\,p_\\theta(x)\\right)}_{\\text{Generative modeling principles}}\\tag{1}",
+    "reason": "公式内文字统一为英语，去除公式末尾标点并保留原编号"
+  },
+  "oXln8": {
+    "from": "\\underbrace{p_\\theta(x)=p_\\theta(x^1)\\prod_{i=2}^{L}p_\\theta\\left(x^i\\mid x^1,\\ldots,x^{i-1}\\right)}_{\\text{自回归形式}}.\\tag{2}",
+    "to": "\\underbrace{p_\\theta(x)=p_\\theta(x^1)\\prod_{i=2}^{L}p_\\theta\\left(x^i\\mid x^1,\\ldots,x^{i-1}\\right)}_{\\text{Autoregressive formulation}}\\tag{2}",
+    "reason": "公式内文字统一为英语，去除公式末尾标点并保留原编号"
+  },
+  "a1pwy": {
+    "from": "\\mathcal{L}(\\theta)\\triangleq-\\mathbb{E}_{t,x_0,x_t}\\left[\\frac{1}{t}\\sum_{i=1}^{L}\\mathbf{1}\\left[x_t^i=\\mathrm{M}\\right]\\log p_\\theta\\left(x_0^i\\mid x_t\\right)\\right].\\tag{3}",
+    "to": "\\mathcal{L}(\\theta)\\triangleq-\\mathbb{E}_{t,x_0,x_t}\\left[\\frac{1}{t}\\sum_{i=1}^{L}\\mathbf{1}\\left[x_t^i=\\mathrm{M}\\right]\\log p_\\theta\\left(x_0^i\\mid x_t\\right)\\right]\\tag{3}",
+    "reason": "公式内文字统一为英语，去除公式末尾标点并保留原编号"
+  },
+  "BUfSi": {
+    "from": "-\\mathbb{E}_{p_{\\mathrm{data}}(x_0)}\\left[\\log p_\\theta(x_0)\\right]\\leq\\mathcal{L}(\\theta).\\tag{4}",
+    "to": "-\\mathbb{E}_{p_{\\mathrm{data}}(x_0)}\\left[\\log p_\\theta(x_0)\\right]\\leq\\mathcal{L}(\\theta)\\tag{4}",
+    "reason": "公式内文字统一为英语，去除公式末尾标点并保留原编号"
+  },
+  "M3RS7": {
+    "from": "-\\mathbb{E}_{t,p_0,r_0,r_t}\\left[\\frac{1}{t}\\sum_{i=1}^{L^{\\prime}}\\mathbf{1}\\left[r_t^i=\\mathrm{M}\\right]\\log p_\\theta\\left(r_0^i\\mid p_0,r_t\\right)\\right].\\tag{5}",
+    "to": "-\\mathbb{E}_{t,p_0,r_0,r_t}\\left[\\frac{1}{t}\\sum_{i=1}^{L^{\\prime}}\\mathbf{1}\\left[r_t^i=\\mathrm{M}\\right]\\log p_\\theta\\left(r_0^i\\mid p_0,r_t\\right)\\right]\\tag{5}",
+    "reason": "公式内文字统一为英语，去除公式末尾标点并保留原编号"
+  },
+  "mRPPU": {
+    "from": "-\\mathbb{E}_{l,r_0,r_l}\\left[\\frac{L}{l}\\sum_{i=1}^{L}\\mathbf{1}\\left[r_l^i=\\mathrm{M}\\right]\\log p_\\theta\\left(r_0^i\\mid p_0,r_l\\right)\\right].\\tag{6}",
+    "to": "-\\mathbb{E}_{l,r_0,r_l}\\left[\\frac{L}{l}\\sum_{i=1}^{L}\\mathbf{1}\\left[r_l^i=\\mathrm{M}\\right]\\log p_\\theta\\left(r_0^i\\mid p_0,r_l\\right)\\right]\\tag{6}",
+    "reason": "公式内文字统一为英语，去除公式末尾标点并保留原编号"
+  }
+}
