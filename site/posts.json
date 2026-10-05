@@ -473,6 +473,7 @@
         "ua07ebc04",
         "u46483ec8",
         "u911b83cc",
+        {"math": "x_t=\\frac{\\alpha_t}{\\alpha_s}x_s-\\alpha_t\\int_{\\lambda_s}^{\\lambda_t}e^{-\\lambda}\\hat{\\epsilon}_\\theta(\\hat{x}_\\lambda,\\lambda)\\,\\mathrm d\\lambda"},
         "ufdbae431",
         "u855bf2fd",
         "u901dadd5",
@@ -496,7 +497,8 @@
     "appendMarkdown": [
       {"file": "sde-examples-heading.md", "before": "ucd7e3920", "tag": "p"},
       {"file": "edm-heun-algorithm.md", "before": "u41879e58", "tag": "p"},
-      {"file": "edm-stochastic-algorithm.md", "before": "Z8Obz"}
+      {"file": "edm-stochastic-algorithm.md", "before": "Z8Obz"},
+      {"file": "dpm-solver-exact-solution.md", "before": "u4dad6d73", "tag": "p"}
     ],
     "moveSections": [
       {
