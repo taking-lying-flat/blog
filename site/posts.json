@@ -359,7 +359,114 @@
     "category": "policy",
     "date": "2026-09-27",
     "description": "策略优化笔记：TRPO、广义优势估计 GAE 与 PPO。",
-    "tags": ["强化学习", "TRPO", "GAE", "PPO"]
+    "tags": [
+      "强化学习",
+      "TRPO",
+      "GAE",
+      "PPO"
+    ],
+    "numberedEquationBlocks": {
+      "JH6ct": [
+        "u817a8de7",
+        "uae708aaa",
+        "ua9121dca",
+        "uc286d01d",
+        "ua70c4328",
+        "uf5748c48",
+        "u0fbd9106",
+        "u8424b736",
+        "u784e98fe",
+        "ud9aaba42",
+        "ua6b46780",
+        "u61af6f60",
+        "ufcf96bf8",
+        "ubddeda17",
+        "u05ce7a6c",
+        "u94a4898a",
+        "u8e02d2da",
+        "u09166255",
+        "u37f284cc",
+        "u0320fc99",
+        "u403b5b45",
+        "uf286a5b7",
+        "u9cbf17b2",
+        "u85538fa2",
+        "u2130facd",
+        "uaaf92795",
+        "uc69ad789",
+        "u21419e5d",
+        "u07da6d93",
+        "u9aa5c5de",
+        "u48c7598c",
+        "u27869f88",
+        "u6f29d2d9",
+        "u70a41588",
+        "u127c5de3",
+        "ua108297f"
+      ],
+      "mAQOn": [
+        "uac07e270",
+        "ufd1c6ee0",
+        "ub517c7be",
+        "u9b0efab4",
+        "u584020c1",
+        {
+          "math": "\\mathbb E_{\\substack{s_{0:\\infty}\\\\a_{0:\\infty}}}\n\\left[\\hat A_t(s_{0:\\infty},a_{0:\\infty})\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t)\\right]\n=\\mathbb E_{\\substack{s_{0:\\infty}\\\\a_{0:\\infty}}}\n\\left[A^{\\pi,\\gamma}(s_t,a_t)\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t)\\right]."
+        },
+        "uc8eef4fd",
+        {
+          "math": "\\hat A_t(s_{0:\\infty},a_{0:\\infty})\n=Q_t(s_{t:\\infty},a_{t:\\infty})-b_t(s_{0:t},a_{0:t-1}),"
+        },
+        {
+          "math": "\\mathbb E_{s_{t+1:\\infty},\\,a_{t+1:\\infty}\\mid s_t,a_t}\n\\left[Q_t(s_{t:\\infty},a_{t:\\infty})\\right]=Q^{\\pi,\\gamma}(s_t,a_t)."
+        },
+        "ud23a2193",
+        "ua8535f1e",
+        "u57cac598",
+        "u95c103c8",
+        "u75d9eaa2",
+        "u23f39508",
+        "u177a99f0",
+        "u138c1977",
+        "u3c8c853f",
+        "u1b1d40ae",
+        "u2d368d7b",
+        "udb26d585",
+        "u7ef79f49",
+        "u516ad5b4",
+        "u68f12eec",
+        "u834fcf6d",
+        "u445a48a7",
+        "uc227b6ec"
+      ],
+      "Tm8yn": [
+        "ua75c6605",
+        "ub3139d3a",
+        "u8c5fd4d8",
+        "u894c5bb8",
+        "u90c56162",
+        "u7c175980",
+        "u49917357",
+        "u25d39f45",
+        "u134e7d1b",
+        "uc919fb1a",
+        "u7d0cf8b8",
+        "u4f8bbb2d",
+        "u42c147a8"
+      ]
+    },
+    "appendMarkdown": [
+      {
+        "file": "gae-just-definition.md",
+        "before": "ub5061403",
+        "tag": "li"
+      },
+      {
+        "file": "gae-just-proposition.md",
+        "before": "ud23a2193",
+        "tag": "p"
+      }
+    ]
   },
   {
     "file": "../notes/qwen35-gated-deltanet.md",

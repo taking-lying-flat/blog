@@ -9722,5 +9722,15 @@
       },
       "asset": "assets/math/29dac1bb46607a9859d5438c8b831c80.svg"
     }
+  ],
+  "blockRemovals": [
+    {
+      "tag": "p",
+      "id": "ue246a09f"
+    },
+    {
+      "tag": "p",
+      "id": "u049fde79"
+    }
   ]
 }

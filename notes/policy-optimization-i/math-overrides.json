@@ -31,14 +31,14 @@
   },
   "x1X1a": {
     "from": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{maximize}} \\quad L_{\\theta_{\\text{old}}}(\\theta) \\\\\n&\\text{subject to} \\quad D_{\\text{KL}}^{\\max}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n}",
-    "to": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} \\quad L_{\\theta_{\\text{old}}}(\\theta) \\\\\n&\\text{subject to} \\quad D_{\\text{KL}}^{\\max}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n}",
-    "reason": "与本节代价最小化定义一致。",
+    "to": "\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} \\quad L_{\\theta_{\\text{old}}}(\\theta) \\\\\n&\\text{subject to} \\quad D_{\\text{KL}}^{\\max}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n",
+    "reason": "与本节代价最小化定义一致。 按用户要求移除公式外框，保留公式内容。",
     "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
   },
   "FTIvE": {
     "from": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{maximize}} L_{\\theta_{\\text{old}}}(\\theta) \\\\\n&\\text{subject to } \\overline{D}_{\\text{KL}}^{\\rho_{\\theta_{\\text{old}}}}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n}",
-    "to": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} L_{\\theta_{\\text{old}}}(\\theta) \\\\\n&\\text{subject to } \\overline{D}_{\\text{KL}}^{\\rho_{\\theta_{\\text{old}}}}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n}",
-    "reason": "与本节代价最小化定义一致。",
+    "to": "\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} L_{\\theta_{\\text{old}}}(\\theta) \\\\\n&\\text{subject to } \\overline{D}_{\\text{KL}}^{\\rho_{\\theta_{\\text{old}}}}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n",
+    "reason": "与本节代价最小化定义一致。 按用户要求移除公式外框，保留公式内容。",
     "reference": "https://proceedings.mlr.press/v37/schulman15.pdf"
   },
   "thCI1": {
@@ -116,5 +116,115 @@
     "from": " \\beta = \\sqrt{\\frac{2\\delta}{x^T H x}}，\\theta_{k+1} = \\theta_k + \\sqrt{\\frac{2\\delta}{x^T H x}}\\,x",
     "to": " \\beta = \\sqrt{\\frac{2\\delta}{x^T H x}},\\theta_{k+1} = \\theta_k + \\sqrt{\\frac{2\\delta}{x^T H x}}\\,x",
     "reason": "将公式中的中文标点统一为英文标点，不改变数学含义"
+  },
+  "FjN5s": {
+    "from": "\\boxed{\n\\begin{aligned}\n\\eta(\\pi)\n&=\n\\mathbb{E}_{s_0,a_0,\\ldots}\n\\left[\n\\sum_{t=0}^{\\infty}\n\\gamma^t c(s_t)\n\\right],\n\\quad \\text{where} \\\\[4pt]\ns_0 &\\sim \\rho_0(s_0),\\quad\na_t \\sim \\pi(a_t \\mid s_t),\\quad\ns_{t+1} \\sim P(s_{t+1}\\mid s_t,a_t).\n\\end{aligned}\n}",
+    "to": "\n\\begin{aligned}\n\\eta(\\pi)\n&=\n\\mathbb{E}_{s_0,a_0,\\ldots}\n\\left[\n\\sum_{t=0}^{\\infty}\n\\gamma^t c(s_t)\n\\right],\n\\quad \\text{where} \\\\[4pt]\ns_0 &\\sim \\rho_0(s_0),\\quad\na_t \\sim \\pi(a_t \\mid s_t),\\quad\ns_{t+1} \\sim P(s_{t+1}\\mid s_t,a_t).\n\\end{aligned}\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "QYQts": {
+    "from": "\\boxed{\n\\begin{aligned}\nQ_{\\pi}(s_t,a_t)\n&=\n\\mathbb{E}_{s_{t+1},a_{t+1},\\ldots}\n\\left[\n\\sum_{l=0}^{\\infty}\n\\gamma^l c(s_{t+l})\n\\right],\n\\\\[6pt]\nV_{\\pi}(s_t)\n&=\n\\mathbb{E}_{a_t,s_{t+1},\\ldots}\n\\left[\n\\sum_{l=0}^{\\infty}\n\\gamma^l c(s_{t+l})\n\\right],\n\\\\[6pt]\nA_{\\pi}(s,a)\n&=\nQ_{\\pi}(s,a)-V_{\\pi}(s),\n\\quad \\text{where}\n\\\\[4pt]\na_t\n&\\sim\n\\pi(a_t \\mid s_t),\n\\quad\ns_{t+1}\n\\sim\nP(s_{t+1}\\mid s_t,a_t),\n\\quad\n\\text{for } t \\geq 0.\n\\end{aligned}\n}",
+    "to": "\n\\begin{aligned}\nQ_{\\pi}(s_t,a_t)\n&=\n\\mathbb{E}_{s_{t+1},a_{t+1},\\ldots}\n\\left[\n\\sum_{l=0}^{\\infty}\n\\gamma^l c(s_{t+l})\n\\right],\n\\\\[6pt]\nV_{\\pi}(s_t)\n&=\n\\mathbb{E}_{a_t,s_{t+1},\\ldots}\n\\left[\n\\sum_{l=0}^{\\infty}\n\\gamma^l c(s_{t+l})\n\\right],\n\\\\[6pt]\nA_{\\pi}(s,a)\n&=\nQ_{\\pi}(s,a)-V_{\\pi}(s),\n\\quad \\text{where}\n\\\\[4pt]\na_t\n&\\sim\n\\pi(a_t \\mid s_t),\n\\quad\ns_{t+1}\n\\sim\nP(s_{t+1}\\mid s_t,a_t),\n\\quad\n\\text{for } t \\geq 0.\n\\end{aligned}\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "s9lHZ": {
+    "from": "\n\\boxed{\n\\begin{gathered}\n\\eta(\\tilde{\\pi})\n=\n\\eta(\\pi)\n+\n\\mathbb{E}_{s_0,a_0,s_1,a_1,\\ldots}\n\\left[\n\\sum_{t=0}^{\\infty}\n\\gamma^t A_{\\pi}(s_t,a_t)\n\\right],\n\\quad \\text{where}\n\\\\[4pt]\ns_0 \\sim \\rho_0(s_0),\n\\quad\na_t \\sim \\tilde{\\pi}(a_t \\mid s_t),\n\\quad\ns_{t+1} \\sim P(s_{t+1}\\mid s_t,a_t).\n\\end{gathered}\n}",
+    "to": "\n\n\\begin{gathered}\n\\eta(\\tilde{\\pi})\n=\n\\eta(\\pi)\n+\n\\mathbb{E}_{s_0,a_0,s_1,a_1,\\ldots}\n\\left[\n\\sum_{t=0}^{\\infty}\n\\gamma^t A_{\\pi}(s_t,a_t)\n\\right],\n\\quad \\text{where}\n\\\\[4pt]\ns_0 \\sim \\rho_0(s_0),\n\\quad\na_t \\sim \\tilde{\\pi}(a_t \\mid s_t),\n\\quad\ns_{t+1} \\sim P(s_{t+1}\\mid s_t,a_t).\n\\end{gathered}\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "qHFJD": {
+    "from": "\\boxed{ \\rho_{\\pi}(s) = P(s_0=s) + \\gamma P(s_1=s) + \\gamma^2 P(s_2=s) + \\cdots }",
+    "to": " \\rho_{\\pi}(s) = P(s_0=s) + \\gamma P(s_1=s) + \\gamma^2 P(s_2=s) + \\cdots ",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "AZyAg": {
+    "from": "\\boxed{\n\\eta(\\tilde{\\pi})\n=\n\\eta(\\pi)\n+\n\\sum_s\n\\rho_{\\tilde{\\pi}}(s)\n\\sum_a\n\\tilde{\\pi}(a\\mid s)\nA_{\\pi}(s,a)\n}",
+    "to": "\n\\eta(\\tilde{\\pi})\n=\n\\eta(\\pi)\n+\n\\sum_s\n\\rho_{\\tilde{\\pi}}(s)\n\\sum_a\n\\tilde{\\pi}(a\\mid s)\nA_{\\pi}(s,a)\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "m2N9e": {
+    "from": "\\boxed{\nL_{\\pi}(\\tilde{\\pi}) = \\eta(\\pi) + \\sum_s \\rho_{\\pi}(s) \\sum_a \\tilde{\\pi}(a|s) A_{\\pi}(s, a).\n}",
+    "to": "\nL_{\\pi}(\\tilde{\\pi}) = \\eta(\\pi) + \\sum_s \\rho_{\\pi}(s) \\sum_a \\tilde{\\pi}(a|s) A_{\\pi}(s, a).\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "Brp8C": {
+    "from": "\\boxed{\n\\begin{gathered}\nL_{\\pi_{\\theta_0}}(\\pi_{\\theta_0}) = \\eta(\\pi_{\\theta_0}), \\\\\n\\nabla_\\theta L_{\\pi_{\\theta_0}}(\\pi_\\theta)\\big|_{\\theta=\\theta_0} = \\nabla_\\theta \\eta(\\pi_\\theta)\\big|_{\\theta=\\theta_0}.\n\\end{gathered}\n}",
+    "to": "\n\\begin{gathered}\nL_{\\pi_{\\theta_0}}(\\pi_{\\theta_0}) = \\eta(\\pi_{\\theta_0}), \\\\\n\\nabla_\\theta L_{\\pi_{\\theta_0}}(\\pi_\\theta)\\big|_{\\theta=\\theta_0} = \\nabla_\\theta \\eta(\\pi_\\theta)\\big|_{\\theta=\\theta_0}.\n\\end{gathered}\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "MBVXv": {
+    "from": "\\boxed{\n\\pi_{\\text{new}}(a|s) = (1 - \\alpha)\\pi_{\\text{old}}(a|s) + \\alpha\\pi'(a|s)\n}",
+    "to": "\n\\pi_{\\text{new}}(a|s) = (1 - \\alpha)\\pi_{\\text{old}}(a|s) + \\alpha\\pi'(a|s)\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "pYmlV": {
+    "from": "\\boxed{\n\\eta(\\pi_{\\text{new}}) \\le L_{\\pi_{\\text{old}}}(\\pi_{\\text{new}}) + \\frac{2\\epsilon\\gamma}{(1 - \\gamma(1 - \\alpha))(1 - \\gamma)}\\alpha^2,\n}",
+    "to": "\n\\eta(\\pi_{\\text{new}}) \\le L_{\\pi_{\\text{old}}}(\\pi_{\\text{new}}) + \\frac{2\\epsilon\\gamma}{(1 - \\gamma(1 - \\alpha))(1 - \\gamma)}\\alpha^2,\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "IOqe2": {
+    "from": "\\boxed{\n\\eta(\\pi_{\\text{new}}) \\le L_{\\pi_{\\text{old}}}(\\pi_{\\text{new}}) + \\frac{2\\epsilon\\gamma}{(1 - \\gamma)^2}\\alpha^2.\n}",
+    "to": "\n\\eta(\\pi_{\\text{new}}) \\le L_{\\pi_{\\text{old}}}(\\pi_{\\text{new}}) + \\frac{2\\epsilon\\gamma}{(1 - \\gamma)^2}\\alpha^2.\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "AJEFD": {
+    "from": "\\boxed{ \\eta(\\tilde{\\pi}) \\leq L_{\\pi}(\\tilde{\\pi}) + C D_{\\mathrm{KL}}^{\\max}(\\pi,\\tilde{\\pi}), \\quad C= \\frac{2\\epsilon\\gamma}{(1-\\gamma)^2}. }",
+    "to": " \\eta(\\tilde{\\pi}) \\leq L_{\\pi}(\\tilde{\\pi}) + C D_{\\mathrm{KL}}^{\\max}(\\pi,\\tilde{\\pi}), \\quad C= \\frac{2\\epsilon\\gamma}{(1-\\gamma)^2}. ",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "sGX0n": {
+    "from": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} \\sum_s \\rho_{\\theta_{\\text{old}}}(s) \\sum_a \\pi_\\theta(a|s) A_{\\theta_{\\text{old}}}(s, a) \\\\\n&\\qquad \\text{subject to } \\overline{D}_{\\text{KL}}^{\\rho_{\\theta_{\\text{old}}}}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n}",
+    "to": "\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} \\sum_s \\rho_{\\theta_{\\text{old}}}(s) \\sum_a \\pi_\\theta(a|s) A_{\\theta_{\\text{old}}}(s, a) \\\\\n&\\qquad \\text{subject to } \\overline{D}_{\\text{KL}}^{\\rho_{\\theta_{\\text{old}}}}(\\theta_{\\text{old}}, \\theta) \\le \\delta.\n\\end{aligned}\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "LOkOl": {
+    "from": "\\boxed{\n\\sum_a \\pi_\\theta(a|s_n) A_{\\theta_{\\text{old}}}(s_n, a) = \\mathbb{E}_{a \\sim q} \\left[ \\frac{\\pi_\\theta(a|s_n)}{q(a|s_n)} A_{\\theta_{\\text{old}}}(s_n, a) \\right].\n}",
+    "to": "\n\\sum_a \\pi_\\theta(a|s_n) A_{\\theta_{\\text{old}}}(s_n, a) = \\mathbb{E}_{a \\sim q} \\left[ \\frac{\\pi_\\theta(a|s_n)}{q(a|s_n)} A_{\\theta_{\\text{old}}}(s_n, a) \\right].\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "q1z9a": {
+    "from": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} \\, \\mathbb{E}_{s \\sim \\rho_{\\theta_{\\text{old}}}, a \\sim q} \\left[ \\frac{\\pi_\\theta(a|s)}{q(a|s)} Q_{\\theta_{\\text{old}}}(s, a) \\right] \\qquad \\\\\n&\\text{subject to } \\mathbb{E}_{s \\sim \\rho_{\\theta_{\\text{old}}}} [D_{\\text{KL}}(\\pi_{\\theta_{\\text{old}}}(\\cdot|s) \\| \\pi_\\theta(\\cdot|s))] \\le \\delta.\n\\end{aligned}\n}",
+    "to": "\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} \\, \\mathbb{E}_{s \\sim \\rho_{\\theta_{\\text{old}}}, a \\sim q} \\left[ \\frac{\\pi_\\theta(a|s)}{q(a|s)} Q_{\\theta_{\\text{old}}}(s, a) \\right] \\qquad \\\\\n&\\text{subject to } \\mathbb{E}_{s \\sim \\rho_{\\theta_{\\text{old}}}} [D_{\\text{KL}}(\\pi_{\\theta_{\\text{old}}}(\\cdot|s) \\| \\pi_\\theta(\\cdot|s))] \\le \\delta.\n\\end{aligned}\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "cMKzq": {
+    "from": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} \\left[ \\nabla_\\theta L_{\\theta_{\\text{old}}}(\\theta)\\big|_{\\theta=\\theta_{\\text{old}}} \\cdot (\\theta - \\theta_{\\text{old}}) \\right] \\\\\n&\\text{subject to } \\frac{1}{2}(\\theta - \\theta_{\\text{old}})^T A(\\theta_{\\text{old}})(\\theta - \\theta_{\\text{old}}) \\le \\delta, \\\\\n&\\text{where } A(\\theta_{\\text{old}})_{ij} = \\frac{\\partial}{\\partial \\theta_i} \\frac{\\partial}{\\partial \\theta_j} \\mathbb{E}_{s \\sim \\rho_\\pi} [D_{\\text{KL}}(\\pi(\\cdot|s, \\theta_{\\text{old}}) \\| \\pi(\\cdot|s, \\theta))]\\big|_{\\theta=\\theta_{\\text{old}}}.\n\\end{aligned}\n}",
+    "to": "\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} \\left[ \\nabla_\\theta L_{\\theta_{\\text{old}}}(\\theta)\\big|_{\\theta=\\theta_{\\text{old}}} \\cdot (\\theta - \\theta_{\\text{old}}) \\right] \\\\\n&\\text{subject to } \\frac{1}{2}(\\theta - \\theta_{\\text{old}})^T A(\\theta_{\\text{old}})(\\theta - \\theta_{\\text{old}}) \\le \\delta, \\\\\n&\\text{where } A(\\theta_{\\text{old}})_{ij} = \\frac{\\partial}{\\partial \\theta_i} \\frac{\\partial}{\\partial \\theta_j} \\mathbb{E}_{s \\sim \\rho_\\pi} [D_{\\text{KL}}(\\pi(\\cdot|s, \\theta_{\\text{old}}) \\| \\pi(\\cdot|s, \\theta))]\\big|_{\\theta=\\theta_{\\text{old}}}.\n\\end{aligned}\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "Xk1Sn": {
+    "from": "\\boxed{\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} \\left[ \\nabla_\\theta L_{\\theta_{\\text{old}}}(\\theta)\\big|_{\\theta=\\theta_{\\text{old}}} \\cdot (\\theta - \\theta_{\\text{old}}) \\right] \\\\\n&\\text{subject to } \\frac{1}{2} \\| \\theta - \\theta_{\\text{old}} \\|^2 \\le \\delta.\n\\end{aligned}\n}",
+    "to": "\n\\begin{aligned}\n&\\underset{\\theta}{\\text{minimize}} \\left[ \\nabla_\\theta L_{\\theta_{\\text{old}}}(\\theta)\\big|_{\\theta=\\theta_{\\text{old}}} \\cdot (\\theta - \\theta_{\\text{old}}) \\right] \\\\\n&\\text{subject to } \\frac{1}{2} \\| \\theta - \\theta_{\\text{old}} \\|^2 \\le \\delta.\n\\end{aligned}\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "Ew0pc": {
+    "from": "\\boxed{\\hat{A}_t^{(\\infty)} = \\sum_{l=0}^{\\infty} \\gamma^l \\delta_{t+l}^V = -V(s_t) + \\sum_{l=0}^{\\infty} \\gamma^l r_{t+l}}",
+    "to": "\\hat{A}_t^{(\\infty)} = \\sum_{l=0}^{\\infty} \\gamma^l \\delta_{t+l}^V = -V(s_t) + \\sum_{l=0}^{\\infty} \\gamma^l r_{t+l}",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "r61uP": {
+    "from": "\\boxed{\n\\begin{aligned}\n\\hat{A}_t^{\\text{GAE}(\\gamma, \\lambda)} &:= (1 - \\lambda) \\big( \\hat{A}_t^{(1)} + \\lambda \\hat{A}_t^{(2)} + \\lambda^2 \\hat{A}_t^{(3)} + \\dots \\big) \\\\\n&= (1 - \\lambda) \\big( \\delta_t^V + \\lambda (\\delta_t^V + \\gamma \\delta_{t+1}^V) + \\lambda^2 (\\delta_t^V + \\gamma \\delta_{t+1}^V + \\gamma^2 \\delta_{t+2}^V) + \\dots \\big) \\\\\n&= (1 - \\lambda) \\big( \\delta_t^V (1 + \\lambda + \\lambda^2 + \\dots) + \\gamma \\delta_{t+1}^V (\\lambda + \\lambda^2 + \\lambda^3 + \\dots) + \\gamma^2 \\delta_{t+2}^V (\\lambda^2 + \\lambda^3 + \\lambda^4 + \\dots) + \\dots \\big) \\\\\n&= (1 - \\lambda) \\left( \\delta_t^V \\left( \\frac{1}{1 - \\lambda} \\right) + \\gamma \\delta_{t+1}^V \\left( \\frac{\\lambda}{1 - \\lambda} \\right) + \\gamma^2 \\delta_{t+2}^V \\left( \\frac{\\lambda^2}{1 - \\lambda} \\right) + \\dots \\right) \\\\\n&= \\sum_{l=0}^{\\infty} (\\gamma\\lambda)^l \\delta_{t+l}^V\n\\end{aligned}\n}",
+    "to": "\n\\begin{aligned}\n\\hat{A}_t^{\\text{GAE}(\\gamma, \\lambda)} &:= (1 - \\lambda) \\big( \\hat{A}_t^{(1)} + \\lambda \\hat{A}_t^{(2)} + \\lambda^2 \\hat{A}_t^{(3)} + \\dots \\big) \\\\\n&= (1 - \\lambda) \\big( \\delta_t^V + \\lambda (\\delta_t^V + \\gamma \\delta_{t+1}^V) + \\lambda^2 (\\delta_t^V + \\gamma \\delta_{t+1}^V + \\gamma^2 \\delta_{t+2}^V) + \\dots \\big) \\\\\n&= (1 - \\lambda) \\big( \\delta_t^V (1 + \\lambda + \\lambda^2 + \\dots) + \\gamma \\delta_{t+1}^V (\\lambda + \\lambda^2 + \\lambda^3 + \\dots) + \\gamma^2 \\delta_{t+2}^V (\\lambda^2 + \\lambda^3 + \\lambda^4 + \\dots) + \\dots \\big) \\\\\n&= (1 - \\lambda) \\left( \\delta_t^V \\left( \\frac{1}{1 - \\lambda} \\right) + \\gamma \\delta_{t+1}^V \\left( \\frac{\\lambda}{1 - \\lambda} \\right) + \\gamma^2 \\delta_{t+2}^V \\left( \\frac{\\lambda^2}{1 - \\lambda} \\right) + \\dots \\right) \\\\\n&= \\sum_{l=0}^{\\infty} (\\gamma\\lambda)^l \\delta_{t+l}^V\n\\end{aligned}\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "uLSR7": {
+    "from": "\\boxed{\n\\begin{aligned}\n\\text{GAE}(\\gamma, 0): \\quad \\hat{A}_t &:= \\delta_t &&= r_t + \\gamma V(s_{t+1}) - V(s_t) \\\\[1ex]\n\\text{GAE}(\\gamma, 1): \\quad \\hat{A}_t &:= \\sum_{l=0}^{\\infty} \\gamma^l \\delta_{t+l} &&= \\sum_{l=0}^{\\infty} \\gamma^l r_{t+l} - V(s_t)\n\\end{aligned}\n}",
+    "to": "\n\\begin{aligned}\n\\text{GAE}(\\gamma, 0): \\quad \\hat{A}_t &:= \\delta_t &&= r_t + \\gamma V(s_{t+1}) - V(s_t) \\\\[1ex]\n\\text{GAE}(\\gamma, 1): \\quad \\hat{A}_t &:= \\sum_{l=0}^{\\infty} \\gamma^l \\delta_{t+l} &&= \\sum_{l=0}^{\\infty} \\gamma^l r_{t+l} - V(s_t)\n\\end{aligned}\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "Hkv05": {
+    "from": "\\boxed{g^\\gamma \\approx \\mathbb{E} \\left[ \\sum_{t=0}^{\\infty} \\nabla_\\theta \\log \\pi_\\theta(a_t \\mid s_t) \\hat{A}_t^{\\text{GAE}(\\gamma, \\lambda)} \\right] = \\mathbb{E} \\left[ \\sum_{t=0}^{\\infty} \\nabla_\\theta \\log \\pi_\\theta(a_t \\mid s_t) \\sum_{l=0}^{\\infty} (\\gamma\\lambda)^l \\delta_{t+l}^V \\right]}",
+    "to": "g^\\gamma \\approx \\mathbb{E} \\left[ \\sum_{t=0}^{\\infty} \\nabla_\\theta \\log \\pi_\\theta(a_t \\mid s_t) \\hat{A}_t^{\\text{GAE}(\\gamma, \\lambda)} \\right] = \\mathbb{E} \\left[ \\sum_{t=0}^{\\infty} \\nabla_\\theta \\log \\pi_\\theta(a_t \\mid s_t) \\sum_{l=0}^{\\infty} (\\gamma\\lambda)^l \\delta_{t+l}^V \\right]",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "IIcDD": {
+    "from": "\\boxed{\n\\begin{aligned}\n\\underset{\\theta}{\\text{maximize}} \\quad & \\hat{\\mathbb{E}}_t \\left[ \\frac{\\pi_\\theta(a_t \\mid s_t)}{\\pi_{\\theta_{\\text{old}}}(a_t \\mid s_t)} \\hat{A}_t \\right] \\\\\n\\text{subject to} \\quad & \\hat{\\mathbb{E}}_t[\\text{KL}[\\pi_{\\theta_{\\text{old}}}(\\cdot \\mid s_t), \\pi_\\theta(\\cdot \\mid s_t)]] \\leq \\delta.\n\\end{aligned}\n}",
+    "to": "\n\\begin{aligned}\n\\underset{\\theta}{\\text{maximize}} \\quad & \\hat{\\mathbb{E}}_t \\left[ \\frac{\\pi_\\theta(a_t \\mid s_t)}{\\pi_{\\theta_{\\text{old}}}(a_t \\mid s_t)} \\hat{A}_t \\right] \\\\\n\\text{subject to} \\quad & \\hat{\\mathbb{E}}_t[\\text{KL}[\\pi_{\\theta_{\\text{old}}}(\\cdot \\mid s_t), \\pi_\\theta(\\cdot \\mid s_t)]] \\leq \\delta.\n\\end{aligned}\n",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
+  },
+  "fj4nD": {
+    "from": "\\boxed{L^{CLIP}(\\theta) = \\hat{\\mathbb{E}}_t \\left[ \\min(r_t(\\theta) \\hat{A}_t, \\text{clip}(r_t(\\theta), 1 - \\epsilon, 1 + \\epsilon)\\hat{A}_t) \\right]}",
+    "to": "L^{CLIP}(\\theta) = \\hat{\\mathbb{E}}_t \\left[ \\min(r_t(\\theta) \\hat{A}_t, \\text{clip}(r_t(\\theta), 1 - \\epsilon, 1 + \\epsilon)\\hat{A}_t) \\right]",
+    "reason": "按用户要求移除公式外框，保留公式内容。"
   }
 }
