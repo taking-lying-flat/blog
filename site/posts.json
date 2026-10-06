@@ -38,11 +38,6 @@
         "file": "cm-training-algorithm.md",
         "before": "wia23"
       },
-      {
-        "file": "flow-figure-notation.md",
-        "before": "ub7da6c07",
-        "tag": "p"
-      },
       "flow-grpo-stochastic-sampling-proof.md"
     ],
     "tags": ["Flow-GRPO"]

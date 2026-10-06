@@ -86,43 +86,33 @@
   },
   "TD6ig": {
     "from": "\\mathcal{J}_{\\mathrm{Flow\\text{-}GRPO}}(\\theta)=\\mathbb{E}_{c\\sim\\mathcal{C},\\,\\{x^i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid c)}\\left[f(r,\\hat{A},\\theta,\\varepsilon,\\beta)\\right].\\tag{5}",
-    "to": "\\mathcal{J}_{\\mathrm{Flow\\text{-}GRPO}}(\\theta)=\\mathbb{E}_{c\\sim\\mathcal{C},\\,\\{x^i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid c)}\\left[f(r,\\hat{A},\\theta,\\varepsilon,\\beta)\\right]\\tag{6}",
-    "reason": "按每篇论文独立连续编号，去除公式末尾标点；插入 MDP 定义后顺延公式编号"
-  },
-  "D8ile": {
-    "from": "f(r,\\hat{A},\\theta,\\varepsilon,\\beta)=\\frac{1}{G}\\sum_{i=1}^{G}\\frac{1}{T}\\sum_{t=0}^{T-1}\\left(\\min\\left(r_t^i(\\theta)\\hat{A}_t^i,\\operatorname{clip}\\left(r_t^i(\\theta),1-\\varepsilon,1+\\varepsilon\\right)\\hat{A}_t^i\\right)-\\beta D_{\\mathrm{KL}}\\left(\\pi_\\theta\\,\\|\\,\\pi_{\\mathrm{ref}}\\right)\\right),",
-    "to": "f(r,\\hat A,\\theta,\\varepsilon,\\beta)=\\frac1G\\sum_{i=1}^G\\frac1T\\sum_{t=1}^T\\Bigl[\\min\\!\\bigl(r_t^i(\\theta)\\hat A_t^i,\\operatorname{clip}(r_t^i(\\theta),1-\\varepsilon,1+\\varepsilon)\\hat A_t^i\\bigr)-\\beta D_{\\mathrm{KL}}(\\pi_\\theta\\,\\|\\,\\pi_{\\mathrm{ref}})\\Bigr]\\tag{7}",
-    "reason": "统一求和为 t=1..T，避免使用 x_-1；桌面宽度内保持单行；插入 MDP 定义后顺延公式编号"
-  },
-  "B6pKq": {
-    "from": "r_t^i(\\theta)=\\frac{p_\\theta\\left(x_{t-1}^i\\mid x_t^i,c\\right)}{p_{\\theta_{\\mathrm{old}}}\\left(x_{t-1}^i\\mid x_t^i,c\\right)}.",
-    "to": "r_t^i(\\theta)=\\frac{p_\\theta\\left(x_{t-1}^i\\mid x_t^i,c\\right)}{p_{\\theta_{\\mathrm{old}}}\\left(x_{t-1}^i\\mid x_t^i,c\\right)}\\tag{8}",
-    "reason": "按每篇论文独立连续编号，去除公式末尾标点；插入 MDP 定义后顺延公式编号"
+    "to": "\\begin{aligned}\n\\mathcal{J}_{\\mathrm{Flow\\text{-}GRPO}}(\\theta)&=\\mathbb{E}_{c\\sim\\mathcal{C},\\,\\{x^i\\}_{i=1}^{G}\\sim\\pi_{\\theta_{\\mathrm{old}}}(\\cdot\\mid c)}\\left[f(r,\\hat{A},\\theta,\\varepsilon,\\beta)\\right]\\\\[6pt]f(r,\\hat A,\\theta,\\varepsilon,\\beta)&=\\frac1G\\sum_{i=1}^G\\frac1T\\sum_{t=1}^T\\Bigl[\\min\\!\\bigl(r_t^i(\\theta)\\hat A_t^i,\\operatorname{clip}(r_t^i(\\theta),1-\\varepsilon,1+\\varepsilon)\\hat A_t^i\\bigr)-\\beta D_{\\mathrm{KL}}(\\pi_\\theta\\,\\|\\,\\pi_{\\mathrm{ref}})\\Bigr]\\\\[6pt]r_t^i(\\theta)&=\\frac{p_\\theta\\left(x_{t-1}^i\\mid x_t^i,c\\right)}{p_{\\theta_{\\mathrm{old}}}\\left(x_{t-1}^i\\mid x_t^i,c\\right)}\n\\end{aligned}\\tag{6}",
+    "reason": "GRPO 目标、被积项与概率比合并为同一组公式，统一编号为 6"
   },
   "Z21rd": {
     "from": "\\mathrm{d}x_t=v_t\\,\\mathrm{d}t.\\tag{6}",
-    "to": "\\mathrm{d}x_t=v_t\\,\\mathrm{d}t\\tag{9}",
-    "reason": "按每篇论文独立连续编号，去除公式末尾标点；插入 MDP 定义后顺延公式编号"
+    "to": "\\mathrm{d}x_t=v_t\\,\\mathrm{d}t\\tag{7}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点；合并 GRPO 目标后同步公式编号"
   },
   "zUuKg": {
     "from": "\\mathrm{d}x_t=\\left(v_t(x_t)-\\frac{\\sigma_t^2}{2}\\nabla\\log p_t(x_t)\\right)\\mathrm{d}t+\\sigma_t\\,\\mathrm{d}w.\\tag{7}",
-    "to": "\\mathrm{d}x_t=\\left(v_t(x_t)-\\frac{\\sigma_t^2}{2}\\nabla\\log p_t(x_t)\\right)\\mathrm{d}t+\\sigma_t\\,\\mathrm{d}w\\tag{10}",
-    "reason": "按每篇论文独立连续编号，去除公式末尾标点；插入 MDP 定义后顺延公式编号"
+    "to": "\\mathrm{d}x_t=\\left(v_t(x_t)-\\frac{\\sigma_t^2}{2}\\nabla\\log p_t(x_t)\\right)\\mathrm{d}t+\\sigma_t\\,\\mathrm{d}w\\tag{8}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点；合并 GRPO 目标后同步公式编号"
   },
   "L0FyJ": {
     "from": "\\mathrm{d}x_t=\\left[v_t(x_t)+\\frac{\\sigma_t^2}{2t}\\left(x_t+(1-t)v_t(x_t)\\right)\\right]\\mathrm{d}t+\\sigma_t\\,\\mathrm{d}w.\\tag{8}",
-    "to": "\\mathrm{d}x_t=\\left[v_t(x_t)+\\frac{\\sigma_t^2}{2t}\\left(x_t+(1-t)v_t(x_t)\\right)\\right]\\mathrm{d}t+\\sigma_t\\,\\mathrm{d}w\\tag{11}",
-    "reason": "按每篇论文独立连续编号，去除公式末尾标点；插入 MDP 定义后顺延公式编号"
+    "to": "\\mathrm{d}x_t=\\left[v_t(x_t)+\\frac{\\sigma_t^2}{2t}\\left(x_t+(1-t)v_t(x_t)\\right)\\right]\\mathrm{d}t+\\sigma_t\\,\\mathrm{d}w\\tag{9}",
+    "reason": "按每篇论文独立连续编号，去除公式末尾标点；合并 GRPO 目标后同步公式编号"
   },
   "GkBnT": {
     "from": "x_{t+\\Delta t}=x_t+\\left[v_\\theta(x_t,t)+\\frac{\\sigma_t^2}{2t}\\left(x_t+(1-t)v_\\theta(x_t,t)\\right)\\right]\\Delta t+\\sigma_t\\sqrt{\\Delta t}\\,\\epsilon.\\tag{9}",
-    "to": "x_{t+\\Delta t}=x_t+\\left[v_\\theta(x_t,t)+\\frac{\\sigma_t^2}{2t}\\left(x_t+(1-t)v_\\theta(x_t,t)\\right)\\right]\\Delta t+\\sigma_t\\sqrt{|\\Delta t|}\\,\\epsilon\\tag{12}",
-    "reason": "逆时间步长为负，噪声项必须使用 sqrt(abs(dt))；对齐作者实现 sqrt(-dt)；插入 MDP 定义后顺延公式编号"
+    "to": "x_{t+\\Delta t}=x_t+\\left[v_\\theta(x_t,t)+\\frac{\\sigma_t^2}{2t}\\left(x_t+(1-t)v_\\theta(x_t,t)\\right)\\right]\\Delta t+\\sigma_t\\sqrt{|\\Delta t|}\\,\\epsilon\\tag{10}",
+    "reason": "逆时间步长为负，噪声项必须使用 sqrt(abs(dt))；对齐作者实现 sqrt(-dt)；合并 GRPO 目标后同步公式编号"
   },
   "EUtaA": {
     "from": "D_{\\mathrm{KL}}\\left(\\pi_\\theta\\,\\|\\,\\pi_{\\mathrm{ref}}\\right)=\\frac{\\left\\|\\bar{x}_{t+\\Delta t,\\theta}-\\bar{x}_{t+\\Delta t,\\mathrm{ref}}\\right\\|^2}{2\\sigma_t^2\\Delta t}=\\frac{\\Delta t}{2}\\left(\\frac{\\sigma_t(1-t)}{2t}+\\frac{1}{\\sigma_t}\\right)^2\\left\\|v_\\theta(x_t,t)-v_{\\mathrm{ref}}(x_t,t)\\right\\|^2.",
-    "to": "\\begin{aligned}D_{\\mathrm{KL}}(\\pi_\\theta\\,\\|\\,\\pi_{\\mathrm{ref}})&=\\frac{\\|\\bar{x}_{t+\\Delta t,\\theta}-\\bar{x}_{t+\\Delta t,\\mathrm{ref}}\\|^2}{2\\sigma_t^2|\\Delta t|}\\\\&=\\frac{|\\Delta t|}{2}\\left(\\frac{\\sigma_t(1-t)}{2t}+\\frac1{\\sigma_t}\\right)^2\\|v_\\theta(x_t,t)-v_{\\mathrm{ref}}(x_t,t)\\|^2\\end{aligned}\\tag{13}",
-    "reason": "KL 使用正方差 sigma²abs(dt)，结果非负；仅将必要的长等式换行；插入 MDP 定义后顺延公式编号"
+    "to": "D_{\\mathrm{KL}}(\\pi_\\theta\\,\\|\\,\\pi_{\\mathrm{ref}})=\\frac{\\|\\bar{x}_{t+\\Delta t,\\theta}-\\bar{x}_{t+\\Delta t,\\mathrm{ref}}\\|^2}{2\\sigma_t^2|\\Delta t|}=\\frac{|\\Delta t|}{2}\\left(\\frac{\\sigma_t(1-t)}{2t}+\\frac1{\\sigma_t}\\right)^2\\|v_\\theta(x_t,t)-v_{\\mathrm{ref}}(x_t,t)\\|^2\\tag{11}",
+    "reason": "KL 使用正方差 sigma²abs(dt)；按要求整条等式保持单行，并同步编号"
   },
   "VTNA1": {
     "from": "t_{\\tau_1},\\tau_2,\\ldots,\\tau_{N-1}",
