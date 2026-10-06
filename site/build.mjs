@@ -756,8 +756,7 @@ const template = await readFile(path.join(root, 'template.html'), 'utf8');
 const primer = path.join(root, 'node_modules/@primer/primitives');
 const assets = new Map([
   ...['reader.css', 'reader.js', 'engagement.js', 'theme.js', 'favicon.svg', 'lake.css', 'lake.js', 'body-serif.css', 'toc.css', 'toc.js'].map((file) => [file, path.join(root, file)]),
-  ['garden-banner.png', path.join(root, 'illustrations/garden-banner.png')],
-  ['garden-ivy.png', path.join(root, 'illustrations/garden-ivy.png')],
+  ['garden-background.png', path.join(root, 'illustrations/garden-background.png')],
   ['anime-readers.png', path.join(root, 'illustrations/anime-readers.png')],
   ['anime-like.png', path.join(root, 'illustrations/anime-like.png')],
   ['anime-bookmark.png', path.join(root, 'illustrations/anime-bookmark.png')],
@@ -790,12 +789,8 @@ function page({ title, description, route = '', body, type = 'website', pageClas
 
 const home = page({
   title: 'Blog · 技术笔记', description: '关于模型、论文与源码的技术笔记。', pageClass: 'home-page',
-  body: `<div class="home-vines" aria-hidden="true">
-    <div class="home-ivy home-ivy--left"><img src="assets/garden-ivy.png" width="887" height="1774" alt="" decoding="async" draggable="false"></div>
-    <div class="home-ivy home-ivy--right"><img src="assets/garden-ivy.png" width="887" height="1774" alt="" decoding="async" draggable="false"></div>
-  </div>
-  <div class="garden-banner" aria-hidden="true">
-    <img src="assets/garden-banner.png" width="2172" height="724" alt="" decoding="async" fetchpriority="high" draggable="false">
+  body: `<div class="home-garden" aria-hidden="true">
+    <img src="assets/garden-background.png" width="1536" height="1024" alt="" decoding="async" fetchpriority="high" draggable="false">
   </div>
   <section class="garden-articles" aria-labelledby="post-list-title">
     <div class="post-list-heading"><h1 id="post-list-title" aria-live="polite">全部文章 <span>${String(posts.length).padStart(2, '0')}</span></h1>

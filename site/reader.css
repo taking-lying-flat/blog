@@ -216,27 +216,18 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .post-pagination a span { display: block; margin-bottom: 7px; color: var(--muted); font: 12px/1.7 var(--sans); }
 .post-pagination .post-next { grid-column: 2; text-align: right; }
 /* Compact article index; reading pages retain room for code and tables. */
-/* Home-only garden decorations live in the gutters, outside the reading column. */
-.home-page-shell { background: #fafbf7; }
-.home-page-shell .site-header { position: relative; z-index: 1; background: #f1f5e9; border-bottom: 1px solid #e2e8d8; }
+/* The garden fills existing background space without changing the index layout. */
+.home-page-shell { background: #f2f4e9; }
+.home-page-shell .site-header { position: relative; z-index: 1; background: transparent; }
 .home-page-shell .logo > a { background: #526a43; color: #fffef8; }
-.home-page-shell .home-page { padding-top: 12px; }
-.garden-banner { position: relative; z-index: 1; height: 230px; margin: 0 0 24px; pointer-events: none; user-select: none; }
-.garden-banner img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.home-garden { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; user-select: none; }
+.home-garden img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
 .garden-articles { position: relative; z-index: 1; }
-.home-vines { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; user-select: none; }
-.home-ivy { position: absolute; top: 108px; width: clamp(0px, calc((100vw - 940px) / 2), 188px); height: min(760px, calc(100vh - 130px)); }
-.home-ivy--left { left: max(12px, calc((100vw - 1360px) / 2)); }
-.home-ivy--right { right: max(12px, calc((100vw - 1360px) / 2)); transform: scaleX(-1); }
-.home-ivy img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; transform-origin: center top; animation: ivy-breeze 9s ease-in-out infinite alternate; }
-.home-ivy--right img { animation-duration: 11s; animation-delay: -5s; }
-@keyframes ivy-breeze { from { transform: rotate(-.7deg); } to { transform: rotate(.7deg); } }
 [data-color-mode="dark"] .home-page-shell { background: #171d18; }
-[data-color-mode="dark"] .home-page-shell .site-header { background: #1d271f; border-color: #34412f; }
+[data-color-mode="dark"] .home-page-shell .site-header { background: transparent; }
 [data-color-mode="dark"] .home-page-shell .logo > a { background: #a8be8c; color: #172118; }
-[data-color-mode="dark"] .home-ivy, [data-color-mode="dark"] .garden-banner { filter: brightness(.78) saturate(.8); }
-@media (prefers-reduced-motion: reduce) { .home-ivy img { animation: none; } }
-@media print { .home-vines, .garden-banner { display: none; } }
+[data-color-mode="dark"] .home-garden { filter: brightness(.22) saturate(.7); }
+@media print { .home-garden { display: none; } }
 .home-page-shell .nav, .archive-page-shell .nav { max-width: 828px; }
 .home-page { max-width: 828px; padding-top: 38px; padding-bottom: 54px; }
 .post-list-heading { display: flex; align-items: center; gap: 20px; margin-bottom: 22px; }
