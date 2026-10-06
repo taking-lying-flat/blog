@@ -119,8 +119,6 @@ w(t)\left\|v_\theta(x_t,c,t)-v\right\|_2^2
 
 - $`\operatorname{sg}`$ 为停止梯度算子。以预测误差的平均绝对值进行归一化，通常能够加快训练
 
-**不使用 CFG 的优化：** 从引导形式看，条件模型与无条件模型可以分别提供正、负信号，因此 CFG 可被理解为一种离线强化引导。DiffusionNFT 仅使用条件模型初始化策略，并通过在线强化学习将引导融入模型参数。实验中，这一无 CFG 初始化能够快速提升性能并超过使用 CFG 的基线
-
 <figure class="nft-algorithm" aria-labelledby="nft-algorithm-1">
 <figcaption id="nft-algorithm-1"><strong>Algorithm 1</strong> Diffusion Negative-Aware FineTuning</figcaption>
 

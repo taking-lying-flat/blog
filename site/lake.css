@@ -458,13 +458,15 @@
   margin: 12px auto;
 }
 [data-post="genai-sakura-iv"] .nft-theorem {
-  margin: 16px 0;
-  padding: 10px 14px;
+  margin: 12px 0;
+  padding: 8px 14px;
   background: #fff6df;
 }
-[data-post="genai-sakura-iv"] .nft-theorem > p { margin: 0; line-height: 2.15; }
+[data-post="genai-sakura-iv"] .nft-theorem > p { margin: 0; line-height: 1.75; }
 [data-post="genai-sakura-iv"] .nft-theorem > p > strong:first-child { color: #814800; }
-[data-post="genai-sakura-iv"] .nft-theorem .equation { margin: 14px 0; padding: 6px 0; }
+[data-post="genai-sakura-iv"] .nft-theorem .equation { margin: 8px 0; padding: 0; }
+[data-post="genai-sakura-iv"] .nft-theorem .equation mjx-container[display="true"] { margin: 0; }
+[data-post="genai-sakura-iv"] .nft-theorem .equation:last-child { margin-bottom: 0; }
 [data-post="genai-sakura-iv"] .nft-algorithm {
   margin: 16px 2em;
   padding: 0 4px 8px;
