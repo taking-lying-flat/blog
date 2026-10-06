@@ -8,8 +8,7 @@
 \quad\text{Compute all advantage values }A_{\pi_i}(s,a).\\[2pt]
 \quad\text{Solve the following optimization problem:}\\[6pt]
 \displaystyle\qquad\pi_{i+1}=\underset{\pi}{\arg\min}\left[L_{\pi_i}(\pi)+\frac{2\epsilon\gamma}{(1-\gamma)^2}D_{\mathrm{KL}}^{\max}(\pi_i,\pi)\right]\\[6pt]
-\displaystyle\qquad\text{where }\epsilon=\max_s\max_a\left|A_{\pi_i}(s,a)\right|\\[6pt]
-\displaystyle\qquad\text{and }L_{\pi_i}(\pi)=\eta(\pi_i)+\sum_s\rho_{\pi_i}(s)\sum_a\pi(a\mid s)A_{\pi_i}(s,a)\\[6pt]
+\displaystyle\qquad\text{where }\epsilon=\max_s\max_a\left|A_{\pi_i}(s,a)\right|,\quad\text{and }L_{\pi_i}(\pi)=\eta(\pi_i)+\sum_s\rho_{\pi_i}(s)\sum_a\pi(a\mid s)A_{\pi_i}(s,a)\\[6pt]
 \textbf{end for}
 \end{array}
 ```
