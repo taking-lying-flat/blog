@@ -47,6 +47,7 @@ if (categoryNav) {
   const clear = form.querySelector('.search-clear');
   const searchStatus = document.querySelector('#search-status');
   const empty = document.querySelector('.search-empty');
+  const savedFilter = document.querySelector('.saved-filter');
   const normalize = text => text.normalize('NFKC').toLowerCase();
   const entries = [...document.querySelectorAll('.post-entry')].map(element => {
     const snippet = document.createElement('p');
@@ -84,10 +85,15 @@ if (categoryNav) {
     const requested = location.hash.replace('#category-', '');
     const selected = buttons.find(button => button.dataset.category === requested) ?? buttons[0];
     const category = selected.dataset.category;
+    const savedOnly = new URLSearchParams(location.search).get('saved') === '1';
+    const saved = window.blogBookmarks.read();
+    savedFilter.hidden = false;
+    savedFilter.setAttribute('aria-pressed', String(savedOnly));
+    savedFilter.querySelector('span').textContent = String(entries.filter(entry => saved.has(entry.slug)).length);
     const query = input.value.trim();
     const terms = normalize(query).split(/\s+/).filter(Boolean);
     for (const entry of entries) {
-      entry.element.hidden = !terms.every(term =>
+      entry.element.hidden = (savedOnly && !saved.has(entry.slug)) || !terms.every(term =>
         entry.metadata.includes(term) || entry.normalizedText.includes(term));
       entry.snippet.hidden = true;
       if (terms.length && !entry.element.hidden) renderSnippet(entry, terms);
@@ -102,7 +108,7 @@ if (categoryNav) {
     for (const button of buttons) {
       button.setAttribute('aria-pressed', String(button === selected));
     }
-    heading.firstChild.textContent = `${category === 'all' ? '全部文章' : selected.textContent} `;
+    heading.firstChild.textContent = `${category === 'all' ? (savedOnly ? '我的收藏' : '全部文章') : selected.textContent} `;
     heading.querySelector('span').textContent = String(count).padStart(2, '0');
     clear.hidden = !input.value;
     searchStatus.hidden = !query;
@@ -110,7 +116,10 @@ if (categoryNav) {
       ? `正文搜索暂时无法加载，当前仅搜索标题和标签（${count} 篇）。重新输入可重试。`
       : !indexReady ? '正在加载正文搜索…'
         : `找到 ${count} 篇相关文章${category === 'all' ? '' : ` · ${selected.textContent}`}` : '';
-    empty.hidden = !query || count > 0 || (!indexReady && !indexFailed);
+    empty.textContent = savedOnly
+      ? '当前筛选下没有收藏文章。可到文章底部点击「收藏」，或切换分类与关键词。'
+      : '没有找到相关文章，试试其他关键词或切换到「全部」。';
+    empty.hidden = (!query && !savedOnly) || count > 0 || (Boolean(query) && !indexReady && !indexFailed);
     form.setAttribute('aria-busy', String(Boolean(query) && !indexReady && !indexFailed));
   };
   const loadIndex = () => {
@@ -161,6 +170,15 @@ if (categoryNav) {
   input.addEventListener('compositionend', search);
   form.addEventListener('submit', event => { event.preventDefault(); search(); });
   clear.addEventListener('click', () => { input.value = ''; search(); input.focus(); });
+  savedFilter.addEventListener('click', () => {
+    search();
+    const url = new URL(location.href);
+    if (url.searchParams.get('saved') === '1') url.searchParams.delete('saved');
+    else url.searchParams.set('saved', '1');
+    history.pushState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    renderResults();
+  });
+  window.addEventListener('blog-bookmarks-change', renderResults);
   categoryNav.addEventListener('click', event => {
     const button = event.target.closest('button[data-category]');
     if (!button || button.getAttribute('aria-pressed') === 'true') return;

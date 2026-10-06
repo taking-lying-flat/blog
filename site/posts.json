@@ -94,12 +94,7 @@
       "llada-algorithms.md"
     ],
     "tags": [
-      "扩散语言模型",
-      "LLaDA",
-      "Masked Diffusion",
-      "非自回归生成",
-      "预训练",
-      "SFT"
+      "LLaDA"
     ]
   },
   {
@@ -159,18 +154,10 @@
     "date": "2026-10-03",
     "description": "思维链与推理方法笔记：ReAct 的推理与行动协同，Tree of Thoughts 的思维分解、候选生成、状态评估与搜索，CoT-Decoding 的候选路径探索和答案置信度筛选，以及 CPO 的思维偏好链构建与训练目标",
     "tags": [
-      "思维链",
-      "CoT",
       "ReAct",
-      "Agent",
       "Tree of Thoughts",
-      "ToT",
-      "推理",
-      "搜索",
       "CoT-Decoding",
-      "解码",
-      "CPO",
-      "偏好优化"
+      "CPO"
     ],
     "prependFiles": [
       "../notes/chain-of-thought/react/source.lake"
@@ -213,14 +200,9 @@
     "date": "2026-10-01",
     "description": "位置编码笔记：RoFormer、RoPE、YaRN 与 DCA，涵盖旋转位置编码、相对位置关系、上下文扩展、NTK 插值、注意力温度缩放和双分块注意力",
     "tags": [
-      "位置编码",
       "RoFormer",
       "RoPE",
-      "Attention",
       "YaRN",
-      "长上下文",
-      "NTK 插值",
-      "DCA",
       "Dual Chunk Attention"
     ],
     "appendFiles": [
@@ -240,16 +222,9 @@
     "date": "2026-10-01",
     "description": "DeepSeek-V3.2、mHC 与 Engram 笔记：DSA 稀疏注意力、GRPO 稳定性改进、流形约束超连接，以及 N-gram 条件记忆与系统优化",
     "tags": [
-      "DeepSeek",
       "DeepSeek-V3.2",
-      "DSA",
-      "GRPO",
       "mHC",
-      "Sinkhorn–Knopp",
-      "模型架构",
-      "Engram",
-      "N-gram",
-      "条件记忆"
+      "Engram"
     ],
     "appendFiles": [
       "../notes/deepseek-ai-ii/source.lake",
@@ -328,7 +303,7 @@
     "category": "llm",
     "date": "2026-09-28",
     "description": "DeepSeekMoE、DeepSeek-V2、DeepSeek-V3 与 DeepSeek-R1 笔记：MLA、专家路由、MTP、FP8、GRPO 与多阶段强化学习。",
-    "tags": ["DeepSeek", "MoE", "MLA", "专家路由", "MTP", "GRPO"]
+    "tags": ["DeepSeekMoE", "DeepSeek-V2", "DeepSeek-V3", "DeepSeek-R1"]
   },
   {
     "file": "../notes/policy-optimization-i/source.lake",
@@ -468,7 +443,7 @@
     "category": "llm",
     "date": "2026-09-26",
     "description": "Token Mixer 笔记：Gated DeltaNet、Kimi Linear 与 Gated DeltaNet-2。",
-    "tags": ["线性注意力", "Gated DeltaNet", "Kimi Linear"]
+    "tags": ["Gated DeltaNet", "Kimi Linear", "Gated DeltaNet-2"]
   },
   {
     "file": "../notes/flash-attn/source.lake",

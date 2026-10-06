@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="720pt" height="316.8pt" viewBox="0 0 720 316.8" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <title>Article like history</title>
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title>Article like history</dc:title>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.8, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 316.8 
+L 720 316.8 
+L 720 0 
+L 0 0 
+z
+" style="fill: #fcfcfe"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 61.2 256.608 
+L 698.4 256.608 
+L 698.4 95.04 
+L 61.2 95.04 
+z
+" style="fill: #fcfcfe"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1"/>
+     <g id="text_1">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6d788b" x="379.8" y="274.206438" transform="rotate(-0 379.8 274.206438)">2026-10-06</text>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_2">
+      <path d="M 61.2 248.914286 
+L 698.4 248.914286 
+" clip-path="url(#pfe0829f475)" style="fill: none; stroke: #e6eaf0; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_3"/>
+     <g id="text_2">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #6d788b" x="51.2" y="252.713504" transform="rotate(-0 51.2 252.713504)">0</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_4">
+      <path d="M 61.2 95.04 
+L 698.4 95.04 
+" clip-path="url(#pfe0829f475)" style="fill: none; stroke: #e6eaf0; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_5"/>
+     <g id="text_3">
+      <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #6d788b" x="51.2" y="98.839219" transform="rotate(-0 51.2 98.839219)">1</text>
+     </g>
+    </g>
+    <g id="text_4">
+     <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #6d788b" x="30.757813" y="175.824" transform="rotate(-90 30.757813 175.824)">Likes</text>
+    </g>
+   </g>
+   <g id="FillBetweenPolyCollection_1">
+    <defs>
+     <path id="m0811146781" d="M 379.8 -67.885714 
+L 379.8 -67.885714 
+L 379.8 -67.885714 
+L 379.8 -67.885714 
+z
+" style="stroke: #bb5b7c; stroke-opacity: 0.09"/>
+    </defs>
+    <g clip-path="url(#pfe0829f475)">
+     <use xlink:href="#m0811146781" x="0" y="316.8" style="fill: #bb5b7c; fill-opacity: 0.09; stroke: #bb5b7c; stroke-opacity: 0.09"/>
+    </g>
+   </g>
+   <g id="line2d_6">
+    <path d="M 379.8 248.914286 
+" clip-path="url(#pfe0829f475)" style="fill: none; stroke: #bb5b7c; stroke-width: 2.5; stroke-linecap: square"/>
+    <defs>
+     <path id="m2d521f3cbf" d="M 0 2.5 
+C 0.663008 2.5 1.29895 2.236584 1.767767 1.767767 
+C 2.236584 1.29895 2.5 0.663008 2.5 0 
+C 2.5 -0.663008 2.236584 -1.29895 1.767767 -1.767767 
+C 1.29895 -2.236584 0.663008 -2.5 0 -2.5 
+C -0.663008 -2.5 -1.29895 -2.236584 -1.767767 -1.767767 
+C -2.236584 -1.29895 -2.5 -0.663008 -2.5 0 
+C -2.5 0.663008 -2.236584 1.29895 -1.767767 1.767767 
+C -1.29895 2.236584 -0.663008 2.5 0 2.5 
+z
+" style="stroke: #bb5b7c"/>
+    </defs>
+    <g clip-path="url(#pfe0829f475)">
+     <use xlink:href="#m2d521f3cbf" x="379.8" y="248.914286" style="fill: #bb5b7c; stroke: #bb5b7c"/>
+    </g>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #6d788b" x="391.8" y="231.914286" transform="rotate(-0 391.8 231.914286)">History starts here</text>
+   </g>
+  </g>
+  <g id="text_6">
+   <text style="font-weight: 700; font-size: 21px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #263348" x="61.2" y="38.016" transform="rotate(-0 61.2 38.016)">Article Likes</text>
+  </g>
+  <g id="text_7">
+   <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #6d788b" x="61.2" y="63.36" transform="rotate(-0 61.2 63.36)">Daily snapshots · GitHub heart reactions</text>
+  </g>
+  <g id="text_8">
+   <text style="font-weight: 700; font-size: 27px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #b55070" x="698.4" y="41.184" transform="rotate(-0 698.4 41.184)">0</text>
+  </g>
+  <g id="text_9">
+   <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #6d788b" x="698.4" y="63.36" transform="rotate(-0 698.4 63.36)">Updated 2026-10-06 · Asia/Shanghai</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pfe0829f475">
+   <rect x="61.2" y="95.04" width="637.2" height="161.568"/>
+  </clipPath>
+ </defs>
+</svg>
