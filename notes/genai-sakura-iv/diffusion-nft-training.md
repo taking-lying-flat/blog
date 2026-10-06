@@ -91,6 +91,10 @@ v_{\theta^*}(x_t,c,t)=v^{\mathrm{old}}(x_t,c,t)+\frac2\beta\Delta(x_t,c,t).\tag{
 - **隐式引导整合：** 通过式（9）的参数化，将强化引导直接融入目标策略，无需单独学习引导模型 $`\Delta_\theta`$，也无需在采样时额外组合引导项
 - **无需似然的优化：** 训练目标由前向回归损失构成，无需利用变分界近似数据似然，也无需从离散逆向轨迹构造序列似然
 
+<h2 id="nft-practical-implementation" style="text-align: center">🛠️ Practical Implementation</h2>
+
+**每轮先由旧策略生成图像并计算奖励，再对这些图像重新加噪、更新在线模型，最后软更新旧策略，进入下一轮。** 其中，奖励归一化决定正、负损失的权重，EMA 控制采样策略的更新速度，自适应加权调整回归损失的尺度
+
 **最优性奖励：** 将取值不受限制的原始奖励 $`r^{\mathrm{raw}}`$ 减去同一提示下的均值，再归一化并截断，得到最优性概率 $`r\in[0,1]`$
 
 ```math
@@ -98,15 +102,15 @@ r(x_0,c):=\frac12+\frac12\operatorname{clip}\!\left[
 \frac{r^{\mathrm{raw}}(x_0,c)-\mathbb E_{\pi^{\mathrm{old}}(\cdot\mid c)}r^{\mathrm{raw}}(x_0,c)}{Z_c},-1,1\right].\tag{11}
 ```
 
-- $`Z_c>0`$ 为归一化因子，例如全局奖励标准差。每个提示对应 $`K`$ 张生成图像，可用这组样本的平均奖励估计式中的期望
+- $`Z_c>0`$ 为归一化因子，例如全局奖励标准差；式中的期望用同一提示下 $`K`$ 张图像的平均奖励估计。高于组均值的样本满足 $`r>1/2`$，正项权重更大；低于组均值的样本满足 $`r<1/2`$，负项权重更大。训练直接使用 $`r`$ 和 $`1-r`$ 加权，无需将样本硬划分为两组
 
-**采样策略的软更新：** 采样策略 $`\pi^{\mathrm{old}}`$ 与训练策略 $`\pi_\theta`$ 可以分开更新，因此每轮训练后采用指数移动平均（EMA）更新旧模型
+**采样策略的软更新：** 当前轮次内固定旧模型 $`v^{\mathrm{old}}`$，用其收集样本，并按式（9）构造隐式正、负预测器；梯度仅更新在线模型 $`v_\theta`$。完成这一轮优化后，再通过指数移动平均（EMA）更新旧模型
 
 ```math
 \theta^{\mathrm{old}}\leftarrow\eta_i\theta^{\mathrm{old}}+(1-\eta_i)\theta.\tag{12}
 ```
 
-- 其中，$`i`$ 为迭代次数，$`\eta_i`$ 控制学习速度与稳定性之间的权衡。$`\eta_i=0`$ 对应直接将在线模型复制为采样模型，初期进展较快，但更容易失稳；$`\eta_i\to1`$ 则更接近固定采样策略，变化较慢，收敛速度也可能降低
+- 其中，$`i`$ 为迭代次数。$`\eta_i=0`$ 表示直接将在线模型复制为采样模型；$`\eta_i`$ 越接近 1，旧模型保留的比例越高，更新越缓慢。较快更新有利于及时利用策略改进，但可能降低稳定性。更新后清空当前数据缓冲区，下一轮使用新的采样策略重新生成图像
 
 **自适应损失加权：** 将速度预测器转换为 $`x_0`$ 预测器 $`x_\theta`$。对于 Rectified Flow，$`x_\theta=x_t-tv_\theta`$；借鉴 DMD 的归一化方式，用自归一化的 $`x_0`$ 回归替代式（1）中手动选择的时间权重
 
@@ -117,7 +121,9 @@ w(t)\left\|v_\theta(x_t,c,t)-v\right\|_2^2
 {\operatorname{sg}\!\left(\operatorname{mean}\!\left(\operatorname{abs}\!\left(x_\theta(x_t,c,t)-x_0\right)\right)\right)}.\tag{13}
 ```
 
-- $`\operatorname{sg}`$ 为停止梯度算子。以预测误差的平均绝对值进行归一化，通常能够加快训练
+- 分子是干净样本预测的平方误差，分母是该误差向量各维度的平均绝对值。$`\operatorname{sg}`$ 表示停止梯度，使分母只参与数值缩放，不通过分母反向传播梯度。该归一化用于调整回归项的尺度，正、负两项之间的比例仍由 $`r`$ 与 $`1-r`$ 决定
+
+下述算法汇总数据收集、策略优化与软更新的循环。梯度步骤采用式（8）的基础回归目标；使用自适应加权时，将正、负预测器各自的回归项替换为式（13）对应的形式
 
 <figure class="nft-algorithm" aria-labelledby="nft-algorithm-1">
 <figcaption id="nft-algorithm-1"><strong>Algorithm 1</strong> Diffusion Negative-Aware FineTuning</figcaption>
