@@ -1,4 +1,4 @@
-"""Collect real article HEART reactions and render the README's daily history."""
+"""Collect online article likes and render the README's weekly history."""
 import json
 import subprocess
 from datetime import datetime
@@ -8,29 +8,31 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def fetch_counts(mapping):
-    ids = [record['id'] for record in mapping.values()]
-    payload = {'query': '''query($ids: [ID!]!) {
-      nodes(ids: $ids) { ... on Discussion { id reactions(content: HEART) { totalCount } } }
-    }''', 'variables': {'ids': ids}}
-    result = subprocess.run(['gh', 'api', 'graphql', '--input', '-'], input=json.dumps(payload),
-                            text=True, capture_output=True, check=True)
+def fetch_counts(config):
+    payload = {'ids': list(config['posts'].values())}
+    result = subprocess.run([
+        'curl', '--fail', '--silent', '--show-error', '--max-time', '45',
+        '--retry', '2', '-H', 'Content-Type: application/json', '--data-binary', '@-',
+        config['endpoint'] + '?action=batchGet',
+    ], input=json.dumps(payload), text=True, capture_output=True, check=True)
     response = json.loads(result.stdout)
-    if response.get('errors'):
-        raise RuntimeError('GitHub returned errors; preserving the previous snapshot.')
-    nodes = response['data']['nodes']
-    if any(not node or 'reactions' not in node for node in nodes):
-        raise ValueError('Missing discussion; preserving the previous snapshot.')
-    counts = {node['id']: node['reactions']['totalCount'] for node in nodes}
-    if any(type(count) is not int or count < 0 for count in counts.values()):
-        raise ValueError('Invalid reaction count.')
-    return {slug: counts[record['id']] for slug, record in mapping.items()}
+    if not response.get('success'):
+        raise RuntimeError('Like service returned an error; preserving the previous snapshot.')
+    data = response['data']
+    counts = {}
+    for slug, counter_id in config['posts'].items():
+        record = data.get(counter_id, {})
+        count = record.get('total')
+        if record.get('id') != counter_id or type(count) is not int or count < 0:
+            raise ValueError('Invalid like count; preserving the previous snapshot.')
+        counts[slug] = count
+    return counts
 
 
 def update_snapshot(history, counts, date):
     snapshot = {'date': date, 'total': sum(counts.values()), 'posts': counts}
     snapshots = [s for s in history.get('snapshots', []) if s['date'] != date] + [snapshot]
-    return {'version': 1, 'metric': 'GitHub discussion HEART reactions',
+    return {'version': 1, 'metric': 'Blog likes',
             'timezone': 'Asia/Shanghai', 'snapshots': sorted(snapshots, key=lambda s: s['date'])}
 
 
@@ -49,7 +51,7 @@ def render_chart(history, output):
     fig.patch.set_facecolor('#fcfcfe'); ax.set_facecolor('#fcfcfe')
     fig.subplots_adjust(left=.085, right=.97, bottom=.19, top=.7)
     fig.text(.085, .88, 'Article Likes', fontsize=21, weight='bold', color='#263348')
-    fig.text(.085, .80, 'Daily snapshots · GitHub heart reactions', fontsize=10, color='#6d788b')
+    fig.text(.085, .80, 'Weekly snapshots · Blog likes', fontsize=10, color='#6d788b')
     fig.text(.97, .87, f'{totals[-1]:,}', fontsize=27, weight='bold', color='#b55070', ha='right')
     fig.text(.97, .80, f'Updated {snapshots[-1]["date"]} · Asia/Shanghai', fontsize=9, color='#6d788b', ha='right')
     ax.plot(dates, totals, color='#bb5b7c', linewidth=2.5, marker='o', markersize=5)
@@ -74,8 +76,11 @@ def render_chart(history, output):
 
 
 def main():
-    mapping = json.loads((ROOT / 'site/like-discussions.json').read_text())
-    counts = fetch_counts(mapping)
+    config = json.loads((ROOT / 'site/likes-config.json').read_text())
+    posts = json.loads((ROOT / 'site/posts.json').read_text())
+    if set(config['posts']) != {post['slug'] for post in posts}:
+        raise ValueError('Like counters must cover all published articles.')
+    counts = fetch_counts(config)
     date = datetime.now(ZoneInfo('Asia/Shanghai')).date().isoformat()
     history_path = ROOT / 'data/likes-history.json'
     history = json.loads(history_path.read_text()) if history_path.exists() else {}

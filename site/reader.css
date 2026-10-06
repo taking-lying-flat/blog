@@ -192,12 +192,11 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .bookmark-button:hover img { transform: translateY(-4px) rotate(3deg); }
 .engagement-caption { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 82px; padding: 5px 12px; border: 1px solid var(--line); border-radius: 18px; background: var(--page); }
 .like-button .engagement-caption { color: #b54f68; border-color: #eacbd4; background: #fff9fb; }
-.like-button:hover .engagement-caption { border-color: #c27088; background: #fff0f4; }
+.like-button:hover .engagement-caption, .like-button[aria-pressed="true"] .engagement-caption { border-color: #c27088; background: #fff0f4; }
 .like-count { font: 12px/1 var(--mono); }
 .bookmark-button:hover .engagement-caption, .bookmark-button[aria-pressed="true"] .engagement-caption { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 .saved-filter[aria-pressed="true"] svg { fill: currentColor; }
-.engagement-note, .engagement-status { text-align: center; color: var(--muted); font-size: 12px; }
-.engagement-note { margin: 0; }
+.engagement-status { text-align: center; color: var(--muted); font-size: 12px; }
 .engagement-status:empty { display: none; }
 .engagement-status { margin: 12px 0 0; }
 [data-color-mode="dark"] .like-button .engagement-caption { color: #e9a6b9; border-color: #68404d; background: #281b22; }
@@ -380,3 +379,5 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
   .code-diagram code { white-space: pre-wrap; overflow-wrap: anywhere; }
   .code-block, code { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+.like-button[aria-busy="true"] { cursor: progress; opacity: .65; }

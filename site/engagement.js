@@ -41,20 +41,68 @@
   });
   sync();
 
-  // Counts are public daily snapshots; clicking the link never invents a like.
   const like = document.querySelector('[data-like-slug]');
   if (like) {
-    const refresh = async () => {
-      try {
-        const response = await fetch('https://raw.githubusercontent.com/taking-lying-flat/blog/main/data/article-likes.json');
-        if (!response.ok) return;
-        const data = await response.json();
-        const count = data.posts?.[like.dataset.likeSlug];
-        if (!Number.isSafeInteger(count) || count < 0) return;
-        like.querySelector('.like-count').textContent = String(count);
-        like.title = `在 GitHub 为本文点 ❤️ · ${data.date} 更新`;
-      } catch { /* The last build's snapshot remains visible offline. */ }
+    let pending = false;
+    let initialized = false;
+    const status = document.querySelector('#engagement-status');
+    const setPending = value => {
+      pending = value;
+      like.disabled = value;
+      like.setAttribute('aria-busy', String(value));
     };
+    const request = async action => {
+      const url = new URL(like.dataset.likeApi);
+      url.searchParams.set('action', action);
+      url.searchParams.set('id', like.dataset.likeId);
+      url.searchParams.set('_', String(Date.now()));
+      const response = await fetch(url, {
+        credentials: 'omit', cache: 'no-store',
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!response.ok) throw new Error('Like service unavailable');
+      const result = await response.json();
+      const data = result.data;
+      if (!result.success || data?.id !== like.dataset.likeId ||
+          !Number.isSafeInteger(data.total) || data.total < 0 || typeof data.liked !== 'boolean') {
+        throw new Error('Invalid like response');
+      }
+      return data;
+    };
+    const render = data => {
+      like.querySelector('.like-count').textContent = String(data.total);
+      like.querySelector('.like-label').textContent = data.liked ? '已赞' : '点赞';
+      like.setAttribute('aria-pressed', String(data.liked));
+      like.title = data.liked ? '取消点赞' : '点赞';
+      initialized = true;
+    };
+    const refresh = async () => {
+      if (pending) return;
+      setPending(true);
+      try { render(await request('get')); }
+      catch { /* Keep the last confirmed snapshot if the service is unavailable. */ }
+      finally { setPending(false); }
+    };
+    like.addEventListener('click', async () => {
+      if (pending) return;
+      setPending(true);
+      if (status) status.textContent = '';
+      try {
+        if (!initialized) render(await request('get'));
+        const data = await request('toggle');
+        render(data);
+        if (status) status.textContent = data.liked ? '谢谢喜欢！' : '已取消点赞。';
+        try { localStorage.setItem('blog-likes-change', JSON.stringify({ slug: like.dataset.likeSlug, time: Date.now() })); }
+        catch { /* Likes are stored online and work without local storage. */ }
+      } catch {
+        // A timed-out write may have succeeded; read back instead of retrying a toggle.
+        try { render(await request('get')); } catch { /* Preserve confirmed state. */ }
+        if (status) status.textContent = '连接暂时中断，请确认点赞状态后重试。';
+      } finally { setPending(false); }
+    });
+    window.addEventListener('storage', event => {
+      if (event.key === 'blog-likes-change') refresh();
+    });
     const observer = new IntersectionObserver(entries => {
       if (entries.some(entry => entry.isIntersecting)) { observer.disconnect(); refresh(); }
     });

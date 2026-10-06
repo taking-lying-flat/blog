@@ -36,7 +36,7 @@ const categories = [
   { id: 'issues', title: 'GitHub Issue' },
 ];
 const articleLikes = JSON.parse(await readFile(path.join(root, '../data/article-likes.json'), 'utf8'));
-const likeDiscussions = JSON.parse(await readFile(path.join(root, 'like-discussions.json'), 'utf8'));
+const likesConfig = JSON.parse(await readFile(path.join(root, 'likes-config.json'), 'utf8'));
 const bookmarkIcon = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-4-6 4V4.75Z"/></svg>';
 for (const post of posts) {
   if (!categories.some(({ id }) => id === post.category)) {
@@ -45,9 +45,8 @@ for (const post of posts) {
   if (post.categoryOrder !== undefined && (!Number.isInteger(post.categoryOrder) || post.categoryOrder < 1)) {
     throw new Error(`Invalid category reading order: ${post.slug}`);
   }
-  if (!/^D_[\w-]+$/.test(likeDiscussions[post.slug]?.id ?? '') ||
-      !/^https:\/\/github\.com\/taking-lying-flat\/blog\/discussions\/\d+$/.test(likeDiscussions[post.slug]?.url ?? '')) {
-    throw new Error(`Missing article like discussion: ${post.slug}`);
+  if (!/^[a-zA-Z0-9_-]+$/.test(likesConfig.posts[post.slug] ?? '')) {
+    throw new Error(`Missing article like counter: ${post.slug}`);
   }
 }
 const seriesGroups = new Map();
@@ -874,16 +873,15 @@ for (const post of readingOrder) {
         </nav>` : ''}
         <a class="back-link" href="../../">← 全部文章</a>
         <div class="article-engagement" aria-label="文章点赞与收藏">
-          <a class="engagement-button like-button" data-like-slug="${escape(post.slug)}" href="${likeDiscussions[post.slug].url}" target="_blank" rel="noopener noreferrer" title="在 GitHub 为本文点 ❤️">
+          <button class="engagement-button like-button" type="button" data-like-slug="${escape(post.slug)}" data-like-id="${escape(likesConfig.posts[post.slug])}" data-like-api="${escape(likesConfig.endpoint)}" aria-pressed="false" title="点赞">
             <img src="../../assets/anime-like.png" width="112" height="112" alt="" loading="lazy" decoding="async">
-            <span class="engagement-caption"><span>点赞</span><span class="like-count">${articleLikes.posts[post.slug] ?? 0}</span></span><span class="sr-only">（前往 GitHub 点 ❤️，在新标签页打开）</span>
-          </a>
+            <span class="engagement-caption"><span class="like-label">点赞</span><span class="like-count">${articleLikes.posts[post.slug] ?? 0}</span></span>
+          </button>
           <button class="engagement-button bookmark-button" type="button" data-bookmark="${escape(post.slug)}" aria-pressed="false" hidden>
             <img src="../../assets/anime-bookmark.png" width="112" height="112" alt="" loading="lazy" decoding="async">
             <span class="engagement-caption bookmark-label">收藏</span>
           </button>
         </div>
-        <p class="engagement-note">点赞请在 GitHub 点 ❤️ · 收藏保存在当前浏览器</p>
         <p class="engagement-status" id="engagement-status" role="status"></p>
       </footer>
     </article>${toc}`,
