@@ -1,31 +1,5 @@
 <section class="rotation-identities" id="rotation-identities">
 
-以下讨论量化前的等价关系，$`H`$ 为正交矩阵，$`HH^\top=I`$
-
-<div class="rotation-case" id="rotation-rmsnorm">
-
-**① RMSNorm：先融合逐通道缩放，再旋转权重**
-
-去掉逐通道缩放后，$`\operatorname{RMSNorm}_0`$ 与正交旋转可交换：
-
-```math
-\operatorname{RMSNorm}_0(ZH)=\operatorname{RMSNorm}_0(Z)H.
-```
-
-未融合缩放时，缩放矩阵隔开两次旋转，一般不能抵消：
-
-```math
-(W_1H)\operatorname{diag}(\alpha)(H^\top W_2)=W_1\bigl[H\operatorname{diag}(\alpha)H^\top\bigr]W_2\neq W_1\operatorname{diag}(\alpha)W_2.
-```
-
-先将缩放融合进 $`W_2`$，再旋转权重，两次旋转相邻即可抵消：
-
-```math
-(W_1H)\Bigl[H^\top\underbrace{\operatorname{diag}(\alpha)W_2}_{\text{融合后的权重}}\Bigr]=W_1\underbrace{HH^\top}_{I}\operatorname{diag}(\alpha)W_2=W_1\operatorname{diag}(\alpha)W_2.
-```
-
-</div>
-
 <div class="rotation-case" id="rotation-nonlinearity">
 
 **② 两层权重之间有非线性激活函数**

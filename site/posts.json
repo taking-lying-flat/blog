@@ -18,7 +18,10 @@
     "file": "../notes/infra-quant-ii/source.lake",
     "format": "lake",
     "prependFiles": ["../notes/infra-quant-ii/quarot/source.lake"],
-    "appendMarkdown": ["rotation-identities.md"],
+    "appendMarkdown": [
+      {"file": "rotation-rmsnorm.md", "before": "dlDij"},
+      "rotation-identities.md"
+    ],
     "removeEmptyParagraphs": true,
     "tocDepth": 2,
     "slug": "infra-quant-ii",
