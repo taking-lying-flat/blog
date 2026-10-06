@@ -1,0 +1,421 @@
+{
+  "qgxlh": {
+    "from": "\\mathbf{Q}",
+    "to": "\\mathbf{Q}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "OYKG9": {
+    "from": "\\mathbf{Q}\\mathbf{Q}^{\\top}=\\mathbf{I}",
+    "to": "\\mathbf{Q}\\mathbf{Q}^{\\top}=\\mathbf{I}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "RWsaR": {
+    "from": "\\{+1,-1\\}",
+    "to": "\\{+1,-1\\}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "HJPD4": {
+    "from": "d=2^n",
+    "to": "d=2^n",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "SegGz": {
+    "from": "\\mathbf{H}_2=\\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&1\\\\1&-1\\end{bmatrix},\\qquad \\mathbf{H}_{2^n}=\\mathbf{H}_2\\otimes\\mathbf{H}_{2^{n-1}}.\\tag{1}",
+    "to": "\\mathbf{H}_2=\\frac{1}{\\sqrt{2}}\\begin{bmatrix}1&1\\\\1&-1\\end{bmatrix},\\qquad \\mathbf{H}_{2^n}=\\mathbf{H}_2\\otimes\\mathbf{H}_{2^{n-1}}.\\tag{1}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "Yavng": {
+    "from": "\\mathcal{O}(d\\log_2(d))",
+    "to": "\\mathcal{O}(d\\log_2(d))",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "iR5Nc": {
+    "from": "\\mathbf{H}\\mathbf{x}",
+    "to": "\\mathbf{H}\\mathbf{x}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "WK1ua": {
+    "from": "2^n",
+    "to": "2^n",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "cDJYA": {
+    "from": "d\\neq2^n",
+    "to": "d\\neq2^n",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "Y4KkQ": {
+    "from": "d",
+    "to": "d",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "iBzrZ": {
+    "from": "d=2^n m",
+    "to": "d=2^n m",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "Prbct": {
+    "from": "m",
+    "to": "m",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "cEvPN": {
+    "from": "\\mathbf{H}_d=\\mathbf{H}_{2^n}\\otimes\\mathbf{H}_m",
+    "to": "\\mathbf{H}_d=\\mathbf{H}_{2^n}\\otimes\\mathbf{H}_m",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "LZFOy": {
+    "from": "\\mathcal{O}(d(m+n))",
+    "to": "\\mathcal{O}(d(m+n))",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "JMN2Q": {
+    "from": "\\mathbf{H}_d\\mathbf{x}",
+    "to": "\\mathbf{H}_d\\mathbf{x}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "TQb1X": {
+    "from": "\\mathbf{s}",
+    "to": "\\mathbf{s}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "SWyJB": {
+    "from": "\\{+1,-1\\}",
+    "to": "\\{+1,-1\\}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "lWYYu": {
+    "from": "\\widetilde{\\mathbf{H}}=\\mathbf{H}\\operatorname{diag}(\\mathbf{s})",
+    "to": "\\widetilde{\\mathbf{H}}=\\mathbf{H}\\operatorname{diag}(\\mathbf{s})",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "GOqZN": {
+    "from": "\\widetilde{\\mathbf{H}}",
+    "to": "\\widetilde{\\mathbf{H}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "Xljil": {
+    "from": "\\mathbf{W}",
+    "to": "\\mathbf{W}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "s5SYE": {
+    "from": "\\mu",
+    "to": "\\mu",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "pNUxP": {
+    "from": "\\max(\\mathbf{W})\\leq\\frac{\\mu\\|\\mathbf{W}\\|_{\\mathrm{F}}}{\\sqrt{mn}}.\\tag{2}",
+    "to": "\\max(\\mathbf{W})\\leq\\frac{\\mu\\|\\mathbf{W}\\|_{\\mathrm{F}}}{\\sqrt{mn}}.\\tag{2}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "Gu5pT": {
+    "from": "\\max",
+    "to": "\\max",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "Po7aa": {
+    "from": "mn",
+    "to": "mn",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "Du2Oz": {
+    "from": "\\mathbf{W}_{\\mathrm{in}}",
+    "to": "\\mathbf{W}_{\\mathrm{in}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "HUlh2": {
+    "from": "\\mathbf{W}_{\\mathrm{gate}}",
+    "to": "\\mathbf{W}_{\\mathrm{gate}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "z2gG8": {
+    "from": "\\mathbf{W}_{\\mathrm{up}}",
+    "to": "\\mathbf{W}_{\\mathrm{up}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "fxKSS": {
+    "from": "\\mathbf{W}_{\\mathrm{k}}",
+    "to": "\\mathbf{W}_{\\mathrm{k}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "OpsUD": {
+    "from": "\\mathbf{W}_{\\mathrm{q}}",
+    "to": "\\mathbf{W}_{\\mathrm{q}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "drfFs": {
+    "from": "\\mathbf{W}_{\\mathrm{v}}",
+    "to": "\\mathbf{W}_{\\mathrm{v}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "H2JHG": {
+    "from": "\\mathbf{Q}",
+    "to": "\\mathbf{Q}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "UfOjq": {
+    "from": "\\mathbf{W}_{\\mathrm{down}}",
+    "to": "\\mathbf{W}_{\\mathrm{down}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "LU9K1": {
+    "from": "\\mathbf{W}_{\\mathrm{out}}",
+    "to": "\\mathbf{W}_{\\mathrm{out}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "MYIFu": {
+    "from": "\\mathbf{Q}^{\\top}",
+    "to": "\\mathbf{Q}^{\\top}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "yrITr": {
+    "from": "\\mathbf{Q}",
+    "to": "\\mathbf{Q}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "ybTG0": {
+    "from": "\\operatorname{RMSNorm}(\\mathbf{X})=\\operatorname{RMSNorm}\\left(\\mathbf{X}\\mathbf{Q}^{\\top}\\right)\\mathbf{Q}.\\tag{3}",
+    "to": "\\operatorname{RMSNorm}(\\mathbf{X})=\\operatorname{RMSNorm}\\left(\\mathbf{X}\\mathbf{Q}^{\\top}\\right)\\mathbf{Q}.\\tag{3}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "YkEom": {
+    "from": "\\mathbf{Q}^{\\top}",
+    "to": "\\mathbf{Q}^{\\top}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "AHccW": {
+    "from": "\\mathbf{X}\\mathbf{Q}^{\\top}",
+    "to": "\\mathbf{X}\\mathbf{Q}^{\\top}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "zVyar": {
+    "from": "\\mathbf{Q}\\mathbf{W}",
+    "to": "\\mathbf{Q}\\mathbf{W}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "rrrp8": {
+    "from": "\\operatorname{diag}(\\boldsymbol{\\alpha})",
+    "to": "\\operatorname{diag}(\\boldsymbol{\\alpha})",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "lfPOf": {
+    "from": "\\mathbf{W}_{\\mathrm{k}}",
+    "to": "\\mathbf{W}_{\\mathrm{k}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "dvv78": {
+    "from": "\\mathbf{W}_{\\mathrm{k}}\\leftarrow\\mathbf{Q}^{\\top}\\operatorname{diag}(\\boldsymbol{\\alpha})\\mathbf{W}_{\\mathrm{k}}.\\tag{4}",
+    "to": "\\mathbf{W}_{\\mathrm{k}}\\leftarrow\\mathbf{Q}^{\\top}\\operatorname{diag}(\\boldsymbol{\\alpha})\\mathbf{W}_{\\mathrm{k}}.\\tag{4}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "h7Nmu": {
+    "from": "\\mathbf{Q}",
+    "to": "\\mathbf{Q}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "hWLRz": {
+    "from": "\\mathbf{X}\\leftarrow\\mathbf{X}\\mathbf{Q}",
+    "to": "\\mathbf{X}\\leftarrow\\mathbf{X}\\mathbf{Q}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "CqXEs": {
+    "from": "\\mathbf{W}_{\\mathrm{down}}\\leftarrow\\mathbf{H}\\mathbf{W}_{\\mathrm{down}}",
+    "to": "\\mathbf{W}_{\\mathrm{down}}\\leftarrow\\mathbf{H}\\mathbf{W}_{\\mathrm{down}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "KXs61": {
+    "from": "\\mathbf{Q}",
+    "to": "\\mathbf{Q}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "RRoUz": {
+    "from": "\\mathbf{H}\\mathbf{W}_{\\mathrm{down}}\\mathbf{Q}",
+    "to": "\\mathbf{H}\\mathbf{W}_{\\mathrm{down}}\\mathbf{Q}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "ZWIMw": {
+    "from": "\\mathbf{W}_{\\mathrm{v}}",
+    "to": "\\mathbf{W}_{\\mathrm{v}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "kDqYK": {
+    "from": "\\mathbf{W}_{\\mathrm{out}}",
+    "to": "\\mathbf{W}_{\\mathrm{out}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "T0gu9": {
+    "from": "\\mathbf{Y}=\\operatorname{concat}\\left[(\\mathbf{P}_1\\mathbf{V}_1)\\cdots(\\mathbf{P}_{n_h}\\mathbf{V}_{n_h})\\right]\\mathbf{W}_{\\mathrm{out}}.\\tag{5}",
+    "to": "\\mathbf{Y}=\\operatorname{concat}\\left[(\\mathbf{P}_1\\mathbf{V}_1)\\cdots(\\mathbf{P}_{n_h}\\mathbf{V}_{n_h})\\right]\\mathbf{W}_{\\mathrm{out}}.\\tag{5}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "epNaC": {
+    "from": "\\mathbf{Y}=\\sum_{h=1}^{H}\\mathbf{P}_h\\mathbf{X}\\mathbf{W}_{\\mathrm{v}}^{(h)}\\mathbf{W}_{\\mathrm{out}}^{(h)}.\\tag{6}",
+    "to": "\\mathbf{Y}=\\sum_{h=1}^{n_h}\\mathbf{P}_h\\mathbf{X}\\mathbf{W}_{\\mathrm{v}}^{(h)}\\mathbf{W}_{\\mathrm{out}}^{(h)}.\\tag{6}",
+    "reason": "统一注意力头数为 n_h，区分头数与头维度",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
+  },
+  "AS1Yp": {
+    "from": "\\mathbf{P}_h",
+    "to": "\\mathbf{P}_h",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "sDJvl": {
+    "from": "\\mathbf{V}_h=\\mathbf{X}\\mathbf{W}_{\\mathrm{v}}^{(h)}",
+    "to": "\\mathbf{V}_h=\\mathbf{X}\\mathbf{W}_{\\mathrm{v}}^{(h)}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "CO5d2": {
+    "from": "\\mathbf{H}_{d_h}",
+    "to": "\\mathbf{H}_{d_h}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "uFzmO": {
+    "from": "\\mathbf{W}_{\\mathrm{v}}",
+    "to": "\\mathbf{W}_{\\mathrm{v}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "j3Ifs": {
+    "from": "\\mathbf{W}_{\\mathrm{out}}",
+    "to": "\\mathbf{W}_{\\mathrm{out}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "WIo5C": {
+    "from": "\\mathbf{W}_{\\mathrm{v}}^{(h)}\\leftarrow\\mathbf{W}_{\\mathrm{v}}^{(h)}\\mathbf{H}_{d_h},\\qquad \\mathbf{W}_{\\mathrm{out}}^{(h)}\\leftarrow\\mathbf{H}_{d_h}\\mathbf{W}_{\\mathrm{out}}^{(h)}.\\tag{7}",
+    "to": "\\mathbf{W}_{\\mathrm{v}}^{(h)}\\leftarrow\\mathbf{W}_{\\mathrm{v}}^{(h)}\\mathbf{H}_{d_h},\\qquad \\mathbf{W}_{\\mathrm{out}}^{(h)}\\leftarrow\\mathbf{H}_{d_h}\\mathbf{W}_{\\mathrm{out}}^{(h)}.\\tag{7}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "Nv8km": {
+    "from": "\\mathbf{W}_{\\mathrm{v}}\\leftarrow\\mathbf{W}_{\\mathrm{v}}\\left(\\mathbf{I}\\otimes\\mathbf{H}_{d_h}\\right),\\qquad \\mathbf{W}_{\\mathrm{out}}\\leftarrow\\left(\\mathbf{I}\\otimes\\mathbf{H}_{d_h}\\right)\\mathbf{W}_{\\mathrm{out}}.\\tag{8}",
+    "to": "\\mathbf{W}_{\\mathrm{v}}\\leftarrow\\mathbf{W}_{\\mathrm{v}}\\left(\\mathbf{I}\\otimes\\mathbf{H}_{d_h}\\right),\\qquad \\mathbf{W}_{\\mathrm{out}}\\leftarrow\\left(\\mathbf{I}\\otimes\\mathbf{H}_{d_h}\\right)\\mathbf{W}_{\\mathrm{out}}.\\tag{8}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "DWdYI": {
+    "from": "\\mathbf{H}_{n_h\\times d_h}=\\left(\\mathbf{I}\\otimes\\mathbf{H}_{d_h}\\right)\\left(\\mathbf{H}_{n_h}\\otimes\\mathbf{I}\\right).\\tag{9}",
+    "to": "\\mathbf{H}_{n_h\\times d_h}=\\left(\\mathbf{I}\\otimes\\mathbf{H}_{d_h}\\right)\\left(\\mathbf{H}_{n_h}\\otimes\\mathbf{I}\\right).\\tag{9}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "RgQP0": {
+    "from": "n_h",
+    "to": "n_h",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "DjZol": {
+    "from": "d_h",
+    "to": "d_h",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "ppSCa": {
+    "from": "\\mathbf{I}\\otimes\\mathbf{H}_{d_h}",
+    "to": "\\mathbf{I}\\otimes\\mathbf{H}_{d_h}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "Uyxyi": {
+    "from": "\\mathbf{W}_{\\mathrm{v}}",
+    "to": "\\mathbf{W}_{\\mathrm{v}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "akeRv": {
+    "from": "\\mathbf{W}_{\\mathrm{out}}",
+    "to": "\\mathbf{W}_{\\mathrm{out}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "jglOi": {
+    "from": "\\mathbf{H}_{d_h}\\otimes\\mathbf{I}",
+    "to": "\\mathbf{H}_{n_h}\\otimes\\mathbf{I}",
+    "reason": "统一注意力头数为 n_h，区分头数与头维度",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
+  },
+  "yYgra": {
+    "from": "\\mathbf{W}_{\\mathrm{out}}",
+    "to": "\\mathbf{W}_{\\mathrm{out}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "ui3wl": {
+    "from": "\\mathbf{W}_{\\mathrm{out}}\\leftarrow\\mathbf{H}\\mathbf{W}_{\\mathrm{out}}",
+    "to": "\\mathbf{W}_{\\mathrm{out}}\\leftarrow\\mathbf{H}\\mathbf{W}_{\\mathrm{out}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "JbSZP": {
+    "from": "\\mathbf{Z}\\leftarrow\\mathbf{Z}(\\mathbf{H}_{n_h}\\otimes\\mathbf{I})",
+    "to": "\\mathbf{Z}\\leftarrow\\mathbf{Z}(\\mathbf{H}_{n_h}\\otimes\\mathbf{I})",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "l0OQg": {
+    "from": "\\mathbf{Z}",
+    "to": "\\mathbf{Z}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "znyPY": {
+    "from": "\\mathbf{P}_1,\\ldots,\\mathbf{P}_h",
+    "to": "\\mathbf{P}_1,\\ldots,\\mathbf{P}_{n_h}",
+    "reason": "统一注意力头数为 n_h，区分头数与头维度",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
+  },
+  "Vpciv": {
+    "from": "\\mathbf{Q}\\leftarrow\\operatorname{Pos}\\left(\\mathbf{X}\\mathbf{W}_{\\mathrm{q}}\\right)=\\operatorname{concat}\\left[\\operatorname{Pos}(\\mathbf{Q}_1),\\ldots,\\operatorname{Pos}(\\mathbf{Q}_{n_h})\\right].\\tag{10}",
+    "to": "\\mathbf{Q}\\leftarrow\\operatorname{Pos}\\left(\\mathbf{X}\\mathbf{W}_{\\mathrm{q}}\\right)=\\operatorname{concat}\\left[\\operatorname{Pos}(\\mathbf{Q}_1),\\ldots,\\operatorname{Pos}(\\mathbf{Q}_{n_h})\\right].\\tag{10}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "dGEPZ": {
+    "from": "\\mathbf{K}\\leftarrow\\operatorname{Pos}\\left(\\mathbf{X}\\mathbf{W}_{\\mathrm{k}}\\right)=\\operatorname{concat}\\left[\\operatorname{Pos}(\\mathbf{K}_1),\\ldots,\\operatorname{Pos}(\\mathbf{K}_{n_h})\\right].\\tag{11}",
+    "to": "\\mathbf{K}\\leftarrow\\operatorname{Pos}\\left(\\mathbf{X}\\mathbf{W}_{\\mathrm{k}}\\right)=\\operatorname{concat}\\left[\\operatorname{Pos}(\\mathbf{K}_1),\\ldots,\\operatorname{Pos}(\\mathbf{K}_{n_h})\\right].\\tag{11}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "Ak9GX": {
+    "from": "\\mathbf{P}_h\\leftarrow\\operatorname{Softmax}\\left(\\alpha\\,\\operatorname{Pos}(\\mathbf{Q}_h)\\operatorname{Pos}(\\mathbf{K}_h^{\\top})\\odot\\mathbf{M}\\right).\\tag{12}",
+    "to": "\\mathbf{P}_h\\leftarrow\\operatorname{Softmax}\\left(\\alpha\\,\\operatorname{Pos}(\\mathbf{Q}_h)\\operatorname{Pos}(\\mathbf{K}_h^{\\top})\\odot\\mathbf{M}\\right).\\tag{12}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "z49If": {
+    "from": "\\mathbf{Q}",
+    "to": "\\mathbf{Q}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "s2cAR": {
+    "from": "\\mathbf{K}",
+    "to": "\\mathbf{K}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "wjUFM": {
+    "from": "\\mathbf{W}_{\\mathrm{v}}",
+    "to": "\\mathbf{W}_{\\mathrm{v}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "Kz2TO": {
+    "from": "\\mathbf{W}_{\\mathrm{out}}",
+    "to": "\\mathbf{W}_{\\mathrm{out}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "XGN7m": {
+    "from": "\\operatorname{Pos}",
+    "to": "\\operatorname{Pos}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "yoPxc": {
+    "from": "\\mathbf{W}_{\\mathrm{q}}",
+    "to": "\\mathbf{W}_{\\mathrm{q}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "xR3rB": {
+    "from": "\\mathbf{W}_{\\mathrm{k}}",
+    "to": "\\mathbf{W}_{\\mathrm{k}}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "k1dZO": {
+    "from": "\\mathbf{Q}\\leftarrow\\operatorname{Pos}\\left(\\mathbf{X}\\mathbf{W}_{\\mathrm{q}}\\right)\\left(\\mathbf{I}\\otimes\\mathbf{H}_{d_h}\\right)=\\operatorname{concat}\\left[\\operatorname{Pos}(\\mathbf{Q}_1)\\mathbf{H}_{d_h},\\ldots,\\operatorname{Pos}(\\mathbf{Q}_{n_h})\\mathbf{H}_{d_h}\\right].\\tag{13}",
+    "to": "\\mathbf{Q}\\leftarrow\\operatorname{Pos}\\left(\\mathbf{X}\\mathbf{W}_{\\mathrm{q}}\\right)\\left(\\mathbf{I}\\otimes\\mathbf{H}_{d_h}\\right)=\\operatorname{concat}\\left[\\operatorname{Pos}(\\mathbf{Q}_1)\\mathbf{H}_{d_h},\\ldots,\\operatorname{Pos}(\\mathbf{Q}_{n_h})\\mathbf{H}_{d_h}\\right].\\tag{13}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "oWGs1": {
+    "from": "\\mathbf{K}\\leftarrow\\operatorname{Pos}\\left(\\mathbf{X}\\mathbf{W}_{\\mathrm{k}}\\right)\\left(\\mathbf{I}\\otimes\\mathbf{H}_{d_h}\\right)=\\operatorname{concat}\\left[\\operatorname{Pos}(\\mathbf{K}_1)\\mathbf{H}_{d_h},\\ldots,\\operatorname{Pos}(\\mathbf{K}_{n_h})\\mathbf{H}_{d_h}\\right].\\tag{14}",
+    "to": "\\mathbf{K}\\leftarrow\\operatorname{Pos}\\left(\\mathbf{X}\\mathbf{W}_{\\mathrm{k}}\\right)\\left(\\mathbf{I}\\otimes\\mathbf{H}_{d_h}\\right)=\\operatorname{concat}\\left[\\operatorname{Pos}(\\mathbf{K}_1)\\mathbf{H}_{d_h},\\ldots,\\operatorname{Pos}(\\mathbf{K}_{n_h})\\mathbf{H}_{d_h}\\right].\\tag{14}",
+    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+  },
+  "pXeMO": {
+    "from": "\\mathbf{P}_1,\\ldots,\\mathbf{P}_h",
+    "to": "\\mathbf{P}_1,\\ldots,\\mathbf{P}_{n_h}",
+    "reason": "统一注意力头数为 n_h，区分头数与头维度",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
+  }
+}

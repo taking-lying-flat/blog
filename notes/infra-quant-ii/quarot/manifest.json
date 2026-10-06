@@ -2541,5 +2541,32 @@
       },
       "asset": "assets/math/bbf733a46195f87c78518970457aebbc.svg"
     }
+  ],
+  "imagePairs": [
+    [
+      "ue5f8a1c4",
+      "ub8394234"
+    ],
+    [
+      "u7f2598a7",
+      "uff8a911e"
+    ]
+  ],
+  "paragraphEmphasis": [
+    "uc966fe36",
+    "u3a604034"
+  ],
+  "headingParagraphs": [
+    "hjOXM",
+    "aa6xA",
+    "hv1En"
+  ],
+  "paragraphListItems": [
+    "u42861b83",
+    "u811032f0",
+    "ue49ef088",
+    "ub3ba6247",
+    "u2905732b",
+    "uf37816f3"
   ]
 }

@@ -410,6 +410,25 @@ export async function readLake(file, escape, renderMath) {
   }
   // Split or moved paragraphs can become list items once their final position exists.
   for (const id of manifest.paragraphListItemsAfterMoves ?? []) paragraphListItem(id);
+  // Pair related diagrams while preserving all original image assets and anchors.
+  for (const pair of manifest.imagePairs ?? []) {
+    if (!Array.isArray(pair) || pair.length !== 2 || pair.some(id => !/^[\w-]+$/.test(id))) {
+      throw new Error('Invalid Lake image pair');
+    }
+    const pattern = new RegExp(pair.map(id => `<p\\b[^>]*\\sid="${id}"[^>]*>[\\s\\S]*?<\\/p>`).join('\\s*'), 'g');
+    if ([...content.matchAll(pattern)].length !== 1) throw new Error(`Missing Lake image pair: ${pair}`);
+    content = content.replace(pattern, pairHtml => `<figure class="lake-image-pair">${pairHtml}</figure>`);
+  }
+  for (const id of manifest.paragraphEmphasis ?? []) {
+    const pattern = new RegExp(`(<p\\b[^>]*\\sid="${id}"[^>]*>)([\\s\\S]*?)(<\\/p>)`, 'g');
+    if (!/^[\w-]+$/.test(id) || [...content.matchAll(pattern)].length !== 1) throw new Error(`Missing Lake emphasized paragraph: ${id}`);
+    content = content.replace(pattern, '$1<strong>$2</strong>$3');
+  }
+  for (const id of manifest.headingParagraphs ?? []) {
+    const pattern = new RegExp(`<h3\\b([^>]*\\sid="${id}"[^>]*)>([\\s\\S]*?)<\\/h3>`, 'g');
+    if (!/^[\w-]+$/.test(id) || [...content.matchAll(pattern)].length !== 1) throw new Error(`Missing Lake paragraph heading: ${id}`);
+    content = content.replace(pattern, '<p$1><strong>$2</strong></p>');
+  }
   const text = content.replace(/<[^>]*>/g, '');
   return {
     title: manifest.title,

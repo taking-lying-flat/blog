@@ -792,3 +792,9 @@
 [data-post="genai-sakura-iv"] .lake-document h2 { margin-block: 24px 12px; }
 [data-post="genai-sakura-iv"] .lake-document > :first-child { margin-top: 0; }
 [data-post="genai-sakura-iv"] .lake-document .lake-image { display: block; margin: 12px auto; height: auto; }
+
+/* Original and rotated FFN/attention diagrams are each one paired figure. */
+.lake-document .lake-image-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 16px; margin: 20px 0; white-space: normal; }
+.lake-document .lake-image-pair > p { min-width: 0; margin: 0; text-align: center; }
+.lake-document .lake-image-pair .lake-image { width: 100% !important; max-width: 100%; height: auto; }
+@media (max-width: 640px) { .lake-document .lake-image-pair { grid-template-columns: minmax(0, 1fr); gap: 12px; } }
