@@ -678,33 +678,3 @@
 [data-post="genai-sakura-iv"] .lake-document h2 { margin-block: 24px 12px; }
 [data-post="genai-sakura-iv"] .lake-document > :first-child { margin-top: 0; }
 [data-post="genai-sakura-iv"] .lake-document .lake-image { display: block; margin: 12px auto; height: auto; }
-
-/* Block Diffusion follows the paper order and the generative-note typography. */
-[data-post="diffusion-language-models"] .block-diffusion-note {
-  white-space: normal;
-  line-height: 1.82;
-}
-[data-post="diffusion-language-models"] .block-diffusion-note h1 { text-align: center; }
-[data-post="diffusion-language-models"] .bd3-algorithm { margin: 14px 2em; }
-[data-post="diffusion-language-models"] .bd3-algorithm .equation { font-size: 15px; }
-
-[data-post="diffusion-language-models"] .block-diffusion-note table {
-  width: calc(100% - 4em);
-  margin: 16px 2em;
-  border-collapse: collapse;
-  font-size: 15px;
-}
-[data-post="diffusion-language-models"] .block-diffusion-note :is(th, td) {
-  padding: 7px 12px;
-  border-bottom: 1px solid #e4e4e4;
-}
-[data-post="diffusion-language-models"] .block-diffusion-note th { text-align: left; }
-@media (max-width: 640px) {
-  [data-post="diffusion-language-models"] .bd3-algorithm { margin-inline: 0; }
-  [data-post="diffusion-language-models"] .block-diffusion-note table {
-    width: 100%;
-    margin-inline: 0;
-    font-size: 14px;
-  }
-  [data-post="diffusion-language-models"] .block-diffusion-note :is(th, td) { padding: 6px; }
-}
