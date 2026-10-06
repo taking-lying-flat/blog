@@ -810,7 +810,8 @@
 .lake-document .rotation-identities > p { margin-bottom: 12px; }
 .lake-document .rotation-case { margin: 14px 0; padding: 12px 14px; background: #fffcf5; }
 .lake-document .rotation-case > p { margin: 0 0 8px; line-height: 1.8; }
-.lake-document .rotation-case > p:not(:first-child) { text-indent: 2em; }
+.lake-document .rotation-case > ul { margin: 0 0 8px; padding-left: 2em; list-style-type: disc; }
+.lake-document .rotation-case > ul > li { margin: 0; line-height: 1.8; }
 .lake-document .rotation-case > p:first-child > strong { color: #814800; }
 .lake-document #rotation-nonlinearity { background: #f3f8ff; }
 .lake-document #rotation-nonlinearity > p:first-child > strong { color: #315c87; }
