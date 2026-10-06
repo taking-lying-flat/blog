@@ -1,6 +1,6 @@
 <div class="rotation-case" id="rotation-rmsnorm">
 
-**RMSNorm：先融合逐通道缩放，再旋转权重**
+**RMSNorm**
 
 未融合缩放时，缩放矩阵隔开两次旋转，一般不能抵消：
 
