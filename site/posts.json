@@ -10,7 +10,7 @@
     "seriesOrder": 6,
     "category": "generative",
     "date": "2026-10-05",
-    "description": "生成模型笔记：Flow-GRPO 的在线强化学习、ODE-to-SDE 转换、KL 正则化与附录证明",
+    "description": "生成模型笔记：Flow-GRPO 的在线强化学习、随机采样与 KL 正则化，以及 DiffusionNFT 的前向过程、负样本感知微调与策略优化",
     "appendMarkdown": [
       {
         "file": "cm-sampling-algorithm.md",
@@ -38,9 +38,10 @@
         "file": "cm-training-algorithm.md",
         "before": "wia23"
       },
-      "flow-grpo-stochastic-sampling-proof.md"
+      "flow-grpo-stochastic-sampling-proof.md",
+      "diffusion-nft.md"
     ],
-    "tags": ["Flow-GRPO"]
+    "tags": ["Flow-GRPO", "DiffusionNFT"]
   },
   {
     "file": "../notes/diffusion-language-models/source.lake",
