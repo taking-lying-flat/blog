@@ -724,6 +724,28 @@ function renderPaperToc(post) {
   </aside>`;
 }
 
+// Index the final article body, so removed passages never appear in search.
+function searchableText(html) {
+  const body = adaptor.body(adaptor.parse(html, 'text/html'));
+  const blocks = new Set(['p', 'div', 'section', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'tr', 'td', 'th', 'br']);
+  const visit = node => {
+    const kind = adaptor.kind(node);
+    if (kind === '#text') return adaptor.value(node);
+    if (['#comment', 'svg', 'style', 'script', 'button'].includes(kind)) return '';
+    if (kind === 'img') return ` ${adaptor.getAttribute(node, 'alt') ?? ''} `;
+    if (['math-inline', 'equation'].some(name =>
+      (adaptor.getAttribute(node, 'class') ?? '').split(/\s+/).includes(name))) {
+      return ` ${adaptor.getAttribute(node, 'aria-label') ?? ''} `;
+    }
+    const text = adaptor.childNodes(node).map(visit).join('');
+    return blocks.has(kind) ? ` ${text} ` : text;
+  };
+  return visit(body).normalize('NFKC').replace(/\s+/g, ' ').trim();
+}
+const searchIndex = JSON.stringify(readingOrder.map(post => ({
+  slug: post.slug, text: searchableText(post.content),
+})));
+
 const template = await readFile(path.join(root, 'template.html'), 'utf8');
 const primer = path.join(root, 'node_modules/@primer/primitives');
 const assets = new Map([
@@ -736,6 +758,7 @@ const assets = new Map([
     path.join(primer, `dist/css/functional/themes/${mode}-tritanopia.css`)]),
 ]);
 const assetVersion = createHash('sha256');
+assetVersion.update(searchIndex);
 for (const file of assets.values()) assetVersion.update(await readFile(file));
 const version = assetVersion.digest('hex').slice(0, 10);
 
@@ -759,15 +782,23 @@ const home = page({
   title: 'Blog · 技术笔记', description: '关于模型、论文与源码的技术笔记。', pageClass: 'home-page',
   body: `<section aria-labelledby="post-list-title">
     <div class="post-list-heading"><h1 id="post-list-title" aria-live="polite">全部文章 <span>${String(posts.length).padStart(2, '0')}</span></h1></div>
+    <form class="post-search" role="search" data-index="assets/search-index.json?v=${version}" hidden>
+      <label class="sr-only" for="search-input">搜索文章标题、标签和正文</label>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+      <input id="search-input" name="q" type="search" placeholder="搜索标题、标签或正文…" autocomplete="off" spellcheck="false" aria-describedby="search-status">
+      <button class="search-clear" type="button" hidden>清除</button>
+    </form>
     <nav class="category-nav" aria-label="文章分类">
       <button type="button" data-category="all" aria-pressed="true">全部</button>
       ${categories.map(({ id, title }) =>
       `<button type="button" data-category="${id}" aria-pressed="false">${escape(title)}</button>`).join('')}</nav>
+    <p id="search-status" class="search-status" role="status" hidden></p>
+    <p class="search-empty" hidden>没有找到相关文章，试试其他关键词或切换到「全部」。</p>
     ${categories.map(({ id, title }) => {
       const categoryPosts = readingOrder.filter(post => post.category === id);
       return `<section class="post-group" data-category="${id}" aria-labelledby="category-${id}">
       <div class="post-group-heading"><h2 id="category-${id}">${escape(title)}</h2><span>${categoryPosts.length} 篇</span></div>
-      <div class="post-list">${categoryPosts.map((post) => `<article class="post-entry">
+      <div class="post-list">${categoryPosts.map((post) => `<article class="post-entry" data-slug="${escape(post.slug)}">
       <h3><a href="${post.route}" aria-label="${escape(plainTitle(post.title))}">${escape(post.title)}</a></h3>
       <footer class="entry-footer">
         <div class="entry-details">
@@ -805,6 +836,7 @@ await rm(output, { recursive: true, force: true });
 await mkdir(path.join(output, 'archives'), { recursive: true });
 await mkdir(path.join(output, 'assets'), { recursive: true });
 await writeFile(path.join(output, 'index.html'), home);
+await writeFile(path.join(output, 'assets/search-index.json'), searchIndex);
 await writeFile(path.join(output, 'archives/index.html'), archives);
 for (const post of readingOrder) {
   const categoryPosts = categoryReadingOrders.get(post.category);

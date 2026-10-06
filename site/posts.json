@@ -115,14 +115,9 @@
     "date": "2026-10-04",
     "description": "EAGLE 系列笔记：EAGLE 的特征预测与错位 token 输入、EAGLE-2 的动态草稿树，以及 EAGLE-3 的多层特征融合与训练时测试",
     "tags": [
-      "投机解码",
-      "Speculative Decoding",
       "EAGLE",
       "EAGLE-2",
-      "EAGLE-3",
-      "动态草稿树",
-      "训练时测试",
-      "推理加速"
+      "EAGLE-3"
     ],
     "prependFiles": [
       "../notes/spec-decoding-ii/eagle/source.lake"
@@ -149,13 +144,9 @@
       { "file": "speculative-sampling.md", "before": "uIxWj" }
     ],
     "tags": [
-      "投机解码",
       "Speculative Decoding",
-      "推理加速",
-      "投机采样",
-      "草稿模型",
-      "Medusa",
-      "树形注意力"
+      "Speculative Sampling",
+      "Medusa"
     ]
   },
   {
@@ -203,14 +194,9 @@
     "date": "2026-10-02",
     "description": "训练基础设施笔记：梯度检查点的重计算与内存优化、Megatron-LM 的张量并行，以及 DeepSpeed ZeRO 的模型状态分片、显存优化和通信量分析",
     "tags": [
-      "训练基础设施",
-      "梯度检查点",
+      "Gradient Checkpointing",
       "Megatron-LM",
-      "张量并行",
-      "DeepSpeed",
-      "ZeRO",
-      "分布式训练",
-      "显存优化"
+      "ZeRO"
     ],
     "appendFiles": [
       "../notes/training-infrastructure/megatron/source.lake",
@@ -493,7 +479,7 @@
     "categoryOrder": 2,
     "date": "2026-09-26",
     "description": "FlashAttention 系列笔记：I/O 感知、分块与重计算、任务划分、异步流水线与 FP8。",
-    "tags": ["FlashAttention", "GPU", "Attention"]
+    "tags": ["FlashAttention", "FlashAttention-2", "FlashAttention-3"]
   },
   {
     "file": "../notes/genai-flow-ii/source.lake",
@@ -897,7 +883,7 @@
     "categoryOrder": 3,
     "date": "2026-09-23",
     "description": "模型量化笔记：Optimal Brain Compression、GPTQ、AWQ、SpinQuant 与 FlatQuant。",
-    "tags": ["模型量化", "推理优化"]
+    "tags": ["Optimal Brain Compression", "GPTQ", "AWQ", "SpinQuant", "FlatQuant"]
   },
   {
     "file": "../notes/rope.md",

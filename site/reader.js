@@ -42,29 +42,134 @@ if (categoryNav) {
   const buttons = [...categoryNav.querySelectorAll('[data-category]')];
   const groups = [...document.querySelectorAll('.post-group')];
   const heading = document.querySelector('#post-list-title');
-  const syncCategory = () => {
+  const form = document.querySelector('.post-search');
+  const input = form.querySelector('input');
+  const clear = form.querySelector('.search-clear');
+  const searchStatus = document.querySelector('#search-status');
+  const empty = document.querySelector('.search-empty');
+  const normalize = text => text.normalize('NFKC').toLowerCase();
+  const entries = [...document.querySelectorAll('.post-entry')].map(element => {
+    const snippet = document.createElement('p');
+    snippet.className = 'search-snippet';
+    snippet.hidden = true;
+    element.querySelector('h3').after(snippet);
+    return {
+      element, snippet, slug: element.dataset.slug,
+      metadata: normalize(`${element.querySelector('h3').textContent} ${element.querySelector('.entry-topics').textContent}`),
+      text: '', normalizedText: '',
+    };
+  });
+  let indexReady = false;
+  let indexRequest;
+  let indexFailed = false;
+  let debounce;
+
+  const renderSnippet = (entry, terms) => {
+    const term = terms.find(word => entry.normalizedText.includes(word));
+    if (!term) { entry.snippet.hidden = true; return; }
+    const match = entry.normalizedText.indexOf(term);
+    const start = Math.max(0, match - 40);
+    const end = Math.min(entry.text.length, Math.max(start + 150, match + term.length));
+    const excerpt = entry.text.slice(start, end);
+    entry.snippet.replaceChildren();
+    if (start) entry.snippet.append('…');
+    const offset = match - start;
+    const mark = document.createElement('mark');
+    mark.textContent = excerpt.slice(offset, offset + term.length);
+    entry.snippet.append(excerpt.slice(0, offset), mark, excerpt.slice(offset + term.length));
+    if (end < entry.text.length) entry.snippet.append('…');
+    entry.snippet.hidden = false;
+  };
+  const renderResults = () => {
     const requested = location.hash.replace('#category-', '');
     const selected = buttons.find(button => button.dataset.category === requested) ?? buttons[0];
     const category = selected.dataset.category;
+    const query = input.value.trim();
+    const terms = normalize(query).split(/\s+/).filter(Boolean);
+    for (const entry of entries) {
+      entry.element.hidden = !terms.every(term =>
+        entry.metadata.includes(term) || entry.normalizedText.includes(term));
+      entry.snippet.hidden = true;
+      if (terms.length && !entry.element.hidden) renderSnippet(entry, terms);
+    }
     let count = 0;
     for (const group of groups) {
-      group.hidden = category !== 'all' && group.dataset.category !== category;
-      if (!group.hidden) count += group.querySelectorAll('.post-entry').length;
+      const matches = group.querySelectorAll('.post-entry:not([hidden])').length;
+      group.hidden = (category !== 'all' && group.dataset.category !== category) || matches === 0;
+      group.querySelector('.post-group-heading span').textContent = `${matches} 篇`;
+      if (!group.hidden) count += matches;
     }
     for (const button of buttons) {
       button.setAttribute('aria-pressed', String(button === selected));
     }
     heading.firstChild.textContent = `${category === 'all' ? '全部文章' : selected.textContent} `;
     heading.querySelector('span').textContent = String(count).padStart(2, '0');
+    clear.hidden = !input.value;
+    searchStatus.hidden = !query;
+    searchStatus.textContent = query ? indexFailed
+      ? `正文搜索暂时无法加载，当前仅搜索标题和标签（${count} 篇）。重新输入可重试。`
+      : !indexReady ? '正在加载正文搜索…'
+        : `找到 ${count} 篇相关文章${category === 'all' ? '' : ` · ${selected.textContent}`}` : '';
+    empty.hidden = !query || count > 0 || (!indexReady && !indexFailed);
+    form.setAttribute('aria-busy', String(Boolean(query) && !indexReady && !indexFailed));
   };
+  const loadIndex = () => {
+    if (indexReady || indexRequest) return;
+    indexFailed = false;
+    indexRequest = fetch(form.dataset.index)
+      .then(response => {
+        if (!response.ok) throw new Error('Search index unavailable');
+        return response.json();
+      })
+      .then(records => {
+        const bySlug = new Map(records.map(record => [record.slug, record.text]));
+        if (entries.some(entry => typeof bySlug.get(entry.slug) !== 'string')) {
+          throw new Error('Incomplete search index');
+        }
+        for (const entry of entries) {
+          entry.text = bySlug.get(entry.slug);
+          entry.normalizedText = normalize(entry.text);
+        }
+        indexReady = true;
+      })
+      .catch(() => { indexFailed = true; })
+      .finally(() => { indexRequest = undefined; renderResults(); });
+  };
+  const search = () => {
+    clearTimeout(debounce);
+    const url = new URL(location.href);
+    if (input.value.trim()) url.searchParams.set('q', input.value.trim());
+    else url.searchParams.delete('q');
+    history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    if (input.value.trim()) loadIndex();
+    renderResults();
+  };
+  const syncLocation = () => {
+    clearTimeout(debounce);
+    input.value = new URLSearchParams(location.search).get('q') ?? '';
+    if (input.value.trim()) loadIndex();
+    renderResults();
+    if (location.hash === '#search-input') input.focus();
+  };
+  form.hidden = false;
+  input.addEventListener('focus', loadIndex);
+  input.addEventListener('input', event => {
+    clearTimeout(debounce);
+    clear.hidden = !input.value;
+    if (!event.isComposing) debounce = setTimeout(search, 120);
+  });
+  input.addEventListener('compositionend', search);
+  form.addEventListener('submit', event => { event.preventDefault(); search(); });
+  clear.addEventListener('click', () => { input.value = ''; search(); input.focus(); });
   categoryNav.addEventListener('click', event => {
     const button = event.target.closest('button[data-category]');
     if (!button || button.getAttribute('aria-pressed') === 'true') return;
+    search();
     const hash = button.dataset.category === 'all' ? '' : `#category-${button.dataset.category}`;
     history.pushState(null, '', `${location.pathname}${location.search}${hash}`);
-    syncCategory();
+    renderResults();
   });
-  window.addEventListener('popstate', syncCategory);
-  window.addEventListener('hashchange', syncCategory);
-  syncCategory();
+  window.addEventListener('popstate', syncLocation);
+  window.addEventListener('hashchange', syncLocation);
+  syncLocation();
 }
