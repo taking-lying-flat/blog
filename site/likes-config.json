@@ -1,6 +1,8 @@
 {
   "endpoint": "https://api.nostalgic.llll-ll.com/like",
   "posts": {
+    "omni-modal": "tlf-blog-omni-modal",
+    "infra-quant-ii": "tlf-blog-infra-quant-ii",
     "on-policy-distill": "tlf-blog-on-policy-distill",
     "genai-sakura-iv": "tlf-blog-genai-sakura-iv",
     "diffusion-language-models": "tlf-blog-diffusion-language-models",

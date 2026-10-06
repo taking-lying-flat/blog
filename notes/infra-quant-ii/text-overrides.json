@@ -1,0 +1,36 @@
+{
+  "u236114ee": {
+    "from": "，分别用于处理多层感知机模块内部的激活异常值，以及 KV Cache 中的异常值问题",
+    "to": "，分别用于处理 Q/K（含 K Cache）中的异常值，以及多层感知机 Down Projection 输入激活中的异常值",
+    "reason": "会议版 3.1：R3 对应注意力 Q/K，R4 对应 FFN。",
+    "reference": "https://proceedings.iclr.cc/paper_files/paper/2025/file/e5b1c0d4866f72393c522c8a00eed4eb-Paper-Conference.pdf#page=5"
+  },
+  "ufc033dfc": {
+    "from": "为在 Stiefel 流形上优化旋转矩阵，采用 Cayley SGD 方法。该方法是一种用于 Stiefel 流形优化的高效算法。更具体地，在每次迭代中，旋转矩阵 R 的更新被参数化为",
+    "to": "为在 Stiefel 流形上优化旋转矩阵，采用 Cayley SGD 方法。该方法是一种用于 Stiefel 流形优化的高效算法。以下采用正学习率和损失函数的正梯度，并将旋转矩阵 R 的下降更新写为",
+    "reason": "明确 Cayley 下降更新约定。",
+    "reference": "https://proceedings.iclr.cc/paper_files/paper/2025/file/e5b1c0d4866f72393c522c8a00eed4eb-Paper-Conference.pdf#page=5"
+  },
+  "ubdc999c8": {
+    "from": "近期研究发现，Hadamard 矩阵",
+    "to": "近期研究发现，归一化 Hadamard 矩阵",
+    "reason": "显式说明后续正交恒等式的前提。",
+    "reference": "https://proceedings.mlr.press/v267/sun25l.html"
+  },
+  "u897b0dcc": {
+    "from": "表示所有 b-bit 整数点构成的集合",
+    "to": "表示有符号 b-bit 整数点构成的集合；这里采用有符号量化约定",
+    "reason": "补全量化网格的符号约定。",
+    "reference": "https://proceedings.mlr.press/v267/sun25l.html"
+  },
+  "ua87bbc07": {
+    "from": "可以在推理之前离线预计算，从而避免在运行时对权重执行额外变换。",
+    "to": "可以在推理之前离线预计算，从而避免在运行时对权重执行额外变换",
+    "reason": "统一段落末尾标点样式"
+  },
+  "uce37baac": {
+    "from": "：",
+    "to": "",
+    "reason": "统一段落末尾标点样式"
+  }
+}

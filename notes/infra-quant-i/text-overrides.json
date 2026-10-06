@@ -11,30 +11,6 @@
     "reason": "会议附录 A.2 Algorithm 2 要求保留每行前缀；直接全局排序仅是通常接近的简化。",
     "reference": "https://papers.nips.cc/paper_files/paper/2022/file/1caf09c9f4e6b0150b06a07e77f2710c-Supplemental-Conference.pdf#page=2"
   },
-  "u236114ee": {
-    "from": "，分别用于处理多层感知机模块内部的激活异常值，以及 KV Cache 中的异常值问题",
-    "to": "，分别用于处理 Q/K（含 K Cache）中的异常值，以及多层感知机 Down Projection 输入激活中的异常值",
-    "reason": "会议版 3.1：R3 对应注意力 Q/K，R4 对应 FFN。",
-    "reference": "https://proceedings.iclr.cc/paper_files/paper/2025/file/e5b1c0d4866f72393c522c8a00eed4eb-Paper-Conference.pdf#page=5"
-  },
-  "ufc033dfc": {
-    "from": "为在 Stiefel 流形上优化旋转矩阵，采用 Cayley SGD 方法。该方法是一种用于 Stiefel 流形优化的高效算法。更具体地，在每次迭代中，旋转矩阵 R 的更新被参数化为",
-    "to": "为在 Stiefel 流形上优化旋转矩阵，采用 Cayley SGD 方法。该方法是一种用于 Stiefel 流形优化的高效算法。以下采用正学习率和损失函数的正梯度，并将旋转矩阵 R 的下降更新写为",
-    "reason": "明确 Cayley 下降更新约定。",
-    "reference": "https://proceedings.iclr.cc/paper_files/paper/2025/file/e5b1c0d4866f72393c522c8a00eed4eb-Paper-Conference.pdf#page=5"
-  },
-  "ubdc999c8": {
-    "from": "近期研究发现，Hadamard 矩阵",
-    "to": "近期研究发现，归一化 Hadamard 矩阵",
-    "reason": "显式说明后续正交恒等式的前提。",
-    "reference": "https://proceedings.mlr.press/v267/sun25l.html"
-  },
-  "u897b0dcc": {
-    "from": "表示所有 b-bit 整数点构成的集合",
-    "to": "表示有符号 b-bit 整数点构成的集合；这里采用有符号量化约定",
-    "reason": "补全量化网格的符号约定。",
-    "reference": "https://proceedings.mlr.press/v267/sun25l.html"
-  },
   "ueb4d92c2": {
     "from": "AWQ 不依赖 GPTQ 等方法所采用的重构过程，也不依赖许多量化感知训练方法所需要的反向传播。由于 AWQ 仅需要从校准数据中统计逐通道平均激活幅值，因此对校准集的依赖程度较低，并能够降低对校准数据产生过拟合的风险。因此，该方法在量化过程中所需的数据量较少，同时能够更好地保留 LLM 在校准数据分布之外的知识与泛化能力",
     "to": "AWQ 不依赖 GPTQ 式的二阶误差补偿，也不需要反向传播。它利用校准数据的逐通道平均激活幅值构造缩放候选，并通过前向计算比较候选的重构误差，再进行量化裁剪。因此，平均激活统计用于构造搜索空间，整个校准过程仍需使用校准样本评估误差。论文实验表明，该方法对校准数据具有较好的泛化能力",
@@ -80,16 +56,6 @@
   "u98a9b46a": {
     "from": "以 SmoothQuant 等 W8A8 量化方法为例，其存储与计算采用相同的数据精度，因此反量化过程可以较为自然地融合到计算 kernel 的 epilogue 中。相比之下，W4A16 在内存访问与实际计算过程中采用不同的数据类型，因此，为获得更高的执行效率，反量化操作需要被集成到主要计算循环之中，这也带来额外的实现复杂度。",
     "to": "以 SmoothQuant 等 W8A8 量化方法为例，其存储与计算采用相同的数据精度，因此反量化过程可以较为自然地融合到计算 kernel 的 epilogue 中。相比之下，W4A16 在内存访问与实际计算过程中采用不同的数据类型，因此，为获得更高的执行效率，反量化操作需要被集成到主要计算循环之中，这也带来额外的实现复杂度",
-    "reason": "统一段落末尾标点样式"
-  },
-  "ua87bbc07": {
-    "from": "可以在推理之前离线预计算，从而避免在运行时对权重执行额外变换。",
-    "to": "可以在推理之前离线预计算，从而避免在运行时对权重执行额外变换",
-    "reason": "统一段落末尾标点样式"
-  },
-  "uce37baac": {
-    "from": "：",
-    "to": "",
     "reason": "统一段落末尾标点样式"
   }
 }

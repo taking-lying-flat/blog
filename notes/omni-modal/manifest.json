@@ -1,0 +1,2727 @@
+{
+  "source": {
+    "file": "source.lake",
+    "sha256": "8bdd744f0f520a725f572d452ad46649fce0992e3e2cb43cb534d6a9a1d722c0",
+    "bytes": 96893,
+    "title": "𝐎𝐦𝐧𝐢-𝐌𝐨𝐝𝐚𝐥",
+    "originalFile": "𝐎𝐦𝐧𝐢-𝐌𝐨𝐝𝐚𝐥.lake"
+  },
+  "title": "Omni-Modal",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "counts": {
+    "math": 27,
+    "images": 7,
+    "separators": 0,
+    "code": 0
+  },
+  "assets": [
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1782539809784-52bfdc7b-c357-4ad6-b54b-561b8bc25835.png",
+      "file": "assets/images/1782539809784-52bfdc7b-c357-4ad6-b54b-561b8bc25835.png",
+      "bytes": 79563,
+      "sha256": "95883fbc5e9e9de52ae1f06bc5f0f2a10b79389bacb7c8dc87e20eeee32d6ac3",
+      "width": 1435,
+      "height": 195
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1782540477096-b41ad5d9-88f9-4903-ac2b-3fcbd9a509fc.png",
+      "file": "assets/images/1782540477096-b41ad5d9-88f9-4903-ac2b-3fcbd9a509fc.png",
+      "bytes": 118933,
+      "sha256": "3d1c9a58c5272264d0d5ae7c45ace7a97ca24ec9ec9321d3ed91a64e95050a0f",
+      "width": 1187,
+      "height": 821
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1782541066118-1cb2d455-8599-441d-8e94-22e7568c1297.png",
+      "file": "assets/images/1782541066118-1cb2d455-8599-441d-8e94-22e7568c1297.png",
+      "bytes": 204540,
+      "sha256": "3c6edb9c1ec130d35e4da051604fb2ab88346484a27b3478322448511776a5a0",
+      "width": 1280,
+      "height": 373
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/d99979941e2b40b5ffd75f89c83e37b4.svg",
+      "file": "assets/math/d99979941e2b40b5ffd75f89c83e37b4.svg",
+      "bytes": 1047,
+      "sha256": "64941f8c89c938f3b9f2d0ab61f17eb5c0a0e4bcd441ab9cecd365ad278c8cc9",
+      "width": "0.84ex",
+      "height": "2.009ex",
+      "viewBox": "0 -719.6 361.5 865.1",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/14cb784d07a4234356ce44d06a5b8a3c.svg",
+      "file": "assets/math/14cb784d07a4234356ce44d06a5b8a3c.svg",
+      "bytes": 1345,
+      "sha256": "87d2618f85a9489b0558599c2a4c2b2826bfd508b4e66eadfca8e21e5ce58013",
+      "width": "1.211ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 521.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/c1718e3515912d22a1ea530a31fb3309.svg",
+      "file": "assets/math/c1718e3515912d22a1ea530a31fb3309.svg",
+      "bytes": 1968,
+      "sha256": "2701955c0f8bd9ac60a87d2c849a569a3c735af9f7ba53786c39880555234875",
+      "width": "2.216ex",
+      "height": "2.009ex",
+      "viewBox": "0 -576.1 954.3 865.1",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/14a0462ed754f2ac1d90170bcad3f3b7.svg",
+      "file": "assets/math/14a0462ed754f2ac1d90170bcad3f3b7.svg",
+      "bytes": 2019,
+      "sha256": "e6f68c865cda5b15c0bb6ed6d4aa905d62ca74e9204b15c49815074b4d53b71f",
+      "width": "2.319ex",
+      "height": "2.009ex",
+      "viewBox": "0 -576.1 998.3 865.1",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/a396aadce383eccfe1fb9317331e5317.svg",
+      "file": "assets/math/a396aadce383eccfe1fb9317331e5317.svg",
+      "bytes": 1786,
+      "sha256": "7e8643ddc30411569c9737c1bec5d7ec8336952f3eb18c7d6e2de550e846fff2",
+      "width": "2.216ex",
+      "height": "2.009ex",
+      "viewBox": "0 -576.1 954.3 865.1",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/11466404e08487e6bd8811050ecbc472.svg",
+      "file": "assets/math/11466404e08487e6bd8811050ecbc472.svg",
+      "bytes": 5429,
+      "sha256": "32ded81a6a8075974dc2b0064934f0818621c1f4a767445c9fe7c6f265f4186d",
+      "width": "16.056ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 6912.9 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/4c055ce774d2b9ed3d2b34748dc82ff4.svg",
+      "file": "assets/math/4c055ce774d2b9ed3d2b34748dc82ff4.svg",
+      "bytes": 2059,
+      "sha256": "42cce95afe64f8fd5978f47719165f1582da5a7acb9eb8c616bfb738c817641c",
+      "width": "2.198ex",
+      "height": "2.009ex",
+      "viewBox": "0 -576.1 946.3 865.1",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/cead1760d9d5723460c4b8d4028f113a.svg",
+      "file": "assets/math/cead1760d9d5723460c4b8d4028f113a.svg",
+      "bytes": 1047,
+      "sha256": "64941f8c89c938f3b9f2d0ab61f17eb5c0a0e4bcd441ab9cecd365ad278c8cc9",
+      "width": "0.84ex",
+      "height": "2.009ex",
+      "viewBox": "0 -719.6 361.5 865.1",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1782541553252-ff812525-0454-4bb4-b6b0-4961c7e6d486.png",
+      "file": "assets/images/1782541553252-ff812525-0454-4bb4-b6b0-4961c7e6d486.png",
+      "bytes": 59523,
+      "sha256": "7acbc06e055a9fad7e569a874ba57b4ee397b65551642a52d4f5dd42dcafe973",
+      "width": 1057,
+      "height": 255
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/01a0b33465cb6a9a84504f60af049255.svg",
+      "file": "assets/math/01a0b33465cb6a9a84504f60af049255.svg",
+      "bytes": 1398,
+      "sha256": "cf15c9a8141aadb97765ce0bec7d498d5127dfd3f1cd74522d03e4bd321d7024",
+      "width": "2.04ex",
+      "height": "1.676ex",
+      "viewBox": "0 -576.1 878.5 721.6",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/4760e2f007e23d820825ba241c47ce3b.svg",
+      "file": "assets/math/4760e2f007e23d820825ba241c47ce3b.svg",
+      "bytes": 1398,
+      "sha256": "cf15c9a8141aadb97765ce0bec7d498d5127dfd3f1cd74522d03e4bd321d7024",
+      "width": "2.04ex",
+      "height": "1.676ex",
+      "viewBox": "0 -576.1 878.5 721.6",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1782541736319-3b36f593-9153-43a9-9ffb-e96f963f2d71.png",
+      "file": "assets/images/1782541736319-3b36f593-9153-43a9-9ffb-e96f963f2d71.png",
+      "bytes": 67042,
+      "sha256": "4bc6b344e8fff025d4117146138ff6a61adc48fdf135d4f8b9fac6462d3d5970",
+      "width": 1092,
+      "height": 288
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/9ca8cfdf47d4b405a747d1fc36bfe0ba.svg",
+      "file": "assets/math/9ca8cfdf47d4b405a747d1fc36bfe0ba.svg",
+      "bytes": 2129,
+      "sha256": "cada7cf22d828d93836c78598f91634bfc8327d20830e653b9490fb669220f71",
+      "width": "2.698ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 1161.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/93f166b5bf5dcb2184f65fc892704cf3.svg",
+      "file": "assets/math/93f166b5bf5dcb2184f65fc892704cf3.svg",
+      "bytes": 3837,
+      "sha256": "4c7c29c968e39b929672b4c20e80908be57dd876da487c7d47fe0b1f632a7a80",
+      "width": "12.499ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 5381.6 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+      "file": "assets/math/df976ff7fcf17d60490267d18a1e3996.svg",
+      "bytes": 1345,
+      "sha256": "87d2618f85a9489b0558599c2a4c2b2826bfd508b4e66eadfca8e21e5ce58013",
+      "width": "1.211ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 521.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/753ea3f27103908ed7df5166c7e44c9d.svg",
+      "file": "assets/math/753ea3f27103908ed7df5166c7e44c9d.svg",
+      "bytes": 1987,
+      "sha256": "7c033af1f5c7e19ce2d556cf3936f77c1ecef8c5893584bfdb2dee65f084d55a",
+      "width": "5.214ex",
+      "height": "2.343ex",
+      "viewBox": "0 -791.3 2244.9 1008.6",
+      "style": "vertical-align: -0.505ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/52d26ed1035a6f623c2c01f83eeb3b33.svg",
+      "file": "assets/math/52d26ed1035a6f623c2c01f83eeb3b33.svg",
+      "bytes": 18699,
+      "sha256": "bdb9e91513935d411d9124e9cd255b48d4beccafb4f004ebf28ac9ebefd38871",
+      "width": "86.69ex",
+      "height": "6.509ex",
+      "viewBox": "0 -1652.5 37324.6 2802.6",
+      "style": "vertical-align: -2.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/24a00a92acccd2f5795d9a6932687462.svg",
+      "file": "assets/math/24a00a92acccd2f5795d9a6932687462.svg",
+      "bytes": 1677,
+      "sha256": "c2cc4747793b58ed1730e335a873695e2bd25701e86a9d442f6c91b71984d4fc",
+      "width": "1.848ex",
+      "height": "2.009ex",
+      "viewBox": "0 -576.1 795.8 865.1",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/5c6f609fb47bb3cfc121433cb2de7a84.svg",
+      "file": "assets/math/5c6f609fb47bb3cfc121433cb2de7a84.svg",
+      "bytes": 1086,
+      "sha256": "774b0635897b8264cfb48b016f7b20fc401234274414140f5d3db58209dafaa1",
+      "width": "0.802ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 345.5 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/6638f4a45e0ceb8c6d93bf61bf1ce196.svg",
+      "file": "assets/math/6638f4a45e0ceb8c6d93bf61bf1ce196.svg",
+      "bytes": 1760,
+      "sha256": "a9e90ea53b2d62992fbdc32e6f70174b26e0559004f4404e48240e58f2b782c6",
+      "width": "1.769ex",
+      "height": "2.509ex",
+      "viewBox": "0 -791.3 761.8 1080.4",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/93bbcd2eaaf4645982d2ad18f7e92bea.svg",
+      "file": "assets/math/93bbcd2eaaf4645982d2ad18f7e92bea.svg",
+      "bytes": 3517,
+      "sha256": "8b700203ec129571c9f87f4f0fc974ac89b5bb486a304bb67dc1ae7fdd51c88b",
+      "width": "3.942ex",
+      "height": "2.843ex",
+      "viewBox": "0 -791.3 1697.3 1223.9",
+      "style": "vertical-align: -1.005ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/b3f5953ac3ef8f74678c4e55aacc0d37.svg",
+      "file": "assets/math/b3f5953ac3ef8f74678c4e55aacc0d37.svg",
+      "bytes": 3847,
+      "sha256": "0aecd1121ce5af84956fe3af70e64accd2bd79f079be7bcb373ae375776bc8ff",
+      "width": "4.261ex",
+      "height": "2.509ex",
+      "viewBox": "0 -791.3 1834.5 1080.4",
+      "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/0ca633513faed3a897b2e3728f2553e0.svg",
+      "file": "assets/math/0ca633513faed3a897b2e3728f2553e0.svg",
+      "bytes": 5566,
+      "sha256": "d20b58854035f162a251d5e430d540911feed438c4cd2729ed21a3ca20db8aa0",
+      "width": "9.771ex",
+      "height": "2.843ex",
+      "viewBox": "0 -863.1 4207 1223.9",
+      "style": "vertical-align: -0.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/3929b17e718770ee4b6b15e69d8f7497.svg",
+      "file": "assets/math/3929b17e718770ee4b6b15e69d8f7497.svg",
+      "bytes": 909,
+      "sha256": "079c7f2a8fb088f7ffe3c328b319eeb28777a203fe82df413634cc71e99b92f4",
+      "width": "1.202ex",
+      "height": "1.676ex",
+      "viewBox": "0 -576.1 517.5 721.6",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1783836525790-b88f4727-3a29-419b-819f-d1f1d7f0070d.png",
+      "file": "assets/images/1783836525790-b88f4727-3a29-419b-819f-d1f1d7f0070d.png",
+      "bytes": 402280,
+      "sha256": "d63b339725781b19fe523d60cd41d21879ef617092376f1e176409bd157980cd",
+      "width": 1117,
+      "height": 832
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1783836857339-652bfa41-fc14-400e-9f7c-e9cdabab8c25.png",
+      "file": "assets/images/1783836857339-652bfa41-fc14-400e-9f7c-e9cdabab8c25.png",
+      "bytes": 330506,
+      "sha256": "d1b3b9562f3591623a72df0517448071047442abdfc4846d7d1a9c232f6e2c80",
+      "width": 896,
+      "height": 642
+    }
+  ],
+  "cards": [
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1782539809784-52bfdc7b-c357-4ad6-b54b-561b8bc25835.png%22%2C%22taskId%22%3A%22ufc5fa8c0-a073-45fd-aa95-1b09ac2fbe1%22%2C%22clientId%22%3A%22uc0bfd991-323f-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A844.6364135742188%2C%22height%22%3A115%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A79563%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1435%2C%22originHeight%22%3A195%2C%22ratio%22%3A1.375%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22GPT-4VE%3EPIXTRAL12BE%E4%B8%89MINICPMV45E%22%2C%22x%22%3A469%2C%22y%22%3A69%2C%22width%22%3A395%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22GCHATGPTM%2C%E7%B1%B3CLAUDE3%3AE%3A0LLAMA3S%22%2C%22x%22%3A26%2C%22y%22%3A74%2C%22width%22%3A381%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22HUMAN-LIKEINTERACTION%22%2C%22x%22%3A1037%2C%22y%22%3A140%2C%22width%22%3A342%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22OMNILIVESTREAMING%22%2C%22x%22%3A889%2C%22y%22%3A29%2C%22width%22%3A261%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22MULTIMODALCAPABILITY%22%2C%22x%22%3A451%2C%22y%22%3A28%2C%22width%22%3A263%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22GPT-4O%E5%93%81%2CMINICPM-O2.6%3AES%22%2C%22x%22%3A887%2C%22y%22%3A55%2C%22width%22%3A278%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%22GEMMA2E%2C%2C(DEEPSEEK-RLZM%3A7QWEN3M%22%2C%22x%22%3A82%2C%22y%22%3A107%2C%22width%22%3A348%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%225GEMINILIVEZMS%3E7QWEN3-OMNI2ES%22%2C%22x%22%3A895%2C%22y%22%3A85%2C%22width%22%3A315%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22%2BFULL-DUPLEX%22%2C%22x%22%3A1197%2C%22y%22%3A27%2C%22width%22%3A155%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22%3AGEMINI3%3AM%3A7QWEN3.5VL2S%22%2C%22x%22%3A570%2C%22y%22%3A101%2C%22width%22%3A300%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22TEXTLNTERACTION%22%2C%22x%22%3A27%2C%22y%22%3A29%2C%22width%22%3A179%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22MINICPM-04.52Z6%22%2C%22x%22%3A1196%2C%22y%22%3A67%2C%22width%22%3A209%2C%22height%22%3A25%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23efbf94%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22uf931355d%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1782539809784-52bfdc7b-c357-4ad6-b54b-561b8bc25835.png",
+        "taskId": "ufc5fa8c0-a073-45fd-aa95-1b09ac2fbe1",
+        "clientId": "uc0bfd991-323f-4",
+        "originalType": "binary",
+        "width": 844.6364135742188,
+        "height": 115,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 79563,
+        "from": "paste",
+        "originWidth": 1435,
+        "originHeight": 195,
+        "ratio": 1.375,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "GPT-4VE>PIXTRAL12BE三MINICPMV45E",
+            "x": 469,
+            "y": 69,
+            "width": 395,
+            "height": 22
+          },
+          {
+            "text": "GCHATGPTM,米CLAUDE3:E:0LLAMA3S",
+            "x": 26,
+            "y": 74,
+            "width": 381,
+            "height": 25
+          },
+          {
+            "text": "HUMAN-LIKEINTERACTION",
+            "x": 1037,
+            "y": 140,
+            "width": 342,
+            "height": 27
+          },
+          {
+            "text": "OMNILIVESTREAMING",
+            "x": 889,
+            "y": 29,
+            "width": 261,
+            "height": 23
+          },
+          {
+            "text": "MULTIMODALCAPABILITY",
+            "x": 451,
+            "y": 28,
+            "width": 263,
+            "height": 23
+          },
+          {
+            "text": "GPT-4O品,MINICPM-O2.6:ES",
+            "x": 887,
+            "y": 55,
+            "width": 278,
+            "height": 26
+          },
+          {
+            "text": "GEMMA2E,,(DEEPSEEK-RLZM:7QWEN3M",
+            "x": 82,
+            "y": 107,
+            "width": 348,
+            "height": 27
+          },
+          {
+            "text": "5GEMINILIVEZMS>7QWEN3-OMNI2ES",
+            "x": 895,
+            "y": 85,
+            "width": 315,
+            "height": 21
+          },
+          {
+            "text": "+FULL-DUPLEX",
+            "x": 1197,
+            "y": 27,
+            "width": 155,
+            "height": 25
+          },
+          {
+            "text": ":GEMINI3:M:7QWEN3.5VL2S",
+            "x": 570,
+            "y": 101,
+            "width": 300,
+            "height": 22
+          },
+          {
+            "text": "TEXTLNTERACTION",
+            "x": 27,
+            "y": 29,
+            "width": 179,
+            "height": 21
+          },
+          {
+            "text": "MINICPM-04.52Z6",
+            "x": 1196,
+            "y": 67,
+            "width": 209,
+            "height": 25
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#efbf94",
+        "__spacing": "both",
+        "id": "uf931355d",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1782539809784-52bfdc7b-c357-4ad6-b54b-561b8bc25835.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1782540477096-b41ad5d9-88f9-4903-ac2b-3fcbd9a509fc.png%22%2C%22taskId%22%3A%22u9fb902d6-a140-4856-83a2-65750700939%22%2C%22clientId%22%3A%22ua43d6ba5-7b82-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A659.2727661132812%2C%22height%22%3A456%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A118933%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1187%2C%22originHeight%22%3A821%2C%22ratio%22%3A1.375%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22OG%E4%B8%ADOOGOOO%22%2C%22x%22%3A337%2C%22y%22%3A606%2C%22width%22%3A745%2C%22height%22%3A75%7D%2C%7B%22text%22%3A%22UA%E4%B8%ADULCU%E4%B8%AD%22%2C%22x%22%3A537%2C%22y%22%3A154%2C%22width%22%3A362%2C%22height%22%3A39%7D%2C%7B%22text%22%3A%22STREAMINGFLOWMATCHINGDECODER%22%2C%22x%22%3A548%2C%22y%22%3A218%2C%22width%22%3A341%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22LNTERLEAVEDSPEECHTOKENDECODER%22%2C%22x%22%3A551%2C%22y%22%3A288%2C%22width%22%3A337%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%220000000000000000%22%2C%22x%22%3A531%2C%22y%22%3A248%2C%22width%22%3A414%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22DVISUALEMBEDDINGS(V%22%2C%22x%22%3A336%2C%22y%22%3A74%2C%22width%22%3A225%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22FULL-DUPLEXOMNIMODALLARGELANGUAGEMO%22%2C%22x%22%3A497%2C%22y%22%3A444%2C%22width%22%3A427%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22AUDIOEMBEDDINGS(A)%22%2C%22x%22%3A654%2C%22y%22%3A75%2C%22width%22%3A208%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22NDWHATYOUHEARCONTINUOUSLY%22%2C%22x%22%3A362%2C%22y%22%3A713%2C%22width%22%3A257%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22Q%3ADESCRIBEWHATYOUSEE%22%2C%22x%22%3A355%2C%22y%22%3A691%2C%22width%22%3A228%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22AUDIOOUTPUT%22%2C%22x%22%3A37%2C%22y%22%3A164%2C%22width%22%3A129%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%220000%E4%B8%80%5C%220000%22%2C%22x%22%3A929%2C%22y%22%3A247%2C%22width%22%3A197%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%22MULTIMODALENCODERS%22%2C%22x%22%3A623%2C%22y%22%3A572%2C%22width%22%3A202%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22VIDEOSTREAM%22%2C%22x%22%3A41%2C%22y%22%3A638%2C%22width%22%3A130%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22HIDDENSTATES(H)%22%2C%22x%22%3A84%2C%22y%22%3A34%2C%22width%22%3A174%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22MULTIMODALSYSTEM%22%2C%22x%22%3A55%2C%22y%22%3A413%2C%22width%22%3A183%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22AUDIOSTREAM%22%2C%22x%22%3A42%2C%22y%22%3A703%2C%22width%22%3A126%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22MERGE%22%2C%22x%22%3A66%2C%22y%22%3A75%2C%22width%22%3A93%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22TEXTSYSTEMPROMPT%22%2C%22x%22%3A65%2C%22y%22%3A542%2C%22width%22%3A154%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22SPEECHTOKENS%22%2C%22x%22%3A37%2C%22y%22%3A250%2C%22width%22%3A142%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22SPEAKTOKEN%22%2C%22x%22%3A652%2C%22y%22%3A35%2C%22width%22%3A127%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22(TOKEN%2BHIDDEN)%22%2C%22x%22%3A39%2C%22y%22%3A370%2C%22width%22%3A141%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22SILENTTOKEN%22%2C%22x%22%3A349%2C%22y%22%3A33%2C%22width%22%3A124%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22REFERENCEAUDIO%22%2C%22x%22%3A66%2C%22y%22%3A490%2C%22width%22%3A146%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22LLMOUTPUT%22%2C%22x%22%3A34%2C%22y%22%3A339%2C%22width%22%3A123%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22TIME(S)%22%2C%22x%22%3A39%2C%22y%22%3A765%2C%22width%22%3A76%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22TEXTTOKEN%22%2C%22x%22%3A949%2C%22y%22%3A34%2C%22width%22%3A114%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22%E4%B8%80-%E4%B8%80%E4%B8%80%E4%B8%80%E4%B8%80%E4%B8%80%E4%B8%80%E4%B8%80%E4%B8%80%E4%B8%80%E4%B8%80%E4%B8%80%E4%B8%80%22%2C%22x%22%3A45%2C%22y%22%3A587%2C%22width%22%3A148%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22----0---0--%22%2C%22x%22%3A560%2C%22y%22%3A339%2C%22width%22%3A168%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%223.%E6%97%A5%22%2C%22x%22%3A922%2C%22y%22%3A772%2C%22width%22%3A48%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%221.0%22%2C%22x%22%3A510%2C%22y%22%3A773%2C%22width%22%3A44%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22-EEEEEEE-%22%2C%22x%22%3A45%2C%22y%22%3A385%2C%22width%22%3A143%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22PROMPT%22%2C%22x%22%3A58%2C%22y%22%3A441%2C%22width%22%3A104%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%226%3A6%22%2C%22x%22%3A700%2C%22y%22%3A393%2C%22width%22%3A130%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%222.0%22%2C%22x%22%3A714%2C%22y%22%3A772%2C%22width%22%3A49%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22%E6%97%A5.%E6%97%A5%22%2C%22x%22%3A305%2C%22y%22%3A773%2C%22width%22%3A42%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%220MNI%22%2C%22x%22%3A1079%2C%22y%22%3A365%2C%22width%22%3A37%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22MIINI%22%2C%22x%22%3A871%2C%22y%22%3A363%2C%22width%22%3A45%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22CPM%22%2C%22x%22%3A1014%2C%22y%22%3A363%2C%22width%22%3A42%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22SP%22%2C%22x%22%3A953%2C%22y%22%3A365%2C%22width%22%3A31%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22-%E4%B8%AD--%22%2C%22x%22%3A868%2C%22y%22%3A340%2C%22width%22%3A49%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22%3ASP%22%2C%22x%22%3A725%2C%22y%22%3A362%2C%22width%22%3A64%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22I!THIS%22%2C%22x%22%3A646%2C%22y%22%3A362%2C%22width%22%3A61%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22H%22%2C%22x%22%3A1007%2C%22y%22%3A393%2C%22width%22%3A44%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%3A%3ALOOKI%3A%22%2C%22x%22%3A572%2C%22y%22%3A364%2C%22width%22%3A92%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22!H%22%2C%22x%22%3A850%2C%22y%22%3A393%2C%22width%22%3A68%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22H%22%2C%22x%22%3A937%2C%22y%22%3A393%2C%22width%22%3A50%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22-O-%22%2C%22x%22%3A791%2C%22y%22%3A339%2C%22width%22%3A60%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22%2C--Q-%E4%BA%8C%22%2C%22x%22%3A718%2C%22y%22%3A338%2C%22width%22%3A77%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%220-%22%2C%22x%22%3A1079%2C%22y%22%3A341%2C%22width%22%3A41%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%220-%22%2C%22x%22%3A1012%2C%22y%22%3A341%2C%22width%22%3A45%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22%E5%B7%9DH%22%2C%22x%22%3A638%2C%22y%22%3A393%2C%22width%22%3A72%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%220--%22%2C%22x%22%3A534%2C%22y%22%3A341%2C%22width%22%3A50%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22O%E5%BF%83%22%2C%22x%22%3A945%2C%22y%22%3A156%2C%22width%22%3A161%2C%22height%22%3A33%7D%2C%7B%22text%22%3A%22IS%22%2C%22x%22%3A795%2C%22y%22%3A363%2C%22width%22%3A51%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A482%2C%22y%22%3A734%2C%22width%22%3A120%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22%E5%8F%AF%22%2C%22x%22%3A394%2C%22y%22%3A389%2C%22width%22%3A32%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22%3A6%22%2C%22x%22%3A577%2C%22y%22%3A394%2C%22width%22%3A68%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%E4%B8%AA%22%2C%22x%22%3A958%2C%22y%22%3A492%2C%22width%22%3A67%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22H%22%2C%22x%22%3A534%2C%22y%22%3A393%2C%22width%22%3A35%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22H%22%2C%22x%22%3A1082%2C%22y%22%3A394%2C%22width%22%3A32%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22Q-%22%2C%22x%22%3A953%2C%22y%22%3A341%2C%22width%22%3A36%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%224.%E6%97%A5%22%2C%22x%22%3A1125%2C%22y%22%3A775%2C%22width%22%3A48%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22%E4%B8%AA%22%2C%22x%22%3A1048%2C%22y%22%3A492%2C%22width%22%3A44%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22%E4%B8%AA%22%2C%22x%22%3A1013%2C%22y%22%3A493%2C%22width%22%3A43%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22SP%22%2C%22x%22%3A539%2C%22y%22%3A363%2C%22width%22%3A27%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22%E4%B8%AA%22%2C%22x%22%3A1005%2C%22y%22%3A317%2C%22width%22%3A46%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22%E4%B8%AA%22%2C%22x%22%3A537%2C%22y%22%3A492%2C%22width%22%3A30%2C%22height%22%3A29%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f5f0e3%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u70ae5070%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1782540477096-b41ad5d9-88f9-4903-ac2b-3fcbd9a509fc.png",
+        "taskId": "u9fb902d6-a140-4856-83a2-65750700939",
+        "clientId": "ua43d6ba5-7b82-4",
+        "originalType": "binary",
+        "width": 659.2727661132812,
+        "height": 456,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 118933,
+        "from": "paste",
+        "originWidth": 1187,
+        "originHeight": 821,
+        "ratio": 1.375,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "OG中OOGOOO",
+            "x": 337,
+            "y": 606,
+            "width": 745,
+            "height": 75
+          },
+          {
+            "text": "UA中ULCU中",
+            "x": 537,
+            "y": 154,
+            "width": 362,
+            "height": 39
+          },
+          {
+            "text": "STREAMINGFLOWMATCHINGDECODER",
+            "x": 548,
+            "y": 218,
+            "width": 341,
+            "height": 18
+          },
+          {
+            "text": "LNTERLEAVEDSPEECHTOKENDECODER",
+            "x": 551,
+            "y": 288,
+            "width": 337,
+            "height": 19
+          },
+          {
+            "text": "0000000000000000",
+            "x": 531,
+            "y": 248,
+            "width": 414,
+            "height": 24
+          },
+          {
+            "text": "DVISUALEMBEDDINGS(V",
+            "x": 336,
+            "y": 74,
+            "width": 225,
+            "height": 21
+          },
+          {
+            "text": "FULL-DUPLEXOMNIMODALLARGELANGUAGEMO",
+            "x": 497,
+            "y": 444,
+            "width": 427,
+            "height": 19
+          },
+          {
+            "text": "AUDIOEMBEDDINGS(A)",
+            "x": 654,
+            "y": 75,
+            "width": 208,
+            "height": 20
+          },
+          {
+            "text": "NDWHATYOUHEARCONTINUOUSLY",
+            "x": 362,
+            "y": 713,
+            "width": 257,
+            "height": 17
+          },
+          {
+            "text": "Q:DESCRIBEWHATYOUSEE",
+            "x": 355,
+            "y": 691,
+            "width": 228,
+            "height": 15
+          },
+          {
+            "text": "AUDIOOUTPUT",
+            "x": 37,
+            "y": 164,
+            "width": 129,
+            "height": 21
+          },
+          {
+            "text": "0000一\"0000",
+            "x": 929,
+            "y": 247,
+            "width": 197,
+            "height": 26
+          },
+          {
+            "text": "MULTIMODALENCODERS",
+            "x": 623,
+            "y": 572,
+            "width": 202,
+            "height": 19
+          },
+          {
+            "text": "VIDEOSTREAM",
+            "x": 41,
+            "y": 638,
+            "width": 130,
+            "height": 20
+          },
+          {
+            "text": "HIDDENSTATES(H)",
+            "x": 84,
+            "y": 34,
+            "width": 174,
+            "height": 20
+          },
+          {
+            "text": "MULTIMODALSYSTEM",
+            "x": 55,
+            "y": 413,
+            "width": 183,
+            "height": 22
+          },
+          {
+            "text": "AUDIOSTREAM",
+            "x": 42,
+            "y": 703,
+            "width": 126,
+            "height": 18
+          },
+          {
+            "text": "MERGE",
+            "x": 66,
+            "y": 75,
+            "width": 93,
+            "height": 20
+          },
+          {
+            "text": "TEXTSYSTEMPROMPT",
+            "x": 65,
+            "y": 542,
+            "width": 154,
+            "height": 17
+          },
+          {
+            "text": "SPEECHTOKENS",
+            "x": 37,
+            "y": 250,
+            "width": 142,
+            "height": 21
+          },
+          {
+            "text": "SPEAKTOKEN",
+            "x": 652,
+            "y": 35,
+            "width": 127,
+            "height": 18
+          },
+          {
+            "text": "(TOKEN+HIDDEN)",
+            "x": 39,
+            "y": 370,
+            "width": 141,
+            "height": 16
+          },
+          {
+            "text": "SILENTTOKEN",
+            "x": 349,
+            "y": 33,
+            "width": 124,
+            "height": 20
+          },
+          {
+            "text": "REFERENCEAUDIO",
+            "x": 66,
+            "y": 490,
+            "width": 146,
+            "height": 16
+          },
+          {
+            "text": "LLMOUTPUT",
+            "x": 34,
+            "y": 339,
+            "width": 123,
+            "height": 20
+          },
+          {
+            "text": "TIME(S)",
+            "x": 39,
+            "y": 765,
+            "width": 76,
+            "height": 21
+          },
+          {
+            "text": "TEXTTOKEN",
+            "x": 949,
+            "y": 34,
+            "width": 114,
+            "height": 20
+          },
+          {
+            "text": "一-一一一一一一一一一一一一",
+            "x": 45,
+            "y": 587,
+            "width": 148,
+            "height": 14
+          },
+          {
+            "text": "----0---0--",
+            "x": 560,
+            "y": 339,
+            "width": 168,
+            "height": 20
+          },
+          {
+            "text": "3.日",
+            "x": 922,
+            "y": 772,
+            "width": 48,
+            "height": 23
+          },
+          {
+            "text": "1.0",
+            "x": 510,
+            "y": 773,
+            "width": 44,
+            "height": 21
+          },
+          {
+            "text": "-EEEEEEE-",
+            "x": 45,
+            "y": 385,
+            "width": 143,
+            "height": 13
+          },
+          {
+            "text": "PROMPT",
+            "x": 58,
+            "y": 441,
+            "width": 104,
+            "height": 20
+          },
+          {
+            "text": "6:6",
+            "x": 700,
+            "y": 393,
+            "width": 130,
+            "height": 19
+          },
+          {
+            "text": "2.0",
+            "x": 714,
+            "y": 772,
+            "width": 49,
+            "height": 24
+          },
+          {
+            "text": "日.日",
+            "x": 305,
+            "y": 773,
+            "width": 42,
+            "height": 20
+          },
+          {
+            "text": "0MNI",
+            "x": 1079,
+            "y": 365,
+            "width": 37,
+            "height": 14
+          },
+          {
+            "text": "MIINI",
+            "x": 871,
+            "y": 363,
+            "width": 45,
+            "height": 19
+          },
+          {
+            "text": "CPM",
+            "x": 1014,
+            "y": 363,
+            "width": 42,
+            "height": 17
+          },
+          {
+            "text": "SP",
+            "x": 953,
+            "y": 365,
+            "width": 31,
+            "height": 19
+          },
+          {
+            "text": "-中--",
+            "x": 868,
+            "y": 340,
+            "width": 49,
+            "height": 19
+          },
+          {
+            "text": ":SP",
+            "x": 725,
+            "y": 362,
+            "width": 64,
+            "height": 24
+          },
+          {
+            "text": "I!THIS",
+            "x": 646,
+            "y": 362,
+            "width": 61,
+            "height": 19
+          },
+          {
+            "text": "H",
+            "x": 1007,
+            "y": 393,
+            "width": 44,
+            "height": 17
+          },
+          {
+            "text": "::LOOKI:",
+            "x": 572,
+            "y": 364,
+            "width": 92,
+            "height": 18
+          },
+          {
+            "text": "!H",
+            "x": 850,
+            "y": 393,
+            "width": 68,
+            "height": 19
+          },
+          {
+            "text": "H",
+            "x": 937,
+            "y": 393,
+            "width": 50,
+            "height": 17
+          },
+          {
+            "text": "-O-",
+            "x": 791,
+            "y": 339,
+            "width": 60,
+            "height": 19
+          },
+          {
+            "text": ",--Q-二",
+            "x": 718,
+            "y": 338,
+            "width": 77,
+            "height": 20
+          },
+          {
+            "text": "0-",
+            "x": 1079,
+            "y": 341,
+            "width": 41,
+            "height": 17
+          },
+          {
+            "text": "0-",
+            "x": 1012,
+            "y": 341,
+            "width": 45,
+            "height": 18
+          },
+          {
+            "text": "川H",
+            "x": 638,
+            "y": 393,
+            "width": 72,
+            "height": 18
+          },
+          {
+            "text": "0--",
+            "x": 534,
+            "y": 341,
+            "width": 50,
+            "height": 18
+          },
+          {
+            "text": "O心",
+            "x": 945,
+            "y": 156,
+            "width": 161,
+            "height": 33
+          },
+          {
+            "text": "IS",
+            "x": 795,
+            "y": 363,
+            "width": 51,
+            "height": 20
+          },
+          {
+            "text": "",
+            "x": 482,
+            "y": 734,
+            "width": 120,
+            "height": 15
+          },
+          {
+            "text": "可",
+            "x": 394,
+            "y": 389,
+            "width": 32,
+            "height": 24
+          },
+          {
+            "text": ":6",
+            "x": 577,
+            "y": 394,
+            "width": 68,
+            "height": 17
+          },
+          {
+            "text": "个",
+            "x": 958,
+            "y": 492,
+            "width": 67,
+            "height": 24
+          },
+          {
+            "text": "H",
+            "x": 534,
+            "y": 393,
+            "width": 35,
+            "height": 18
+          },
+          {
+            "text": "H",
+            "x": 1082,
+            "y": 394,
+            "width": 32,
+            "height": 15
+          },
+          {
+            "text": "Q-",
+            "x": 953,
+            "y": 341,
+            "width": 36,
+            "height": 17
+          },
+          {
+            "text": "4.日",
+            "x": 1125,
+            "y": 775,
+            "width": 48,
+            "height": 18
+          },
+          {
+            "text": "个",
+            "x": 1048,
+            "y": 492,
+            "width": 44,
+            "height": 23
+          },
+          {
+            "text": "个",
+            "x": 1013,
+            "y": 493,
+            "width": 43,
+            "height": 21
+          },
+          {
+            "text": "SP",
+            "x": 539,
+            "y": 363,
+            "width": 27,
+            "height": 19
+          },
+          {
+            "text": "个",
+            "x": 1005,
+            "y": 317,
+            "width": 46,
+            "height": 23
+          },
+          {
+            "text": "个",
+            "x": 537,
+            "y": 492,
+            "width": 30,
+            "height": 29
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f5f0e3",
+        "__spacing": "both",
+        "id": "u70ae5070",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1782540477096-b41ad5d9-88f9-4903-ac2b-3fcbd9a509fc.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1782541066118-1cb2d455-8599-441d-8e94-22e7568c1297.png%22%2C%22taskId%22%3A%22u43d66365-f747-4f60-8159-34986faaf4e%22%2C%22clientId%22%3A%22u08a8eac1-2f16-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A730.9091186523438%2C%22height%22%3A213%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A204540%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1280%2C%22originHeight%22%3A373%2C%22ratio%22%3A1.375%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22FULL-DUPLEXSTREAMING%22%2C%22x%22%3A920%2C%22y%22%3A32%2C%22width%22%3A259%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22TRADITIONALSTREAMING%22%2C%22x%22%3A445%2C%22y%22%3A33%2C%22width%22%3A251%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22EXISTINGPARADIGMS%22%2C%22x%22%3A359%2C%22y%22%3A276%2C%22width%22%3A226%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22MINICPM-O4.%22%2C%22x%22%3A962%2C%22y%22%3A274%2C%22width%22%3A163%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22BLOCKED-IO%22%2C%22x%22%3A206%2C%22y%22%3A321%2C%22width%22%3A127%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22IPERCEIVES%22%2C%22x%22%3A1010%2C%22y%22%3A162%2C%22width%22%3A121%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22FULL-DUPLEX%22%2C%22x%22%3A896%2C%22y%22%3A323%2C%22width%22%3A127%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22AISPEAKS%22%2C%22x%22%3A598%2C%22y%22%3A193%2C%22width%22%3A120%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22AIPERCEIVES%22%2C%22x%22%3A417%2C%22y%22%3A194%2C%22width%22%3A122%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22ISDRIBBLING...%22%2C%22x%22%3A525%2C%22y%22%3A162%2C%22width%22%3A117%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22MULTIMODAL%22%2C%22x%22%3A194%2C%22y%22%3A41%2C%22width%22%3A128%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22HEPLAYERINRE%22%2C%22x%22%3A528%2C%22y%22%3A145%2C%22width%22%3A117%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22SHOOTS!%22%2C%22x%22%3A1148%2C%22y%22%3A186%2C%22width%22%3A81%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22THEPLAYERINRED%22%2C%22x%22%3A849%2C%22y%22%3A166%2C%22width%22%3A137%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22SDRIBBLING..%22%2C%22x%22%3A849%2C%22y%22%3A186%2C%22width%22%3A104%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22MITATIONOFEXISTINGP%22%2C%22x%22%3A245%2C%22y%22%3A276%2C%22width%22%3A240%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22ISPEAKS%22%2C%22x%22%3A1031%2C%22y%22%3A201%2C%22width%22%3A87%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22PROACTIVE%22%2C%22x%22%3A1107%2C%22y%22%3A326%2C%22width%22%3A110%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22...OHLHE%22%2C%22x%22%3A1145%2C%22y%22%3A168%2C%22width%22%3A84%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22TEXT-ONLY%22%2C%22x%22%3A35%2C%22y%22%3A39%2C%22width%22%3A106%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22PASSIVE%22%2C%22x%22%3A521%2C%22y%22%3A326%2C%22width%22%3A73%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22%E6%9C%88%22%2C%22x%22%3A245%2C%22y%22%3A163%2C%22width%22%3A63%2C%22height%22%3A37%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A934%2C%22y%22%3A85%2C%22width%22%3A61%2C%22height%22%3A34%7D%2C%7B%22text%22%3A%22%E5%85%B7%22%2C%22x%22%3A1159%2C%22y%22%3A103%2C%22width%22%3A67%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%225%22%2C%22x%22%3A996%2C%22y%22%3A82%2C%22width%22%3A97%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A215%2C%22y%22%3A100%2C%22width%22%3A46%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22%E5%8F%A4%22%2C%22x%22%3A281%2C%22y%22%3A201%2C%22width%22%3A34%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A1158%2C%22y%22%3A83%2C%22width%22%3A74%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22TINE%22%2C%22x%22%3A1037%2C%22y%22%3A239%2C%22width%22%3A72%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22E%22%2C%22x%22%3A552%2C%22y%22%3A241%2C%22width%22%3A37%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A163%2C%22y%22%3A147%2C%22width%22%3A60%2C%22height%22%3A-5%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23bac5ad%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22ucbc996c3%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1782541066118-1cb2d455-8599-441d-8e94-22e7568c1297.png",
+        "taskId": "u43d66365-f747-4f60-8159-34986faaf4e",
+        "clientId": "u08a8eac1-2f16-4",
+        "originalType": "binary",
+        "width": 730.9091186523438,
+        "height": 213,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 204540,
+        "from": "paste",
+        "originWidth": 1280,
+        "originHeight": 373,
+        "ratio": 1.375,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "FULL-DUPLEXSTREAMING",
+            "x": 920,
+            "y": 32,
+            "width": 259,
+            "height": 24
+          },
+          {
+            "text": "TRADITIONALSTREAMING",
+            "x": 445,
+            "y": 33,
+            "width": 251,
+            "height": 24
+          },
+          {
+            "text": "EXISTINGPARADIGMS",
+            "x": 359,
+            "y": 276,
+            "width": 226,
+            "height": 21
+          },
+          {
+            "text": "MINICPM-O4.",
+            "x": 962,
+            "y": 274,
+            "width": 163,
+            "height": 24
+          },
+          {
+            "text": "BLOCKED-IO",
+            "x": 206,
+            "y": 321,
+            "width": 127,
+            "height": 24
+          },
+          {
+            "text": "IPERCEIVES",
+            "x": 1010,
+            "y": 162,
+            "width": 121,
+            "height": 20
+          },
+          {
+            "text": "FULL-DUPLEX",
+            "x": 896,
+            "y": 323,
+            "width": 127,
+            "height": 24
+          },
+          {
+            "text": "AISPEAKS",
+            "x": 598,
+            "y": 193,
+            "width": 120,
+            "height": 23
+          },
+          {
+            "text": "AIPERCEIVES",
+            "x": 417,
+            "y": 194,
+            "width": 122,
+            "height": 21
+          },
+          {
+            "text": "ISDRIBBLING...",
+            "x": 525,
+            "y": 162,
+            "width": 117,
+            "height": 20
+          },
+          {
+            "text": "MULTIMODAL",
+            "x": 194,
+            "y": 41,
+            "width": 128,
+            "height": 18
+          },
+          {
+            "text": "HEPLAYERINRE",
+            "x": 528,
+            "y": 145,
+            "width": 117,
+            "height": 16
+          },
+          {
+            "text": "SHOOTS!",
+            "x": 1148,
+            "y": 186,
+            "width": 81,
+            "height": 21
+          },
+          {
+            "text": "THEPLAYERINRED",
+            "x": 849,
+            "y": 166,
+            "width": 137,
+            "height": 15
+          },
+          {
+            "text": "SDRIBBLING..",
+            "x": 849,
+            "y": 186,
+            "width": 104,
+            "height": 16
+          },
+          {
+            "text": "MITATIONOFEXISTINGP",
+            "x": 245,
+            "y": 276,
+            "width": 240,
+            "height": 21
+          },
+          {
+            "text": "ISPEAKS",
+            "x": 1031,
+            "y": 201,
+            "width": 87,
+            "height": 21
+          },
+          {
+            "text": "PROACTIVE",
+            "x": 1107,
+            "y": 326,
+            "width": 110,
+            "height": 18
+          },
+          {
+            "text": "...OHLHE",
+            "x": 1145,
+            "y": 168,
+            "width": 84,
+            "height": 17
+          },
+          {
+            "text": "TEXT-ONLY",
+            "x": 35,
+            "y": 39,
+            "width": 106,
+            "height": 21
+          },
+          {
+            "text": "PASSIVE",
+            "x": 521,
+            "y": 326,
+            "width": 73,
+            "height": 18
+          },
+          {
+            "text": "月",
+            "x": 245,
+            "y": 163,
+            "width": 63,
+            "height": 37
+          },
+          {
+            "text": "",
+            "x": 934,
+            "y": 85,
+            "width": 61,
+            "height": 34
+          },
+          {
+            "text": "具",
+            "x": 1159,
+            "y": 103,
+            "width": 67,
+            "height": 20
+          },
+          {
+            "text": "5",
+            "x": 996,
+            "y": 82,
+            "width": 97,
+            "height": 26
+          },
+          {
+            "text": "",
+            "x": 215,
+            "y": 100,
+            "width": 46,
+            "height": 24
+          },
+          {
+            "text": "古",
+            "x": 281,
+            "y": 201,
+            "width": 34,
+            "height": 24
+          },
+          {
+            "text": "",
+            "x": 1158,
+            "y": 83,
+            "width": 74,
+            "height": 24
+          },
+          {
+            "text": "TINE",
+            "x": 1037,
+            "y": 239,
+            "width": 72,
+            "height": 18
+          },
+          {
+            "text": "E",
+            "x": 552,
+            "y": 241,
+            "width": 37,
+            "height": 13
+          },
+          {
+            "text": "",
+            "x": 163,
+            "y": 147,
+            "width": 60,
+            "height": -5
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#bac5ad",
+        "__spacing": "both",
+        "id": "ucbc996c3",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1782541066118-1cb2d455-8599-441d-8e94-22e7568c1297.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fd99979941e2b40b5ffd75f89c83e37b4.svg%22%2C%22id%22%3A%22iCEat%22%7D"
+      },
+      "value": {
+        "code": " t",
+        "src": "https://cdn.nlark.com/yuque/__latex/d99979941e2b40b5ffd75f89c83e37b4.svg",
+        "id": "iCEat"
+      },
+      "asset": "assets/math/d99979941e2b40b5ffd75f89c83e37b4.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fd99979941e2b40b5ffd75f89c83e37b4.svg%22%2C%22id%22%3A%22IWPbg%22%7D"
+      },
+      "value": {
+        "code": " t",
+        "src": "https://cdn.nlark.com/yuque/__latex/d99979941e2b40b5ffd75f89c83e37b4.svg",
+        "id": "IWPbg"
+      },
+      "asset": "assets/math/d99979941e2b40b5ffd75f89c83e37b4.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F14cb784d07a4234356ce44d06a5b8a3c.svg%22%2C%22id%22%3A%22HETn9%22%7D"
+      },
+      "value": {
+        "code": " k",
+        "src": "https://cdn.nlark.com/yuque/__latex/14cb784d07a4234356ce44d06a5b8a3c.svg",
+        "id": "HETn9"
+      },
+      "asset": "assets/math/14cb784d07a4234356ce44d06a5b8a3c.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20v_k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fc1718e3515912d22a1ea530a31fb3309.svg%22%2C%22id%22%3A%22BOOBe%22%7D"
+      },
+      "value": {
+        "code": " v_k",
+        "src": "https://cdn.nlark.com/yuque/__latex/c1718e3515912d22a1ea530a31fb3309.svg",
+        "id": "BOOBe"
+      },
+      "asset": "assets/math/c1718e3515912d22a1ea530a31fb3309.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20a_k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F14a0462ed754f2ac1d90170bcad3f3b7.svg%22%2C%22id%22%3A%22a7kLf%22%7D"
+      },
+      "value": {
+        "code": " a_k",
+        "src": "https://cdn.nlark.com/yuque/__latex/14a0462ed754f2ac1d90170bcad3f3b7.svg",
+        "id": "a7kLf"
+      },
+      "asset": "assets/math/14a0462ed754f2ac1d90170bcad3f3b7.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22o_k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fa396aadce383eccfe1fb9317331e5317.svg%22%2C%22id%22%3A%22jgo53%22%7D"
+      },
+      "value": {
+        "code": "o_k",
+        "src": "https://cdn.nlark.com/yuque/__latex/a396aadce383eccfe1fb9317331e5317.svg",
+        "id": "jgo53"
+      },
+      "asset": "assets/math/a396aadce383eccfe1fb9317331e5317.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22o_k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fa396aadce383eccfe1fb9317331e5317.svg%22%2C%22id%22%3A%22cv5NG%22%7D"
+      },
+      "value": {
+        "code": "o_k",
+        "src": "https://cdn.nlark.com/yuque/__latex/a396aadce383eccfe1fb9317331e5317.svg",
+        "id": "cv5NG"
+      },
+      "asset": "assets/math/a396aadce383eccfe1fb9317331e5317.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22g_k%3D%5Bv_k%3Ba_k%3Bo_k%5D%2C%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F11466404e08487e6bd8811050ecbc472.svg%22%2C%22id%22%3A%22XSwWW%22%7D"
+      },
+      "value": {
+        "code": "g_k=[v_k;a_k;o_k],",
+        "src": "https://cdn.nlark.com/yuque/__latex/11466404e08487e6bd8811050ecbc472.svg",
+        "id": "XSwWW"
+      },
+      "asset": "assets/math/11466404e08487e6bd8811050ecbc472.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20g_k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F4c055ce774d2b9ed3d2b34748dc82ff4.svg%22%2C%22id%22%3A%22WcoYe%22%7D"
+      },
+      "value": {
+        "code": " g_k",
+        "src": "https://cdn.nlark.com/yuque/__latex/4c055ce774d2b9ed3d2b34748dc82ff4.svg",
+        "id": "WcoYe"
+      },
+      "asset": "assets/math/4c055ce774d2b9ed3d2b34748dc82ff4.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fcead1760d9d5723460c4b8d4028f113a.svg%22%2C%22id%22%3A%22uTZi2%22%7D"
+      },
+      "value": {
+        "code": "t",
+        "src": "https://cdn.nlark.com/yuque/__latex/cead1760d9d5723460c4b8d4028f113a.svg",
+        "id": "uTZi2"
+      },
+      "asset": "assets/math/cead1760d9d5723460c4b8d4028f113a.svg"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1782541553252-ff812525-0454-4bb4-b6b0-4961c7e6d486.png%22%2C%22taskId%22%3A%22u795754ef-7ee3-459f-9304-eea945fd0c2%22%2C%22clientId%22%3A%22u9674700f-6eed-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A768.7272727272727%2C%22height%22%3A185%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A59523%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1057%2C%22originHeight%22%3A255%2C%22ratio%22%3A1.375%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22BLEL%3AABLATIONOFFULL-DUPLEXDESIGNCHOICE%22%2C%22x%22%3A294%2C%22y%22%3A19%2C%22width%22%3A468%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22ALPACAEVAL%22%2C%22x%22%3A578%2C%22y%22%3A59%2C%22width%22%3A138%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22EXPLICIT%22%2C%22x%22%3A192%2C%22y%22%3A126%2C%22width%22%3A94%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22EXPLICIT%22%2C%22x%22%3A193%2C%22y%22%3A97%2C%22width%22%3A93%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22BOUNDARY%22%2C%22x%22%3A177%2C%22y%22%3A59%2C%22width%22%3A120%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22CHUNKSIZE%22%2C%22x%22%3A28%2C%22y%22%3A57%2C%22width%22%3A134%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22CONTROL%22%2C%22x%22%3A311%2C%22y%22%3A59%2C%22width%22%3A104%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22EXPLICIT%22%2C%22x%22%3A196%2C%22y%22%3A209%2C%22width%22%3A88%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22ADVBENCH%22%2C%22x%22%3A429%2C%22y%22%3A58%2C%22width%22%3A134%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22MIMLU%22%2C%22x%22%3A941%2C%22y%22%3A54%2C%22width%22%3A97%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%220.10%22%2C%22x%22%3A751%2C%22y%22%3A178%2C%22width%22%3A53%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%220.96%22%2C%22x%22%3A472%2C%22y%22%3A152%2C%22width%22%3A51%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22EXPLICIT%22%2C%22x%22%3A194%2C%22y%22%3A181%2C%22width%22%3A89%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%220.24%22%2C%22x%22%3A748%2C%22y%22%3A124%2C%22width%22%3A58%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%220.22%22%2C%22x%22%3A748%2C%22y%22%3A151%2C%22width%22%3A56%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%220.45%22%2C%22x%22%3A955%2C%22y%22%3A178%2C%22width%22%3A60%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22IMPLICIT%22%2C%22x%22%3A192%2C%22y%22%3A154%2C%22width%22%3A91%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%223.31%22%2C%22x%22%3A622%2C%22y%22%3A151%2C%22width%22%3A52%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22IFEVAL%22%2C%22x%22%3A714%2C%22y%22%3A57%2C%22width%22%3A112%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%220.29%22%2C%22x%22%3A752%2C%22y%22%3A96%2C%22width%22%3A52%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%220.92%22%2C%22x%22%3A471%2C%22y%22%3A124%2C%22width%22%3A53%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%220.35%22%2C%22x%22%3A849%2C%22y%22%3A124%2C%22width%22%3A60%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%220.56%22%2C%22x%22%3A957%2C%22y%22%3A125%2C%22width%22%3A64%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%220.28%22%2C%22x%22%3A848%2C%22y%22%3A151%2C%22width%22%3A62%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22SDOA%22%2C%22x%22%3A837%2C%22y%22%3A55%2C%22width%22%3A84%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%220.81%22%2C%22x%22%3A471%2C%22y%22%3A178%2C%22width%22%3A50%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%223.56%22%2C%22x%22%3A619%2C%22y%22%3A95%2C%22width%22%3A52%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%221.0S%22%2C%22x%22%3A63%2C%22y%22%3A125%2C%22width%22%3A56%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%220.09%22%2C%22x%22%3A849%2C%22y%22%3A178%2C%22width%22%3A59%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%220.45%22%2C%22x%22%3A956%2C%22y%22%3A152%2C%22width%22%3A60%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22%E7%94%9F%22%2C%22x%22%3A350%2C%22y%22%3A124%2C%22width%22%3A29%2C%22height%22%3A50%7D%2C%7B%22text%22%3A%221.0S%22%2C%22x%22%3A66%2C%22y%22%3A152%2C%22width%22%3A51%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%221.22%22%2C%22x%22%3A623%2C%22y%22%3A178%2C%22width%22%3A50%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%223.60%22%2C%22x%22%3A620%2C%22y%22%3A124%2C%22width%22%3A53%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%221.0S%22%2C%22x%22%3A63%2C%22y%22%3A97%2C%22width%22%3A55%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%220.36%22%2C%22x%22%3A851%2C%22y%22%3A96%2C%22width%22%3A59%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%220.2S%22%2C%22x%22%3A63%2C%22y%22%3A179%2C%22width%22%3A54%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%220.65%22%2C%22x%22%3A958%2C%22y%22%3A97%2C%22width%22%3A62%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%220.1S%22%2C%22x%22%3A61%2C%22y%22%3A207%2C%22width%22%3A63%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%220.10%22%2C%22x%22%3A749%2C%22y%22%3A206%2C%22width%22%3A58%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%220.32%22%2C%22x%22%3A957%2C%22y%22%3A206%2C%22width%22%3A61%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%220.98%22%2C%22x%22%3A473%2C%22y%22%3A96%2C%22width%22%3A50%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%220.13%22%2C%22x%22%3A853%2C%22y%22%3A205%2C%22width%22%3A56%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%220.67%22%2C%22x%22%3A470%2C%22y%22%3A207%2C%22width%22%3A51%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%222.40%22%2C%22x%22%3A621%2C%22y%22%3A206%2C%22width%22%3A57%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22S%22%2C%22x%22%3A349%2C%22y%22%3A96%2C%22width%22%3A37%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%22S%22%2C%22x%22%3A350%2C%22y%22%3A170%2C%22width%22%3A29%2C%22height%22%3A35%7D%2C%7B%22text%22%3A%22LS%22%2C%22x%22%3A346%2C%22y%22%3A205%2C%22width%22%3A39%2C%22height%22%3A26%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23eaeaea%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u7568b562%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1782541553252-ff812525-0454-4bb4-b6b0-4961c7e6d486.png",
+        "taskId": "u795754ef-7ee3-459f-9304-eea945fd0c2",
+        "clientId": "u9674700f-6eed-4",
+        "originalType": "binary",
+        "width": 768.7272727272727,
+        "height": 185,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 59523,
+        "from": "paste",
+        "originWidth": 1057,
+        "originHeight": 255,
+        "ratio": 1.375,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "BLEL:ABLATIONOFFULL-DUPLEXDESIGNCHOICE",
+            "x": 294,
+            "y": 19,
+            "width": 468,
+            "height": 23
+          },
+          {
+            "text": "ALPACAEVAL",
+            "x": 578,
+            "y": 59,
+            "width": 138,
+            "height": 20
+          },
+          {
+            "text": "EXPLICIT",
+            "x": 192,
+            "y": 126,
+            "width": 94,
+            "height": 22
+          },
+          {
+            "text": "EXPLICIT",
+            "x": 193,
+            "y": 97,
+            "width": 93,
+            "height": 24
+          },
+          {
+            "text": "BOUNDARY",
+            "x": 177,
+            "y": 59,
+            "width": 120,
+            "height": 20
+          },
+          {
+            "text": "CHUNKSIZE",
+            "x": 28,
+            "y": 57,
+            "width": 134,
+            "height": 21
+          },
+          {
+            "text": "CONTROL",
+            "x": 311,
+            "y": 59,
+            "width": 104,
+            "height": 20
+          },
+          {
+            "text": "EXPLICIT",
+            "x": 196,
+            "y": 209,
+            "width": 88,
+            "height": 22
+          },
+          {
+            "text": "ADVBENCH",
+            "x": 429,
+            "y": 58,
+            "width": 134,
+            "height": 20
+          },
+          {
+            "text": "MIMLU",
+            "x": 941,
+            "y": 54,
+            "width": 97,
+            "height": 25
+          },
+          {
+            "text": "0.10",
+            "x": 751,
+            "y": 178,
+            "width": 53,
+            "height": 24
+          },
+          {
+            "text": "0.96",
+            "x": 472,
+            "y": 152,
+            "width": 51,
+            "height": 22
+          },
+          {
+            "text": "EXPLICIT",
+            "x": 194,
+            "y": 181,
+            "width": 89,
+            "height": 22
+          },
+          {
+            "text": "0.24",
+            "x": 748,
+            "y": 124,
+            "width": 58,
+            "height": 24
+          },
+          {
+            "text": "0.22",
+            "x": 748,
+            "y": 151,
+            "width": 56,
+            "height": 25
+          },
+          {
+            "text": "0.45",
+            "x": 955,
+            "y": 178,
+            "width": 60,
+            "height": 25
+          },
+          {
+            "text": "IMPLICIT",
+            "x": 192,
+            "y": 154,
+            "width": 91,
+            "height": 21
+          },
+          {
+            "text": "3.31",
+            "x": 622,
+            "y": 151,
+            "width": 52,
+            "height": 24
+          },
+          {
+            "text": "IFEVAL",
+            "x": 714,
+            "y": 57,
+            "width": 112,
+            "height": 21
+          },
+          {
+            "text": "0.29",
+            "x": 752,
+            "y": 96,
+            "width": 52,
+            "height": 23
+          },
+          {
+            "text": "0.92",
+            "x": 471,
+            "y": 124,
+            "width": 53,
+            "height": 24
+          },
+          {
+            "text": "0.35",
+            "x": 849,
+            "y": 124,
+            "width": 60,
+            "height": 24
+          },
+          {
+            "text": "0.56",
+            "x": 957,
+            "y": 125,
+            "width": 64,
+            "height": 22
+          },
+          {
+            "text": "0.28",
+            "x": 848,
+            "y": 151,
+            "width": 62,
+            "height": 25
+          },
+          {
+            "text": "SDOA",
+            "x": 837,
+            "y": 55,
+            "width": 84,
+            "height": 23
+          },
+          {
+            "text": "0.81",
+            "x": 471,
+            "y": 178,
+            "width": 50,
+            "height": 24
+          },
+          {
+            "text": "3.56",
+            "x": 619,
+            "y": 95,
+            "width": 52,
+            "height": 25
+          },
+          {
+            "text": "1.0S",
+            "x": 63,
+            "y": 125,
+            "width": 56,
+            "height": 23
+          },
+          {
+            "text": "0.09",
+            "x": 849,
+            "y": 178,
+            "width": 59,
+            "height": 25
+          },
+          {
+            "text": "0.45",
+            "x": 956,
+            "y": 152,
+            "width": 60,
+            "height": 23
+          },
+          {
+            "text": "生",
+            "x": 350,
+            "y": 124,
+            "width": 29,
+            "height": 50
+          },
+          {
+            "text": "1.0S",
+            "x": 66,
+            "y": 152,
+            "width": 51,
+            "height": 24
+          },
+          {
+            "text": "1.22",
+            "x": 623,
+            "y": 178,
+            "width": 50,
+            "height": 25
+          },
+          {
+            "text": "3.60",
+            "x": 620,
+            "y": 124,
+            "width": 53,
+            "height": 24
+          },
+          {
+            "text": "1.0S",
+            "x": 63,
+            "y": 97,
+            "width": 55,
+            "height": 22
+          },
+          {
+            "text": "0.36",
+            "x": 851,
+            "y": 96,
+            "width": 59,
+            "height": 24
+          },
+          {
+            "text": "0.2S",
+            "x": 63,
+            "y": 179,
+            "width": 54,
+            "height": 24
+          },
+          {
+            "text": "0.65",
+            "x": 958,
+            "y": 97,
+            "width": 62,
+            "height": 23
+          },
+          {
+            "text": "0.1S",
+            "x": 61,
+            "y": 207,
+            "width": 63,
+            "height": 22
+          },
+          {
+            "text": "0.10",
+            "x": 749,
+            "y": 206,
+            "width": 58,
+            "height": 24
+          },
+          {
+            "text": "0.32",
+            "x": 957,
+            "y": 206,
+            "width": 61,
+            "height": 24
+          },
+          {
+            "text": "0.98",
+            "x": 473,
+            "y": 96,
+            "width": 50,
+            "height": 23
+          },
+          {
+            "text": "0.13",
+            "x": 853,
+            "y": 205,
+            "width": 56,
+            "height": 25
+          },
+          {
+            "text": "0.67",
+            "x": 470,
+            "y": 207,
+            "width": 51,
+            "height": 23
+          },
+          {
+            "text": "2.40",
+            "x": 621,
+            "y": 206,
+            "width": 57,
+            "height": 24
+          },
+          {
+            "text": "S",
+            "x": 349,
+            "y": 96,
+            "width": 37,
+            "height": 26
+          },
+          {
+            "text": "S",
+            "x": 350,
+            "y": 170,
+            "width": 29,
+            "height": 35
+          },
+          {
+            "text": "LS",
+            "x": 346,
+            "y": 205,
+            "width": 39,
+            "height": 26
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#eaeaea",
+        "__spacing": "both",
+        "id": "u7568b562",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1782541553252-ff812525-0454-4bb4-b6b0-4961c7e6d486.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20m%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F01a0b33465cb6a9a84504f60af049255.svg%22%2C%22id%22%3A%22vg71a%22%7D",
+        "style": "color: #664900"
+      },
+      "value": {
+        "code": " m",
+        "src": "https://cdn.nlark.com/yuque/__latex/01a0b33465cb6a9a84504f60af049255.svg",
+        "id": "vg71a"
+      },
+      "asset": "assets/math/01a0b33465cb6a9a84504f60af049255.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22m%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F4760e2f007e23d820825ba241c47ce3b.svg%22%2C%22id%22%3A%22LADWW%22%7D",
+        "style": "color: #664900"
+      },
+      "value": {
+        "code": "m",
+        "src": "https://cdn.nlark.com/yuque/__latex/4760e2f007e23d820825ba241c47ce3b.svg",
+        "id": "LADWW"
+      },
+      "asset": "assets/math/4760e2f007e23d820825ba241c47ce3b.svg"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1782541736319-3b36f593-9153-43a9-9ffb-e96f963f2d71.png%22%2C%22taskId%22%3A%22u78f524a1-354d-49ec-9f83-1f10bafa432%22%2C%22clientId%22%3A%22u9674700f-6eed-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A794.1818181818181%2C%22height%22%3A209%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A67042%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1092%2C%22originHeight%22%3A288%2C%22ratio%22%3A1.375%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22B)ILNTERLEAVINGWITHFIXEDTEXT-SPEECHRATIO%22%2C%22x%22%3A634%2C%22y%22%3A131%2C%22width%22%3A403%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22OOOOOOO0%22%2C%22x%22%3A141%2C%22y%22%3A91%2C%22width%22%3A208%2C%22height%22%3A29%7D%2C%7B%22text%22%3A%220000000%22%2C%22x%22%3A717%2C%22y%22%3A94%2C%22width%22%3A280%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%22OOOOO%22%2C%22x%22%3A843%2C%22y%22%3A208%2C%22width%22%3A149%2C%22height%22%3A33%7D%2C%7B%22text%22%3A%22OOO%22%2C%22x%22%3A257%2C%22y%22%3A210%2C%22width%22%3A117%2C%22height%22%3A28%7D%2C%7B%22text%22%3A%22(A)NON-LNTERLEAVING%22%2C%22x%22%3A166%2C%22y%22%3A132%2C%22width%22%3A185%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22OOOOO%22%2C%22x%22%3A452%2C%22y%22%3A208%2C%22width%22%3A128%2C%22height%22%3A31%7D%2C%7B%22text%22%3A%22OOOOO%22%2C%22x%22%3A678%2C%22y%22%3A210%2C%22width%22%3A144%2C%22height%22%3A29%7D%2C%7B%22text%22%3A%22OOC%22%2C%22x%22%3A157%2C%22y%22%3A180%2C%22width%22%3A86%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22OOK-AHEADIOK%22%2C%22x%22%3A728%2C%22y%22%3A5%2C%22width%22%3A126%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22OOO%22%2C%22x%22%3A602%2C%22y%22%3A180%2C%22width%22%3A77%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22OOO%22%2C%22x%22%3A136%2C%22y%22%3A58%2C%22width%22%3A94%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22SPEECHTOKEN%22%2C%22x%22%3A454%2C%22y%22%3A5%2C%22width%22%3A116%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22%5B3S%2C4S)%22%2C%22x%22%3A874%2C%22y%22%3A253%2C%22width%22%3A76%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22OO%22%2C%22x%22%3A754%2C%22y%22%3A55%2C%22width%22%3A64%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%22EXTTOKEN%22%2C%22x%22%3A195%2C%22y%22%3A5%2C%22width%22%3A91%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22SPEECH%22%2C%22x%22%3A41%2C%22y%22%3A97%2C%22width%22%3A54%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%5B0S.1S)%22%2C%22x%22%3A229%2C%22y%22%3A255%2C%22width%22%3A70%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22OO%22%2C%22x%22%3A642%2C%22y%22%3A57%2C%22width%22%3A53%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22PEECH%22%2C%22x%22%3A44%2C%22y%22%3A217%2C%22width%22%3A52%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22%5B1S%2C2S)%22%2C%22x%22%3A456%2C%22y%22%3A254%2C%22width%22%3A77%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22SPEECH%22%2C%22x%22%3A543%2C%22y%22%3A97%2C%22width%22%3A55%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%5B2S%2C3S)%22%2C%22x%22%3A674%2C%22y%22%3A255%2C%22width%22%3A72%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22TEXT%22%2C%22x%22%3A59%2C%22y%22%3A185%2C%22width%22%3A38%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22TEXT%22%2C%22x%22%3A563%2C%22y%22%3A62%2C%22width%22%3A36%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22S%22%2C%22x%22%3A88%2C%22y%22%3A77%2C%22width%22%3A52%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22E%22%2C%22x%22%3A1022%2C%22y%22%3A196%2C%22width%22%3A25%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22S%22%2C%22x%22%3A113%2C%22y%22%3A200%2C%22width%22%3A22%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22EXT%22%2C%22x%22%3A62%2C%22y%22%3A63%2C%22width%22%3A30%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22OC%22%2C%22x%22%3A397%2C%22y%22%3A179%2C%22width%22%3A50%2C%22height%22%3A28%7D%2C%7B%22text%22%3A%22B%22%2C%22x%22%3A373%2C%22y%22%3A77%2C%22width%22%3A43%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22E%22%2C%22x%22%3A1022%2C%22y%22%3A78%2C%22width%22%3A27%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22S%22%2C%22x%22%3A595%2C%22y%22%3A78%2C%22width%22%3A47%2C%22height%22%3A21%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23fdfdfd%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u1f6a0e78%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1782541736319-3b36f593-9153-43a9-9ffb-e96f963f2d71.png",
+        "taskId": "u78f524a1-354d-49ec-9f83-1f10bafa432",
+        "clientId": "u9674700f-6eed-4",
+        "originalType": "binary",
+        "width": 794.1818181818181,
+        "height": 209,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 67042,
+        "from": "paste",
+        "originWidth": 1092,
+        "originHeight": 288,
+        "ratio": 1.375,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "B)ILNTERLEAVINGWITHFIXEDTEXT-SPEECHRATIO",
+            "x": 634,
+            "y": 131,
+            "width": 403,
+            "height": 19
+          },
+          {
+            "text": "OOOOOOO0",
+            "x": 141,
+            "y": 91,
+            "width": 208,
+            "height": 29
+          },
+          {
+            "text": "0000000",
+            "x": 717,
+            "y": 94,
+            "width": 280,
+            "height": 26
+          },
+          {
+            "text": "OOOOO",
+            "x": 843,
+            "y": 208,
+            "width": 149,
+            "height": 33
+          },
+          {
+            "text": "OOO",
+            "x": 257,
+            "y": 210,
+            "width": 117,
+            "height": 28
+          },
+          {
+            "text": "(A)NON-LNTERLEAVING",
+            "x": 166,
+            "y": 132,
+            "width": 185,
+            "height": 18
+          },
+          {
+            "text": "OOOOO",
+            "x": 452,
+            "y": 208,
+            "width": 128,
+            "height": 31
+          },
+          {
+            "text": "OOOOO",
+            "x": 678,
+            "y": 210,
+            "width": 144,
+            "height": 29
+          },
+          {
+            "text": "OOC",
+            "x": 157,
+            "y": 180,
+            "width": 86,
+            "height": 27
+          },
+          {
+            "text": "OOK-AHEADIOK",
+            "x": 728,
+            "y": 5,
+            "width": 126,
+            "height": 17
+          },
+          {
+            "text": "OOO",
+            "x": 602,
+            "y": 180,
+            "width": 77,
+            "height": 27
+          },
+          {
+            "text": "OOO",
+            "x": 136,
+            "y": 58,
+            "width": 94,
+            "height": 25
+          },
+          {
+            "text": "SPEECHTOKEN",
+            "x": 454,
+            "y": 5,
+            "width": 116,
+            "height": 18
+          },
+          {
+            "text": "[3S,4S)",
+            "x": 874,
+            "y": 253,
+            "width": 76,
+            "height": 23
+          },
+          {
+            "text": "OO",
+            "x": 754,
+            "y": 55,
+            "width": 64,
+            "height": 30
+          },
+          {
+            "text": "EXTTOKEN",
+            "x": 195,
+            "y": 5,
+            "width": 91,
+            "height": 17
+          },
+          {
+            "text": "SPEECH",
+            "x": 41,
+            "y": 97,
+            "width": 54,
+            "height": 17
+          },
+          {
+            "text": "[0S.1S)",
+            "x": 229,
+            "y": 255,
+            "width": 70,
+            "height": 20
+          },
+          {
+            "text": "OO",
+            "x": 642,
+            "y": 57,
+            "width": 53,
+            "height": 27
+          },
+          {
+            "text": "PEECH",
+            "x": 44,
+            "y": 217,
+            "width": 52,
+            "height": 14
+          },
+          {
+            "text": "[1S,2S)",
+            "x": 456,
+            "y": 254,
+            "width": 77,
+            "height": 23
+          },
+          {
+            "text": "SPEECH",
+            "x": 543,
+            "y": 97,
+            "width": 55,
+            "height": 17
+          },
+          {
+            "text": "[2S,3S)",
+            "x": 674,
+            "y": 255,
+            "width": 72,
+            "height": 20
+          },
+          {
+            "text": "TEXT",
+            "x": 59,
+            "y": 185,
+            "width": 38,
+            "height": 14
+          },
+          {
+            "text": "TEXT",
+            "x": 563,
+            "y": 62,
+            "width": 36,
+            "height": 15
+          },
+          {
+            "text": "S",
+            "x": 88,
+            "y": 77,
+            "width": 52,
+            "height": 23
+          },
+          {
+            "text": "E",
+            "x": 1022,
+            "y": 196,
+            "width": 25,
+            "height": 24
+          },
+          {
+            "text": "S",
+            "x": 113,
+            "y": 200,
+            "width": 22,
+            "height": 19
+          },
+          {
+            "text": "EXT",
+            "x": 62,
+            "y": 63,
+            "width": 30,
+            "height": 14
+          },
+          {
+            "text": "OC",
+            "x": 397,
+            "y": 179,
+            "width": 50,
+            "height": 28
+          },
+          {
+            "text": "B",
+            "x": 373,
+            "y": 77,
+            "width": 43,
+            "height": 23
+          },
+          {
+            "text": "E",
+            "x": 1022,
+            "y": 78,
+            "width": 27,
+            "height": 21
+          },
+          {
+            "text": "S",
+            "x": 595,
+            "y": 78,
+            "width": 47,
+            "height": 21
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#fdfdfd",
+        "__spacing": "both",
+        "id": "u1f6a0e78",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1782541736319-3b36f593-9153-43a9-9ffb-e96f963f2d71.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F14cb784d07a4234356ce44d06a5b8a3c.svg%22%2C%22id%22%3A%22tGST4%22%7D"
+      },
+      "value": {
+        "code": " k",
+        "src": "https://cdn.nlark.com/yuque/__latex/14cb784d07a4234356ce44d06a5b8a3c.svg",
+        "id": "tGST4"
+      },
+      "asset": "assets/math/14cb784d07a4234356ce44d06a5b8a3c.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22kt.%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F9ca8cfdf47d4b405a747d1fc36bfe0ba.svg%22%2C%22id%22%3A%22dAwSJ%22%7D"
+      },
+      "value": {
+        "code": "kt.",
+        "src": "https://cdn.nlark.com/yuque/__latex/9ca8cfdf47d4b405a747d1fc36bfe0ba.svg",
+        "id": "dAwSJ"
+      },
+      "asset": "assets/math/9ca8cfdf47d4b405a747d1fc36bfe0ba.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5B(k-1)t%2Ckt)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F93f166b5bf5dcb2184f65fc892704cf3.svg%22%2C%22id%22%3A%22Acojt%22%7D"
+      },
+      "value": {
+        "code": "[(k-1)t,kt)",
+        "src": "https://cdn.nlark.com/yuque/__latex/93f166b5bf5dcb2184f65fc892704cf3.svg",
+        "id": "Acojt"
+      },
+      "asset": "assets/math/93f166b5bf5dcb2184f65fc892704cf3.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fdf976ff7fcf17d60490267d18a1e3996.svg%22%2C%22id%22%3A%22Lx3yV%22%7D"
+      },
+      "value": {
+        "code": "k",
+        "src": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+        "id": "Lx3yV"
+      },
+      "asset": "assets/math/df976ff7fcf17d60490267d18a1e3996.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fdf976ff7fcf17d60490267d18a1e3996.svg%22%2C%22id%22%3A%22D0Jxf%22%7D"
+      },
+      "value": {
+        "code": "k",
+        "src": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+        "id": "D0Jxf"
+      },
+      "asset": "assets/math/df976ff7fcf17d60490267d18a1e3996.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22k%2B1%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F753ea3f27103908ed7df5166c7e44c9d.svg%22%2C%22id%22%3A%22XY4c1%22%7D"
+      },
+      "value": {
+        "code": "k+1",
+        "src": "https://cdn.nlark.com/yuque/__latex/753ea3f27103908ed7df5166c7e44c9d.svg",
+        "id": "XY4c1"
+      },
+      "asset": "assets/math/753ea3f27103908ed7df5166c7e44c9d.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F14cb784d07a4234356ce44d06a5b8a3c.svg%22%2C%22id%22%3A%22BOyYR%22%7D"
+      },
+      "value": {
+        "code": " k",
+        "src": "https://cdn.nlark.com/yuque/__latex/14cb784d07a4234356ce44d06a5b8a3c.svg",
+        "id": "BOyYR"
+      },
+      "asset": "assets/math/14cb784d07a4234356ce44d06a5b8a3c.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22r_%7B%5C%5Cmathrm%7Blen%7D%7D(i)%20%3D%20%5C%5Cbegin%7Bcases%7D%20%5Cns_i%2C%20%26%20r_i%20%3D%201%2C%20%5C%5C%5C%5C%20%5Cn%5C%5Cmin(0%2C%20s_i)%2C%20%26%20r_i%20%3D%200%2C%20%5Cn%5C%5Cend%7Bcases%7D%20%5C%5Cqquad%20%5Cns_i%20%3D%20%5C%5Cleft(%200.5%20-%20%5C%5Cfrac%7B%5C%5Cell_i%20-%20%5C%5Cell_%7B%5C%5Cmin%7D%7D%7B%5C%5Cell_%7B%5C%5Cmax%7D%20-%20%5C%5Cell_%7B%5C%5Cmin%7D%7D%20%5C%5Cright)%20%5C%5Ctimes%20%5C%5Cmin%5C%5Cleft(1%2C%20%5C%5Cfrac%7B%5C%5Cell_%7B%5C%5Cmax%7D%20-%20%5C%5Cell_%7B%5C%5Cmin%7D%7D%7B%5C%5Ctau%7D%5C%5Cright).%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F52d26ed1035a6f623c2c01f83eeb3b33.svg%22%2C%22id%22%3A%22rRDTk%22%7D"
+      },
+      "value": {
+        "code": "r_{\\mathrm{len}}(i) = \\begin{cases} \ns_i, & r_i = 1, \\\\ \n\\min(0, s_i), & r_i = 0, \n\\end{cases} \\qquad \ns_i = \\left( 0.5 - \\frac{\\ell_i - \\ell_{\\min}}{\\ell_{\\max} - \\ell_{\\min}} \\right) \\times \\min\\left(1, \\frac{\\ell_{\\max} - \\ell_{\\min}}{\\tau}\\right).",
+        "src": "https://cdn.nlark.com/yuque/__latex/52d26ed1035a6f623c2c01f83eeb3b33.svg",
+        "id": "rRDTk"
+      },
+      "asset": "assets/math/52d26ed1035a6f623c2c01f83eeb3b33.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22r_i%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F24a00a92acccd2f5795d9a6932687462.svg%22%2C%22id%22%3A%22bJEE7%22%7D"
+      },
+      "value": {
+        "code": "r_i",
+        "src": "https://cdn.nlark.com/yuque/__latex/24a00a92acccd2f5795d9a6932687462.svg",
+        "id": "bJEE7"
+      },
+      "asset": "assets/math/24a00a92acccd2f5795d9a6932687462.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20i%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F5c6f609fb47bb3cfc121433cb2de7a84.svg%22%2C%22id%22%3A%22dzBnG%22%7D"
+      },
+      "value": {
+        "code": " i",
+        "src": "https://cdn.nlark.com/yuque/__latex/5c6f609fb47bb3cfc121433cb2de7a84.svg",
+        "id": "dzBnG"
+      },
+      "asset": "assets/math/5c6f609fb47bb3cfc121433cb2de7a84.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cell_i%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F6638f4a45e0ceb8c6d93bf61bf1ce196.svg%22%2C%22id%22%3A%22DbOm4%22%7D"
+      },
+      "value": {
+        "code": "\\ell_i",
+        "src": "https://cdn.nlark.com/yuque/__latex/6638f4a45e0ceb8c6d93bf61bf1ce196.svg",
+        "id": "DbOm4"
+      },
+      "asset": "assets/math/6638f4a45e0ceb8c6d93bf61bf1ce196.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%E2%81%A1%5C%5Cell_%7B%5C%5Cmin%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F93bbcd2eaaf4645982d2ad18f7e92bea.svg%22%2C%22id%22%3A%22BICXW%22%7D"
+      },
+      "value": {
+        "code": "⁡\\ell_{\\min}",
+        "src": "https://cdn.nlark.com/yuque/__latex/93bbcd2eaaf4645982d2ad18f7e92bea.svg",
+        "id": "BICXW"
+      },
+      "asset": "assets/math/93bbcd2eaaf4645982d2ad18f7e92bea.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%E2%81%A1%5C%5Cell_%7B%5C%5Cmax%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fb3f5953ac3ef8f74678c4e55aacc0d37.svg%22%2C%22id%22%3A%22WDo5M%22%7D"
+      },
+      "value": {
+        "code": "⁡\\ell_{\\max}",
+        "src": "https://cdn.nlark.com/yuque/__latex/b3f5953ac3ef8f74678c4e55aacc0d37.svg",
+        "id": "WDo5M"
+      },
+      "asset": "assets/math/b3f5953ac3ef8f74678c4e55aacc0d37.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmin(0%2Cs_i)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F0ca633513faed3a897b2e3728f2553e0.svg%22%2C%22id%22%3A%22OqMLy%22%7D"
+      },
+      "value": {
+        "code": "\\min(0,s_i)",
+        "src": "https://cdn.nlark.com/yuque/__latex/0ca633513faed3a897b2e3728f2553e0.svg",
+        "id": "OqMLy"
+      },
+      "asset": "assets/math/0ca633513faed3a897b2e3728f2553e0.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20%5C%5Ctau%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F3929b17e718770ee4b6b15e69d8f7497.svg%22%2C%22id%22%3A%22tZDmS%22%7D"
+      },
+      "value": {
+        "code": " \\tau",
+        "src": "https://cdn.nlark.com/yuque/__latex/3929b17e718770ee4b6b15e69d8f7497.svg",
+        "id": "tZDmS"
+      },
+      "asset": "assets/math/3929b17e718770ee4b6b15e69d8f7497.svg"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1783836525790-b88f4727-3a29-419b-819f-d1f1d7f0070d.png%22%2C%22taskId%22%3A%22u01b06682-4fac-4c77-ae2a-c6f3d57773d%22%2C%22clientId%22%3A%22udd58d30e-3b14-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A594.3636474609375%2C%22height%22%3A443%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A402280%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1117%2C%22originHeight%22%3A832%2C%22ratio%22%3A1.375%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22OOO%E9%98%BFQQQQQQQQQQQQQQQ%22%2C%22x%22%3A46%2C%22y%22%3A351%2C%22width%22%3A602%2C%22height%22%3A40%7D%2C%7B%22text%22%3A%22QWEN3.5-OMNIHYBRIDMOETHINKER%22%2C%22x%22%3A361%2C%22y%22%3A445%2C%22width%22%3A416%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22QWEN3.5-OMNI%22%2C%22x%22%3A297%2C%22y%22%3A181%2C%22width%22%3A396%2C%22height%22%3A42%7D%2C%7B%22text%22%3A%22QWEN3.5-OMNIHYBRIDMOETALKE%22%2C%22x%22%3A362%2C%22y%22%3A292%2C%22width%22%3A399%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22HIDDENEXTRACTIONFROMMIDDLELAYERS%22%2C%22x%22%3A298%2C%22y%22%3A399%2C%22width%22%3A325%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22MTPMODULE%22%2C%22x%22%3A856%2C%22y%22%3A203%2C%22width%22%3A114%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22VISIONENCODER%22%2C%22x%22%3A357%2C%22y%22%3A601%2C%22width%22%3A176%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22%E5%B0%8F%E5%B0%8F%22%2C%22x%22%3A637%2C%22y%22%3A752%2C%22width%22%3A104%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22%E5%B0%8F%22%2C%22x%22%3A736%2C%22y%22%3A744%2C%22width%22%3A111%2C%22height%22%3A38%7D%2C%7B%22text%22%3A%22CODECEMBEDDING%22%2C%22x%22%3A71%2C%22y%22%3A242%2C%22width%22%3A110%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22N%22%2C%22x%22%3A423%2C%22y%22%3A749%2C%22width%22%3A92%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%22N%22%2C%22x%22%3A523%2C%22y%22%3A745%2C%22width%22%3A94%2C%22height%22%3A37%7D%2C%7B%22text%22%3A%22AUDIOHIDDEN%22%2C%22x%22%3A63%2C%22y%22%3A160%2C%22width%22%3A94%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22OO%22%2C%22x%22%3A892%2C%22y%22%3A234%2C%22width%22%3A72%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22STREAMING%22%2C%22x%22%3A792%2C%22y%22%3A64%2C%22width%22%3A101%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22%E5%B0%8F%22%2C%22x%22%3A324%2C%22y%22%3A752%2C%22width%22%3A83%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22CODECHIDDEN%22%2C%22x%22%3A69%2C%22y%22%3A201%2C%22width%22%3A92%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22CODECDECODER%22%2C%22x%22%3A895%2C%22y%22%3A64%2C%22width%22%3A143%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22HEIGHF%22%2C%22x%22%3A202%2C%22y%22%3A678%2C%22width%22%3A54%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22AUT%22%2C%22x%22%3A668%2C%22y%22%3A602%2C%22width%22%3A51%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22%3C600.0SECONDS%22%2C%22x%22%3A617%2C%22y%22%3A535%2C%22width%22%3A97%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22TEXTTOKEN%22%2C%22x%22%3A68%2C%22y%22%3A35%2C%22width%22%3A69%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22%E5%8F%A3%E5%8F%A3%22%2C%22x%22%3A997%2C%22y%22%3A164%2C%22width%22%3A52%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%22VISIONHIDDEN%22%2C%22x%22%3A61%2C%22y%22%3A119%2C%22width%22%3A93%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22TEXTHIDDEN%22%2C%22x%22%3A68%2C%22y%22%3A77%2C%22width%22%3A76%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22WIDTH%22%2C%22x%22%3A229%2C%22y%22%3A760%2C%22width%22%3A51%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%E5%8F%A3%E5%8F%A3%22%2C%22x%22%3A902%2C%22y%22%3A164%2C%22width%22%3A58%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%22515%22%2C%22x%22%3A1001%2C%22y%22%3A135%2C%22width%22%3A47%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22TIME%22%2C%22x%22%3A574%2C%22y%22%3A804%2C%22width%22%3A37%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22NTANTANANNOAL%22%2C%22x%22%3A781%2C%22y%22%3A36%2C%22width%22%3A195%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22REAVAILABLE.%3CEOS%3E%22%2C%22x%22%3A946%2C%22y%22%3A387%2C%22width%22%3A109%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22444%E4%B8%80%22%2C%22x%22%3A837%2C%22y%22%3A252%2C%22width%22%3A83%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%22QO00O...%E5%8F%A3%22%2C%22x%22%3A446%2C%22y%22%3A505%2C%22width%22%3A252%2C%22height%22%3A28%7D%2C%7B%22text%22%3A%2200%22%2C%22x%22%3A783%2C%22y%22%3A233%2C%22width%22%3A51%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%221515%22%2C%22x%22%3A783%2C%22y%22%3A134%2C%22width%22%3A47%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22O%22%2C%22x%22%3A993%2C%22y%22%3A233%2C%22width%22%3A49%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22U%22%2C%22x%22%3A1028%2C%22y%22%3A114%2C%22width%22%3A17%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A938%2C%22y%22%3A109%2C%22width%22%3A18%2C%22height%22%3A42%7D%2C%7B%22text%22%3A%22UM%22%2C%22x%22%3A785%2C%22y%22%3A117%2C%22width%22%3A27%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22UM%22%2C%22x%22%3A1000%2C%22y%22%3A118%2C%22width%22%3A27%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%225UN%22%2C%22x%22%3A813%2C%22y%22%3A116%2C%22width%22%3A17%2C%22height%22%3A17%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f6f5f2%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u006b41d0%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1783836525790-b88f4727-3a29-419b-819f-d1f1d7f0070d.png",
+        "taskId": "u01b06682-4fac-4c77-ae2a-c6f3d57773d",
+        "clientId": "udd58d30e-3b14-4",
+        "originalType": "binary",
+        "width": 594.3636474609375,
+        "height": 443,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 402280,
+        "from": "paste",
+        "originWidth": 1117,
+        "originHeight": 832,
+        "ratio": 1.375,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "OOO阿QQQQQQQQQQQQQQQ",
+            "x": 46,
+            "y": 351,
+            "width": 602,
+            "height": 40
+          },
+          {
+            "text": "QWEN3.5-OMNIHYBRIDMOETHINKER",
+            "x": 361,
+            "y": 445,
+            "width": 416,
+            "height": 24
+          },
+          {
+            "text": "QWEN3.5-OMNI",
+            "x": 297,
+            "y": 181,
+            "width": 396,
+            "height": 42
+          },
+          {
+            "text": "QWEN3.5-OMNIHYBRIDMOETALKE",
+            "x": 362,
+            "y": 292,
+            "width": 399,
+            "height": 24
+          },
+          {
+            "text": "HIDDENEXTRACTIONFROMMIDDLELAYERS",
+            "x": 298,
+            "y": 399,
+            "width": 325,
+            "height": 17
+          },
+          {
+            "text": "MTPMODULE",
+            "x": 856,
+            "y": 203,
+            "width": 114,
+            "height": 19
+          },
+          {
+            "text": "VISIONENCODER",
+            "x": 357,
+            "y": 601,
+            "width": 176,
+            "height": 24
+          },
+          {
+            "text": "小小",
+            "x": 637,
+            "y": 752,
+            "width": 104,
+            "height": 25
+          },
+          {
+            "text": "小",
+            "x": 736,
+            "y": 744,
+            "width": 111,
+            "height": 38
+          },
+          {
+            "text": "CODECEMBEDDING",
+            "x": 71,
+            "y": 242,
+            "width": 110,
+            "height": 15
+          },
+          {
+            "text": "N",
+            "x": 423,
+            "y": 749,
+            "width": 92,
+            "height": 30
+          },
+          {
+            "text": "N",
+            "x": 523,
+            "y": 745,
+            "width": 94,
+            "height": 37
+          },
+          {
+            "text": "AUDIOHIDDEN",
+            "x": 63,
+            "y": 160,
+            "width": 94,
+            "height": 14
+          },
+          {
+            "text": "OO",
+            "x": 892,
+            "y": 234,
+            "width": 72,
+            "height": 27
+          },
+          {
+            "text": "STREAMING",
+            "x": 792,
+            "y": 64,
+            "width": 101,
+            "height": 14
+          },
+          {
+            "text": "小",
+            "x": 324,
+            "y": 752,
+            "width": 83,
+            "height": 24
+          },
+          {
+            "text": "CODECHIDDEN",
+            "x": 69,
+            "y": 201,
+            "width": 92,
+            "height": 15
+          },
+          {
+            "text": "CODECDECODER",
+            "x": 895,
+            "y": 64,
+            "width": 143,
+            "height": 14
+          },
+          {
+            "text": "HEIGHF",
+            "x": 202,
+            "y": 678,
+            "width": 54,
+            "height": 19
+          },
+          {
+            "text": "AUT",
+            "x": 668,
+            "y": 602,
+            "width": 51,
+            "height": 20
+          },
+          {
+            "text": "<600.0SECONDS",
+            "x": 617,
+            "y": 535,
+            "width": 97,
+            "height": 13
+          },
+          {
+            "text": "TEXTTOKEN",
+            "x": 68,
+            "y": 35,
+            "width": 69,
+            "height": 16
+          },
+          {
+            "text": "口口",
+            "x": 997,
+            "y": 164,
+            "width": 52,
+            "height": 30
+          },
+          {
+            "text": "VISIONHIDDEN",
+            "x": 61,
+            "y": 119,
+            "width": 93,
+            "height": 13
+          },
+          {
+            "text": "TEXTHIDDEN",
+            "x": 68,
+            "y": 77,
+            "width": 76,
+            "height": 14
+          },
+          {
+            "text": "WIDTH",
+            "x": 229,
+            "y": 760,
+            "width": 51,
+            "height": 17
+          },
+          {
+            "text": "口口",
+            "x": 902,
+            "y": 164,
+            "width": 58,
+            "height": 30
+          },
+          {
+            "text": "515",
+            "x": 1001,
+            "y": 135,
+            "width": 47,
+            "height": 23
+          },
+          {
+            "text": "TIME",
+            "x": 574,
+            "y": 804,
+            "width": 37,
+            "height": 14
+          },
+          {
+            "text": "NTANTANANNOAL",
+            "x": 781,
+            "y": 36,
+            "width": 195,
+            "height": 12
+          },
+          {
+            "text": "REAVAILABLE.<EOS>",
+            "x": 946,
+            "y": 387,
+            "width": 109,
+            "height": 12
+          },
+          {
+            "text": "444一",
+            "x": 837,
+            "y": 252,
+            "width": 83,
+            "height": 12
+          },
+          {
+            "text": "QO00O...口",
+            "x": 446,
+            "y": 505,
+            "width": 252,
+            "height": 28
+          },
+          {
+            "text": "00",
+            "x": 783,
+            "y": 233,
+            "width": 51,
+            "height": 24
+          },
+          {
+            "text": "1515",
+            "x": 783,
+            "y": 134,
+            "width": 47,
+            "height": 22
+          },
+          {
+            "text": "O",
+            "x": 993,
+            "y": 233,
+            "width": 49,
+            "height": 24
+          },
+          {
+            "text": "U",
+            "x": 1028,
+            "y": 114,
+            "width": 17,
+            "height": 19
+          },
+          {
+            "text": "",
+            "x": 938,
+            "y": 109,
+            "width": 18,
+            "height": 42
+          },
+          {
+            "text": "UM",
+            "x": 785,
+            "y": 117,
+            "width": 27,
+            "height": 16
+          },
+          {
+            "text": "UM",
+            "x": 1000,
+            "y": 118,
+            "width": 27,
+            "height": 14
+          },
+          {
+            "text": "5UN",
+            "x": 813,
+            "y": 116,
+            "width": 17,
+            "height": 17
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f6f5f2",
+        "__spacing": "both",
+        "id": "u006b41d0",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1783836525790-b88f4727-3a29-419b-819f-d1f1d7f0070d.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1783836857339-652bfa41-fc14-400e-9f7c-e9cdabab8c25.png%22%2C%22taskId%22%3A%22u500db194-5813-4a2f-94b5-4445f96568e%22%2C%22clientId%22%3A%22u4656dff5-ad10-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A423.6363525390625%2C%22height%22%3A304%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A330506%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A896%2C%22originHeight%22%3A642%2C%22ratio%22%3A1.375%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22%E4%B8%AD%E9%98%BF%E5%BF%83%E5%8F%AF%E5%BF%83%E4%B8%AD%E4%B8%AD%E5%8F%AF%E5%B0%8F%E7%BD%91%22%2C%22x%22%3A237%2C%22y%22%3A536%2C%22width%22%3A441%2C%22height%22%3A43%7D%2C%7B%22text%22%3A%22FBANKFEATURE%2C1OMSFRAMESHF..%22%2C%22x%22%3A51%2C%22y%22%3A483%2C%22width%22%3A610%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22%3CSOS%3EHI%2CL'MQWEN%2CYOURMULFIMODALASSISTANT.%22%2C%22x%22%3A218%2C%22y%22%3A605%2C%22width%22%3A482%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22HI%2C'MQWEN%2CYOURMULFIMODALASSISTANT%3CEOS%3E%22%2C%22x%22%3A202%2C%22y%22%3A22%2C%22width%22%3A474%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22%E5%8F%A3%E5%8F%A3%E5%8F%A3%E5%8F%A3%E5%8F%A3...%22%2C%22x%22%3A338%2C%22y%22%3A257%2C%22width%22%3A189%2C%22height%22%3A35%7D%2C%7B%22text%22%3A%22DECODERSELF-ATENTION%22%2C%22x%22%3A350%2C%22y%22%3A190%2C%22width%22%3A223%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22DOWNSAMPLINGCONV2D%22%2C%22x%22%3A351%2C%22y%22%3A419%2C%22width%22%3A229%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22SELFATENFIONLAYER%22%2C%22x%22%3A367%2C%22y%22%3A373%2C%22width%22%3A197%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22DECODERCROSS-ATENTION%22%2C%22x%22%3A341%2C%22y%22%3A146%2C%22width%22%3A245%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22AUTENCODER%22%2C%22x%22%3A231%2C%22y%22%3A324%2C%22width%22%3A125%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22AUTHIDDEN%2C6.25HZ%22%2C%22x%22%3A145%2C%22y%22%3A265%2C%22width%22%3A210%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22AUTDECODE%22%2C%22x%22%3A227%2C%22y%22%3A103%2C%22width%22%3A128%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%224X%22%2C%22x%22%3A247%2C%22y%22%3A418%2C%22width%22%3A30%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2232X%22%2C%22x%22%3A236%2C%22y%22%3A370%2C%22width%22%3A43%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%228X%22%2C%22x%22%3A228%2C%22y%22%3A167%2C%22width%22%3A30%2C%22height%22%3A21%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f7f6f5%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22ud48cba32%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1783836857339-652bfa41-fc14-400e-9f7c-e9cdabab8c25.png",
+        "taskId": "u500db194-5813-4a2f-94b5-4445f96568e",
+        "clientId": "u4656dff5-ad10-4",
+        "originalType": "binary",
+        "width": 423.6363525390625,
+        "height": 304,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 330506,
+        "from": "paste",
+        "originWidth": 896,
+        "originHeight": 642,
+        "ratio": 1.375,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "中阿心可心中中可小网",
+            "x": 237,
+            "y": 536,
+            "width": 441,
+            "height": 43
+          },
+          {
+            "text": "FBANKFEATURE,1OMSFRAMESHF..",
+            "x": 51,
+            "y": 483,
+            "width": 610,
+            "height": 27
+          },
+          {
+            "text": "<SOS>HI,L'MQWEN,YOURMULFIMODALASSISTANT.",
+            "x": 218,
+            "y": 605,
+            "width": 482,
+            "height": 24
+          },
+          {
+            "text": "HI,'MQWEN,YOURMULFIMODALASSISTANT<EOS>",
+            "x": 202,
+            "y": 22,
+            "width": 474,
+            "height": 22
+          },
+          {
+            "text": "口口口口口...",
+            "x": 338,
+            "y": 257,
+            "width": 189,
+            "height": 35
+          },
+          {
+            "text": "DECODERSELF-ATENTION",
+            "x": 350,
+            "y": 190,
+            "width": 223,
+            "height": 21
+          },
+          {
+            "text": "DOWNSAMPLINGCONV2D",
+            "x": 351,
+            "y": 419,
+            "width": 229,
+            "height": 19
+          },
+          {
+            "text": "SELFATENFIONLAYER",
+            "x": 367,
+            "y": 373,
+            "width": 197,
+            "height": 21
+          },
+          {
+            "text": "DECODERCROSS-ATENTION",
+            "x": 341,
+            "y": 146,
+            "width": 245,
+            "height": 20
+          },
+          {
+            "text": "AUTENCODER",
+            "x": 231,
+            "y": 324,
+            "width": 125,
+            "height": 21
+          },
+          {
+            "text": "AUTHIDDEN,6.25HZ",
+            "x": 145,
+            "y": 265,
+            "width": 210,
+            "height": 19
+          },
+          {
+            "text": "AUTDECODE",
+            "x": 227,
+            "y": 103,
+            "width": 128,
+            "height": 20
+          },
+          {
+            "text": "4X",
+            "x": 247,
+            "y": 418,
+            "width": 30,
+            "height": 18
+          },
+          {
+            "text": "32X",
+            "x": 236,
+            "y": 370,
+            "width": 43,
+            "height": 20
+          },
+          {
+            "text": "8X",
+            "x": 228,
+            "y": 167,
+            "width": 30,
+            "height": 21
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f7f6f5",
+        "__spacing": "both",
+        "id": "ud48cba32",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1783836857339-652bfa41-fc14-400e-9f7c-e9cdabab8c25.png"
+    }
+  ]
+}

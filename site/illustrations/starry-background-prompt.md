@@ -1,0 +1,7 @@
+# Dark-mode starry background
+
+Generated with ImageGen for the homepage dark theme. The light theme retains the user-selected garden image. Both backgrounds fill the viewport without adding layout height.
+
+Prompt:
+
+Use case: stylized-concept. Asset type: full-bleed starry-night background for a desktop personal technical blog. Create a beautiful immersive night sky in deep midnight navy, indigo, and subtle violet, with thousands of delicate pinprick stars of varied brightness, very faint blue-violet interstellar dust and a graceful understated Milky Way band concentrated toward the outer LEFT and upper RIGHT edges. A low, distant layered mountain silhouette hugs only the bottom five percent of the canvas, almost black navy. Refined dreamy anime background painting, celestial atmosphere, softly painted color transitions, crisp small stars, natural asymmetry, rich dark tones, elegant and tranquil rather than flashy. LANDSCAPE 3:2 composition, 1536x1024. The middle 58 percent will sit behind a blog article column: keep that zone darker and visually quiet with only small dim stars; concentrate the most beautiful details in the left and right gutters. Fill the whole frame with sky, no empty white space, no border, no transparent areas, no buildings, no trees, no characters, no giant planets, no large moon, no labels, no words, no UI, no watermarks. Maintain good legibility for pale text over the central night sky.

@@ -1,5 +1,34 @@
 [
   {
+    "file": "../notes/omni-modal/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "omni-modal",
+    "category": "llm",
+    "numberedEquations": {"vj7TD": ["rRDTk"]},
+    "date": "2026-10-06",
+    "description": "Omni-Modal 笔记：MiniCPM-o 4.5 的全模态架构、Omni-Flow 与训练，以及 Qwen3.5-Omni 的架构、预训练与后训练。",
+    "tags": [
+      "MiniCPM-o 4.5",
+      "Qwen3.5-Omni"
+    ]
+  },
+  {
+    "file": "../notes/infra-quant-ii/source.lake",
+    "format": "lake",
+    "tocDepth": 2,
+    "slug": "infra-quant-ii",
+    "category": "infra",
+    "categoryOrder": 4,
+    "date": "2026-09-23",
+    "description": "模型量化笔记：SpinQuant 的可学习旋转与 FlatQuant 的可学习仿射变换。",
+    "tags": [
+      "SpinQuant",
+      "FlatQuant"
+    ]
+  },
+  {
     "file": "../notes/on-policy-distill/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
@@ -106,7 +135,7 @@
     "series": "speculative-decoding",
     "seriesOrder": 2,
     "category": "infra",
-    "categoryOrder": 5,
+    "categoryOrder": 6,
     "date": "2026-10-04",
     "description": "EAGLE 系列笔记：EAGLE 的特征预测与错位 token 输入、EAGLE-2 的动态草稿树，以及 EAGLE-3 的多层特征融合与训练时测试",
     "tags": [
@@ -127,7 +156,7 @@
     "series": "speculative-decoding",
     "seriesOrder": 1,
     "category": "infra",
-    "categoryOrder": 4,
+    "categoryOrder": 5,
     "date": "2026-10-04",
     "description": "投机解码与投机采样笔记：草稿生成、并行验证、作者伪代码与分布保持证明，以及 Medusa 的多预测头、树形注意力、典型性接受和训练策略",
     "appendFiles": [
@@ -857,8 +886,8 @@
     "category": "infra",
     "categoryOrder": 3,
     "date": "2026-09-23",
-    "description": "模型量化笔记：Optimal Brain Compression、GPTQ、AWQ、SpinQuant 与 FlatQuant。",
-    "tags": ["Optimal Brain Compression", "GPTQ", "AWQ", "SpinQuant", "FlatQuant"]
+    "description": "模型量化笔记：Optimal Brain Compression、GPTQ 与 AWQ。",
+    "tags": ["Optimal Brain Compression", "GPTQ", "AWQ"]
   },
   {
     "file": "../notes/rope.md",
