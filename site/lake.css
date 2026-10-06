@@ -430,7 +430,7 @@
   text-align: left;
 }
 
-[data-post="genai-flow-ii"] .lake-image[data-card-id="u9e52790b"] {
+[data-post="genai-flow-ii"] .lake-image:is([data-card-id="u9e52790b"], [data-card-id="u15d72707"], [data-card-id="XuJlc"]) {
   display: block;
   width: min(640px, 100%) !important;
   height: auto;

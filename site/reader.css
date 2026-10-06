@@ -204,10 +204,12 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .post-list-heading h1 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; font-weight: 600; letter-spacing: normal; }
 .post-list-heading h1 span { padding: 4px 6px; border-radius: 5px; background: var(--accent-soft); color: var(--accent); font: 10px/1 var(--mono); }
 .home-page [data-category="llm"] { --category-ink: #245da8; --category-border: #b4cce9; --category-bg: #f5f9ff; }
+.home-page [data-category="policy"] { --category-ink: #954c2c; --category-border: #dec4b5; --category-bg: #fff8f5; }
 .home-page [data-category="generative"] { --category-ink: #7950ad; --category-border: #d0bce6; --category-bg: #faf7fe; }
 .home-page [data-category="code"] { --category-ink: #147568; --category-border: #a5d1c7; --category-bg: #f3faf8; }
 .home-page [data-category="issues"] { --category-ink: #a35b18; --category-border: #e3c29f; --category-bg: #fff9f2; }
 [data-color-mode="dark"] .home-page [data-category="llm"] { --category-ink: #93beff; --category-border: #365780; --category-bg: #141e2d; }
+[data-color-mode="dark"] .home-page [data-category="policy"] { --category-ink: #dfa782; --category-border: #704939; --category-bg: #281d19; }
 [data-color-mode="dark"] .home-page [data-category="generative"] { --category-ink: #cfadf5; --category-border: #604577; --category-bg: #211a2b; }
 [data-color-mode="dark"] .home-page [data-category="code"] { --category-ink: #7bcfbb; --category-border: #315e55; --category-bg: #142520; }
 [data-color-mode="dark"] .home-page [data-category="issues"] { --category-ink: #eeb779; --category-border: #775332; --category-bg: #292017; }

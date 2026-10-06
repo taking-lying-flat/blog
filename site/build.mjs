@@ -29,6 +29,7 @@ const posts = JSON.parse(await readFile(path.join(root, 'posts.json'), 'utf8'))
   .sort((a, b) => b.date.localeCompare(a.date));
 const categories = [
   { id: 'llm', title: '大模型' },
+  { id: 'policy', title: '策略优化' },
   { id: 'generative', title: '生成模型' },
   { id: 'code', title: '源码解读' },
   { id: 'issues', title: 'GitHub Issue' },

@@ -1,5 +1,43 @@
 [
   {
+    "file": "../notes/on-policy-distill/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "on-policy-distill",
+    "category": "policy",
+    "date": "2026-10-06",
+    "description": "OnPolicy Distill 笔记：DOPD 的同策略蒸馏、特权错觉、词元级优势与双重蒸馏，以及自适应监督来源和损失选择。",
+    "tags": [
+      "On-Policy Distillation",
+      "OPD",
+      "DOPD",
+      "知识蒸馏",
+      "特权信息"
+    ],
+    "numberedEquationBlocks": {
+      "b6GdL": [
+        "u1d10df3d",
+        "ud44a80c8",
+        "u2a1bcd4e",
+        "u1e8b99ff",
+        "ude116f80",
+        "uc619f6f9",
+        "u77f1f91e",
+        "ude90f012",
+        "ua76f2782",
+        "ue0fde69c",
+        "u369c28a8",
+        "u2fef7a04",
+        "uf4f4b2d9",
+        "u1a140dfd",
+        "u60037263",
+        "u74dace3f",
+        "u06e00682"
+      ]
+    }
+  },
+  {
     "file": "../notes/genai-sakura-iv/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
@@ -240,7 +278,7 @@
     "slug": "policy-optimization-iv",
     "series": "policy-optimization",
     "seriesOrder": 4,
-    "category": "llm",
+    "category": "policy",
     "date": "2026-09-30",
     "description": "策略优化笔记：DAPO、GSPO 与 SAPO，涵盖裁剪改进、序列级优化及软门控梯度分析",
     "tags": [
@@ -265,7 +303,7 @@
     "appendFiles": ["../notes/policy-optimization-iii/simpo/source.lake"],
     "series": "policy-optimization",
     "seriesOrder": 3,
-    "category": "llm",
+    "category": "policy",
     "date": "2026-09-30",
     "description": "策略优化笔记：ORPO 的优势比目标、KTO 的前景理论与二元反馈，以及 SimPO 的长度归一化奖励和目标间隔",
     "tags": [
@@ -285,7 +323,7 @@
     "slug": "policy-optimization-ii",
     "series": "policy-optimization",
     "seriesOrder": 2,
-    "category": "llm",
+    "category": "policy",
     "date": "2026-09-29",
     "description": "策略优化笔记：RLHF 中的 PPO 实践、KL 惩罚与奖励塑形、DPO，以及 DeepSeekMath 的 GRPO。",
     "tags": [
@@ -318,7 +356,7 @@
     "removeEmptyParagraphs": true,
     "series": "policy-optimization",
     "seriesOrder": 1,
-    "category": "llm",
+    "category": "policy",
     "date": "2026-09-27",
     "description": "策略优化笔记：TRPO、广义优势估计 GAE 与 PPO。",
     "tags": ["强化学习", "TRPO", "GAE", "PPO"]

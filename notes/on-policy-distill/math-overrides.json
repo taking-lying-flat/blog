@@ -1,0 +1,18 @@
+{
+  "tesuc": {
+    "from": "\\boxed{\\mathcal{A} = \\left| \\log \\Pi_T (\\mathbf{y}_n \\mid \\mathbf{x}, \\mathbf{p}, \\mathbf{y}_{<n}) - \\log \\Pi_S (\\mathbf{y}_n \\mid \\mathbf{x}, \\mathbf{p}, \\mathbf{y}_{<n}) \\right| = \\left| \\log \\frac{\\Pi_T (\\mathbf{y}_n \\mid \\mathbf{x}, \\mathbf{p}, \\mathbf{y}_{<n})}{\\Pi_S (\\mathbf{y}_n \\mid \\mathbf{x}, \\mathbf{p}, \\mathbf{y}_{<n})} \\right|,}",
+    "to": "\\mathcal{A} = \\left| \\log \\Pi_T (\\mathbf{y}_n \\mid \\mathbf{x}, \\mathbf{p}, \\mathbf{y}_{<n}) - \\log \\Pi_S (\\mathbf{y}_n \\mid \\mathbf{x}, \\mathbf{p}, \\mathbf{y}_{<n}) \\right| = \\left| \\log \\frac{\\Pi_T (\\mathbf{y}_n \\mid \\mathbf{x}, \\mathbf{p}, \\mathbf{y}_{<n})}{\\Pi_S (\\mathbf{y}_n \\mid \\mathbf{x}, \\mathbf{p}, \\mathbf{y}_{<n})} \\right|,"
+  },
+  "bOvqN": {
+    "from": "\\boxed{\n\\underbrace{KL_{\\text{forward}} (\\Pi_T \\parallel \\Pi_S) = \\mathbb{E}_{\\mathbf{y} \\sim \\Pi_T(\\cdot \\mid \\mathbf{t})} \\left[ \\log \\frac{\\Pi_T (\\mathbf{y} \\mid \\mathbf{t})}{\\Pi_S (\\mathbf{y} \\mid \\mathbf{t})} \\right]}_{\\text{mean-seeking}}\n}",
+    "to": "\n\\underbrace{KL_{\\text{forward}} (\\Pi_T \\parallel \\Pi_S) = \\mathbb{E}_{\\mathbf{y} \\sim \\Pi_T(\\cdot \\mid \\mathbf{t})} \\left[ \\log \\frac{\\Pi_T (\\mathbf{y} \\mid \\mathbf{t})}{\\Pi_S (\\mathbf{y} \\mid \\mathbf{t})} \\right]}_{\\text{mean-seeking}}\n"
+  },
+  "oXPOL": {
+    "from": "\\boxed{\n\\underbrace{KL_{\\text{reverse}} (\\Pi_S \\parallel \\Pi_T) = \\mathbb{E}_{\\mathbf{y} \\sim \\Pi_S(\\cdot \\mid \\mathbf{t})} \\left[ \\log \\frac{\\Pi_S (\\mathbf{y} \\mid \\mathbf{t})}{\\Pi_T (\\mathbf{y} \\mid \\mathbf{t})} \\right]}_{\\text{mode-seeking}}\n}",
+    "to": "\n\\underbrace{KL_{\\text{reverse}} (\\Pi_S \\parallel \\Pi_T) = \\mathbb{E}_{\\mathbf{y} \\sim \\Pi_S(\\cdot \\mid \\mathbf{t})} \\left[ \\log \\frac{\\Pi_S (\\mathbf{y} \\mid \\mathbf{t})}{\\Pi_T (\\mathbf{y} \\mid \\mathbf{t})} \\right]}_{\\text{mode-seeking}}\n"
+  },
+  "e4x3z": {
+    "from": "\\boxed{\nJS = \\frac{1}{2} KL (\\Pi_T \\parallel \\Pi_M) + \\frac{1}{2} KL (\\Pi_S \\parallel \\Pi_M) , \\text{where} \\quad \\Pi_M = \\frac{1}{2} \\Pi_T + \\frac{1}{2} \\Pi_S.\n}",
+    "to": "\nJS = \\frac{1}{2} KL (\\Pi_T \\parallel \\Pi_M) + \\frac{1}{2} KL (\\Pi_S \\parallel \\Pi_M) , \\text{where} \\quad \\Pi_M = \\frac{1}{2} \\Pi_T + \\frac{1}{2} \\Pi_S.\n"
+  }
+}
