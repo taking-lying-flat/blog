@@ -2556,17 +2556,52 @@
     "uc966fe36",
     "u3a604034"
   ],
-  "headingParagraphs": [
-    "hjOXM",
-    "aa6xA",
-    "hv1En"
+  "listItemMerges": [
+    {
+      "into": "u14cb13ce",
+      "items": [
+        "u0a0d109d"
+      ]
+    }
   ],
-  "paragraphListItems": [
-    "u42861b83",
-    "u811032f0",
-    "ue49ef088",
-    "ub3ba6247",
-    "u2905732b",
-    "uf37816f3"
+  "blockRemovals": [
+    {
+      "tag": "h3",
+      "id": "hjOXM"
+    },
+    {
+      "tag": "h3",
+      "id": "aa6xA"
+    },
+    {
+      "tag": "h3",
+      "id": "hv1En"
+    },
+    {
+      "tag": "p",
+      "id": "u811032f0"
+    },
+    {
+      "tag": "p",
+      "id": "ue49ef088"
+    },
+    {
+      "tag": "p",
+      "id": "ub3ba6247"
+    },
+    {
+      "tag": "p",
+      "id": "u2905732b"
+    },
+    {
+      "tag": "p",
+      "id": "uf37816f3"
+    }
+  ],
+  "paragraphLabels": [
+    {
+      "paragraph": "u42861b83",
+      "text": "权重、激活与 KV Cache 的量化："
+    }
   ]
 }

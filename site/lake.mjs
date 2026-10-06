@@ -326,7 +326,7 @@ export async function readLake(file, escape, renderMath) {
   }
   // Remove selected blocks, or their tails from an explicit inline anchor.
   for (const { tag, id, trimFrom } of manifest.blockRemovals ?? []) {
-    if (!['p', 'li', 'blockquote', 'h2'].includes(tag) || !/^[\w-]+$/.test(id) ||
+    if (!['p', 'li', 'blockquote', 'h2', 'h3'].includes(tag) || !/^[\w-]+$/.test(id) ||
         (trimFrom !== undefined && !/^[\w-]+$/.test(trimFrom))) {
       throw new Error(`Invalid Lake block removal: ${id}`);
     }
@@ -410,14 +410,35 @@ export async function readLake(file, escape, renderMath) {
   }
   // Split or moved paragraphs can become list items once their final position exists.
   for (const id of manifest.paragraphListItemsAfterMoves ?? []) paragraphListItem(id);
-  // Pair related diagrams while preserving all original image assets and anchors.
-  for (const pair of manifest.imagePairs ?? []) {
+  // Keep all paired diagrams at one height without stretching their aspect ratios.
+  const imagePairs = (manifest.imagePairs ?? []).map(pair => {
     if (!Array.isArray(pair) || pair.length !== 2 || pair.some(id => !/^[\w-]+$/.test(id))) {
       throw new Error('Invalid Lake image pair');
     }
     const pattern = new RegExp(pair.map(id => `<p\\b[^>]*\\sid="${id}"[^>]*>[\\s\\S]*?<\\/p>`).join('\\s*'), 'g');
-    if ([...content.matchAll(pattern)].length !== 1) throw new Error(`Missing Lake image pair: ${pair}`);
-    content = content.replace(pattern, pairHtml => `<figure class="lake-image-pair">${pairHtml}</figure>`);
+    const matches = [...content.matchAll(pattern)];
+    if (matches.length !== 1) throw new Error(`Missing Lake image pair: ${pair}`);
+    const ratios = [...matches[0][0].matchAll(/<img\b[^>]*\bdata-card-id="([\w-]+)"/g)].map(([, id]) => {
+      const card = manifest.cards.find(card => card.kind === 'image' && card.value.id === id);
+      const { width, height } = card?.value ?? {};
+      if (![width, height].every(value => Number.isFinite(value) && value > 0)) {
+        throw new Error(`Invalid Lake paired image dimensions: ${id}`);
+      }
+      return width / height;
+    });
+    if (ratios.length !== 2) throw new Error(`Expected two Lake paired images: ${pair}`);
+    return { pattern, ratios };
+  });
+  const pairRatioTotal = Math.max(...imagePairs.map(({ ratios }) => ratios[0] + ratios[1]));
+  const pairMaxRatio = Math.max(...imagePairs.flatMap(({ ratios }) => ratios));
+  for (const { pattern, ratios } of imagePairs) {
+    content = content.replace(pattern, pairHtml => {
+      let index = 0;
+      const panels = pairHtml.replace(/<p\b([^>]*)>/g,
+        (_opening, attributes) => `<div class="lake-image-panel" style="--lake-panel-ratio:${ratios[index++]}"><p${attributes}>`)
+        .replaceAll('</p>', '</p></div>');
+      return `<figure class="lake-image-pair" style="--lake-pair-ratio-total:${pairRatioTotal};--lake-pair-max-ratio:${pairMaxRatio}">${panels}</figure>`;
+    });
   }
   for (const id of manifest.paragraphEmphasis ?? []) {
     const pattern = new RegExp(`(<p\\b[^>]*\\sid="${id}"[^>]*>)([\\s\\S]*?)(<\\/p>)`, 'g');
