@@ -8,5 +8,54 @@
     "from": "使用 GPTQ [Frantar et al., 2022] 对网络权重进行量化。需要指出的是，在完成上述前向传播修改后，可以应用任意量化方法。在后续章节中，将表明，也可以使用简单的就近舍入（Round-to-Nearest，RTN）方案替代 GPTQ，但会付出一定的精度代价。",
     "to": "完成旋转变换后，QuaRot 使用 GPTQ 将权重量化为 INT4，也可采用更简单的就近舍入（Round-to-Nearest，RTN）方案，但会付出一定的精度代价。激活在推理时进行逐 token 对称量化：以每行最大绝对值除以 7 得到缩放因子，再将该行除以缩放因子并舍入为整数；移除缩放参数后的 RMSNorm 仍以 FP32 计算。INT4 GEMM 的 INT32 输出转换为 FP16，再乘以激活的逐行缩放因子和权重的逐列缩放因子完成反量化。对于注意力计算，将旋转后的 KV Cache 量化为低比特表示，以减少长序列、大批量场景下的内存访问，Query 保持 FP16；计算时分块读取并反量化 KV，结合类似 FlashAttention 的在线 softmax，以 FP16 完成点积",
     "reason": "按要求将量化过程综合为一段，并删除方法名称后的作者年份引用括注"
+  },
+  "u81e1c1ed": {
+    "from": "的方阵。旋转矩阵是一种正交矩阵。Hadamard 矩阵是元素取自",
+    "to": "的方阵。旋转矩阵是一种正交矩阵。本文采用归一化 Hadamard 矩阵，其元素取自",
+    "reason": "按式 (1) 明确归一化约定，保证后续正交等式成立",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
+  },
+  "u65806015": {
+    "from": "的正交矩阵。Walsh–Hadamard 矩阵是阶数为",
+    "to": "，其中 d 为矩阵阶数。Walsh–Hadamard 矩阵是阶数为",
+    "reason": "补充归一化因子中的维度定义",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
+  },
+  "u8a61ab77": {
+    "from": "表示矩阵所有元素中的最大值，",
+    "to": "表示矩阵所有元素绝对值中的最大值，",
+    "reason": "非相干性衡量幅值，需包含负离群值",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
+  },
+  "u8204ba88": {
+    "from": "表示矩阵的元素总数。具有较高非相干性的权重矩阵难以量化：相对于元素的平均幅值，其最大元素是一个离群值。在权重矩阵的左侧和右侧乘以正交矩阵，可以降低其非相干性，使矩阵更易于量化",
+    "to": "表示矩阵的元素总数。当最大元素的绝对值相对整体幅值较大时，需要更大的非相干性参数 μ，量化也更困难。在权重矩阵的左侧和右侧乘以适当的正交矩阵，可以分散离群值、减小所需的 μ，使矩阵更易于量化",
+    "reason": "区分非相干性与参数 μ 的大小，避免把高非相干性表述为难量化",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
+  },
+  "u8ea41001": {
+    "from": "是一个阶数等于序列长度的方阵，由对键和值进行 softmax 计算得到；",
+    "to": "是一个阶数等于序列长度的方阵，由查询与键的缩放点积经过掩码处理和 softmax 得到；",
+    "reason": "注意力概率由 Query 和 Key 计算，不是 Key 和 Value",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
+  },
+  "u03d2ea06": {
+    "from": "现在可以观察到，",
+    "to": [
+      {
+        "math": "\\alpha=1/\\sqrt{d_h}"
+      },
+      " 为缩放因子，",
+      {
+        "math": "\\mathbf{M}"
+      },
+      " 为加性注意力掩码：允许访问的位置为 0，屏蔽位置为负无穷；",
+      {
+        "math": "\\operatorname{Pos}"
+      },
+      " 表示 RoPE 等位置变换。现在可以观察到，"
+    ],
+    "reason": "明确式 (12) 的缩放与加性掩码约定",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
   }
 }

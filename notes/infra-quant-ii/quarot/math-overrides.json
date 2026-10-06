@@ -11,8 +11,9 @@
   },
   "RWsaR": {
     "from": "\\{+1,-1\\}",
-    "to": "\\{+1,-1\\}",
-    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+    "to": "\\{+1/\\sqrt{d},-1/\\sqrt{d}\\}",
+    "reason": "归一化 Hadamard 矩阵的元素需包含 1/√d",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
   },
   "HJPD4": {
     "from": "d=2^n",
@@ -106,8 +107,9 @@
   },
   "pNUxP": {
     "from": "\\max(\\mathbf{W})\\leq\\frac{\\mu\\|\\mathbf{W}\\|_{\\mathrm{F}}}{\\sqrt{mn}}.\\tag{2}",
-    "to": "\\max(\\mathbf{W})\\leq\\frac{\\mu\\|\\mathbf{W}\\|_{\\mathrm{F}}}{\\sqrt{mn}}.\\tag{2}",
-    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+    "to": "\\max_{i,j}|\\mathbf{W}_{ij}|\\leq\\frac{\\mu\\|\\mathbf{W}\\|_{\\mathrm{F}}}{\\sqrt{mn}}.\\tag{2}",
+    "reason": "非相干性约束最大元素绝对值，避免遗漏负离群值",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
   },
   "Gu5pT": {
     "from": "\\max",
@@ -364,8 +366,9 @@
   },
   "Ak9GX": {
     "from": "\\mathbf{P}_h\\leftarrow\\operatorname{Softmax}\\left(\\alpha\\,\\operatorname{Pos}(\\mathbf{Q}_h)\\operatorname{Pos}(\\mathbf{K}_h^{\\top})\\odot\\mathbf{M}\\right).\\tag{12}",
-    "to": "\\mathbf{P}_h\\leftarrow\\operatorname{Softmax}\\left(\\alpha\\,\\operatorname{Pos}(\\mathbf{Q}_h)\\operatorname{Pos}(\\mathbf{K}_h^{\\top})\\odot\\mathbf{M}\\right).\\tag{12}",
-    "reason": "重新渲染公式，统一字体、嵌套下标与基线"
+    "to": "\\mathbf{P}_h\\leftarrow\\operatorname{Softmax}\\left(\\alpha\\,\\operatorname{Pos}(\\mathbf{Q}_h)\\operatorname{Pos}(\\mathbf{K}_h)^{\\top}+\\mathbf{M}\\right).\\tag{12}",
+    "reason": "先对 Key 应用位置变换再转置，并采用 0/负无穷加性掩码；乘零掩码无法屏蔽 softmax 位置",
+    "reference": "https://proceedings.neurips.cc/paper_files/paper/2024/file/b5b939436789f76f08b9d0da5e81af7c-Paper-Conference.pdf"
   },
   "z49If": {
     "from": "\\mathbf{Q}",

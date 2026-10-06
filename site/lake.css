@@ -794,12 +794,23 @@
 [data-post="genai-sakura-iv"] .lake-document .lake-image { display: block; margin: 12px auto; height: auto; }
 
 /* Share one image height across paired diagrams, retaining their proportions. */
-.lake-document .lake-image-pair { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 20px 0; white-space: normal; }
-.lake-document .lake-image-panel { flex: 0 1 calc((100% - 16px) * var(--lake-panel-ratio) / var(--lake-pair-ratio-total)); min-width: 0; }
+.lake-document .lake-image-pair { display: flex; align-items: center; justify-content: center; gap: 2px; margin: 18px 0; white-space: normal; }
+.lake-document .lake-image-panel { flex: 0 1 calc((100% - 2px) * var(--lake-panel-ratio) / var(--lake-pair-ratio-total)); min-width: 0; }
 .lake-document .lake-image-panel > p { margin: 0; min-height: 0; text-align: center; }
 .lake-document .lake-image-pair .lake-image { display: block; width: 100% !important; max-width: 100%; height: auto; margin: 0; }
 @media (max-width: 640px) {
   .lake-document .lake-image-pair { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .lake-document .lake-image-panel > p { aspect-ratio: var(--lake-pair-max-ratio); }
   .lake-document .lake-image-pair .lake-image { width: auto !important; height: 100%; margin: 0 auto; }
+}
+
+/* Trim only blank export margins; retain every label, arrow and source pixel. */
+.lake-document .lake-pair-crop { display: block; position: relative; overflow: hidden; }
+.lake-document .lake-pair-crop > .lake-image { position: absolute; width: var(--lake-crop-width) !important; max-width: none; height: auto; left: var(--lake-crop-left); top: var(--lake-crop-top); }
+@media (min-width: 1200px) {
+  .lake-document .lake-image-pair {
+    --lake-pair-bleed: clamp(0px, calc((100vw - 1320px) / 2 + 8px), 120px);
+    width: calc(100% + var(--lake-pair-bleed) + 16px);
+    margin-left: calc(-1 * var(--lake-pair-bleed));
+  }
 }

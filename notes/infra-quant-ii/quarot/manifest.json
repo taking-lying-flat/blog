@@ -2603,5 +2603,31 @@
       "paragraph": "u42861b83",
       "text": "权重、激活与 KV Cache 的量化："
     }
-  ]
+  ],
+  "imagePairCrops": {
+    "u7046a667": {
+      "x": 15,
+      "y": 10,
+      "width": 789,
+      "height": 325
+    },
+    "u7f9ccc76": {
+      "x": 15,
+      "y": 8,
+      "width": 1095,
+      "height": 432
+    },
+    "ua2c59e14": {
+      "x": 20,
+      "y": 17,
+      "width": 962,
+      "height": 350
+    },
+    "u71d492c8": {
+      "x": 12,
+      "y": 7,
+      "width": 1292,
+      "height": 509
+    }
+  }
 }
