@@ -16,7 +16,7 @@
 
 <div class="rotation-case" id="rotation-flatquant">
 
-**FlatQuant：一般可逆矩阵** $`P`$ 一般会改变范数，不能直接穿过 RMSNorm；抵消时用 $`P^{-1}`$，而非 $`P^\top`$：
+**FlatQuant：一般可逆矩阵** $`P`$ 会改变范数，不能直接穿过 RMSNorm：
 
 ```math
 \operatorname{RMSNorm}_0\!\left(X(W_1P)\right)(P^{-1}W_2)\neq\operatorname{RMSNorm}_0(XW_1)W_2.
