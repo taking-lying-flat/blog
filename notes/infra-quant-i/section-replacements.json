@@ -1,0 +1,22 @@
+[
+  {
+    "id": "obs-pruning-typeset",
+    "start": "u9f217038",
+    "before": "u1be52a60",
+    "file": "obs-pruning-algorithm.md"
+  },
+  {
+    "id": "obq-typeset",
+    "start": "ufedfdd6d",
+    "before": "gdfVF",
+    "beforeTag": "h1",
+    "file": "obq-algorithm.md"
+  },
+  {
+    "id": "gptq-typeset",
+    "start": "u0f6c8014",
+    "before": "omTQJ",
+    "beforeTag": "h1",
+    "file": "gptq-algorithm.md"
+  }
+]

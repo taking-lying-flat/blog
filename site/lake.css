@@ -44,6 +44,23 @@
   [data-post="genai-flow-i"], [data-post="genai-flow-ii"]
 ) .lake-document { line-height: 1.82; }
 .lake-document .code-block { white-space: normal; }
+/* Algorithms transcribed from screenshots use the same paper-like layout. */
+.lake-document .paper-algorithm {
+  margin: 18px 0;
+  padding: 0 12px 8px;
+  border-block: 1px solid #929292;
+  white-space: normal;
+}
+.lake-document .paper-algorithm figcaption {
+  padding: 7px 0;
+  border-bottom: 1px solid #c7c7c7;
+  font: 16px/1.5 var(--article-serif);
+}
+.lake-document .paper-algorithm .equation { margin: 9px 0 0; font-size: 15px; }
+.lake-document .paper-algorithm .equation mjx-container[display="true"] { min-width: 0; text-align: left; }
+.lake-document .algorithm-companion { margin: 16px auto; text-align: center; }
+.lake-document .algorithm-image-crop { position: relative; display: inline-block; max-width: 100%; overflow: hidden; }
+.lake-document .algorithm-image-crop img { position: absolute; display: block; max-width: none; height: auto; }
 [data-post="policy-optimization-i"] .lake-document .lake-numbered-block {
   margin-block: 12px;
   padding: 2px 3em;
