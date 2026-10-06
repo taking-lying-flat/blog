@@ -794,8 +794,8 @@
 [data-post="genai-sakura-iv"] .lake-document .lake-image { display: block; margin: 12px auto; height: auto; }
 
 /* Share one image height across paired diagrams, retaining their proportions. */
-.lake-document .lake-image-pair { display: flex; align-items: center; justify-content: center; gap: 2px; margin: 18px 0; white-space: normal; }
-.lake-document .lake-image-panel { flex: 0 1 calc((100% - 2px) * var(--lake-panel-ratio) / var(--lake-pair-ratio-total)); min-width: 0; }
+.lake-document .lake-image-pair { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 20px 0; white-space: normal; }
+.lake-document .lake-image-panel { flex: 0 1 calc((100% - 16px) * var(--lake-panel-ratio) / var(--lake-pair-ratio-total)); min-width: 0; }
 .lake-document .lake-image-panel > p { margin: 0; min-height: 0; text-align: center; }
 .lake-document .lake-image-pair .lake-image { display: block; width: 100% !important; max-width: 100%; height: auto; margin: 0; }
 @media (max-width: 640px) {
@@ -804,11 +804,6 @@
   .lake-document .lake-image-pair .lake-image { width: auto !important; height: 100%; margin: 0 auto; }
 }
 
-/* Trim only blank export margins; retain every label, arrow and source pixel. */
-.lake-document .lake-pair-crop { display: block; position: relative; overflow: hidden; }
-.lake-document .lake-pair-crop > .lake-image { position: absolute; width: var(--lake-crop-width) !important; max-width: none; height: auto; left: var(--lake-crop-left); top: var(--lake-crop-top); }
-/* Paired diagrams stay within the same edges as the article text. */
-.lake-document .lake-image-pair { width: 100%; max-width: 100%; margin-inline: 0; }
 .lake-document .rotation-identities { box-sizing: border-box; max-width: 100%; margin: 28px 0 0; padding: 16px 20px; background: #f6f8fa; border: 1px solid #e4e9ef; border-radius: 6px; white-space: normal; }
 .lake-document .rotation-identities .equation { margin: 10px 0; padding: 8px 0; font-size: 16px; }
 .lake-document .rotation-identities .equation + .equation { border-top: 1px solid #e4e9ef; padding-top: 18px; }

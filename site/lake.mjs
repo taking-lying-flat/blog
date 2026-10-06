@@ -418,35 +418,21 @@ export async function readLake(file, escape, renderMath) {
     const pattern = new RegExp(pair.map(id => `<p\\b[^>]*\\sid="${id}"[^>]*>[\\s\\S]*?<\\/p>`).join('\\s*'), 'g');
     const matches = [...content.matchAll(pattern)];
     if (matches.length !== 1) throw new Error(`Missing Lake image pair: ${pair}`);
-    const images = [...matches[0][0].matchAll(/<img\b[^>]*\bdata-card-id="([\w-]+)"/g)].map(([, id]) => {
+    const ratios = [...matches[0][0].matchAll(/<img\b[^>]*\bdata-card-id="([\w-]+)"/g)].map(([, id]) => {
       const card = manifest.cards.find(card => card.kind === 'image' && card.value.id === id);
       const { width, height } = card?.value ?? {};
       if (![width, height].every(value => Number.isFinite(value) && value > 0)) {
         throw new Error(`Invalid Lake paired image dimensions: ${id}`);
       }
-      const crop = manifest.imagePairCrops?.[id];
-      const asset = assets.get(card.asset);
-      if (crop && (![crop.x, crop.y, crop.width, crop.height, asset?.width, asset?.height].every(Number.isFinite) ||
-          crop.x < 0 || crop.y < 0 || crop.width <= 0 || crop.height <= 0 ||
-          crop.x + crop.width > asset.width || crop.y + crop.height > asset.height)) {
-        throw new Error(`Invalid Lake paired image crop: ${id}`);
-      }
-      return { ratio: crop ? crop.width / crop.height : width / height, crop, asset };
+      return width / height;
     });
-    if (images.length !== 2) throw new Error(`Expected two Lake paired images: ${pair}`);
-    return { pattern, images, ratios: images.map(image => image.ratio) };
+    if (ratios.length !== 2) throw new Error(`Expected two Lake paired images: ${pair}`);
+    return { pattern, ratios };
   });
   const pairRatioTotal = Math.max(...imagePairs.map(({ ratios }) => ratios[0] + ratios[1]));
   const pairMaxRatio = Math.max(...imagePairs.flatMap(({ ratios }) => ratios));
-  for (const { pattern, ratios, images } of imagePairs) {
+  for (const { pattern, ratios } of imagePairs) {
     content = content.replace(pattern, pairHtml => {
-      let imageIndex = 0;
-      pairHtml = pairHtml.replace(/<img\b[^>]*>/g, image => {
-        const { crop, asset } = images[imageIndex++];
-        if (!crop) return image;
-        const style = `aspect-ratio:${crop.width}/${crop.height};--lake-crop-width:${100 * asset.width / crop.width}%;--lake-crop-left:${-100 * crop.x / crop.width}%;--lake-crop-top:${-100 * crop.y / crop.height}%;`;
-        return `<span class="lake-pair-crop" style="${style}">${image}</span>`;
-      });
       let index = 0;
       const panels = pairHtml.replace(/<p\b([^>]*)>/g,
         (_opening, attributes) => `<div class="lake-image-panel" style="--lake-panel-ratio:${ratios[index++]}"><p${attributes}>`)
