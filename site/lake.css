@@ -58,9 +58,6 @@
 }
 .lake-document .paper-algorithm .equation { margin: 9px 0 0; font-size: 15px; }
 .lake-document .paper-algorithm .equation mjx-container[display="true"] { min-width: 0; text-align: left; }
-.lake-document .algorithm-companion { margin: 16px auto; text-align: center; }
-.lake-document .algorithm-image-crop { position: relative; display: inline-block; max-width: 100%; overflow: hidden; }
-.lake-document .algorithm-image-crop img { position: absolute; display: block; max-width: none; height: auto; }
 [data-post="policy-optimization-i"] .lake-document .lake-numbered-block {
   margin-block: 12px;
   padding: 2px 3em;

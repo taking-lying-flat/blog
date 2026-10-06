@@ -18,7 +18,3 @@ M\leftarrow\{1,\ldots,d_{\mathrm{col}}\}\\[3pt]
 ```
 
 </figure>
-
-<figure class="algorithm-companion">
-<span class="algorithm-image-crop" style="width:560px;aspect-ratio:571/377"><img src="assets/images/1785561059944-4cfabbc5-6d6b-4933-92de-254305454b27.png" alt="利用逐行剪枝轨迹与损失变化构造全局 OBS 掩码的示意图" width="1143" height="377" style="width:200.175131%;left:-100.175131%;top:0" decoding="async"></span>
-</figure>
