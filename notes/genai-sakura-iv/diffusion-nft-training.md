@@ -37,8 +37,8 @@ v^*(x_t,c,t):=v^{\mathrm{old}}(x_t,c,t)+\frac1\beta\Delta(x_t,c,t).\tag{5}
 ```math
 \begin{aligned}
 \Delta
-&:=[1-\alpha(x_t)]\,[v^{\mathrm{old}}(x_t,c,t)-v^-(x_t,c,t)]\\
-&=\alpha(x_t)\,[v^+(x_t,c,t)-v^{\mathrm{old}}(x_t,c,t)],\\[5pt]
+&:=[1-\alpha(x_t)]\,[v^{\mathrm{old}}(x_t,c,t)-v^-(x_t,c,t)]
+=\alpha(x_t)\,[v^+(x_t,c,t)-v^{\mathrm{old}}(x_t,c,t)],\\[5pt]
 \text{where}\quad\alpha(x_t)
 &:=\frac{\pi_t^+(x_t\mid c)}{\pi_t^{\mathrm{old}}(x_t\mid c)}
 \mathbb E_{\pi^{\mathrm{old}}(x_0\mid c)}r(x_0,c),\qquad 0\leq\alpha(x_t)\leq1.
@@ -65,13 +65,11 @@ v^*(x_t,c,t)=v^{\mathrm{old}}(x_t,c,t)+\frac1{\alpha(x_t)}\Delta(x_t,c,t)=v^+(x_
 +(1-r)\left\|v_\theta^-(x_t,c,t)-v\right\|_2^2\right].\tag{8}
 ```
 
-其中，隐式正、负策略分别定义为
+其中，省略共同输入 $`(x_t,c,t)`$，隐式正、负策略分别为
 
 ```math
-\begin{aligned}
-v_\theta^+(x_t,c,t)&:=(1-\beta)v^{\mathrm{old}}(x_t,c,t)+\beta v_\theta(x_t,c,t),\\
-v_\theta^-(x_t,c,t)&:=(1+\beta)v^{\mathrm{old}}(x_t,c,t)-\beta v_\theta(x_t,c,t).
-\end{aligned}\tag{9}
+v_\theta^+:=(1-\beta)v^{\mathrm{old}}+\beta v_\theta,\qquad
+v_\theta^-:=(1+\beta)v^{\mathrm{old}}-\beta v_\theta.\tag{9}
 ```
 
 在数据量和模型容量不受限制的条件下，式（8）的最优解满足
@@ -90,6 +88,89 @@ v_{\theta^*}(x_t,c,t)=v^{\mathrm{old}}(x_t,c,t)+\frac2\beta\Delta(x_t,c,t).\tag{
 - **求解器灵活性：** 策略训练与数据采样解耦，收集数据时可以使用黑盒求解器；训练仅需干净图像及其奖励，无需保存完整的逆向采样轨迹
 - **隐式引导整合：** 通过式（9）的参数化，将强化引导直接融入目标策略，无需单独学习引导模型 $`\Delta_\theta`$，也无需在采样时额外组合引导项
 - **无需似然的优化：** 训练目标由前向回归损失构成，无需利用变分界近似数据似然，也无需从离散逆向轨迹构造序列似然
+
+<h2 id="nft-proof-of-theorems" style="text-align: center">📐 Proof Of Theorems</h2>
+
+**先由正、负分布的混合关系得到后验分解，再证明速度场的改进方向，最后将训练目标配方为平方误差。** 以下对应[原论文附录 A](https://proceedings.iclr.cc/paper_files/paper/2026/file/d8e68ddfe22520b45b8fb8d5cbde5a21-Paper-Conference.pdf#page=14)。固定提示 $`c`$，记 $`\rho_c:=p_{\pi^{\mathrm{old}}}(o=1\mid c)=\mathbb E_{\pi^{\mathrm{old}}(\cdot\mid c)}r(x_0,c)`$，并假设 $`0<\rho_c<1`$，使正、负分布均有定义
+
+**引理 A.1（分布分解）。** 旧策略是正、负分布的混合
+
+```math
+\pi^{\mathrm{old}}(x_0\mid c)=\rho_c\pi^+(x_0\mid c)+(1-\rho_c)\pi^-(x_0\mid c).\tag{A.1}
+```
+
+- **证明：** 将式（3）代入右侧，两项分别为 $`r(x_0,c)\pi^{\mathrm{old}}(x_0\mid c)`$ 与 $`[1-r(x_0,c)]\pi^{\mathrm{old}}(x_0\mid c)`$，相加即得结论
+
+**引理 A.2（后验分解）。** 三个分布经过相同的前向扰动核后，给定 $`x_t`$ 的干净样本后验满足
+
+```math
+\pi^{\mathrm{old}}(x_0\mid x_t,c)=\alpha(x_t)\pi^+(x_0\mid x_t,c)+[1-\alpha(x_t)]\pi^-(x_0\mid x_t,c).\tag{A.2}
+```
+
+- **证明：** 对式（A.1）两侧应用共同的前向核 $`\pi_{t\mid0}(x_t\mid x_0)`$，并对 $`x_0`$ 积分，得到受噪边缘分布的混合关系
+
+```math
+\pi_t^{\mathrm{old}}(x_t\mid c)=\rho_c\pi_t^+(x_t\mid c)+(1-\rho_c)\pi_t^-(x_t\mid c).\tag{A.3}
+```
+
+- 根据 Bayes 公式，奖励加权的旧策略后验可以改写为正、负后验。以下简记 $`r=r(x_0,c)`$、$`\alpha=\alpha(x_t)=\rho_c\pi_t^+(x_t\mid c)/\pi_t^{\mathrm{old}}(x_t\mid c)`$；由式（A.3），另一项的系数为 $`1-\alpha`$
+
+```math
+\begin{aligned}
+r\,\pi^{\mathrm{old}}(x_0\mid x_t,c)
+&=\frac{\rho_c\pi^+(x_0\mid c)\pi_{t\mid0}(x_t\mid x_0)}{\pi_t^{\mathrm{old}}(x_t\mid c)}
+=\alpha\pi^+(x_0\mid x_t,c),\\[4pt]
+(1-r)\,\pi^{\mathrm{old}}(x_0\mid x_t,c)
+&=\frac{(1-\rho_c)\pi^-(x_0\mid c)\pi_{t\mid0}(x_t\mid x_0)}{\pi_t^{\mathrm{old}}(x_t\mid c)}
+=(1-\alpha)\pi^-(x_0\mid x_t,c).
+\end{aligned}\tag{A.4}
+```
+
+- 两式相加即得式（A.2）。后验混合系数 $`\alpha(x_t)`$ 与前向噪声调度 $`\alpha_t`$ 是不同的量
+
+**定理 3.1 的证明（附录定理 A.3）。** 由 $`x_t=\alpha_t x_0+\sigma_t\epsilon`$ 与 $`v=\dot\alpha_t x_0+\dot\sigma_t\epsilon`$，消去噪声 $`\epsilon`$ 后，理想速度预测器可写成干净样本后验均值的仿射函数
+
+```math
+v^s(x_t,c,t)=a_t x_t+b_t\mathbb E_{\pi^s(x_0\mid x_t,c)}[x_0],
+\qquad s\in\{\mathrm{old},+,-\}.\tag{A.5}
+```
+
+- 其中，$`a_t=\dot\sigma_t/\sigma_t`$、$`b_t=\dot\alpha_t-(\dot\sigma_t/\sigma_t)\alpha_t`$，上述表达式用于 $`\sigma_t>0`$ 的时间点。将式（A.2）代入后验期望，并省略速度场共同的输入 $`(x_t,c,t)`$，有
+
+```math
+v^{\mathrm{old}}=\alpha v^++(1-\alpha)v^-
+\quad\Longrightarrow\quad
+(1-\alpha)(v^{\mathrm{old}}-v^-)=\alpha(v^+-v^{\mathrm{old}})=\Delta.\tag{A.6}
+```
+
+- 这正是式（6）的强化引导关系，定理 3.1 得证
+
+**定理 3.2 的证明（附录定理 A.4）。** 先对式（8）按照受噪样本 $`x_t`$ 取条件期望，再利用式（A.4），将奖励权重吸收到正、负后验中。随后使用平方误差的偏差—方差分解，以条件均值 $`v^+`$ 和 $`v^-`$ 替换随机目标速度
+
+```math
+\begin{aligned}
+\mathcal L(\theta)
+&=\mathbb E_{c,t,\,x_t\sim\pi_t^{\mathrm{old}}}
+\left[\alpha\mathbb E_{\pi^+(x_0\mid x_t,c)}\|v_\theta^+-v\|_2^2
++(1-\alpha)\mathbb E_{\pi^-(x_0\mid x_t,c)}\|v_\theta^--v\|_2^2\right]\\
+&=\mathbb E_{c,t,\,x_t\sim\pi_t^{\mathrm{old}}}
+\left[\alpha\|v_\theta^+-v^+\|_2^2+(1-\alpha)\|v_\theta^--v^-\|_2^2\right]+C_1.
+\end{aligned}\tag{A.7}
+```
+
+- $`C_1`$ 来自条件方差，与待优化参数 $`\theta`$ 无关。令 $`d=v_\theta-v^{\mathrm{old}}`$，由式（9），两项残差分别为 $`\beta d-(v^+-v^{\mathrm{old}})`$ 和 $`-\beta d+(v^{\mathrm{old}}-v^-)`$。展开平方，并利用式（A.6）中的两项均等于 $`\Delta`$，得到
+
+```math
+\begin{aligned}
+\mathcal L(\theta)
+&=\beta^2\mathbb E\|d\|_2^2
+-2\beta\mathbb E\!\left\langle d,\alpha(v^+-v^{\mathrm{old}})+(1-\alpha)(v^{\mathrm{old}}-v^-)\right\rangle+C_2\\
+&=\beta^2\mathbb E\|d\|_2^2-4\beta\mathbb E\langle d,\Delta\rangle+C_2
+=\beta^2\mathbb E\left\|d-\frac2\beta\Delta\right\|_2^2+C_3.
+\end{aligned}\tag{A.8}
+```
+
+- 这里的期望均针对 $`c,t,x_t\sim\pi_t^{\mathrm{old}}(\cdot\mid c)`$，$`C_2,C_3`$ 也与 $`\theta`$ 无关。因此，在模型容量足够且达到最优时，$`d=2\Delta/\beta`$，即 $`v_{\theta^*}=v^{\mathrm{old}}+2\Delta/\beta`$，得到式（10），定理 3.2 得证
 
 <h2 id="nft-practical-implementation" style="text-align: center">🛠️ Practical Implementation</h2>
 
