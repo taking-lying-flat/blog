@@ -50,13 +50,16 @@
     "slug": "diffusion-language-models",
     "category": "llm",
     "date": "2026-10-05",
-    "description": "扩散语言模型笔记：LLaDA 的掩码扩散、预训练、监督微调、条件似然评估，以及随机与低置信度重掩码算法",
+    "description": "扩散语言模型笔记：LLaDA 的预训练、监督微调与重掩码算法，以及 Block Diffusion 的块间自回归、块内去噪、KV 缓存、梯度方差与噪声调度",
     "appendMarkdown": [
-      "llada-algorithms.md"
+      "llada-algorithms.md",
+      "block-diffusion.md"
     ],
     "tags": [
       "扩散语言模型",
       "LLaDA",
+      "Block Diffusion",
+      "BD3-LMs",
       "Masked Diffusion",
       "非自回归生成",
       "预训练",
