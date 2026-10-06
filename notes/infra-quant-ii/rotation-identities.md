@@ -8,8 +8,6 @@
 \phi\!\left(X(W_1H)\right)(H^\top W_2)\neq\phi(XW_1)W_2.
 ```
 
-激活后在线旋转，逆变换融合进 $`W_2`$；门控 FFN 中，旋转放在门控相乘后、下投影前：
-
 ```math
 \underbrace{\bigl[\phi(XW_1)H\bigr]}_{\text{在线旋转}}\underbrace{(H^\top W_2)}_{\text{融合进权重}}=\phi(XW_1)\underbrace{HH^\top}_{I}W_2=\phi(XW_1)W_2.
 ```
