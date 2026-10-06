@@ -308,7 +308,10 @@
   },
   {
     "file": "../notes/policy-optimization-ii/source.lake",
-    "appendMarkdown": ["reinforcement-learning-insights.md"],
+    "appendMarkdown": [
+      "grpo-algorithm.md",
+      "reinforcement-learning-insights.md"
+    ],
     "format": "lake",
     "removeEmptyParagraphs": true,
     "tocDepth": 2,

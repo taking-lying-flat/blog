@@ -6612,5 +6612,15 @@
       },
       "asset": "assets/images/1790666137022-cce45dfc-5036-4514-856a-78d51a3f76af.png"
     }
+  ],
+  "blockRemovals": [
+    {
+      "tag": "p",
+      "id": "uefb2c383"
+    },
+    {
+      "tag": "p",
+      "id": "uef20e406"
+    }
   ]
 }

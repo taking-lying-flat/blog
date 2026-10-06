@@ -251,16 +251,17 @@
 [data-post="policy-optimization-ii"] .lake-document .lake-image { display: block; margin: 10px auto; }
 [data-post="policy-optimization-ii"] .lake-document .lake-image-source { margin: 0 0 6px; }
 [data-post="policy-optimization-ii"] .lake-revised-section .equation { margin: 8px 0; }
+[data-post="policy-optimization-ii"] .lake-document .lake-derivation { margin-block: 18px; }
 
 .lake-document .lake-appendix .equation { font-size: 16px; }
 .lake-document .lake-derivation { margin: 10px 0; border: 1px solid var(--derivation-border); background: var(--derivation-background); }
 .lake-document .lake-derivation-title { margin: 0 0 8px; padding: 8px 12px 0; font-weight: 700; }
-.lake-document #insights-sft { --derivation-border: #aac4e3; --derivation-background: #f2f6fc; }
-.lake-document #insights-rft { --derivation-border: #b2ceb4; --derivation-background: #f2f8f2; }
-.lake-document #insights-online-rft { --derivation-border: #a5d0cb; --derivation-background: #eff8f7; }
-.lake-document #insights-dpo { --derivation-border: #dfc397; --derivation-background: #fff7eb; }
-.lake-document #insights-ppo { --derivation-border: #c6b3db; --derivation-background: #f7f2fb; }
-.lake-document #insights-grpo { --derivation-border: #d8afbf; --derivation-background: #fcf1f5; }
+.lake-document #insights-sft { --derivation-border: #aac4e3; --derivation-background: #f9fbfe; }
+.lake-document #insights-rft { --derivation-border: #b2ceb4; --derivation-background: #f9fcf9; }
+.lake-document #insights-online-rft { --derivation-border: #a5d0cb; --derivation-background: #f8fcfb; }
+.lake-document #insights-dpo { --derivation-border: #dfc397; --derivation-background: #fffbf5; }
+.lake-document #insights-ppo { --derivation-border: #c6b3db; --derivation-background: #fcf9fe; }
+.lake-document #insights-grpo { --derivation-border: #d8afbf; --derivation-background: #fff9fb; }
 .lake-document .lake-derivation-body { padding: 0 12px 8px; }
 .lake-document .lake-derivation-body > :last-child { margin-bottom: 0; }
 
@@ -403,22 +404,25 @@
 [data-post="spec-decoding-i"] .lake-document #u81004246 > br { display: none; }
 
 /* Policy iteration, transcribed from the original algorithm screenshot. */
-[data-post="policy-optimization-i"] .policy-algorithm {
+:is([data-post="policy-optimization-i"], [data-post="policy-optimization-ii"]) .policy-algorithm {
   margin: 16px 2em;
   padding: 0 4px 8px;
   border-block: 1px solid #929292;
   white-space: normal;
 }
-[data-post="policy-optimization-i"] .policy-algorithm figcaption {
+:is([data-post="policy-optimization-i"], [data-post="policy-optimization-ii"]) .policy-algorithm figcaption {
   padding: 6px 0;
   border-bottom: 1px solid #c7c7c7;
   font: 16px/1.5 var(--article-serif);
 }
-[data-post="policy-optimization-i"] .policy-algorithm .equation { margin: 6px 0 0; }
-[data-post="policy-optimization-i"] .policy-algorithm .equation mjx-container[display="true"] {
+:is([data-post="policy-optimization-i"], [data-post="policy-optimization-ii"]) .policy-algorithm .equation { margin: 6px 0 0; }
+:is([data-post="policy-optimization-i"], [data-post="policy-optimization-ii"]) .policy-algorithm .equation mjx-container[display="true"] {
   min-width: 0;
   text-align: left;
 }
+
+[data-post="policy-optimization-ii"] .policy-algorithm > p { margin: 8px 10px 0; font: 15px/1.6 var(--article-serif); }
+[data-post="policy-optimization-ii"] .policy-algorithm .equation { font-size: 15px; }
 
 /* Typeset the original algorithm like a paper. */
 [data-post="spec-decoding-i"] .spec-algorithm {

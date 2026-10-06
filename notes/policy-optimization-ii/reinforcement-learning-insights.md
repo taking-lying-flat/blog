@@ -35,10 +35,6 @@ GC_{\mathcal A}(q,o,t,\pi_{\mathrm{rf}})
 - 在 DeepSeekMath 的 GSM8K 与 MATH 实验中，强化学习提高多数投票正确率 Maj@K，但未提高衡量 $`K`$ 次采样中是否至少包含一个正确回答的 Pass@K。这一结果支持以下解释：改进主要表现为**提高已有正确推理路径的生成概率，使输出分布更稳定**
 - 类似地，Wang et al. 将 SFT 模型在推理任务中的部分不足归因于偏好对齐，并观察到后续对齐训练能够改善推理表现
 
-**固定采样数据与评价信号后，可分别推导各方法的目标函数与梯度系数**
-
-- 记 $`h_t=(q,o_{<t})`$ 为生成第 $`t`$ 个 token 时的上下文，$`\theta_0`$ 为当前批次的采样策略参数；求导时固定采样数据、参考策略、奖励模型及优势估计
-
 <section class="lake-derivation" id="insights-sft">
 <p class="lake-derivation-title">SFT · 监督微调</p>
 <div class="lake-derivation-body">
