@@ -2,10 +2,6 @@
 
 **RMSNorm：先融合逐通道缩放，再旋转权重**
 
-```math
-\operatorname{RMSNorm}_0(ZH)=\operatorname{RMSNorm}_0(Z)H.
-```
-
 未融合缩放时，缩放矩阵隔开两次旋转，一般不能抵消：
 
 ```math

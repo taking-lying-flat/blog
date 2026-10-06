@@ -2,13 +2,7 @@
 
 <div class="rotation-case" id="rotation-nonlinearity">
 
-**两层权重之间有非线性激活函数**
-
-一般有 $`\phi(ZH)\neq\phi(Z)H`$，两次旋转不能跨过非线性抵消：
-
-```math
-\phi\!\left(X(W_1H)\right)(H^\top W_2)\neq\phi(XW_1)W_2.
-```
+**两层权重之间有非线性激活函数：** $`\phi\!\left(X(W_1H)\right)(H^\top W_2)\neq\phi(XW_1)W_2`$
 
 激活后在线旋转，逆变换融合进 $`W_2`$；门控 FFN 中，旋转放在门控相乘后、下投影前：
 

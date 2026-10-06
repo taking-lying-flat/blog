@@ -805,13 +805,17 @@
 }
 
 
-/* Match the pale theorem panels in Flow Matching and DiffusionNFT. */
+/* Distinct pale backgrounds for the three rotation notes. */
 .lake-document .rotation-identities { box-sizing: border-box; max-width: 100%; margin: 28px 0 0; white-space: normal; }
 .lake-document .rotation-identities > p { margin-bottom: 12px; }
 .lake-document .rotation-case { margin: 14px 0; padding: 12px 14px; background: #fffcf5; }
 .lake-document .rotation-case > p { margin: 0 0 8px; line-height: 1.8; }
 .lake-document .rotation-case > p:not(:first-child) { text-indent: 2em; }
 .lake-document .rotation-case > p:first-child > strong { color: #814800; }
+.lake-document #rotation-nonlinearity { background: #f3f8ff; }
+.lake-document #rotation-nonlinearity > p:first-child > strong { color: #315c87; }
+.lake-document #rotation-flatquant { background: #f4faf4; }
+.lake-document #rotation-flatquant > p:first-child > strong { color: #356447; }
 .lake-document .rotation-case > :last-child { margin-bottom: 0; }
 .lake-document .rotation-case .equation { margin: 10px 0 14px; padding: 4px 0; font-size: 16px; }
 .lake-document .rotation-case .equation mjx-container[display="true"] { margin: 0; }
