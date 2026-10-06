@@ -4,4 +4,4 @@
 - The Lake export is rendered directly and appended after Flow-GRPO and its derivations in Generative Models VI.
 - Formula and image assets referenced by the export are stored under `assets/` and indexed by `manifest.json`.
 
-The conference-based rewrite has been removed at the user's request. The published content uses the user's original wording, order, formulas, and illustrations. No theorem proofs, algorithms, experiments, or other content from the rewrite are appended.
+The introduction and background render directly from the Lake export. At the user's request, the selected passage beginning “在线强化学习” is reorganized in `../diffusion-nft-training.md`, retaining the draft's sequence of distributions, reinforcement guidance, policy optimization, advantages, and implementation choices. Related formulas are grouped and numbered, repeated transitions are shortened, and the training algorithm appears in LaTeX at the end. No separate proofs or experiment section are added.

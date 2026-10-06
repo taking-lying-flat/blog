@@ -449,6 +449,38 @@
 [data-post="genai-flow-ii"] .fm-theorem > p > strong:first-child { color: #814800; }
 [data-post="genai-flow-ii"] .fm-theorem-result { display: inline-block; }
 
+/* DiffusionNFT: grouped explanations from the Lake draft and one final algorithm. */
+[data-post="genai-sakura-iv"] #diffusion-nft-training { white-space: normal; }
+[data-post="genai-sakura-iv"] #diffusion-nft-training > p > img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 12px auto;
+}
+[data-post="genai-sakura-iv"] .nft-theorem {
+  margin: 16px 0;
+  padding: 10px 14px;
+  background: #fff6df;
+}
+[data-post="genai-sakura-iv"] .nft-theorem > p { margin: 0; line-height: 2.15; }
+[data-post="genai-sakura-iv"] .nft-theorem > p > strong:first-child { color: #814800; }
+[data-post="genai-sakura-iv"] .nft-theorem .equation { margin: 14px 0; padding: 6px 0; }
+[data-post="genai-sakura-iv"] .nft-algorithm {
+  margin: 16px 2em;
+  padding: 0 4px 8px;
+  border-block: 1px solid #929292;
+}
+[data-post="genai-sakura-iv"] .nft-algorithm figcaption {
+  padding: 6px 0;
+  border-bottom: 1px solid #c7c7c7;
+  font: 16px/1.5 var(--article-serif);
+}
+[data-post="genai-sakura-iv"] .nft-algorithm .equation { margin: 6px 0 0; font-size: 15px; }
+[data-post="genai-sakura-iv"] .nft-algorithm .equation mjx-container[display="true"] {
+  min-width: 0;
+  text-align: left;
+}
+
 /* EDM: retain the paper's algorithm steps in compact, selectable LaTeX. */
 [data-post="genai-sakura-iii"] .edm-algorithm,
 [data-post="genai-sakura-iii"] .cm-algorithm {
