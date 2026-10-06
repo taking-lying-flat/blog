@@ -29,6 +29,7 @@ const posts = JSON.parse(await readFile(path.join(root, 'posts.json'), 'utf8'))
   .sort((a, b) => b.date.localeCompare(a.date));
 const categories = [
   { id: 'llm', title: '大模型' },
+  { id: 'infra', title: 'Infra' },
   { id: 'policy', title: '策略优化' },
   { id: 'generative', title: '生成模型' },
   { id: 'code', title: '源码解读' },
@@ -37,6 +38,9 @@ const categories = [
 for (const post of posts) {
   if (!categories.some(({ id }) => id === post.category)) {
     throw new Error(`Missing or invalid article category: ${post.slug}`);
+  }
+  if (post.categoryOrder !== undefined && (!Number.isInteger(post.categoryOrder) || post.categoryOrder < 1)) {
+    throw new Error(`Invalid category reading order: ${post.slug}`);
   }
 }
 const seriesGroups = new Map();
@@ -63,7 +67,8 @@ function groupBySeries(categoryPosts) {
     (a.seriesOrder ?? 0) - (b.seriesOrder ?? 0)));
 }
 const readingOrder = categories.flatMap(({ id }) =>
-  groupBySeries(posts.filter(post => post.category === id)));
+  groupBySeries(posts.filter(post => post.category === id).sort((a, b) =>
+    (a.categoryOrder ?? Number.MAX_SAFE_INTEGER) - (b.categoryOrder ?? Number.MAX_SAFE_INTEGER))));
 const categoryReadingOrders = new Map(categories.map(({ id }) =>
   [id, readingOrder.filter(post => post.category === id)]));
 const codeCaptions = JSON.parse(await readFile(path.join(root, 'code-captions.json'), 'utf8'));
