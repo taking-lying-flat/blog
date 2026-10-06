@@ -1,0 +1,12 @@
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="2.324ex" height="2.843ex" style="vertical-align: -0.338ex;" viewBox="0 -1078.4 1000.5 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<title id="MathJax-SVG-1-Title">Equation</title>
+<defs aria-hidden="true">
+<path stroke-width="1" id="E1-MJMAINB-48" d="M400 0Q376 3 226 3Q75 3 51 0H39V62H147V624H39V686H51Q75 683 226 683Q376 683 400 686H412V624H304V388H595V624H487V686H499Q523 683 673 683Q824 683 848 686H860V624H752V62H860V0H848Q824 3 674 3Q523 3 499 0H487V62H595V326H304V62H412V0H400Z"></path>
+<path stroke-width="1" id="E1-MJMAIN-7E" d="M179 251Q164 251 151 245T131 234T111 215L97 227L83 238Q83 239 95 253T121 283T142 304Q165 318 187 318T253 300T320 282Q335 282 348 288T368 299T388 318L402 306L416 295Q375 236 344 222Q330 215 313 215Q292 215 248 233T179 251Z"></path>
+<path stroke-width="1" id="E1-MJSZ2-2DC" d="M296 691Q258 691 216 683T140 663T79 639T34 619T16 611Q13 619 8 628L0 644L36 662Q206 749 321 749Q410 749 517 710T703 670Q741 670 783 678T859 698T920 722T965 742T983 750Q986 742 991 733L999 717L963 699Q787 611 664 611Q594 611 484 651T296 691Z"></path>
+</defs>
+<g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
+ <use xlink:href="#E1-MJMAINB-48" x="50" y="0"></use>
+ <use xlink:href="#E1-MJSZ2-2DC" x="0" y="184"></use>
+</g>
+</svg>

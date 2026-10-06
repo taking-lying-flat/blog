@@ -17,13 +17,16 @@
   {
     "file": "../notes/infra-quant-ii/source.lake",
     "format": "lake",
+    "prependFiles": ["../notes/infra-quant-ii/quarot/source.lake"],
+    "removeEmptyParagraphs": true,
     "tocDepth": 2,
     "slug": "infra-quant-ii",
     "category": "infra",
     "categoryOrder": 4,
     "date": "2026-09-23",
-    "description": "模型量化笔记：SpinQuant 的可学习旋转与 FlatQuant 的可学习仿射变换。",
+    "description": "模型量化笔记：QuaRot 的 Hadamard 旋转、SpinQuant 的可学习旋转与 FlatQuant 的可学习仿射变换。",
     "tags": [
+      "QuaRot",
       "SpinQuant",
       "FlatQuant"
     ]
