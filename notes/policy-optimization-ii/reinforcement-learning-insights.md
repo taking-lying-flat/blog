@@ -33,7 +33,6 @@ GC_{\mathcal A}(q,o,t,\pi_{\mathrm{rf}})
 **该实验中，强化学习的收益主要体现为已有正确推理路径的生成概率提高**
 
 - 在 DeepSeekMath 的 GSM8K 与 MATH 实验中，强化学习提高多数投票正确率 Maj@K，但未提高衡量 $`K`$ 次采样中是否至少包含一个正确回答的 Pass@K。这一结果支持以下解释：改进主要表现为**提高已有正确推理路径的生成概率，使输出分布更稳定**
-- 类似地，Wang et al. 将 SFT 模型在推理任务中的部分不足归因于偏好对齐，并观察到后续对齐训练能够改善推理表现
 
 <section class="lake-derivation" id="insights-sft">
 <p class="lake-derivation-title">SFT · 监督微调</p>
