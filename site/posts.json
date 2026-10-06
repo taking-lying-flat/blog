@@ -458,11 +458,6 @@
       {
         "file": "trpo-policy-iteration-algorithm.md",
         "before": "Bi0an"
-      },
-      {
-        "file": "trpo-value-definitions-context.md",
-        "before": "ud12318a7",
-        "tag": "p"
       }
     ]
   },
