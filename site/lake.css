@@ -807,10 +807,8 @@
 /* Trim only blank export margins; retain every label, arrow and source pixel. */
 .lake-document .lake-pair-crop { display: block; position: relative; overflow: hidden; }
 .lake-document .lake-pair-crop > .lake-image { position: absolute; width: var(--lake-crop-width) !important; max-width: none; height: auto; left: var(--lake-crop-left); top: var(--lake-crop-top); }
-@media (min-width: 1200px) {
-  .lake-document .lake-image-pair {
-    --lake-pair-bleed: clamp(0px, calc((100vw - 1320px) / 2 + 8px), 120px);
-    width: calc(100% + var(--lake-pair-bleed) + 16px);
-    margin-left: calc(-1 * var(--lake-pair-bleed));
-  }
-}
+/* Paired diagrams stay within the same edges as the article text. */
+.lake-document .lake-image-pair { width: 100%; max-width: 100%; margin-inline: 0; }
+.lake-document .rotation-identities { box-sizing: border-box; max-width: 100%; margin: 28px 0 0; padding: 16px 20px; background: #f6f8fa; border: 1px solid #e4e9ef; border-radius: 6px; white-space: normal; }
+.lake-document .rotation-identities .equation { margin: 10px 0; padding: 8px 0; font-size: 16px; }
+.lake-document .rotation-identities .equation + .equation { border-top: 1px solid #e4e9ef; padding-top: 18px; }
