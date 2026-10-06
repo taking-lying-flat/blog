@@ -1,4 +1,19 @@
-# Selected homepage background
+# Refined day background
+
+Asset: [garden-background.png](garden-background.png).
+
+Edited from the existing garden background using the built-in ImageGen tool, at the user's request to make the scenery livelier. It fills the existing viewport without adding layout height. Gentle CSS accents stay in the gutters and are disabled when reduced motion is preferred.
+
+## Final edit prompt
+
+Use case: precise-object-edit.
+Asset type: full-bleed daytime garden background for a desktop blog.
+Input image 1 is the EDIT TARGET. Refine this exact selected garden illustration so it feels alive, sunny and inhabited by nature. Preserve its whole composition, existing cottage at lower left, fence/vegetable patch at lower right, dense leafy framing at both sides, warm ivory-sage quiet center, and hand-painted storybook quality. Keep 1536x1024 landscape.
+Add three small, beautifully painted songbirds naturally integrated into the scene: a blue-and-cream bird perched on a left branch near x=12%, y=40%; a little warm-brown bird in flight between leaves near x=88%, y=38%; another tiny bird resting on the right fence near x=86%, y=75%. They should read clearly as charming living birds, with anatomically plausible tiny bodies and wings, sized around 2 to 3 percent of image width, not giant character mascots and not flat pasted clipart. Add two or three delicate butterflies hovering above flowers at the lower outer edges, tiny ivory/yellow wings, not oversized. Give leaves fresh spring highlights and varied translucent greens, a little atmospheric sunlight through the upper branches, warm dappled light across grass, and subtle wisps of pale chimney smoke. Natural integration, cohesive pigment and brushwork, deeper foliage layers, comfortable pastoral ambience.
+Composition constraint is essential: ALL birds and butterflies stay within the OUTER 19 percent left/right gutters; focus visible life between y=30% and y=85% so it remains visible when the top is cropped. The central 58 percent stays very light and visually quiet for existing article cards; don't put new objects across it. Keep the house grounded at bottom left, never move it up. Do not turn this into a banner. No text, logos, people, UI, borders or watermark. Preserve original plants and overall palette; refine instead of redesign.
+
+## Previous generation record
+
 
 Asset: [garden-background.png](garden-background.png). Generated with the built-in imagegen tool and explicitly selected by the user. Displayed unchanged as a fixed page background, with no added layout space.
 

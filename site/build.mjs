@@ -788,11 +788,23 @@ function page({ title, description, route = '', body, type = 'website', pageClas
   return html;
 }
 
+// Keep ambient movement in the gutters, clear of the reading column.
+const ambientGutters = (kind) => ['left', 'right'].map((side, sideIndex) => {
+  const points = kind === 'day'
+    ? [[21, 35], [66, 51], [42, 71], [79, 83], [28, 92]]
+    : [[19, 16], [65, 27], [34, 39], [83, 48], [21, 61], [62, 75], [42, 87]];
+  const particles = points.map(([x, y], index) =>
+    `<i style="--x:${sideIndex ? 100 - x : x}%;--y:${(y + sideIndex * 9) % 94}%;--duration:${(kind === 'day' ? 12 : 5) + index * 1.3}s;--delay:-${index * 2.7 + sideIndex * 3.4}s"></i>`).join('');
+  return `<span class="home-sky-gutter home-sky-${side}">${particles}${kind === 'night' ? '<b class="home-meteor"></b>' : ''}</span>`;
+}).join('');
+
 const home = page({
   title: 'Blog · 技术笔记', description: '关于模型、论文与源码的技术笔记。', pageClass: 'home-page',
   body: `<div class="home-garden" aria-hidden="true">
     <img class="home-background-day" src="assets/garden-background.png" width="1536" height="1024" alt="" decoding="async" fetchpriority="high" draggable="false">
     <img class="home-background-night" src="assets/starry-background.png" width="1536" height="1024" alt="" decoding="async" draggable="false">
+    <div class="home-atmosphere home-atmosphere-day">${ambientGutters('day')}</div>
+    <div class="home-atmosphere home-atmosphere-night">${ambientGutters('night')}</div>
   </div>
   <section class="garden-articles" aria-labelledby="post-list-title">
     <div class="post-list-heading"><h1 id="post-list-title" aria-live="polite">全部文章 <span>${String(posts.length).padStart(2, '0')}</span></h1>

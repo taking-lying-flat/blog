@@ -223,12 +223,44 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .home-garden { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; user-select: none; }
 .home-garden img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center bottom; }
 .home-garden .home-background-night { display: none; }
+.home-atmosphere { position: absolute; inset: 0; overflow: hidden; }
+.home-atmosphere-night { display: none; }
+.home-sky-gutter { position: absolute; top: 0; bottom: 0; width: max(0px, calc((100% - 828px) / 2)); overflow: hidden; }
+.home-sky-left { left: 0; }
+.home-sky-right { right: 0; }
+.home-sky-gutter i { position: absolute; left: var(--x); top: var(--y); border-radius: 50%; opacity: 0; animation-duration: var(--duration); animation-delay: var(--delay); animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
+.home-atmosphere-day i { width: 3px; height: 3px; background: #fff7c7; box-shadow: 0 0 7px 2px #fff3b078; animation-name: garden-mote; }
+.home-atmosphere-night i { width: 2px; height: 2px; background: #ecf4ff; box-shadow: 0 0 7px 2px #8bacfc66; animation-name: star-shimmer; }
+.home-meteor { position: absolute; left: 30%; top: 29%; width: 65px; height: 1px; border-radius: 50%; background: linear-gradient(90deg, transparent, #bddeff); opacity: 0; transform: rotate(38deg); transform-origin: right center; animation: meteor-pass 23s linear infinite 5s; }
+.home-sky-right .home-meteor { left: 23%; top: 57%; animation-duration: 31s; animation-delay: 13s; }
+@keyframes garden-mote {
+  0%, 100% { opacity: 0; transform: translate3d(0, 14px, 0); }
+  25% { opacity: .55; }
+  65% { opacity: .4; }
+  90% { opacity: 0; transform: translate3d(16px, -38px, 0); }
+}
+@keyframes star-shimmer {
+  0%, 100% { opacity: .12; transform: scale(.7); }
+  48% { opacity: .85; transform: scale(1.2); }
+  72% { opacity: .3; }
+}
+@keyframes meteor-pass {
+  0%, 92%, 100% { opacity: 0; transform: translate3d(0, 0, 0) rotate(38deg); }
+  93% { opacity: .7; }
+  97% { opacity: 0; transform: translate3d(92px, 72px, 0) rotate(38deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-atmosphere { display: none !important; }
+  .home-atmosphere * { animation: none !important; }
+}
 .garden-articles { position: relative; z-index: 1; }
 [data-color-mode="dark"] .home-page-shell { background: #080f24; }
 [data-color-mode="dark"] .home-page-shell .site-header { background: transparent; }
 [data-color-mode="dark"] .home-page-shell .logo > a { background: #b6c3ed; color: #111b38; }
 [data-color-mode="dark"] .home-garden .home-background-day { display: none; }
 [data-color-mode="dark"] .home-garden .home-background-night { display: block; }
+[data-color-mode="dark"] .home-atmosphere-day { display: none; }
+[data-color-mode="dark"] .home-atmosphere-night { display: block; }
 @media print { .home-garden { display: none; } }
 .home-page-shell .nav, .archive-page-shell .nav { max-width: 828px; }
 .home-page { max-width: 828px; padding-top: 38px; padding-bottom: 54px; }
