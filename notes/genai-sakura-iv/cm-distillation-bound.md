@@ -1,4 +1,4 @@
-<div class="lake-derivation" style="--derivation-border:#94adc8;--derivation-background:#f3f7fc">
+<div class="lake-derivation" style="--derivation-border:#94adc8;--derivation-background:#fffcf5">
 <p class="lake-derivation-title">定理 1：一致性蒸馏的误差界</p>
 <div class="lake-derivation-body">
 

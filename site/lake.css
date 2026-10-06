@@ -430,11 +430,18 @@
   text-align: left;
 }
 
+[data-post="genai-flow-ii"] .lake-image[data-card-id="u9e52790b"] {
+  display: block;
+  width: min(640px, 100%) !important;
+  height: auto;
+  margin-inline: auto;
+}
+
 /* Keep the three Flow Matching theorems in prose with one shared highlight. */
 [data-post="genai-flow-ii"] .fm-theorem {
   margin: 16px 0;
   padding: 10px 14px;
-  background: #fff6df;
+  background: #fffcf5;
   white-space: normal;
 }
 [data-post="genai-flow-ii"] .fm-theorem > p {
@@ -449,7 +456,7 @@
 [data-post="genai-flow-ii"] .fm-theorem > p > strong:first-child { color: #814800; }
 [data-post="genai-flow-ii"] .fm-theorem-result { display: inline-block; }
 
-/* DiffusionNFT: grouped explanations from the Lake draft and one final algorithm. */
+/* DiffusionNFT: grouped explanations, a training algorithm, and final proofs. */
 [data-post="genai-sakura-iv"] #diffusion-nft-training { white-space: normal; }
 [data-post="genai-sakura-iv"] #diffusion-nft-training > p > img {
   display: block;

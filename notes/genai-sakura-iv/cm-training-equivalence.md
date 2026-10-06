@@ -1,4 +1,4 @@
-<div class="lake-derivation" style="--derivation-border:#98b9ac;--derivation-background:#f3f9f6">
+<div class="lake-derivation" style="--derivation-border:#98b9ac;--derivation-background:#fffcf5">
 <p class="lake-derivation-title">定理 2：一致性训练与蒸馏的渐近关系</p>
 <div class="lake-derivation-body">
 
