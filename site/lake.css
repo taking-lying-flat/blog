@@ -804,6 +804,13 @@
   .lake-document .lake-image-pair .lake-image { width: auto !important; height: 100%; margin: 0 auto; }
 }
 
-.lake-document .rotation-identities { box-sizing: border-box; max-width: 100%; margin: 28px 0 0; padding: 16px 20px; background: #f6f8fa; border: 1px solid #e4e9ef; border-radius: 6px; white-space: normal; }
-.lake-document .rotation-identities .equation { margin: 10px 0; padding: 8px 0; font-size: 16px; }
-.lake-document .rotation-identities .equation + .equation { border-top: 1px solid #e4e9ef; padding-top: 18px; }
+
+/* Match the pale theorem panels in Flow Matching and DiffusionNFT. */
+.lake-document .rotation-identities { box-sizing: border-box; max-width: 100%; margin: 28px 0 0; white-space: normal; }
+.lake-document .rotation-identities > p { margin-bottom: 12px; }
+.lake-document .rotation-case { margin: 14px 0; padding: 12px 14px; background: #fffcf5; }
+.lake-document .rotation-case > p { margin: 0 0 8px; line-height: 1.8; }
+.lake-document .rotation-case > p:first-child > strong { color: #814800; }
+.lake-document .rotation-case > :last-child { margin-bottom: 0; }
+.lake-document .rotation-case .equation { margin: 10px 0 14px; padding: 4px 0; font-size: 16px; }
+.lake-document .rotation-case .equation mjx-container[display="true"] { margin: 0; }
