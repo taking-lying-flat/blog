@@ -2,7 +2,7 @@
 
 <div class="rotation-case" id="rotation-nonlinearity">
 
-**② 两层权重之间有非线性激活函数**
+**两层权重之间有非线性激活函数**
 
 一般有 $`\phi(ZH)\neq\phi(Z)H`$，两次旋转不能跨过非线性抵消：
 
@@ -20,7 +20,7 @@
 
 <div class="rotation-case" id="rotation-flatquant">
 
-**③ FlatQuant：一般可逆矩阵**
+**FlatQuant：一般可逆矩阵**
 
 $`P`$ 一般会改变范数，不能直接穿过 RMSNorm；抵消时用 $`P^{-1}`$，而非 $`P^\top`$：
 
@@ -38,24 +38,6 @@ $`P`$ 一般会改变范数，不能直接穿过 RMSNorm；抵消时用 $`P^{-1}
 
 ```math
 \underbrace{\bigl[\phi(XW_1)P\bigr]}_{\text{在线变换}}\underbrace{(P^{-1}W_2)}_{\text{融合进权重}}=\phi(XW_1)\underbrace{PP^{-1}}_{I}W_2=\phi(XW_1)W_2.
-```
-
-</div>
-
-<div class="rotation-case" id="rotation-rope">
-
-**④ Q/K 的 RoPE：在位置旋转之后配对**
-
-$`q_i`$、$`k_j`$ 为行向量，$`R_i`$、$`R_j`$ 为 RoPE 旋转。提前将 $`H`$ 融合进 Q/K 权重，一般会改变点积：
-
-```math
-(q_iHR_i)(k_jHR_j)^\top=q_iHR_iR_j^\top H^\top k_j^\top\neq q_iR_iR_j^\top k_j^\top.
-```
-
-RoPE 后对 Q、K 在线应用同一个 $`H`$，即可在点积中抵消：
-
-```math
-(q_iR_iH)(k_jR_jH)^\top=q_iR_i\underbrace{HH^\top}_{I}R_j^\top k_j^\top=q_iR_iR_j^\top k_j^\top.
 ```
 
 </div>

@@ -1,8 +1,6 @@
 <div class="rotation-case" id="rotation-rmsnorm">
 
-**① RMSNorm：先融合逐通道缩放，再旋转权重**
-
-去掉逐通道缩放后，$`\operatorname{RMSNorm}_0`$ 与正交旋转可交换：
+**RMSNorm：先融合逐通道缩放，再旋转权重**
 
 ```math
 \operatorname{RMSNorm}_0(ZH)=\operatorname{RMSNorm}_0(Z)H.

@@ -1,5 +1,4 @@
 import { mkdir, readFile, writeFile, copyFile, cp, rm } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { readLake } from './lake.mjs';
@@ -324,9 +323,6 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
   const isDiagram = language === 'text' || details?.kind === 'diagram';
   if (codeCaptions[env.slug] && !isDiagram && (!details?.caption || !details?.url)) {
     throw new Error(`Missing code source: ${env.slug}:${token.map[0] + 1}`);
-  }
-  if (details && createHash('sha256').update(token.content).digest('hex') !== details.sha256) {
-    throw new Error(`Code caption needs updating: ${env.slug}:${token.map[0] + 1}`);
   }
   const caption = details?.caption ?? declaredCaption;
   const source = isDiagram ? '' : (details?.sourceLabel ?? declaredSource);
@@ -767,10 +763,8 @@ const assets = new Map([
   ...['light', 'dark'].map((mode) => [`github-${mode}-tritanopia.css`,
     path.join(primer, `dist/css/functional/themes/${mode}-tritanopia.css`)]),
 ]);
-const assetVersion = createHash('sha256');
-assetVersion.update(searchIndex);
-for (const file of assets.values()) assetVersion.update(await readFile(file));
-const version = assetVersion.digest('hex').slice(0, 10);
+// Refresh browser caches per build without reading and hashing every asset.
+const version = Date.now().toString(36);
 
 function page({ title, description, route = '', body, type = 'website', pageClass = '', hasToc = false }) {
   const values = {

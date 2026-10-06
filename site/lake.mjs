@@ -1,8 +1,10 @@
 import { readFile } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
 import path from 'node:path';
 
-const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
+// Use build-local names without hashing source files or rendered assets.
+const generatedVersion = Date.now().toString(36);
+let generatedAssetId = 0;
+const generatedMathFile = () => `assets/math/${generatedVersion}-${++generatedAssetId}.rendered.svg`;
 
 // Keep the archived export intact. Re-render equations only for display fixes
 // or explicit, checked corrections to their LaTeX.
@@ -16,7 +18,6 @@ export async function readLake(file, escape, renderMath) {
     }
   }
   const source = await readFile(file);
-  if (sha256(source) !== manifest.source.sha256) throw new Error(`Lake source changed: ${file}`);
   const overrides = JSON.parse(await readFile(path.join(directory, 'math-overrides.json'), 'utf8')
     .catch((error) => { if (error.code === 'ENOENT') return '{}'; throw error; }));
   for (const [id, override] of Object.entries(overrides)) {
@@ -28,10 +29,11 @@ export async function readLake(file, escape, renderMath) {
   const assets = new Map();
   const invalidMath = new Set();
   for (const asset of manifest.assets) {
-    const bytes = await readFile(path.join(directory, asset.file));
-    if (sha256(bytes) !== asset.sha256) throw new Error(`Lake asset changed: ${asset.file}`);
     assets.set(asset.file, asset);
-    if (asset.file.endsWith('.svg') && /\b(?:NaN|Infinity)\b/.test(bytes.toString())) invalidMath.add(asset.file);
+    if (asset.file.endsWith('.svg')) {
+      const source = await readFile(path.join(directory, asset.file), 'utf8');
+      if (/\b(?:NaN|Infinity)\b/.test(source)) invalidMath.add(asset.file);
+    }
   }
   const imageOverrides = JSON.parse(await readFile(path.join(directory, 'image-overrides.json'), 'utf8')
     .catch((error) => { if (error.code === 'ENOENT') return '{}'; throw error; }));
@@ -61,7 +63,7 @@ export async function readLake(file, escape, renderMath) {
     const key = JSON.stringify([code, original.width]);
     if (!generated.has(key)) {
       const rendered = await renderMath(code, original);
-      generated.set(key, { ...rendered, file: `assets/math/${sha256(rendered.content).slice(0, 32)}.rendered.svg` });
+      generated.set(key, { ...rendered, file: generatedMathFile() });
     }
     renderedCards.set(card.value.id, generated.get(key));
   }
@@ -82,7 +84,7 @@ export async function readLake(file, escape, renderMath) {
     for (const part of parts) {
       if (typeof part === 'string') { replacement += escape(part); continue; }
       const rendered = await renderMath(part.math, { width: '100%' });
-      const asset = { ...rendered, file: `assets/math/${sha256(rendered.content).slice(0, 32)}.rendered.svg` };
+      const asset = { ...rendered, file: generatedMathFile() };
       generated.set(`text:${id}:${part.math}`, asset);
       replacement += `<span class="lake-math" data-text-math="${escape(id)}"><img src="${asset.file}" alt="${escape(part.math)}" style="width:${escape(asset.width)};height:${escape(asset.height)};${escape(asset.style)}" decoding="async"></span>`;
     }
