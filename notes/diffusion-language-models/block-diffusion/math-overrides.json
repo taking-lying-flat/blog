@@ -11,8 +11,8 @@
   },
   "zTRB7": {
     "from": "\\mathcal{L}(\\mathbf{x};\\theta)=\\mathbb{E}_{q}\\left[\\begin{aligned}\n&-\\log p_\\theta\\left(\\mathbf{x}\\mid\\mathbf{x}_{t(1)}\\right)\\\\\n&+\\sum_{j=1}^{T}D_{\\mathrm{KL}}\\left[q\\left(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)},\\mathbf{x}\\right)\\,\\middle\\|\\,p_\\theta\\left(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)}\\right)\\right]\\\\\n&+D_{\\mathrm{KL}}\\left[q\\left(\\mathbf{x}_{t(T)}\\mid\\mathbf{x}\\right)\\,\\middle\\|\\,p_\\theta\\left(\\mathbf{x}_{t(T)}\\right)\\right]\n\\end{aligned}\\right].\\tag{3}",
-    "to": "\\mathcal{L}(\\mathbf{x};\\theta)=\\mathbb{E}_{q}\\left[\\begin{aligned}\n&-\\log p_\\theta\\left(\\mathbf{x}\\mid\\mathbf{x}_{t(1)}\\right)\\\\\n&+\\sum_{j=2}^{T}D_{\\mathrm{KL}}\\left[q\\left(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)},\\mathbf{x}\\right)\\,\\middle\\|\\,p_\\theta\\left(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)}\\right)\\right]\\\\\n&+D_{\\mathrm{KL}}\\left[q\\left(\\mathbf{x}_{t(T)}\\mid\\mathbf{x}\\right)\\,\\middle\\|\\,p_\\theta\\left(\\mathbf{x}_{t(T)}\\right)\\right]\n\\end{aligned}\\right]\\tag{3}",
-    "reason": "第一步已作为重建项单列，扩散 KL 从第二步开始"
+    "to": "\\begin{aligned}\n\\mathcal{L}(\\mathbf{x};\\theta)\n&=-\\mathbb{E}_{q}\\log p_\\theta(\\mathbf{x}\\mid\\mathbf{x}_{t(1)})\n+D_{\\mathrm{KL}}\\!\\left[q(\\mathbf{x}_{t(T)}\\mid\\mathbf{x})\\,\\middle\\|\\,p_\\theta(\\mathbf{x}_{t(T)})\\right]\\\\\n&\\quad+\\sum_{j=2}^{T}\\mathbb{E}_{q}D_{\\mathrm{KL}}\\!\\left[q(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)},\\mathbf{x})\\,\\middle\\|\\,p_\\theta(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)})\\right]\n\\end{aligned}\\tag{3}",
+    "reason": "将重建项与先验项排在第一行、扩散 KL 排在第二行；保留等价关系、从第二步开始求和及编号"
   },
   "FHyZW": {
     "from": "\\log p_\\theta(\\mathbf{x})=\\sum_{b=1}^{B}\\log p_\\theta\\left(\\mathbf{x}^{b}\\mid\\mathbf{x}^{<b}\\right).\\tag{4}",

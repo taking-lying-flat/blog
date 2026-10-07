@@ -37,11 +37,12 @@
 /* Lake can export an indented list as a sibling rather than a nested ul. */
 .lake-document ul[data-lake-indent="1"] { margin-left: 2em; list-style-type: circle; }
 .lake-document li { margin: 0 0 4.176px; padding: 0; }
-/* A modest increase for the six generative-model notes; keep paragraph gaps. */
+/* Generative-model and diffusion-language-model notes share prose leading. */
 :is(
   [data-post="genai-sakura-i"], [data-post="genai-sakura-ii"],
   [data-post="genai-sakura-iii"], [data-post="genai-sakura-iv"],
-  [data-post="genai-flow-i"], [data-post="genai-flow-ii"]
+  [data-post="genai-flow-i"], [data-post="genai-flow-ii"],
+  [data-post="diffusion-language-models"]
 ) .lake-document { line-height: 1.82; }
 .lake-document .code-block { white-space: normal; }
 /* Algorithms transcribed from screenshots use the same paper-like layout. */
