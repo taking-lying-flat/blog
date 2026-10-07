@@ -6,7 +6,7 @@
     "title": "🚋 𝓜𝓮𝓰𝓪𝓽𝓻𝓸𝓷",
     "section": "Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism"
   },
-  "title": "Infra Training Infrastructure",
+  "title": "Training Infrastructure",
   "metadata": {
     "doc-version": "1",
     "viewport": "adapt",
