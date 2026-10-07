@@ -1,0 +1,107 @@
+{
+  "XXeRZ": {
+    "from": "\\log p_\\theta(\\mathbf{x})=\\sum_{\\ell=1}^{L}\\log p_\\theta\\left(\\mathbf{x}^{\\ell}\\mid\\mathbf{x}^{<\\ell}\\right).\\tag{1}",
+    "to": "\\log p_\\theta(\\mathbf{x})=\\sum_{\\ell=1}^{L}\\log p_\\theta\\left(\\mathbf{x}^{\\ell}\\mid\\mathbf{x}^{<\\ell}\\right)\\tag{1}",
+    "reason": "去除公式末尾标点，保留原论文编号"
+  },
+  "QtKv2": {
+    "from": "p_\\theta(\\mathbf{x}_s\\mid\\mathbf{x}_t)=\\prod_{\\ell=1}^{L}p_\\theta\\left(\\mathbf{x}_s^{\\ell}\\mid\\mathbf{x}_t\\right)=\\sum_{\\mathbf{x}}\\left[\\prod_{\\ell=1}^{L}q\\left(\\mathbf{x}_s^{\\ell}\\mid\\mathbf{x}_t^{\\ell},\\mathbf{x}^{\\ell}\\right)p_\\theta\\left(\\mathbf{x}^{\\ell}\\mid\\mathbf{x}_t\\right)\\right].\\tag{2}",
+    "to": "\\begin{aligned}p_\\theta(\\mathbf{x}_s\\mid\\mathbf{x}_t)&=\\prod_{\\ell=1}^{L}p_\\theta(\\mathbf{x}_s^{\\ell}\\mid\\mathbf{x}_t)\\\\&=\\prod_{\\ell=1}^{L}\\sum_{\\mathbf{y}}q(\\mathbf{x}_s^{\\ell}\\mid\\mathbf{x}_t^{\\ell},\\mathbf{y})\\,p_\\theta(\\mathbf{y}\\mid\\mathbf{x}_t)\\end{aligned}\\tag{2}",
+    "reason": "按位置写出干净词元混合，用候选词元 y 避免与观测数据混淆并压缩公式宽度"
+  },
+  "zTRB7": {
+    "from": "\\mathcal{L}(\\mathbf{x};\\theta)=\\mathbb{E}_{q}\\left[\\begin{aligned}\n&-\\log p_\\theta\\left(\\mathbf{x}\\mid\\mathbf{x}_{t(1)}\\right)\\\\\n&+\\sum_{j=1}^{T}D_{\\mathrm{KL}}\\left[q\\left(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)},\\mathbf{x}\\right)\\,\\middle\\|\\,p_\\theta\\left(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)}\\right)\\right]\\\\\n&+D_{\\mathrm{KL}}\\left[q\\left(\\mathbf{x}_{t(T)}\\mid\\mathbf{x}\\right)\\,\\middle\\|\\,p_\\theta\\left(\\mathbf{x}_{t(T)}\\right)\\right]\n\\end{aligned}\\right].\\tag{3}",
+    "to": "\\mathcal{L}(\\mathbf{x};\\theta)=\\mathbb{E}_{q}\\left[\\begin{aligned}\n&-\\log p_\\theta\\left(\\mathbf{x}\\mid\\mathbf{x}_{t(1)}\\right)\\\\\n&+\\sum_{j=2}^{T}D_{\\mathrm{KL}}\\left[q\\left(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)},\\mathbf{x}\\right)\\,\\middle\\|\\,p_\\theta\\left(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)}\\right)\\right]\\\\\n&+D_{\\mathrm{KL}}\\left[q\\left(\\mathbf{x}_{t(T)}\\mid\\mathbf{x}\\right)\\,\\middle\\|\\,p_\\theta\\left(\\mathbf{x}_{t(T)}\\right)\\right]\n\\end{aligned}\\right]\\tag{3}",
+    "reason": "第一步已作为重建项单列，扩散 KL 从第二步开始"
+  },
+  "FHyZW": {
+    "from": "\\log p_\\theta(\\mathbf{x})=\\sum_{b=1}^{B}\\log p_\\theta\\left(\\mathbf{x}^{b}\\mid\\mathbf{x}^{<b}\\right).\\tag{4}",
+    "to": "\\log p_\\theta(\\mathbf{x})=\\sum_{b=1}^{B}\\log p_\\theta\\left(\\mathbf{x}^{b}\\mid\\mathbf{x}^{<b}\\right)\\tag{4}",
+    "reason": "去除公式末尾标点，保留原论文编号"
+  },
+  "JyfSw": {
+    "from": "p_\\theta\\left(\\mathbf{x}_s^{b}\\mid\\mathbf{x}_t^{b},\\mathbf{x}^{<b}\\right)=\\sum_{\\mathbf{x}^{b}}q\\left(\\mathbf{x}_s^{b}\\mid\\mathbf{x}_t^{b},\\mathbf{x}^{b}\\right)p_\\theta\\left(\\mathbf{x}^{b}\\mid\\mathbf{x}_t^{b},\\mathbf{x}^{<b}\\right).\\tag{5}",
+    "to": "p_\\theta(\\mathbf{x}_s^{b}\\mid\\mathbf{x}_t^{b},\\mathbf{x}^{<b})=\\sum_{\\mathbf{y}^{b}}q(\\mathbf{x}_s^{b}\\mid\\mathbf{x}_t^{b},\\mathbf{y}^{b})\\,p_\\theta(\\mathbf{y}^{b}\\mid\\mathbf{x}_t^{b},\\mathbf{x}^{<b})\\tag{5}",
+    "reason": "用候选干净块 y 区分求和变量和给定的数据块"
+  },
+  "nCsOM": {
+    "from": "-\\log p_\\theta(\\mathbf{x})\\leq\\mathcal{L}_{\\mathrm{BD}}(\\mathbf{x};\\theta):=\\sum_{b=1}^{B}\\mathcal{L}\\left(\\mathbf{x}^{b},\\mathbf{x}^{<b};\\theta\\right).\\tag{6}",
+    "to": "-\\log p_\\theta(\\mathbf{x})\\leq\\mathcal{L}_{\\mathrm{BD}}(\\mathbf{x};\\theta):=\\sum_{b=1}^{B}\\mathcal{L}\\left(\\mathbf{x}^{b},\\mathbf{x}^{<b};\\theta\\right)\\tag{6}",
+    "reason": "去除公式末尾标点，保留原论文编号"
+  },
+  "Tsgsx": {
+    "from": "\\mathbf{x}_{\\mathrm{logits}}^{b},\\mathbf{K}^{b},\\mathbf{V}^{b}\\leftarrow\\mathbf{x}_\\theta^{b}\\left(\\mathbf{x}_t^{b},\\mathbf{K}^{1:b-1},\\mathbf{V}^{1:b-1}\\right):=\\mathbf{x}_\\theta^{b}\\left(\\mathbf{x}_t^{b},\\mathbf{x}^{<b}\\right).\\tag{7}",
+    "to": "\\mathbf{x}_{\\mathrm{logits}}^{b},\\mathbf{K}^{b},\\mathbf{V}^{b}\\leftarrow\\mathbf{x}_\\theta^{b}\\left(\\mathbf{x}_t^{b},\\mathbf{K}^{1:b-1},\\mathbf{V}^{1:b-1}\\right):=\\mathbf{x}_\\theta^{b}\\left(\\mathbf{x}_t^{b},\\mathbf{x}^{<b}\\right)\\tag{7}",
+    "reason": "去除公式末尾标点，保留原论文编号"
+  },
+  "Zrcw1": {
+    "from": "-\\log p_\\theta(\\mathbf{x})\\leq\\mathcal{L}_{\\mathrm{BD}}(\\mathbf{x};\\theta):=\\sum_{b=1}^{B}\\mathbb{E}_{t\\sim[0,1]}\\mathbb{E}_{q}\\left[\\frac{\\alpha_t^{\\prime}}{1-\\alpha_t}\\log p_\\theta\\left(\\mathbf{x}^{b}\\mid\\mathbf{x}_t^{b},\\mathbf{x}^{<b}\\right)\\right].\\tag{8}",
+    "to": "-\\log p_\\theta(\\mathbf{x})\\leq\\mathcal{L}_{\\mathrm{BD}}(\\mathbf{x};\\theta):=\\sum_{b=1}^{B}\\mathbb{E}_{t\\sim\\mathcal{U}(0,1)}\\mathbb{E}_{q}\\left[\\frac{\\alpha_t^{\\prime}}{1-\\alpha_t}\\log p_\\theta\\left(\\mathbf{x}^{b}\\mid\\mathbf{x}_t^{b},\\mathbf{x}^{<b}\\right)\\right]\\tag{8}",
+    "reason": "显式标明均匀时间分布"
+  },
+  "MfLw9": {
+    "from": "\\mathcal{L}_{\\mathrm{BD}}(\\mathbf{X};\\theta):=l(\\mathbf{X};\\theta)=\\frac{1}{K}\\sum_{k=1}^{K}\\sum_{b=1}^{B}\\frac{\\alpha_{t(k,b)}^{\\prime}}{1-\\alpha_{t(k,b)}}\\log p_\\theta\\left(\\mathbf{x}^{(k),b}\\mid\\mathbf{x}_{t(k,b)}^{(k),b},\\mathbf{x}^{(k),<b}\\right).\\tag{9}",
+    "to": "\\begin{aligned}\\widehat{\\mathcal{L}}_{\\mathrm{BD}}(\\mathbf{X};\\theta)&:=l(\\mathbf{X};\\theta)\\\\&=\\frac{1}{K}\\sum_{k=1}^{K}\\sum_{b=1}^{B}\\frac{\\alpha_{t(k,b)}^{\\prime}}{1-\\alpha_{t(k,b)}}\\log p_\\theta(\\mathbf{x}^{(k),b}\\mid\\mathbf{x}_{t(k,b)}^{(k),b},\\mathbf{x}^{(k),<b})\\end{aligned}\\tag{9}",
+    "reason": "以帽号区分随机估计量，并按等号换行避免越过正文宽度"
+  },
+  "mN203": {
+    "from": "\\operatorname{Var}_{\\mathbf{X},t}\\left[\\nabla_\\theta l(\\mathbf{X};\\theta)\\right]\\approx\\frac{1}{M-1}\\sum_{m=1}^{M}\\left\\|\\nabla_\\theta l(\\mathbf{X}^{m};\\theta)-\\frac{1}{M}\\sum_{m=1}^{M}\\nabla_\\theta l(\\mathbf{X}^{m};\\theta)\\right\\|_2^2.\\tag{10}",
+    "to": "\\begin{aligned}\\operatorname{Var}_{\\mathbf{X},t}[\\nabla_\\theta l(\\mathbf{X};\\theta)]&\\approx\\frac{1}{M-1}\\sum_{m=1}^{M}\\|\\nabla_\\theta l(\\mathbf{X}^{m};\\theta)-\\overline{\\mathbf{g}}\\|_2^2\\\\\\overline{\\mathbf{g}}&=\\frac{1}{M}\\sum_{r=1}^{M}\\nabla_\\theta l(\\mathbf{X}^{r};\\theta)\\end{aligned}\\tag{10}",
+    "reason": "将平均梯度另列一行，避免长公式越界；该方差表示协方差的迹"
+  },
+  "xeUPi": {
+    "from": "(b-1)L^{\\prime}",
+    "to": "(b-1)L^{\\prime}+1",
+    "reason": "一基词元索引的块起点"
+  },
+  "dYHmc": {
+    "from": "\\mathbf{x}^{(b-1)L^{\\prime}:bL^{\\prime}}",
+    "to": "\\mathbf{x}^{(b-1)L^{\\prime}+1:bL^{\\prime}}",
+    "reason": "一基词元索引的块切片"
+  },
+  "CTSjC": {
+    "from": "q(\\mathbf{x}_t^{\\ell}\\mid\\mathbf{x}_s^{\\ell})=\\operatorname{Cat}(\\mathbf{x}_t^{\\ell};\\mathbf{Q}_t\\mathbf{x}_s^{\\ell})",
+    "to": "q(\\mathbf{x}_t^{\\ell}\\mid\\mathbf{x}_s^{\\ell})=\\operatorname{Cat}(\\mathbf{x}_t^{\\ell};\\mathbf{Q}_{t\\mid s}\\mathbf{x}_s^{\\ell})",
+    "reason": "区分步间转移和累计转移"
+  },
+  "Nmz3s": {
+    "from": "\\mathbf{Q}_t\\in\\mathbb{R}^{V\\times V}",
+    "to": "\\mathbf{Q}_{t\\mid s}\\in\\mathbb{R}^{V\\times V}",
+    "reason": "与步间转移记号一致"
+  },
+  "SH1iV": {
+    "from": "\\mathbf{Q}_t",
+    "to": "\\mathbf{Q}_{t\\mid s}",
+    "reason": "显式标明从 s 到 t 的转移矩阵"
+  },
+  "kmYJD": {
+    "from": "0\\leq\\beta,\\omega\\leq1",
+    "to": "0\\leq\\beta<\\omega\\leq1",
+    "reason": "采样区间端点必须有序"
+  },
+  "T2hyH": {
+    "from": "1-\\alpha_{<\\beta}\\approx\\epsilon",
+    "to": "t\\sim\\mathcal{U}(0,1)",
+    "reason": "按附录 C.4 明确实际训练的时间采样变量"
+  },
+  "NyyPX": {
+    "from": "1-\\alpha_{>\\omega}\\approx1-\\epsilon",
+    "to": "1-\\alpha_t=\\beta+(\\omega-\\beta)t",
+    "reason": "按附录 C.4 明确掩码比例的线性映射"
+  },
+  "eBWDo": {
+    "from": "\\alpha_t^{\\prime}",
+    "to": "\\alpha_t",
+    "reason": "线性变化的是 alpha 而非 alpha 的导数"
+  },
+  "fdeM8": {
+    "from": "\\alpha_t^{\\prime}\\approx1/(\\beta-\\omega)",
+    "to": "\\alpha_t^{\\prime}=\\beta-\\omega",
+    "reason": "对实际采样变量的线性映射求导"
+  },
+  "Jrl9u": {
+    "from": "\\min_{\\beta,\\omega}\\operatorname{Var}_{\\mathbf{X},t}\\left[\\mathcal{L}(\\mathbf{X};\\theta,\\beta,\\omega)\\right].",
+    "to": "\\min_{0\\leq\\beta<\\omega\\leq1}\\operatorname{Var}_{\\mathbf{X},t}[\\mathcal{L}(\\mathbf{X};\\theta,\\beta,\\omega)]\\tag{11}",
+    "reason": "补齐正文最后一个展示公式的连续编号"
+  }
+}
