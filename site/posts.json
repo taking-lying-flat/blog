@@ -154,7 +154,8 @@
       {
         "file": "block-diffusion-algorithms.md",
         "before": "I7Z1c"
-      }
+      },
+      "block-diffusion-proofs.md"
     ],
     "tags": [
       "LLaDA",
