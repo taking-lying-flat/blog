@@ -29,9 +29,13 @@
 
 新论文追加到原文章时，把属于旧论文的算法/补充材料定位在新论文 H1 之前，避免落入错误的论文目录。
 
+Lake 段落与列表的结构调整可复用 manifest 的 `listItemMerges`、`paragraphMerges`、`paragraphListItems`、`listItemSplits` 等机制；先核对 `site/lake.mjs` 中的字段与锚点要求，保持源文件不变。现有 Lake 列表在 `site/lake.css` 中使用 `padding-left: 2em`，不要再叠加文本缩进或手工空格。
+
 ## 数学与算法模板
 
 Markdown 行内数学使用 `$` 后紧跟反引号的语法，例如 $`x_t`$；展示数学使用 `math` 围栏。标签可用 `\tag{n}`，也可沿用已有按论文编号配置，避免重复编号。
+
+需要统一编号时，先检查文章配置里是否已有 `numberedEquations` 或 `numberedEquationBlocks`：前者选 Math 卡片，后者可选段落 ID 或 Markdown 公式内容，均按论文分组。不要在配置编号之外再保留第二个 `\tag`。多行推导把 `\tag` 放在整个 `aligned` 环境之后；正文中的公式引用也需检查，不能只看右侧是否出现数字。
 
 算法复用 `.paper-algorithm`，或所在文章已有的算法样式；不新建一套不同边框和字号的组件：
 
