@@ -33,6 +33,7 @@
     "packing-flash-attention": "tlf-blog-packing-flash-attention",
     "gemma-4-nvfp4-moe-missing-scales": "tlf-blog-gemma-4-nvfp4-moe-missing-scales",
     "flashinfer-sm100-gdn-pipeline-deadlock": "tlf-blog-flashinfer-sm100-gdn-pipeline-deadlock",
-    "vllm-51593-persistent-topk-deadlock": "tlf-blog-vllm-51593-persistent-topk-deadlock"
+    "vllm-51593-persistent-topk-deadlock": "tlf-blog-vllm-51593-persistent-topk-deadlock",
+    "spec-decoding-iii": "tlf-blog-spec-decoding-iii"
   }
 }

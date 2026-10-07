@@ -1,0 +1,478 @@
+{
+  "source": {
+    "file": "source.lake",
+    "bytes": 26157,
+    "title": "无标题文档",
+    "originalFile": "无标题文档.lake",
+    "section": "DFlash: Block Diffusion for Flash Speculative Decoding",
+    "referencePdf": {
+      "originalFile": "22495_DFlash_Block_Diffusion_f.pdf"
+    }
+  },
+  "title": "Speculative Decoding III",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "counts": {
+    "math": 4,
+    "images": 2,
+    "separators": 0,
+    "code": 0
+  },
+  "cards": [
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1791374214872-2832d0cd-2b72-4582-8dd6-3c571b5b468f.png%22%2C%22taskId%22%3A%22u351a480e-e0e6-4bc5-8ef9-8f088f6038f%22%2C%22clientId%22%3A%22u060c8efd-fa38-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A690%2C%22height%22%3A316%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A227978%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1125%2C%22originHeight%22%3A516%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22%22%2C%22x%22%3A461%2C%22y%22%3A123%2C%22width%22%3A23%2C%22height%22%3A224%7D%2C%7B%22text%22%3A%22FUSEDTARGETCONTEXTFEATURE%22%2C%22x%22%3A254%2C%22y%22%3A458%2C%22width%22%3A251%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A937%2C%22y%22%3A158%2C%22width%22%3A21%2C%22height%22%3A149%7D%2C%7B%22text%22%3A%22%E5%B7%A5%22%2C%22x%22%3A754%2C%22y%22%3A170%2C%22width%22%3A19%2C%22height%22%3A121%7D%2C%7B%22text%22%3A%22ARGETDECODETOKEN%22%2C%22x%22%3A576%2C%22y%22%3A459%2C%22width%22%3A174%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22DIFFUSIONISGOOD%22%2C%22x%22%3A51%2C%22y%22%3A23%2C%22width%22%3A146%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22DRAFTLAYER1%22%2C%22x%22%3A539%2C%22y%22%3A78%2C%22width%22%3A122%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A175%2C%22y%22%3A150%2C%22width%22%3A19%2C%22height%22%3A165%7D%2C%7B%22text%22%3A%22DECODING%22%2C%22x%22%3A1020%2C%22y%22%3A241%2C%22width%22%3A83%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22TARGETMODEL%22%2C%22x%22%3A77%2C%22y%22%3A91%2C%22width%22%3A110%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22SPECULATIVE%22%2C%22x%22%3A1015%2C%22y%22%3A220%2C%22width%22%3A93%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22MASKTOKEN%22%2C%22x%22%3A811%2C%22y%22%3A457%2C%22width%22%3A102%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22KVCACHE%22%2C%22x%22%3A363%2C%22y%22%3A68%2C%22width%22%3A82%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%E5%90%89%22%2C%22x%22%3A550%2C%22y%22%3A189%2C%22width%22%3A32%2C%22height%22%3A88%7D%2C%7B%22text%22%3A%22%E4%B8%89%22%2C%22x%22%3A371%2C%22y%22%3A193%2C%22width%22%3A41%2C%22height%22%3A183%7D%2C%7B%22text%22%3A%22RRR%22%2C%22x%22%3A583%2C%22y%22%3A421%2C%22width%22%3A204%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22%3CMASK%3E%22%2C%22x%22%3A48%2C%22y%22%3A243%2C%22width%22%3A65%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22----%22%2C%22x%22%3A370%2C%22y%22%3A51%2C%22width%22%3A82%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22MASK%3E%22%2C%22x%22%3A56%2C%22y%22%3A220%2C%22width%22%3A56%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22%3CMASK%3E%22%2C%22x%22%3A47%2C%22y%22%3A264%2C%22width%22%3A62%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22%E4%B8%AD%22%2C%22x%22%3A704%2C%22y%22%3A207%2C%22width%22%3A22%2C%22height%22%3A57%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A411%2C%22y%22%3A149%2C%22width%22%3A30%2C%22height%22%3A147%7D%2C%7B%22text%22%3A%22%3CEOS%3E%22%2C%22x%22%3A1025%2C%22y%22%3A264%2C%22width%22%3A70%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A212%2C%22y%22%3A82%2C%22width%22%3A39%2C%22height%22%3A30%7D%2C%7B%22text%22%3A%22%E4%BB%A4%22%2C%22x%22%3A593%2C%22y%22%3A204%2C%22width%22%3A32%2C%22height%22%3A62%7D%2C%7B%22text%22%3A%22%E4%B8%AD%22%2C%22x%22%3A219%2C%22y%22%3A208%2C%22width%22%3A21%2C%22height%22%3A52%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A333%2C%22y%22%3A126%2C%22width%22%3A16%2C%22height%22%3A82%7D%2C%7B%22text%22%3A%22-------%E4%B8%80-%22%2C%22x%22%3A784%2C%22y%22%3A422%2C%22width%22%3A133%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22FOR%22%2C%22x%22%3A69%2C%22y%22%3A198%2C%22width%22%3A25%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%221111111%22%2C%22x%22%3A293%2C%22y%22%3A424%2C%22width%22%3A119%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A381%2C%22y%22%3A97%2C%22width%22%3A36%2C%22height%22%3A167%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A682%2C%22y%22%3A178%2C%22width%22%3A17%2C%22height%22%3A74%7D%2C%7B%22text%22%3A%22%E4%BA%8C%22%2C%22x%22%3A378%2C%22y%22%3A82%2C%22width%22%3A54%2C%22height%22%3A20%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f8f7f5%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u1005d851%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1791374214872-2832d0cd-2b72-4582-8dd6-3c571b5b468f.png",
+        "taskId": "u351a480e-e0e6-4bc5-8ef9-8f088f6038f",
+        "clientId": "u060c8efd-fa38-4",
+        "originalType": "binary",
+        "width": 690,
+        "height": 316,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 227978,
+        "from": "paste",
+        "originWidth": 1125,
+        "originHeight": 516,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "",
+            "x": 461,
+            "y": 123,
+            "width": 23,
+            "height": 224
+          },
+          {
+            "text": "FUSEDTARGETCONTEXTFEATURE",
+            "x": 254,
+            "y": 458,
+            "width": 251,
+            "height": 19
+          },
+          {
+            "text": "",
+            "x": 937,
+            "y": 158,
+            "width": 21,
+            "height": 149
+          },
+          {
+            "text": "工",
+            "x": 754,
+            "y": 170,
+            "width": 19,
+            "height": 121
+          },
+          {
+            "text": "ARGETDECODETOKEN",
+            "x": 576,
+            "y": 459,
+            "width": 174,
+            "height": 18
+          },
+          {
+            "text": "DIFFUSIONISGOOD",
+            "x": 51,
+            "y": 23,
+            "width": 146,
+            "height": 17
+          },
+          {
+            "text": "DRAFTLAYER1",
+            "x": 539,
+            "y": 78,
+            "width": 122,
+            "height": 21
+          },
+          {
+            "text": "",
+            "x": 175,
+            "y": 150,
+            "width": 19,
+            "height": 165
+          },
+          {
+            "text": "DECODING",
+            "x": 1020,
+            "y": 241,
+            "width": 83,
+            "height": 17
+          },
+          {
+            "text": "TARGETMODEL",
+            "x": 77,
+            "y": 91,
+            "width": 110,
+            "height": 16
+          },
+          {
+            "text": "SPECULATIVE",
+            "x": 1015,
+            "y": 220,
+            "width": 93,
+            "height": 17
+          },
+          {
+            "text": "MASKTOKEN",
+            "x": 811,
+            "y": 457,
+            "width": 102,
+            "height": 15
+          },
+          {
+            "text": "KVCACHE",
+            "x": 363,
+            "y": 68,
+            "width": 82,
+            "height": 17
+          },
+          {
+            "text": "吉",
+            "x": 550,
+            "y": 189,
+            "width": 32,
+            "height": 88
+          },
+          {
+            "text": "三",
+            "x": 371,
+            "y": 193,
+            "width": 41,
+            "height": 183
+          },
+          {
+            "text": "RRR",
+            "x": 583,
+            "y": 421,
+            "width": 204,
+            "height": 15
+          },
+          {
+            "text": "<MASK>",
+            "x": 48,
+            "y": 243,
+            "width": 65,
+            "height": 15
+          },
+          {
+            "text": "----",
+            "x": 370,
+            "y": 51,
+            "width": 82,
+            "height": 13
+          },
+          {
+            "text": "MASK>",
+            "x": 56,
+            "y": 220,
+            "width": 56,
+            "height": 16
+          },
+          {
+            "text": "<MASK>",
+            "x": 47,
+            "y": 264,
+            "width": 62,
+            "height": 16
+          },
+          {
+            "text": "中",
+            "x": 704,
+            "y": 207,
+            "width": 22,
+            "height": 57
+          },
+          {
+            "text": "",
+            "x": 411,
+            "y": 149,
+            "width": 30,
+            "height": 147
+          },
+          {
+            "text": "<EOS>",
+            "x": 1025,
+            "y": 264,
+            "width": 70,
+            "height": 16
+          },
+          {
+            "text": "",
+            "x": 212,
+            "y": 82,
+            "width": 39,
+            "height": 30
+          },
+          {
+            "text": "令",
+            "x": 593,
+            "y": 204,
+            "width": 32,
+            "height": 62
+          },
+          {
+            "text": "中",
+            "x": 219,
+            "y": 208,
+            "width": 21,
+            "height": 52
+          },
+          {
+            "text": "",
+            "x": 333,
+            "y": 126,
+            "width": 16,
+            "height": 82
+          },
+          {
+            "text": "-------一-",
+            "x": 784,
+            "y": 422,
+            "width": 133,
+            "height": 15
+          },
+          {
+            "text": "FOR",
+            "x": 69,
+            "y": 198,
+            "width": 25,
+            "height": 16
+          },
+          {
+            "text": "1111111",
+            "x": 293,
+            "y": 424,
+            "width": 119,
+            "height": 11
+          },
+          {
+            "text": "",
+            "x": 381,
+            "y": 97,
+            "width": 36,
+            "height": 167
+          },
+          {
+            "text": "",
+            "x": 682,
+            "y": 178,
+            "width": 17,
+            "height": 74
+          },
+          {
+            "text": "二",
+            "x": 378,
+            "y": 82,
+            "width": 54,
+            "height": 20
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f8f7f5",
+        "__spacing": "both",
+        "id": "u1005d851",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/dflash-inference.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1791374277146-173ba3b3-4519-4606-9e00-7237b90b422d.png%22%2C%22taskId%22%3A%22u739e124d-2617-418d-a681-34482cd197c%22%2C%22clientId%22%3A%22u060c8efd-fa38-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A447.3999938964844%2C%22height%22%3A347%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A41960%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A613%2C%22originHeight%22%3A476%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22FROMTARGETMODEL%22%2C%22x%22%3A37%2C%22y%22%3A15%2C%22width%22%3A129%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22MASKBLOCKS%22%2C%22x%22%3A376%2C%22y%22%3A14%2C%22width%22%3A87%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22NVISIBLETOKEN%22%2C%22x%22%3A465%2C%22y%22%3A437%2C%22width%22%3A87%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22TARGETCONTEXTFEATURE%22%2C%22x%22%3A94%2C%22y%22%3A439%2C%22width%22%3A122%2C%22height%22%3A10%7D%2C%7B%22text%22%3A%22P2P3P4R%22%2C%22x%22%3A42%2C%22y%22%3A395%2C%22width%22%3A107%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%22CLEANTOKEN%22%2C%22x%22%3A358%2C%22y%22%3A439%2C%22width%22%3A68%2C%22height%22%3A10%7D%2C%7B%22text%22%3A%22SM%3E%3CM%3E%22%2C%22x%22%3A495%2C%22y%22%3A398%2C%22width%22%3A89%2C%22height%22%3A8%7D%2C%7B%22text%22%3A%22MASKTOKEN%22%2C%22x%22%3A257%2C%22y%22%3A439%2C%22width%22%3A66%2C%22height%22%3A10%7D%2C%7B%22text%22%3A%22M%3EM%3EM%3E3%22%2C%22x%22%3A388%2C%22y%22%3A396%2C%22width%22%3A115%2C%22height%22%3A9%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23eae8e2%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22uf052e86e%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1791374277146-173ba3b3-4519-4606-9e00-7237b90b422d.png",
+        "taskId": "u739e124d-2617-418d-a681-34482cd197c",
+        "clientId": "u060c8efd-fa38-4",
+        "originalType": "binary",
+        "width": 447.3999938964844,
+        "height": 347,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 41960,
+        "from": "paste",
+        "originWidth": 613,
+        "originHeight": 476,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "FROMTARGETMODEL",
+            "x": 37,
+            "y": 15,
+            "width": 129,
+            "height": 13
+          },
+          {
+            "text": "MASKBLOCKS",
+            "x": 376,
+            "y": 14,
+            "width": 87,
+            "height": 14
+          },
+          {
+            "text": "NVISIBLETOKEN",
+            "x": 465,
+            "y": 437,
+            "width": 87,
+            "height": 11
+          },
+          {
+            "text": "TARGETCONTEXTFEATURE",
+            "x": 94,
+            "y": 439,
+            "width": 122,
+            "height": 10
+          },
+          {
+            "text": "P2P3P4R",
+            "x": 42,
+            "y": 395,
+            "width": 107,
+            "height": 11
+          },
+          {
+            "text": "CLEANTOKEN",
+            "x": 358,
+            "y": 439,
+            "width": 68,
+            "height": 10
+          },
+          {
+            "text": "SM><M>",
+            "x": 495,
+            "y": 398,
+            "width": 89,
+            "height": 8
+          },
+          {
+            "text": "MASKTOKEN",
+            "x": 257,
+            "y": 439,
+            "width": 66,
+            "height": 10
+          },
+          {
+            "text": "M>M>M>3",
+            "x": 388,
+            "y": 396,
+            "width": 115,
+            "height": 9
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#eae8e2",
+        "__spacing": "both",
+        "id": "uf052e86e",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/dflash-training-attention.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmathrm%7Bblock%5C%5C_size%7D-1%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fd6df358f597123e5e752ed7d4a494105.svg%22%2C%22id%22%3A%22EUZHU%22%7D"
+      },
+      "value": {
+        "code": "\\mathrm{block\\_size}-1",
+        "src": "https://cdn.nlark.com/yuque/__latex/d6df358f597123e5e752ed7d4a494105.svg",
+        "id": "EUZHU"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fdf976ff7fcf17d60490267d18a1e3996.svg%22%2C%22id%22%3A%22JNfIK%22%7D"
+      },
+      "value": {
+        "code": "k",
+        "src": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+        "id": "JNfIK"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22w_k%3D%5C%5Cexp%5C%5Cleft(-%5C%5Cfrac%7Bk-1%7D%7B%5C%5Cgamma%7D%5C%5Cright).%5C%5Ctag%7B4%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F4883e76bbda31192029c155a0d2a4d8c.svg%22%2C%22id%22%3A%22QIv1N%22%7D"
+      },
+      "value": {
+        "code": "w_k=\\exp\\left(-\\frac{k-1}{\\gamma}\\right).\\tag{4}",
+        "src": "https://cdn.nlark.com/yuque/__latex/4883e76bbda31192029c155a0d2a4d8c.svg",
+        "id": "QIv1N"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cgamma%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F4aa418d6f0b6fbada90489b4374752e5.svg%22%2C%22id%22%3A%22xdeaj%22%7D"
+      },
+      "value": {
+        "code": "\\gamma",
+        "src": "https://cdn.nlark.com/yuque/__latex/4aa418d6f0b6fbada90489b4374752e5.svg",
+        "id": "xdeaj"
+      }
+    }
+  ],
+  "assets": [
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1791374214872-2832d0cd-2b72-4582-8dd6-3c571b5b468f.png",
+      "file": "assets/images/dflash-inference.png",
+      "bytes": 227978,
+      "width": 1125,
+      "height": 516
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1791374277146-173ba3b3-4519-4606-9e00-7237b90b422d.png",
+      "file": "assets/images/dflash-training-attention.png",
+      "bytes": 41960,
+      "width": 613,
+      "height": 476
+    }
+  ]
+}

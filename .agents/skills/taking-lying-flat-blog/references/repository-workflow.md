@@ -63,6 +63,8 @@ Markdown 行内数学使用 `$` 后紧跟反引号的语法，例如 $`x_t`$；�
 
 ## 构建与发布
 
+新增文章时同步配置 `site/likes-config.json`，否则构建器会报缺少点赞计数器。沿用 `scripts/setup-article-likes.py` 的 API 和博客现有专用凭据，仅为新增文章创建计数器并核对所有权；凭据不得写入仓库或输出到日志。
+
 ```bash
 npm run build --prefix site
 git diff --check

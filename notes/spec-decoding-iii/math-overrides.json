@@ -1,0 +1,6 @@
+{
+  "QIv1N": {
+    "from": "w_k=\\exp\\left(-\\frac{k-1}{\\gamma}\\right).\\tag{4}",
+    "to": "w_k=\\exp\\left(-\\frac{k-1}{\\gamma}\\right)\\tag{1}"
+  }
+}

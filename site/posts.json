@@ -168,6 +168,23 @@
     ]
   },
   {
+    "file": "../notes/spec-decoding-iii/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "spec-decoding-iii",
+    "series": "speculative-decoding",
+    "seriesOrder": 3,
+    "category": "infra",
+    "categoryOrder": 8,
+    "date": "2026-10-07",
+    "description": "DFlash 论文笔记：目标模型上下文特征、逐层 KV 注入、块扩散并行草稿生成，以及随机掩码块与位置加权训练",
+    "tags": ["DFlash"],
+    "appendMarkdown": [
+      { "file": "training-heading.md", "before": "u006d20e2", "tag": "p" }
+    ]
+  },
+  {
     "file": "../notes/spec-decoding-ii/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
