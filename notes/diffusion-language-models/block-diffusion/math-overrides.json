@@ -6,8 +6,8 @@
   },
   "QtKv2": {
     "from": "p_\\theta(\\mathbf{x}_s\\mid\\mathbf{x}_t)=\\prod_{\\ell=1}^{L}p_\\theta\\left(\\mathbf{x}_s^{\\ell}\\mid\\mathbf{x}_t\\right)=\\sum_{\\mathbf{x}}\\left[\\prod_{\\ell=1}^{L}q\\left(\\mathbf{x}_s^{\\ell}\\mid\\mathbf{x}_t^{\\ell},\\mathbf{x}^{\\ell}\\right)p_\\theta\\left(\\mathbf{x}^{\\ell}\\mid\\mathbf{x}_t\\right)\\right].\\tag{2}",
-    "to": "\\begin{aligned}p_\\theta(\\mathbf{x}_s\\mid\\mathbf{x}_t)&=\\prod_{\\ell=1}^{L}p_\\theta(\\mathbf{x}_s^{\\ell}\\mid\\mathbf{x}_t)\\\\&=\\prod_{\\ell=1}^{L}\\sum_{\\mathbf{y}}q(\\mathbf{x}_s^{\\ell}\\mid\\mathbf{x}_t^{\\ell},\\mathbf{y})\\,p_\\theta(\\mathbf{y}\\mid\\mathbf{x}_t)\\end{aligned}\\tag{2}",
-    "reason": "按位置写出干净词元混合，用候选词元 y 避免与观测数据混淆并压缩公式宽度"
+    "to": "p_\\theta(\\mathbf{x}_s\\mid\\mathbf{x}_t)=\\prod_{\\ell=1}^{L}p_\\theta\\left(\\mathbf{x}_s^{\\ell}\\mid\\mathbf{x}_t\\right)=\\sum_{\\mathbf{x}}\\left[\\prod_{\\ell=1}^{L}q\\left(\\mathbf{x}_s^{\\ell}\\mid\\mathbf{x}_t^{\\ell},\\mathbf{x}^{\\ell}\\right)p_\\theta\\left(\\mathbf{x}^{\\ell}\\mid\\mathbf{x}_t\\right)\\right]\\tag{2}",
+    "reason": "恢复原文完整单行公式，只去除公式末尾标点"
   },
   "zTRB7": {
     "from": "\\mathcal{L}(\\mathbf{x};\\theta)=\\mathbb{E}_{q}\\left[\\begin{aligned}\n&-\\log p_\\theta\\left(\\mathbf{x}\\mid\\mathbf{x}_{t(1)}\\right)\\\\\n&+\\sum_{j=1}^{T}D_{\\mathrm{KL}}\\left[q\\left(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)},\\mathbf{x}\\right)\\,\\middle\\|\\,p_\\theta\\left(\\mathbf{x}_{s(j)}\\mid\\mathbf{x}_{t(j)}\\right)\\right]\\\\\n&+D_{\\mathrm{KL}}\\left[q\\left(\\mathbf{x}_{t(T)}\\mid\\mathbf{x}\\right)\\,\\middle\\|\\,p_\\theta\\left(\\mathbf{x}_{t(T)}\\right)\\right]\n\\end{aligned}\\right].\\tag{3}",
@@ -41,13 +41,13 @@
   },
   "MfLw9": {
     "from": "\\mathcal{L}_{\\mathrm{BD}}(\\mathbf{X};\\theta):=l(\\mathbf{X};\\theta)=\\frac{1}{K}\\sum_{k=1}^{K}\\sum_{b=1}^{B}\\frac{\\alpha_{t(k,b)}^{\\prime}}{1-\\alpha_{t(k,b)}}\\log p_\\theta\\left(\\mathbf{x}^{(k),b}\\mid\\mathbf{x}_{t(k,b)}^{(k),b},\\mathbf{x}^{(k),<b}\\right).\\tag{9}",
-    "to": "\\begin{aligned}\\widehat{\\mathcal{L}}_{\\mathrm{BD}}(\\mathbf{X};\\theta)&:=l(\\mathbf{X};\\theta)\\\\&=\\frac{1}{K}\\sum_{k=1}^{K}\\sum_{b=1}^{B}\\frac{\\alpha_{t(k,b)}^{\\prime}}{1-\\alpha_{t(k,b)}}\\log p_\\theta(\\mathbf{x}^{(k),b}\\mid\\mathbf{x}_{t(k,b)}^{(k),b},\\mathbf{x}^{(k),<b})\\end{aligned}\\tag{9}",
-    "reason": "以帽号区分随机估计量，并按等号换行避免越过正文宽度"
+    "to": "\\mathcal{L}_{\\mathrm{BD}}(\\mathbf{X};\\theta):=l(\\mathbf{X};\\theta)=\\frac{1}{K}\\sum_{k=1}^{K}\\sum_{b=1}^{B}\\frac{\\alpha_{t(k,b)}^{\\prime}}{1-\\alpha_{t(k,b)}}\\log p_\\theta\\left(\\mathbf{x}^{(k),b}\\mid\\mathbf{x}_{t(k,b)}^{(k),b},\\mathbf{x}^{(k),<b}\\right)\\tag{9}",
+    "reason": "恢复原文完整单行公式，只去除公式末尾标点"
   },
   "mN203": {
     "from": "\\operatorname{Var}_{\\mathbf{X},t}\\left[\\nabla_\\theta l(\\mathbf{X};\\theta)\\right]\\approx\\frac{1}{M-1}\\sum_{m=1}^{M}\\left\\|\\nabla_\\theta l(\\mathbf{X}^{m};\\theta)-\\frac{1}{M}\\sum_{m=1}^{M}\\nabla_\\theta l(\\mathbf{X}^{m};\\theta)\\right\\|_2^2.\\tag{10}",
-    "to": "\\begin{aligned}\\operatorname{Var}_{\\mathbf{X},t}[\\nabla_\\theta l(\\mathbf{X};\\theta)]&\\approx\\frac{1}{M-1}\\sum_{m=1}^{M}\\|\\nabla_\\theta l(\\mathbf{X}^{m};\\theta)-\\overline{\\mathbf{g}}\\|_2^2\\\\\\overline{\\mathbf{g}}&=\\frac{1}{M}\\sum_{r=1}^{M}\\nabla_\\theta l(\\mathbf{X}^{r};\\theta)\\end{aligned}\\tag{10}",
-    "reason": "将平均梯度另列一行，避免长公式越界；该方差表示协方差的迹"
+    "to": "\\operatorname{Var}_{\\mathbf{X},t}\\left[\\nabla_\\theta l(\\mathbf{X};\\theta)\\right]\\approx\\frac{1}{M-1}\\sum_{m=1}^{M}\\left\\|\\nabla_\\theta l(\\mathbf{X}^{m};\\theta)-\\frac{1}{M}\\sum_{m=1}^{M}\\nabla_\\theta l(\\mathbf{X}^{m};\\theta)\\right\\|_2^2\\tag{10}",
+    "reason": "恢复原文完整单行公式，只去除公式末尾标点"
   },
   "xeUPi": {
     "from": "(b-1)L^{\\prime}",

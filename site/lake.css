@@ -633,6 +633,15 @@
   width: min(960px, 100%) !important;
   margin: 12px auto;
 }
+/* Keep the overview and result table slightly smaller, at their natural ratio. */
+[data-post="diffusion-language-models"] .lake-image:is([data-card-id="ud944e05d"], [data-card-id="u140f715d"]) {
+  display: block;
+  height: auto;
+  aspect-ratio: auto !important;
+  margin: 12px auto;
+}
+[data-post="diffusion-language-models"] .lake-image[data-card-id="ud944e05d"] { width: min(790px, 100%) !important; }
+[data-post="diffusion-language-models"] .lake-image[data-card-id="u140f715d"] { width: min(770px, 100%) !important; }
 
 /* EAGLE-3: scale the original vector figures without stretching their geometry. */
 [data-post="spec-decoding-ii"] .lake-document h1 { margin-block: 28px 14px; }
