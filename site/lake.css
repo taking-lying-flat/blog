@@ -10,7 +10,7 @@
   font-family: var(--lake-font);
   font-size: 16px;
   font-weight: 400;
-  line-height: 1.74;
+  line-height: var(--article-line-height);
   letter-spacing: .008em;
   white-space: break-spaces;
   word-break: break-word;
@@ -37,13 +37,6 @@
 /* Lake can export an indented list as a sibling rather than a nested ul. */
 .lake-document ul[data-lake-indent="1"] { margin-left: 2em; list-style-type: circle; }
 .lake-document li { margin: 0 0 4.176px; padding: 0; }
-/* Generative-model and diffusion-language-model notes share prose leading. */
-:is(
-  [data-post="genai-sakura-i"], [data-post="genai-sakura-ii"],
-  [data-post="genai-sakura-iii"], [data-post="genai-sakura-iv"],
-  [data-post="genai-flow-i"], [data-post="genai-flow-ii"],
-  [data-post="diffusion-language-models"]
-) .lake-document { line-height: 1.82; }
 .lake-document .code-block { white-space: normal; }
 /* Algorithms transcribed from screenshots use the same paper-like layout. */
 .lake-document .paper-algorithm {
@@ -55,7 +48,7 @@
 .lake-document .paper-algorithm figcaption {
   padding: 7px 0;
   border-bottom: 1px solid #c7c7c7;
-  font: 16px/1.5 var(--article-serif);
+  font: 16px/var(--article-line-height) var(--article-serif);
 }
 .lake-document .paper-algorithm .equation { margin: 9px 0 0; font-size: 15px; }
 .lake-document .paper-algorithm .equation mjx-container[display="true"] { min-width: 0; text-align: left; }
@@ -71,7 +64,6 @@
 }
 [data-post="policy-optimization-i"] .policy-theorem > p {
   margin: 0;
-  line-height: 1.85;
 }
 [data-post="policy-optimization-i"] .policy-theorem .equation.lake-numbered-block {
   display: grid;
@@ -188,12 +180,6 @@
   #u40bf6aad, #ue5697ec4, #u454ac2db
 ) {
   margin-block: 18px 8px;
-  line-height: 1.9;
-}
-[data-post="genai-sakura-i"] .lake-document :is(
-  #u40bf6aad, #ue5697ec4, #u454ac2db
-) + ul {
-  line-height: 1.9;
 }
 [data-post="genai-sakura-i"] .lake-document :is(
   [data-card-id="Dz85y"], [data-card-id="RrZPF"], [data-card-id="Utb9e"],
@@ -254,7 +240,7 @@
 [data-post="policy-optimization-i"] .lake-document #gae-code-image { width: 760px; margin: 12px auto; }
 .lake-document .lake-figure figcaption { margin-top: 8px; color: #656d76; font-size: 13px; text-align: center; }
 
-.lake-document .lake-image-source { display: block; margin: -8px 0 12px; font-size: 13px; line-height: 1.5; white-space: normal; }
+.lake-document .lake-image-source { display: block; margin: -8px 0 12px; font-size: 13px; line-height: var(--article-line-height); white-space: normal; }
 
 .lake-document .lake-revised-section { white-space: normal; }
 .lake-document .lake-revised-section .equation { margin: 12px 0; padding: 2px 0 4px; }
@@ -428,7 +414,7 @@
 :is([data-post="policy-optimization-i"], [data-post="policy-optimization-ii"]) .policy-algorithm figcaption {
   padding: 6px 0;
   border-bottom: 1px solid #c7c7c7;
-  font: 16px/1.5 var(--article-serif);
+  font: 16px/var(--article-line-height) var(--article-serif);
 }
 :is([data-post="policy-optimization-i"], [data-post="policy-optimization-ii"]) .policy-algorithm .equation { margin: 6px 0 0; }
 :is([data-post="policy-optimization-i"], [data-post="policy-optimization-ii"]) .policy-algorithm .equation mjx-container[display="true"] {
@@ -436,7 +422,7 @@
   text-align: left;
 }
 
-[data-post="policy-optimization-ii"] .policy-algorithm > p { margin: 8px 10px 0; font: 15px/1.6 var(--article-serif); }
+[data-post="policy-optimization-ii"] .policy-algorithm > p { margin: 8px 10px 0; font: 15px/var(--article-line-height) var(--article-serif); }
 [data-post="policy-optimization-ii"] .policy-algorithm .equation { font-size: 15px; }
 
 /* Typeset the original algorithm like a paper. */
@@ -490,13 +476,13 @@
 [data-post="genai-flow-ii"] .rf-algorithm figcaption {
   padding: 6px 0;
   border-bottom: 1px solid #c7c7c7;
-  font: 16px/1.5 var(--article-serif);
+  font: 16px/var(--article-line-height) var(--article-serif);
 }
 [data-post="genai-flow-i"] .flow-algorithm .equation { margin: 6px 0 0; }
 [data-post="genai-flow-ii"] .rf-algorithm .equation { margin: 6px 0 0; font-size: 15px; }
 [data-post="genai-flow-ii"] .rf-algorithm > p {
   margin: 8px 10px 0;
-  font: 15px/1.5 var(--article-serif);
+  font: 15px/var(--article-line-height) var(--article-serif);
 }
 [data-post="genai-flow-i"] .flow-algorithm .equation mjx-container[display="true"],
 [data-post="genai-flow-ii"] .rf-algorithm .equation mjx-container[display="true"] {
@@ -520,7 +506,6 @@
 }
 [data-post="genai-flow-ii"] .fm-theorem > p {
   margin: 0;
-  line-height: 2.15;
 }
 [data-post="genai-flow-ii"] .fm-theorem .equation {
   margin: 14px 0;
@@ -543,7 +528,7 @@
   padding: 8px 14px;
   background: #fffcf5;
 }
-[data-post="genai-sakura-iv"] .nft-theorem > p { margin: 0; line-height: 1.75; }
+[data-post="genai-sakura-iv"] .nft-theorem > p { margin: 0; }
 [data-post="genai-sakura-iv"] .nft-theorem > p > strong:first-child { color: #814800; }
 [data-post="genai-sakura-iv"] .nft-theorem .equation { margin: 8px 0; padding: 0; }
 [data-post="genai-sakura-iv"] .nft-theorem .equation mjx-container[display="true"] { margin: 0; }
@@ -556,7 +541,7 @@
 [data-post="genai-sakura-iv"] .nft-algorithm figcaption {
   padding: 6px 0;
   border-bottom: 1px solid #c7c7c7;
-  font: 16px/1.5 var(--article-serif);
+  font: 16px/var(--article-line-height) var(--article-serif);
 }
 [data-post="genai-sakura-iv"] .nft-algorithm .equation { margin: 6px 0 0; font-size: 15px; }
 [data-post="genai-sakura-iv"] .nft-algorithm .equation mjx-container[display="true"] {
@@ -576,7 +561,7 @@
 [data-post="genai-sakura-iii"] .cm-algorithm figcaption {
   padding: 6px 0;
   border-bottom: 1px solid #c7c7c7;
-  font: 16px/1.5 var(--article-serif);
+  font: 16px/var(--article-line-height) var(--article-serif);
 }
 [data-post="genai-sakura-iii"] .edm-algorithm .equation,
 [data-post="genai-sakura-iii"] .cm-algorithm .equation {
@@ -591,7 +576,7 @@
 
 [data-post="genai-sakura-iii"] .cm-algorithm > p {
   margin: 8px 10px 0;
-  font: 15px/1.5 var(--article-serif);
+  font: 15px/var(--article-line-height) var(--article-serif);
 }
 
 /* DDPM: training and sampling side by side, transcribed from Algorithms 1–2. */
@@ -611,7 +596,7 @@
 [data-post="genai-sakura-ii"] .ddpm-algorithm figcaption {
   padding: 6px 0;
   border-bottom: 1px solid #c7c7c7;
-  font: 16px/1.5 var(--article-serif);
+  font: 16px/var(--article-line-height) var(--article-serif);
 }
 [data-post="genai-sakura-ii"] .ddpm-algorithm .equation { margin: 6px 0 0; }
 [data-post="genai-sakura-ii"] .ddpm-algorithm .equation mjx-container[display="true"] {
@@ -810,9 +795,9 @@
 .lake-document .rotation-identities { box-sizing: border-box; max-width: 100%; margin: 28px 0 0; white-space: normal; }
 .lake-document .rotation-identities > p { margin-bottom: 12px; }
 .lake-document .rotation-case { margin: 14px 0; padding: 12px 14px; background: #fffcf5; }
-.lake-document .rotation-case > p { margin: 0 0 8px; line-height: 1.8; }
+.lake-document .rotation-case > p { margin: 0 0 8px; }
 .lake-document .rotation-case > ul { margin: 0 0 8px; padding-left: 2em; list-style-type: disc; }
-.lake-document .rotation-case > ul > li { margin: 0; line-height: 1.8; }
+.lake-document .rotation-case > ul > li { margin: 0; }
 .lake-document .rotation-case > p:first-child > strong { color: #814800; }
 .lake-document #rotation-nonlinearity { background: #f3f8ff; }
 .lake-document #rotation-nonlinearity > p:first-child > strong { color: #315c87; }
