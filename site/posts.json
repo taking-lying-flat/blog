@@ -155,6 +155,11 @@
         "file": "block-diffusion-algorithms.md",
         "before": "I7Z1c"
       },
+      {
+        "file": "block-diffusion-attention-code.md",
+        "before": "u4033b69e",
+        "tag": "li"
+      },
       "block-diffusion-proofs.md"
     ],
     "tags": [

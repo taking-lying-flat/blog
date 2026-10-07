@@ -9,8 +9,7 @@
 ```math
 \begin{aligned}
 -\log p_\theta(\mathbf{x})
-&=-\sum_{b=1}^{B}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{x}^{<b})\\
-&=-\sum_{b=1}^{B}\log\mathbb{E}_{q}
+&=-\sum_{b=1}^{B}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{x}^{<b})=-\sum_{b=1}^{B}\log\mathbb{E}_{q}
 \frac{p_\theta(\mathbf{x}_{t(1):t(T)}^{b}\mid\mathbf{x}^{<b})}{q(\mathbf{x}_{t(1):t(T)}^{b}\mid\mathbf{x}^{b})}\\
 &=-\sum_{b=1}^{B}\log\mathbb{E}_{q}
 \frac{p_\theta(\mathbf{x}_{t(T)}^{b}\mid\mathbf{x}^{<b})\prod_{i=1}^{T}p_\theta(\mathbf{x}_{s(i)}^{b}\mid\mathbf{x}_{t(i)}^{b},\mathbf{x}^{<b})}{\prod_{i=1}^{T}q(\mathbf{x}_{t(i)}^{b}\mid\mathbf{x}_{s(i)}^{b})}\\
@@ -68,8 +67,7 @@ q(\mathbf{x}_{s}^{\ell}\mid\mathbf{x}_{t}^{\ell},\mathbf{x}^{\ell})
 \mathcal{L}_{\mathrm{diffusion}}
 &=\sum_{b=1}^{B}\mathbb{E}_{t}\mathbb{E}_{q}\,T\left[D_{\mathrm{KL}}\!\left[q(\mathbf{x}_{s}^{b}\mid\mathbf{x}_{t}^{b},\mathbf{x}^{b})\,\middle\|\,p_\theta(\mathbf{x}_{s}^{b}\mid\mathbf{x}_{t}^{b},\mathbf{x}^{<b})\right]\right]\\
 &=\sum_{b=1}^{B}\mathbb{E}_{t}\mathbb{E}_{q}\,T\left[\sum_{\ell=1}^{L'}D_{\mathrm{KL}}\!\left[q(\mathbf{x}_{s}^{b,\ell}\mid\mathbf{x}_{t}^{b,\ell},\mathbf{x}^{b,\ell})\,\middle\|\,p_\theta(\mathbf{x}_{s}^{b,\ell}\mid\mathbf{x}_{t}^{b},\mathbf{x}^{<b})\right]\right]\\
-&=\sum_{b=1}^{B}\mathbb{E}_{t}\mathbb{E}_{q}\,T\left[\sum_{\ell=1}^{L'}\frac{\alpha_t-\alpha_s}{1-\alpha_t}\log p_\theta(\mathbf{x}^{b,\ell}\mid\mathbf{x}_{t}^{b,\ell},\mathbf{x}^{<b})\right]\\
-&=\sum_{b=1}^{B}\mathbb{E}_{t}\mathbb{E}_{q}\,T\left[\frac{\alpha_t-\alpha_s}{1-\alpha_t}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{x}_{t}^{b},\mathbf{x}^{<b})\right]
+&=\sum_{b=1}^{B}\mathbb{E}_{t}\mathbb{E}_{q}\,T\left[\sum_{\ell=1}^{L'}\frac{\alpha_t-\alpha_s}{1-\alpha_t}\log p_\theta(\mathbf{x}^{b,\ell}\mid\mathbf{x}_{t}^{b,\ell},\mathbf{x}^{<b})\right]=\sum_{b=1}^{B}\mathbb{E}_{t}\mathbb{E}_{q}\,T\left[\frac{\alpha_t-\alpha_s}{1-\alpha_t}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{x}_{t}^{b},\mathbf{x}^{<b})\right]
 \end{aligned}\tag{A.6}
 ```
 
@@ -82,12 +80,7 @@ q(\mathbf{x}_{s}^{\ell}\mid\mathbf{x}_{t}^{\ell},\mathbf{x}^{\ell})
 - 在连续时间情形下，Sahoo 等附录 A.2.4 表明，$`\mathbf{x}_{t(1)}^{b}\sim\lim_{T\to\infty}\operatorname{Cat}(\cdot;\mathbf{x}_{t=1/T}^{b})=\operatorname{Cat}(\cdot;\mathbf{x}^{b})`$，重建损失因此化为零
 
 ```math
-\begin{aligned}
-\mathcal{L}_{\mathrm{recons}}
-&=-\mathbb{E}_{q}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{x}_{t(1)}^{b},\mathbf{x}^{<b})\\
-&=-\log p_\theta(\mathbf{x}^{b}\mid\mathbf{x}_{t(1)}^{b}=\mathbf{x}^{b},\mathbf{x}^{<b})\\
-&=0
-\end{aligned}\tag{A.8}
+\mathcal{L}_{\mathrm{recons}} =-\mathbb{E}_{q}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{x}_{t(1)}^{b},\mathbf{x}^{<b}) =-\log p_\theta(\mathbf{x}^{b}\mid\mathbf{x}_{t(1)}^{b}=\mathbf{x}^{b},\mathbf{x}^{<b}) =0 \tag{A.8}
 ```
 
 - 先验损失 $`\mathcal{L}_{\mathrm{prior}}=D_{\mathrm{KL}}\!\left(q(\mathbf{x}_{t=1}^{b}\mid\mathbf{x}^{b})\,\middle\|\,p_\theta(\mathbf{x}_{t=1}^{b})\right)`$ 也化为零，因为 $`\alpha_{t=1}=0`$ 保证 $`q(\mathbf{x}_{t=1}^{b}\mid\mathbf{x}^{b})=\operatorname{Cat}(\cdot;\mathbf{m})`$ 且 $`p_\theta(\mathbf{x}_{t=1}^{b})=\operatorname{Cat}(\cdot;\mathbf{m})`$。最终，目标简化为交叉熵项的加权平均
@@ -119,8 +112,7 @@ q(\mathbf{x}_{s}^{\ell}\mid\mathbf{x}_{t}^{\ell},\mathbf{x}^{\ell})
 \begin{aligned}
 -\log p_\theta(\mathbf{x})
 &\leq-\sum_{b=1}^{L}\mathbb{E}_{t\sim[0,1]}\frac{1}{t}\,q(\mathbf{x}_{t}^{b}=\mathbf{m}\mid\mathbf{x}^{b})\log p_\theta(\mathbf{x}^{b}\mid\mathbf{x}_{t}^{b}=\mathbf{m},\mathbf{x}^{<b})\\
-&=-\sum_{b=1}^{L}\mathbb{E}_{t\sim[0,1]}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{x}_{t}^{b}=\mathbf{m},\mathbf{x}^{<b})\\
-&=-\sum_{b=1}^{L}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{m},\mathbf{x}^{<b})
+&=-\sum_{b=1}^{L}\mathbb{E}_{t\sim[0,1]}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{x}_{t}^{b}=\mathbf{m},\mathbf{x}^{<b})=-\sum_{b=1}^{L}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{m},\mathbf{x}^{<b})
 \end{aligned}\tag{A.11}
 ```
 
@@ -129,11 +121,7 @@ q(\mathbf{x}_{s}^{\ell}\mid\mathbf{x}_{t}^{\ell},\mathbf{x}^{\ell})
 - 先考虑 $`K=1`$，此时恢复自回归负对数似然。原文式（22）写为
 
 ```math
-\begin{aligned}
-\mathcal{L}_{1}
-&=\sum_{b=1}^{L}\log\mathbb{E}_{t\sim[0,1]}\mathbb{E}_{q}\frac{\alpha'_t}{1-\alpha_t}p_\theta(\mathbf{x}^{b}\mid\mathbf{x}_{t}^{b},\mathbf{x}^{<b})\\
-&=-\sum_{b=1}^{L}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{m},\mathbf{x}^{<b})
-\end{aligned}\tag{A.12}
+\mathcal{L}_{1} =\sum_{b=1}^{L}\log\mathbb{E}_{t\sim[0,1]}\mathbb{E}_{q}\frac{\alpha'_t}{1-\alpha_t}p_\theta(\mathbf{x}^{b}\mid\mathbf{x}_{t}^{b},\mathbf{x}^{<b}) =-\sum_{b=1}^{L}\log p_\theta(\mathbf{x}^{b}\mid\mathbf{m},\mathbf{x}^{<b}) \tag{A.12}
 ```
 
 - 当块大小为 $`K=2`$ 时，原文式（23）为
