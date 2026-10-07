@@ -2,6 +2,7 @@
   {
     "file": "../notes/optimizers/source.lake",
     "format": "lake",
+    "numberedEquations": {"QMCxe": ["SwXTD", "DCY9w", "hypFI", "XwVML"]},
     "removeEmptyParagraphs": true,
     "tocDepth": 2,
     "slug": "optimizers",
