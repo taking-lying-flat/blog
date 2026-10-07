@@ -150,6 +150,10 @@
       {
         "file": "llada-algorithms.md",
         "before": "KCgpZ"
+      },
+      {
+        "file": "block-diffusion-algorithms.md",
+        "before": "I7Z1c"
       }
     ],
     "tags": [

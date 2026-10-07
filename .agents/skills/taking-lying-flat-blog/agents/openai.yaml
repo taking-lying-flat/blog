@@ -1,0 +1,4 @@
+interface:
+  display_name: "博客论文笔记维护"
+  short_description: "统一博客的公式、算法、图片和行距，保留原式并快速构建发布"
+  default_prompt: "使用 $taking-lying-flat-blog 按既定排版惯例维护博客论文笔记。"
