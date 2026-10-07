@@ -1,0 +1,834 @@
+{
+  "source": {
+    "file": "source.lake",
+    "bytes": 34245,
+    "title": "𝐌𝐨𝐨𝐧𝐬𝐡𝐨𝐭 𝐊𝐈𝐌𝐈-𝐈",
+    "originalFile": "𝐌𝐨𝐨𝐧𝐬𝐡𝐨𝐭 𝐊𝐈𝐌𝐈-𝐈.lake"
+  },
+  "title": "优化器",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "counts": {
+    "math": 43,
+    "images": 1,
+    "separators": 0,
+    "code": 0
+  },
+  "assets": [
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1785157772044-e3233437-ee3d-4e73-bdae-cefb3926f1ed.png",
+      "file": "assets/images/1785157772044-e3233437-ee3d-4e73-bdae-cefb3926f1ed.png",
+      "width": 1028,
+      "height": 507,
+      "bytes": 86743
+    }
+  ],
+  "cards": [
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fd99979941e2b40b5ffd75f89c83e37b4.svg%22%2C%22id%22%3A%22Ah5VX%22%7D"
+      },
+      "value": {
+        "code": " t",
+        "src": "https://cdn.nlark.com/yuque/__latex/d99979941e2b40b5ffd75f89c83e37b4.svg",
+        "id": "Ah5VX"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20W_%7Bt-1%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F8d42f0b80041b5c4b5962ae759211b4c.svg%22%2C%22id%22%3A%22m1MGH%22%7D"
+      },
+      "value": {
+        "code": " W_{t-1}",
+        "src": "https://cdn.nlark.com/yuque/__latex/8d42f0b80041b5c4b5962ae759211b4c.svg",
+        "id": "m1MGH"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20%5C%5Cmu%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fc4a7a372588438938925e0d02f894206.svg%22%2C%22id%22%3A%22oFDXv%22%7D"
+      },
+      "value": {
+        "code": " \\mu",
+        "src": "https://cdn.nlark.com/yuque/__latex/c4a7a372588438938925e0d02f894206.svg",
+        "id": "oFDXv"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Ceta_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fc0156bac62d2008007c6817b9ad1a5ce.svg%22%2C%22id%22%3A%22nC8FS%22%7D"
+      },
+      "value": {
+        "code": "\\eta_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/c0156bac62d2008007c6817b9ad1a5ce.svg",
+        "id": "nC8FS"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20L_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fb57c38bb939bb6cee08fb66b8e765e25.svg%22%2C%22id%22%3A%22TDug9%22%7D"
+      },
+      "value": {
+        "code": " L_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/b57c38bb939bb6cee08fb66b8e765e25.svg",
+        "id": "TDug9"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5Cn%5C%5Cboxed%7B%5C%5Cbegin%7Baligned%7D%20%5Cn%5C%5Cmathbf%7BM%7D_t%20%26%3D%20%5C%5Cmu%20%5C%5Cmathbf%7BM%7D_%7Bt-1%7D%20%2B%20%5C%5Cnabla%20%5C%5Cmathcal%7BL%7D_t(%5C%5Cmathbf%7BW%7D_%7Bt-1%7D)%20%5C%5C%5C%5C%20%5Cn%5C%5Cmathbf%7BO%7D_t%20%26%3D%20%5C%5Ctext%7BNewton-Schulz%7D(%5C%5Cmathbf%7BM%7D_t)%5E1%20%5C%5C%5C%5C%20%5Cn%5C%5Cmathbf%7BW%7D_t%20%26%3D%20%5C%5Cmathbf%7BW%7D_%7Bt-1%7D%20-%20%5C%5Ceta_t%20%5C%5Cmathbf%7BO%7D_t%20%5Cn%5C%5Cend%7Baligned%7D%7D%5Cn%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F2a1acd4605dd91d78efaa3a9102737f6.svg%22%2C%22id%22%3A%22SwXTD%22%7D"
+      },
+      "value": {
+        "code": "\n\\boxed{\\begin{aligned} \n\\mathbf{M}_t &= \\mu \\mathbf{M}_{t-1} + \\nabla \\mathcal{L}_t(\\mathbf{W}_{t-1}) \\\\ \n\\mathbf{O}_t &= \\text{Newton-Schulz}(\\mathbf{M}_t)^1 \\\\ \n\\mathbf{W}_t &= \\mathbf{W}_{t-1} - \\eta_t \\mathbf{O}_t \n\\end{aligned}}\n",
+        "src": "https://cdn.nlark.com/yuque/__latex/2a1acd4605dd91d78efaa3a9102737f6.svg",
+        "id": "SwXTD"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22M_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Ffd5903948106a5c56435537b1e24c28d.svg%22%2C%22id%22%3A%22nJJWN%22%7D"
+      },
+      "value": {
+        "code": "M_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/fd5903948106a5c56435537b1e24c28d.svg",
+        "id": "nJJWN"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fd99979941e2b40b5ffd75f89c83e37b4.svg%22%2C%22id%22%3A%22VNBBw%22%7D"
+      },
+      "value": {
+        "code": " t",
+        "src": "https://cdn.nlark.com/yuque/__latex/d99979941e2b40b5ffd75f89c83e37b4.svg",
+        "id": "VNBBw"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22t%3D0%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fcf76c4580adc6af67436e1cd68eed17d.svg%22%2C%22id%22%3A%22baPob%22%7D"
+      },
+      "value": {
+        "code": "t=0",
+        "src": "https://cdn.nlark.com/yuque/__latex/cf76c4580adc6af67436e1cd68eed17d.svg",
+        "id": "baPob"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22M_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Ffd5903948106a5c56435537b1e24c28d.svg%22%2C%22id%22%3A%22bOPoL%22%7D"
+      },
+      "value": {
+        "code": "M_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/fd5903948106a5c56435537b1e24c28d.svg",
+        "id": "bOPoL"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22Mt(M_tM_t%5E%7BT%7D)%5E%7B-1%2F2%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F8c4a4b1f533c097c131454dfe91fd1d6.svg%22%2C%22id%22%3A%22LW25A%22%7D"
+      },
+      "value": {
+        "code": "Mt(M_tM_t^{T})^{-1/2}",
+        "src": "https://cdn.nlark.com/yuque/__latex/8c4a4b1f533c097c131454dfe91fd1d6.svg",
+        "id": "LW25A"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22M_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Ffd5903948106a5c56435537b1e24c28d.svg%22%2C%22id%22%3A%22ZejTK%22%7D"
+      },
+      "value": {
+        "code": "M_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/fd5903948106a5c56435537b1e24c28d.svg",
+        "id": "ZejTK"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22U%5C%5CSigma%20V%5E%7BT%7D%3DM_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F8e4a4f78efae55d876ccffd04fc08ea8.svg%22%2C%22id%22%3A%22jfUWv%22%7D"
+      },
+      "value": {
+        "code": "U\\Sigma V^{T}=M_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/8e4a4f78efae55d876ccffd04fc08ea8.svg",
+        "id": "jfUWv"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22(M_tM_t%5E%7BT%7D)%5E%7B-1%2F2%7DM_t%3DUV%5E%7BT%7D.%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fda78de814f4b421ab762be1d54b835aa.svg%22%2C%22id%22%3A%22kBjnJ%22%7D"
+      },
+      "value": {
+        "code": "(M_tM_t^{T})^{-1/2}M_t=UV^{T}.",
+        "src": "https://cdn.nlark.com/yuque/__latex/da78de814f4b421ab762be1d54b835aa.svg",
+        "id": "kBjnJ"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22M_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Ffd5903948106a5c56435537b1e24c28d.svg%22%2C%22id%22%3A%22yR0QD%22%7D"
+      },
+      "value": {
+        "code": "M_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/fd5903948106a5c56435537b1e24c28d.svg",
+        "id": "yR0QD"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20M_t%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F042f039669ffece783c21d834dca9905.svg%22%2C%22id%22%3A%22VoFWE%22%7D"
+      },
+      "value": {
+        "code": " M_t",
+        "src": "https://cdn.nlark.com/yuque/__latex/042f039669ffece783c21d834dca9905.svg",
+        "id": "VoFWE"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmu%20M_t%2B%5C%5Cnabla%20L_t(W_%7Bt-1%7D)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F7f5a07b053998bb1d15a30ef8b11b7c1.svg%22%2C%22id%22%3A%22WBhNQ%22%7D"
+      },
+      "value": {
+        "code": "\\mu M_t+\\nabla L_t(W_{t-1})",
+        "src": "https://cdn.nlark.com/yuque/__latex/7f5a07b053998bb1d15a30ef8b11b7c1.svg",
+        "id": "WBhNQ"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22X_0%3D%5C%5Cfrac%7BM_t%7D%7B%5C%5ClVert%20M_t%5C%5CrVert_F%7D.%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F8387b201e02714f50e895efe24a0b02e.svg%22%2C%22id%22%3A%22Izig6%22%7D"
+      },
+      "value": {
+        "code": "X_0=\\frac{M_t}{\\lVert M_t\\rVert_F}.",
+        "src": "https://cdn.nlark.com/yuque/__latex/8387b201e02714f50e895efe24a0b02e.svg",
+        "id": "Izig6"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fdf976ff7fcf17d60490267d18a1e3996.svg%22%2C%22id%22%3A%22vHkon%22%7D"
+      },
+      "value": {
+        "code": "k",
+        "src": "https://cdn.nlark.com/yuque/__latex/df976ff7fcf17d60490267d18a1e3996.svg",
+        "id": "vHkon"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20X_%7Bk-1%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fe5679408dbfc4ed091da02947a91507c.svg%22%2C%22id%22%3A%22KnkeI%22%7D"
+      },
+      "value": {
+        "code": " X_{k-1}",
+        "src": "https://cdn.nlark.com/yuque/__latex/e5679408dbfc4ed091da02947a91507c.svg",
+        "id": "KnkeI"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22X_k%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F8aabe85c1c71253cc0be82daad288416.svg%22%2C%22id%22%3A%22iTLxn%22%7D"
+      },
+      "value": {
+        "code": "X_k",
+        "src": "https://cdn.nlark.com/yuque/__latex/8aabe85c1c71253cc0be82daad288416.svg",
+        "id": "iTLxn"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22X_k%20%3D%20aX_%7Bk-1%7D%20%2B%20b(X_%7Bk-1%7DX_%7Bk-1%7D%5E%7BT%7D)X_%7Bk-1%7D%20%2B%20c(X_%7Bk-1%7DX_%7Bk-1%7D%5E%7BT%7D)%5E%7B2%7DX_%7Bk-1%7D.%20%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F94d4f49b3fd246c1066fcb4244b332f7.svg%22%2C%22id%22%3A%22DCY9w%22%7D"
+      },
+      "value": {
+        "code": "X_k = aX_{k-1} + b(X_{k-1}X_{k-1}^{T})X_{k-1} + c(X_{k-1}X_{k-1}^{T})^{2}X_{k-1}. ",
+        "src": "https://cdn.nlark.com/yuque/__latex/94d4f49b3fd246c1066fcb4244b332f7.svg",
+        "id": "DCY9w"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22X_N%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Ffc153a5f7286ea6adb7ed07fe6b23d92.svg%22%2C%22id%22%3A%22m4jAl%22%7D"
+      },
+      "value": {
+        "code": "X_N",
+        "src": "https://cdn.nlark.com/yuque/__latex/fc153a5f7286ea6adb7ed07fe6b23d92.svg",
+        "id": "m4jAl"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22a%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F26fdbf8e53cb0e48da5f4ddd4aaf5a5c.svg%22%2C%22id%22%3A%22u2OeA%22%7D"
+      },
+      "value": {
+        "code": "a",
+        "src": "https://cdn.nlark.com/yuque/__latex/26fdbf8e53cb0e48da5f4ddd4aaf5a5c.svg",
+        "id": "u2OeA"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22b%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fd29c2e5f4926e5b0e9a95305650f6e54.svg%22%2C%22id%22%3A%22kANnK%22%7D"
+      },
+      "value": {
+        "code": "b",
+        "src": "https://cdn.nlark.com/yuque/__latex/d29c2e5f4926e5b0e9a95305650f6e54.svg",
+        "id": "kANnK"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20c%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F1aa75285f241afa23ff6dbea0d585ff8.svg%22%2C%22id%22%3A%22hlR1B%22%7D"
+      },
+      "value": {
+        "code": " c",
+        "src": "https://cdn.nlark.com/yuque/__latex/1aa75285f241afa23ff6dbea0d585ff8.svg",
+        "id": "hlR1B"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22f(x)%3Dax%2Bbx%5E3%2Bcx%5E5%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F3f45c072f8af76431ef3d531de36d8ff.svg%22%2C%22id%22%3A%22wJJX4%22%7D"
+      },
+      "value": {
+        "code": "f(x)=ax+bx^3+cx^5",
+        "src": "https://cdn.nlark.com/yuque/__latex/3f45c072f8af76431ef3d531de36d8ff.svg",
+        "id": "wJJX4"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22a%3D3.4445%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Ff333d5fc1364519cb1144837dbfe2eb0.svg%22%2C%22id%22%3A%22rb90Z%22%7D"
+      },
+      "value": {
+        "code": "a=3.4445",
+        "src": "https://cdn.nlark.com/yuque/__latex/f333d5fc1364519cb1144837dbfe2eb0.svg",
+        "id": "rb90Z"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22b%3D-4.7750%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fb63c0968ff8dcbe7fa25398ff5a188ae.svg%22%2C%22id%22%3A%22iFzc9%22%7D"
+      },
+      "value": {
+        "code": "b=-4.7750",
+        "src": "https://cdn.nlark.com/yuque/__latex/b63c0968ff8dcbe7fa25398ff5a188ae.svg",
+        "id": "iFzc9"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20c%3D2.0315%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fdfb90e9b4f223d82ba677d92fb9c9934.svg%22%2C%22id%22%3A%22u1W9V%22%7D"
+      },
+      "value": {
+        "code": " c=2.0315",
+        "src": "https://cdn.nlark.com/yuque/__latex/dfb90e9b4f223d82ba677d92fb9c9934.svg",
+        "id": "u1W9V"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22p%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fd4cd21d60552e207f237e82def9029b6.svg%22%2C%22id%22%3A%22EP5Ym%22%7D"
+      },
+      "value": {
+        "code": "p",
+        "src": "https://cdn.nlark.com/yuque/__latex/d4cd21d60552e207f237e82def9029b6.svg",
+        "id": "EP5Ym"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22W_t%3DW_%7Bt-1%7D-%5C%5Ceta_t%5C%5Cleft(O_t%2B%5C%5Clambda%20W_%7Bt-1%7D%5C%5Cright).%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Ff51d72bf5237f223de1de756368c9fde.svg%22%2C%22id%22%3A%22hypFI%22%7D"
+      },
+      "value": {
+        "code": "W_t=W_{t-1}-\\eta_t\\left(O_t+\\lambda W_{t-1}\\right).",
+        "src": "https://cdn.nlark.com/yuque/__latex/f51d72bf5237f223de1de756368c9fde.svg",
+        "id": "hypFI"
+      }
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1785157772044-e3233437-ee3d-4e73-bdae-cefb3926f1ed.png%22%2C%22taskId%22%3A%22u6579f05d-045b-4022-ba6a-bc0aa282789%22%2C%22clientId%22%3A%22ud27a4358-9614-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A574.4000244140625%2C%22height%22%3A283%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A86743%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1028%2C%22originHeight%22%3A507%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22MUONWLOWEIGHTDECAY%22%2C%22x%22%3A117%2C%22y%22%3A407%2C%22width%22%3A170%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22MUONW%2FWEIGHTDECAY%22%2C%22x%22%3A114%2C%22y%22%3A427%2C%22width%22%3A168%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22WINS0.017ATITERATION66000%22%2C%22x%22%3A859%2C%22y%22%3A120%2C%22width%22%3A129%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22.023ATITERATION24000%22%2C%22x%22%3A674%2C%22y%22%3A92%2C%22width%22%3A105%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22TRAININGLTERATIONS%22%2C%22x%22%3A470%2C%22y%22%3A483%2C%22width%22%3A135%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%222%22%2C%22x%22%3A12%2C%22y%22%3A177%2C%22width%22%3A15%2C%22height%22%3A114%7D%2C%7B%22text%22%3A%22TRAININGITERATICNS%22%2C%22x%22%3A749%2C%22y%22%3A233%2C%22width%22%3A69%2C%22height%22%3A9%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A565%2C%22y%22%3A54%2C%22width%22%3A19%2C%22height%22%3A50%7D%2C%7B%22text%22%3A%22ADAMW%22%2C%22x%22%3A115%2C%22y%22%3A387%2C%22width%22%3A64%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%223000040000%22%2C%22x%22%3A737%2C%22y%22%3A216%2C%22width%22%3A89%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%2240000%22%2C%22x%22%3A591%2C%22y%22%3A457%2C%22width%22%3A42%2C%22height%22%3A11%7D%2C%7B%22text%22%3A%2220000%22%2C%22x%22%3A322%2C%22y%22%3A457%2C%22width%22%3A39%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%2230000%22%2C%22x%22%3A456%2C%22y%22%3A456%2C%22width%22%3A39%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%2250000%22%2C%22x%22%3A724%2C%22y%22%3A457%2C%22width%22%3A43%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%2260000%22%2C%22x%22%3A859%2C%22y%22%3A458%2C%22width%22%3A41%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%222.30%22%2C%22x%22%3A38%2C%22y%22%3A333%2C%22width%22%3A29%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%220000%22%2C%22x%22%3A191%2C%22y%22%3A458%2C%22width%22%3A34%2C%22height%22%3A10%7D%2C%7B%22text%22%3A%222.45%22%2C%22x%22%3A31%2C%22y%22%3A140%2C%22width%22%3A40%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A564%2C%22y%22%3A143%2C%22width%22%3A18%2C%22height%22%3A40%7D%2C%7B%22text%22%3A%222.50%22%2C%22x%22%3A37%2C%22y%22%3A75%2C%22width%22%3A31%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%222.25%22%2C%22x%22%3A40%2C%22y%22%3A398%2C%22width%22%3A27%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%220.02%22%2C%22x%22%3A557%2C%22y%22%3A186%2C%22width%22%3A26%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%2260000%22%2C%22x%22%3A880%2C%22y%22%3A215%2C%22width%22%3A65%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%2220000%22%2C%22x%22%3A674%2C%22y%22%3A216%2C%22width%22%3A52%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%2250000%22%2C%22x%22%3A848%2C%22y%22%3A214%2C%22width%22%3A47%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%222.55%22%2C%22x%22%3A39%2C%22y%22%3A11%2C%22width%22%3A28%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%2235%22%2C%22x%22%3A46%2C%22y%22%3A261%2C%22width%22%3A18%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22.4C%22%2C%22x%22%3A45%2C%22y%22%3A205%2C%22width%22%3A18%2C%22height%22%3A19%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23fcfbfb%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u7206ce8b%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1785157772044-e3233437-ee3d-4e73-bdae-cefb3926f1ed.png",
+        "taskId": "u6579f05d-045b-4022-ba6a-bc0aa282789",
+        "clientId": "ud27a4358-9614-4",
+        "originalType": "binary",
+        "width": 574.4000244140625,
+        "height": 283,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 86743,
+        "from": "paste",
+        "originWidth": 1028,
+        "originHeight": 507,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "MUONWLOWEIGHTDECAY",
+            "x": 117,
+            "y": 407,
+            "width": 170,
+            "height": 16
+          },
+          {
+            "text": "MUONW/WEIGHTDECAY",
+            "x": 114,
+            "y": 427,
+            "width": 168,
+            "height": 15
+          },
+          {
+            "text": "WINS0.017ATITERATION66000",
+            "x": 859,
+            "y": 120,
+            "width": 129,
+            "height": 15
+          },
+          {
+            "text": ".023ATITERATION24000",
+            "x": 674,
+            "y": 92,
+            "width": 105,
+            "height": 15
+          },
+          {
+            "text": "TRAININGLTERATIONS",
+            "x": 470,
+            "y": 483,
+            "width": 135,
+            "height": 14
+          },
+          {
+            "text": "2",
+            "x": 12,
+            "y": 177,
+            "width": 15,
+            "height": 114
+          },
+          {
+            "text": "TRAININGITERATICNS",
+            "x": 749,
+            "y": 233,
+            "width": 69,
+            "height": 9
+          },
+          {
+            "text": "",
+            "x": 565,
+            "y": 54,
+            "width": 19,
+            "height": 50
+          },
+          {
+            "text": "ADAMW",
+            "x": 115,
+            "y": 387,
+            "width": 64,
+            "height": 14
+          },
+          {
+            "text": "3000040000",
+            "x": 737,
+            "y": 216,
+            "width": 89,
+            "height": 13
+          },
+          {
+            "text": "40000",
+            "x": 591,
+            "y": 457,
+            "width": 42,
+            "height": 11
+          },
+          {
+            "text": "20000",
+            "x": 322,
+            "y": 457,
+            "width": 39,
+            "height": 13
+          },
+          {
+            "text": "30000",
+            "x": 456,
+            "y": 456,
+            "width": 39,
+            "height": 13
+          },
+          {
+            "text": "50000",
+            "x": 724,
+            "y": 457,
+            "width": 43,
+            "height": 13
+          },
+          {
+            "text": "60000",
+            "x": 859,
+            "y": 458,
+            "width": 41,
+            "height": 12
+          },
+          {
+            "text": "2.30",
+            "x": 38,
+            "y": 333,
+            "width": 29,
+            "height": 15
+          },
+          {
+            "text": "0000",
+            "x": 191,
+            "y": 458,
+            "width": 34,
+            "height": 10
+          },
+          {
+            "text": "2.45",
+            "x": 31,
+            "y": 140,
+            "width": 40,
+            "height": 14
+          },
+          {
+            "text": "",
+            "x": 564,
+            "y": 143,
+            "width": 18,
+            "height": 40
+          },
+          {
+            "text": "2.50",
+            "x": 37,
+            "y": 75,
+            "width": 31,
+            "height": 13
+          },
+          {
+            "text": "2.25",
+            "x": 40,
+            "y": 398,
+            "width": 27,
+            "height": 13
+          },
+          {
+            "text": "0.02",
+            "x": 557,
+            "y": 186,
+            "width": 26,
+            "height": 15
+          },
+          {
+            "text": "60000",
+            "x": 880,
+            "y": 215,
+            "width": 65,
+            "height": 15
+          },
+          {
+            "text": "20000",
+            "x": 674,
+            "y": 216,
+            "width": 52,
+            "height": 13
+          },
+          {
+            "text": "50000",
+            "x": 848,
+            "y": 214,
+            "width": 47,
+            "height": 15
+          },
+          {
+            "text": "2.55",
+            "x": 39,
+            "y": 11,
+            "width": 28,
+            "height": 14
+          },
+          {
+            "text": "35",
+            "x": 46,
+            "y": 261,
+            "width": 18,
+            "height": 24
+          },
+          {
+            "text": ".4C",
+            "x": 45,
+            "y": 205,
+            "width": 18,
+            "height": 19
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#fcfbfb",
+        "__spacing": "both",
+        "id": "u7206ce8b",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1785157772044-e3233437-ee3d-4e73-bdae-cefb3926f1ed.png"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20%5BA%2CB%5D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F7910c51e080a0bf9eb93504fa694fd87.svg%22%2C%22id%22%3A%22tos6t%22%7D",
+        "style": "color: #DF2A3F"
+      },
+      "value": {
+        "code": " [A,B]",
+        "src": "https://cdn.nlark.com/yuque/__latex/7910c51e080a0bf9eb93504fa694fd87.svg",
+        "id": "tos6t"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%221%2F%5C%5Csqrt%7B%5C%5Cmax(A%2CB)%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F4981c28df9b4db6c401a3611c2cf752b.svg%22%2C%22id%22%3A%22OaY6W%22%7D",
+        "style": "color: #DF2A3F"
+      },
+      "value": {
+        "code": "1/\\sqrt{\\max(A,B)}",
+        "src": "https://cdn.nlark.com/yuque/__latex/4981c28df9b4db6c401a3611c2cf752b.svg",
+        "id": "OaY6W"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmax(A%2CB)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F98afac5346a9b02620057304cde9b84a.svg%22%2C%22id%22%3A%22LodF0%22%7D"
+      },
+      "value": {
+        "code": "\\max(A,B)",
+        "src": "https://cdn.nlark.com/yuque/__latex/98afac5346a9b02620057304cde9b84a.svg",
+        "id": "LodF0"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cmax(A%2CB)%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F98afac5346a9b02620057304cde9b84a.svg%22%2C%22id%22%3A%22xTX0s%22%7D"
+      },
+      "value": {
+        "code": "\\max(A,B)",
+        "src": "https://cdn.nlark.com/yuque/__latex/98afac5346a9b02620057304cde9b84a.svg",
+        "id": "xTX0s"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Csqrt%7B%5C%5Cmax(A%2CB)%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F3a7dce52aaaa1ec8e8364910e2a4c18d.svg%22%2C%22id%22%3A%22QMVlQ%22%7D"
+      },
+      "value": {
+        "code": "\\sqrt{\\max(A,B)}",
+        "src": "https://cdn.nlark.com/yuque/__latex/3a7dce52aaaa1ec8e8364910e2a4c18d.svg",
+        "id": "QMVlQ"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Ceta%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F7483c6745bb07f292eba02b3a9b55c26.svg%22%2C%22id%22%3A%22gB74P%22%7D"
+      },
+      "value": {
+        "code": "\\eta",
+        "src": "https://cdn.nlark.com/yuque/__latex/7483c6745bb07f292eba02b3a9b55c26.svg",
+        "id": "gB74P"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%20%5C%5Clambda.%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F3848e150d4bda31c33fc94a407c2eb11.svg%22%2C%22id%22%3A%22HFhZF%22%7D"
+      },
+      "value": {
+        "code": " \\lambda.",
+        "src": "https://cdn.nlark.com/yuque/__latex/3848e150d4bda31c33fc94a407c2eb11.svg",
+        "id": "HFhZF"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22W_t%20%3D%20W_%7Bt-1%7D%20-%20%5C%5Ceta_t%20%5C%5Cleft(%200.2%5C%5Ccdot%20O_t%5C%5Ccdot%5C%5Csqrt%7B%5C%5Cmax(A%2CB)%7D%20%2B%20%5C%5Clambda%20W_%7Bt-1%7D%20%5C%5Cright).%20%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fc2494a1c144016f159875e40d220450e.svg%22%2C%22id%22%3A%22XwVML%22%7D"
+      },
+      "value": {
+        "code": "W_t = W_{t-1} - \\eta_t \\left( 0.2\\cdot O_t\\cdot\\sqrt{\\max(A,B)} + \\lambda W_{t-1} \\right). ",
+        "src": "https://cdn.nlark.com/yuque/__latex/c2494a1c144016f159875e40d220450e.svg",
+        "id": "XwVML"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22N%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F459f3c80a50b7be28751b0869ef5386a.svg%22%2C%22id%22%3A%22Nf1sR%22%7D"
+      },
+      "value": {
+        "code": "N",
+        "src": "https://cdn.nlark.com/yuque/__latex/459f3c80a50b7be28751b0869ef5386a.svg",
+        "id": "Nf1sR"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22N%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F459f3c80a50b7be28751b0869ef5386a.svg%22%2C%22id%22%3A%22bYTZb%22%7D"
+      },
+      "value": {
+        "code": "N",
+        "src": "https://cdn.nlark.com/yuque/__latex/459f3c80a50b7be28751b0869ef5386a.svg",
+        "id": "bYTZb"
+      }
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%221%2F%5C%5Cmathrm%7BDP%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F5d2e81a5f63cdf0921146cbc4dd4bd8a.svg%22%2C%22id%22%3A%22KWdVX%22%7D"
+      },
+      "value": {
+        "code": "1/\\mathrm{DP}",
+        "src": "https://cdn.nlark.com/yuque/__latex/5d2e81a5f63cdf0921146cbc4dd4bd8a.svg",
+        "id": "KWdVX"
+      }
+    }
+  ]
+}

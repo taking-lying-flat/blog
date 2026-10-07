@@ -1,6 +1,7 @@
 {
   "endpoint": "https://api.nostalgic.llll-ll.com/like",
   "posts": {
+    "optimizers": "tlf-blog-optimizers",
     "omni-modal": "tlf-blog-omni-modal",
     "infra-quant-ii": "tlf-blog-infra-quant-ii",
     "on-policy-distill": "tlf-blog-on-policy-distill",
