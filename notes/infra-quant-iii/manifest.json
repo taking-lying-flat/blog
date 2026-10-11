@@ -1977,9 +1977,22 @@
     {
       "tag": "li",
       "id": "uf61516a2"
+    },
+    {
+      "tag": "p",
+      "id": "ucb76b1e2"
+    },
+    {
+      "tag": "li",
+      "id": "u6a594215"
+    },
+    {
+      "tag": "p",
+      "id": "u01374a3c"
     }
   ],
   "mathRemovals": [
-    "twrjN"
+    "twrjN",
+    "LRTXe"
   ]
 }
