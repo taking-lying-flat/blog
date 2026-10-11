@@ -1971,17 +1971,6 @@
       "id": "u412bd542"
     }
   ],
-  "paragraphSplits": [
-    {
-      "paragraph": "ue25f817f",
-      "before": "u9ecf7856",
-      "id": "gptaq-finetuning-methods"
-    }
-  ],
-  "paragraphListItemsAfterMoves": [],
-  "paragraphEmphasis": [
-    "gptaq-finetuning-methods"
-  ],
   "mathRemovals": [
     "twrjN"
   ]

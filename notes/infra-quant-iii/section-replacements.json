@@ -1,5 +1,11 @@
 [
   {
+    "id": "gptaq-finetuning-background",
+    "start": "ue25f817f",
+    "before": "ubffc30bb",
+    "file": "finetuning-background.md"
+  },
+  {
     "id": "gptaq-efficient-solution",
     "start": "ufe6b43ec",
     "file": "efficient-solution.md"
