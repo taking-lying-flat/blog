@@ -1,8 +1,6 @@
 ## 🧮 Appendix
 
-<!-- Faithful translation of Appendix A.1–A.3, li25dn.pdf, pp. 13–15. Original equation groups (19)–(39) correspond to (A.1)–(A.21). No derivation steps are omitted. -->
-
-### A.1 Optimal Framework
+<!-- Faithful translation of Appendix A.1–A.3, li25dn.pdf, pp. 13–15. Original equation groups (19)–(39) correspond to (A.1)–(A.21). No derivation steps are omitted. Lemma 4.1 and Theorem 4.2 statements follow PDF p. 5. -->
 
 **本节给出最优框架的详细推导。为求解拉格朗日函数的局部极小值，令偏导数为零：**
 
@@ -108,9 +106,9 @@ L_q=\frac{(\hat{w}_q-w_q)^2}{\mathbf{H}_{qq}^{-1}}+\mathbf{r}\mathbf{r}^{\top}-\
 
 ### A.2 Proof Of Lemma 4.1
 
-**不失一般性，首先证明 $`\mathbf{H}_{-1}^{-1}=(\mathbf{X}_{-1}\mathbf{X}_{-1}^{\top})^{-1}=\mathbf{L}_{2:,2:}\mathbf{L}_{2:,2:}^{\top}`$ 的情形。对 $`\mathbf{H}^{-1}`$ 进行 Cholesky 分解，有 $`\mathbf{H}^{-1}=\mathbf{L}\mathbf{L}^{\top}`$，其中 $`\mathbf{L}`$ 为下三角矩阵**
+**引理 4.1：给定完整 Hessian 逆矩阵 $`\mathbf{H}^{-1}`$ 的 Cholesky 因子 $`\mathbf{L}`$，Hessian 逆矩阵 $`\mathbf{H}_{-q:}^{-1}=(\mathbf{X}_{-q:}\mathbf{X}_{-q:}^{\top})^{-1}`$ 等价于 $`\mathbf{L}_{q+1:,q+1:}\mathbf{L}_{q+1:,q+1:}^{\top}`$**
 
-- 因此，Cholesky 因子可改写为
+- **证明** 不失一般性，首先证明 $`\mathbf{H}_{-1}^{-1}=(\mathbf{X}_{-1}\mathbf{X}_{-1}^{\top})^{-1}=\mathbf{L}_{2:,2:}\mathbf{L}_{2:,2:}^{\top}`$ 的情形。对 $`\mathbf{H}^{-1}`$ 进行 Cholesky 分解，有 $`\mathbf{H}^{-1}=\mathbf{L}\mathbf{L}^{\top}`$，其中 $`\mathbf{L}`$ 为下三角矩阵。因此，Cholesky 因子可改写为
 
 ```math
 \mathbf{L}=\begin{bmatrix}L_{11}&0\\\mathbf{L}_{2:,1}&\mathbf{L}_{2:,2:}\end{bmatrix}\tag{A.13}
@@ -146,7 +144,9 @@ L_{11}=\sqrt{\mathbf{H}_{11}^{-1}},\\[0.4em]
 
 ### A.3 Proof Of Theorem 4.2
 
-**首先计算矩阵 $`\mathbf{P}`$ 的各行，其表达式为：**
+**定理 4.2：矩阵 $`\mathbf{P}`$ 满足 $`\mathbf{P}=\left((\Delta\mathbf{X}\mathbf{X}^{\top}\mathbf{L})\odot\mathbf{M}_U\right)\mathbf{L}^{\top}`$，其中 $`\mathbf{M}_U\in\{0,1\}^{n\times n}`$ 为严格上三角掩码矩阵，对角线上方的元素为 1，$`\odot`$ 表示逐元素乘法**
+
+- **证明** 首先计算矩阵 $`\mathbf{P}`$ 的各行，其表达式为：
 
 ```math
 \mathbf{P}_{i,:}=\Delta\mathbf{X}_{i,:}\mathbf{X}^{\top}\mathbf{L}_{i+1:,i+1:}\mathbf{L}_{i+1:,i+1:}^{\top}\tag{A.17}
