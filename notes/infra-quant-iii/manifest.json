@@ -1992,9 +1992,23 @@
     "LRTXe"
   ],
   "listItemParagraphs": [
-    "u6a594215"
+    "u6a594215",
+    [
+      "u4a75b846",
+      "ua178b860"
+    ]
   ],
   "paragraphEmphasis": [
     "u6a594215"
+  ],
+  "paragraphJoins": [
+    {
+      "into": "u4a75b846",
+      "next": "ua178b860",
+      "separator": "。"
+    }
+  ],
+  "paragraphListItems": [
+    "u24189994"
   ]
 }
