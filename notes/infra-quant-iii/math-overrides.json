@@ -65,10 +65,10 @@
   },
   "zpfVX": {
     "from": "\\mathbf{P}=\\left((\\Delta\\mathbf{X}\\mathbf{X}^{\\top}\\mathbf{L})\\odot\\mathbf{M}_U\\right)\\mathbf{L}^{\\top}.\\qquad (17)",
-    "to": "\\mathbf{P}=\\left((\\Delta\\mathbf{X}\\mathbf{X}^{\\top}\\mathbf{L})\\odot\\mathbf{M}_U\\right)\\mathbf{L}^{\\top}\\tag{17}"
+    "to": "\\mathbf{P}=\\left((\\Delta\\mathbf{X}\\mathbf{X}^{\\top}\\mathbf{L})\\odot\\mathbf{M}_U\\right)\\mathbf{L}^{\\top}\\tag{18}"
   },
   "C9rRH": {
     "from": "\\Delta\\mathbf{W}_{:,Q:}=\\frac{\\hat{\\mathbf{W}}_{:,Q}-\\mathbf{W}_{:,Q}}{\\mathbf{L}_{QQ}^{\\top}}\\mathbf{L}_{Q,Q:}^{\\top}+\\mathbf{W}_{:,Q}\\mathbf{P}_{Q,Q:}.\\qquad (18)",
-    "to": "\\Delta\\mathbf{W}_{:,Q:}=\\frac{\\hat{\\mathbf{W}}_{:,Q}-\\mathbf{W}_{:,Q}}{\\mathbf{L}_{QQ}^{\\top}}\\mathbf{L}_{Q,Q:}^{\\top}+\\mathbf{W}_{:,Q}\\mathbf{P}_{Q,Q:}\\tag{18}"
+    "to": "\\Delta\\mathbf{W}_{:,Q:}=\\frac{\\hat{\\mathbf{W}}_{:,Q}-\\mathbf{W}_{:,Q}}{\\mathbf{L}_{QQ}^{\\top}}\\mathbf{L}_{Q,Q:}^{\\top}+\\mathbf{W}_{:,Q}\\mathbf{P}_{Q,Q:}\\tag{17}"
   }
 }

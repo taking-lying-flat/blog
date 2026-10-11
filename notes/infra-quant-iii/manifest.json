@@ -1965,48 +1965,24 @@
     {
       "tag": "p",
       "id": "ub8cfb3ef"
+    },
+    {
+      "tag": "li",
+      "id": "u412bd542"
     }
   ],
   "paragraphSplits": [
-    {
-      "paragraph": "ufe6b43ec",
-      "before": "u74ea4aff",
-      "id": "gptaq-arbitrary-order"
-    },
-    {
-      "paragraph": "ue0414996",
-      "before": "u9d188c20",
-      "id": "gptaq-residual-decomposition"
-    },
-    {
-      "paragraph": "ua437ee2f",
-      "before": "ue510fe50",
-      "id": "gptaq-cholesky-reformulation"
-    },
-    {
-      "paragraph": "u290ad402",
-      "before": "u8e5d3d46",
-      "id": "gptaq-lazy-batch"
-    },
     {
       "paragraph": "ue25f817f",
       "before": "u9ecf7856",
       "id": "gptaq-finetuning-methods"
     }
   ],
-  "paragraphListItemsAfterMoves": [
-    "u934fa1c6",
-    "udc3595a1",
-    "ub13fa5c3",
-    "u96121e14"
-  ],
+  "paragraphListItemsAfterMoves": [],
   "paragraphEmphasis": [
-    "gptaq-arbitrary-order",
-    "u66a0138a",
-    "ud5cde9e4",
-    "gptaq-residual-decomposition",
-    "gptaq-cholesky-reformulation",
-    "gptaq-lazy-batch",
     "gptaq-finetuning-methods"
+  ],
+  "mathRemovals": [
+    "twrjN"
   ]
 }
