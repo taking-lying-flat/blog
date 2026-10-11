@@ -815,14 +815,3 @@
 .lake-document .rotation-case > :last-child { margin-bottom: 0; }
 .lake-document .rotation-case .equation { margin: 10px 0 14px; padding: 4px 0; font-size: 16px; }
 .lake-document .rotation-case .equation mjx-container[display="true"] { margin: 0; }
-
-/* Infra Quant III: isolated theorem highlights. */
-[data-post="infra-quant-iii"] .paper-theorem {
-  margin: 12px 0;
-  padding: 8px 14px;
-  background: #fffcf5;
-}
-[data-post="infra-quant-iii"] .paper-theorem > p { margin: 0; }
-[data-post="infra-quant-iii"] .paper-theorem > p > strong:first-child { color: #814800; }
-[data-post="infra-quant-iii"] .paper-theorem .equation { margin: 8px 0; padding: 0; }
-[data-post="infra-quant-iii"] .paper-theorem .equation mjx-container[display="true"] { margin: 0; }

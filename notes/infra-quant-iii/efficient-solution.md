@@ -8,9 +8,7 @@
 \Delta\mathbf{W}=\frac{\hat{\mathbf{W}}_{:,q}-\mathbf{W}_{:,q}}{\mathbf{H}_{qq}^{-1}}\cdot\mathbf{H}_{q,:}^{-1}+\mathbf{R}\mathbf{X}^{\top}\mathbf{H}_{-q}^{-1}\tag{11}
 ```
 
-- 其中，$`\mathbf{R}=\mathbf{W}\tilde{\mathbf{X}}-\mathbf{W}\mathbf{X}`$ 表示所有行，即所有输出通道的输出残差。采用这一形式，只需维护一份 $`\mathbf{H}_{-q}^{-1}`$，因为对于给定的 $`q`$，它在所有行之间保持不变
-
-- 尽管这一方法实现行之间的并行处理，但仍存在两项显著的计算挑战：每次迭代都需要估计新的残差 $`\mathbf{R}`$，以及矩阵乘法 $`\mathbf{R}\mathbf{X}^{\top}\mathbf{H}_{-q}^{-1}`$ 带来的计算负担。要使该方法在大规模模型上达到实际可用的效率，必须解决这些问题
+- 其中，$`\mathbf{R}=\mathbf{W}\tilde{\mathbf{X}}-\mathbf{W}\mathbf{X}`$ 表示所有行，即所有输出通道的输出残差。采用这一形式，只需维护一份 $`\mathbf{H}_{-q}^{-1}`$，因为对于给定的 $`q`$，它在所有行之间保持不变。尽管这一方法实现行之间的并行处理，但仍存在两项显著的计算挑战：每次迭代都需要估计新的残差 $`\mathbf{R}`$，以及矩阵乘法 $`\mathbf{R}\mathbf{X}^{\top}\mathbf{H}_{-q}^{-1}`$ 带来的计算负担。要使该方法在大规模模型上达到实际可用的效率，必须解决这些问题
 
 **步骤 II：通过逐通道分解，避免每轮迭代重新计算完整输出残差 $`\mathbf{R}`$**
 
@@ -44,17 +42,13 @@
 
 **步骤 III：通过 Cholesky 重构，在保持数值稳定性的同时高效计算残差校正矩阵 $`\mathbf{P}`$**
 
-- 这些要求源于需要对 Hessian 逆矩阵执行 $`n`$ 次高斯消元，并进行矩阵乘法计算。随着模型规模的增大，重复的高斯消元操作会累积数值误差。通过对 Hessian 逆矩阵进行 Cholesky 分解来解决这一数值不稳定问题：$`\mathbf{H}^{-1}=\mathbf{L}\mathbf{L}^{\top}`$，其中 $`\mathbf{L}`$ 为下三角 Cholesky 因子。借助引理 4.1，可以高效且稳定地计算 $`\mathbf{H}_{-q:}^{-1}`$
-
-- 根据引理 4.1，与高斯消元相比，这一形式具有更好的数值稳定性，仅需矩阵切片和乘法即可得到 $`\mathbf{H}_{-q:}^{-1}`$。因此，可以将 $`\mathbf{P}_{q,:}`$ 改写为：
+- 重复的高斯消元会累积数值误差。对 Hessian 逆矩阵进行 Cholesky 分解 $`\mathbf{H}^{-1}=\mathbf{L}\mathbf{L}^{\top}`$，其中 $`\mathbf{L}`$ 为下三角因子。通过该因子的切片与乘法计算 $`\mathbf{H}_{-q:}^{-1}`$，可将 $`\mathbf{P}_{q,:}`$ 改写为：
 
 ```math
 \mathbf{P}_{q,:}=\Delta\mathbf{X}_{q,:}\mathbf{X}^{\top}\mathbf{L}_{q+1:,q+1:}\mathbf{L}_{q+1:,q+1:}^{\top}\tag{16}
 ```
 
-- 这里使用 $`\mathbf{X}^{\top}`$，是因为 $`\mathbf{X}_{:,q:}^{\top}\mathbf{H}_{-q:}^{-1}=\mathbf{X}^{\top}\mathbf{H}_{-q:}^{-1}`$。为优化 $`\mathbf{P}`$ 的计算，首先计算完整矩阵 $`\Delta\mathbf{X}\mathbf{X}^{\top}\in\mathbb{R}^{n\times n}`$。此时，关键挑战转变为如何高效利用 $`\mathbf{L}_{q+1:,q+1:}\mathbf{L}_{q+1:,q+1:}^{\top}`$ 的结构，从而在 GPU 上并行处理 $`\mathbf{P}`$ 的每一行。$`\mathbf{L}_{q+1:,q+1:}`$ 的下三角结构为通过向量化优化计算提供机会，定理 4.2 对此进行形式化描述
-
-- 借助定理 4.2，仅需一行代码即可计算 $`\mathbf{P}`$。此外，该方法能够与 GPTQ 的现有实现集成，因为 GPTQ 同样利用 Cholesky 因子 $`\mathbf{L}`$ 计算对角元素和第 $`q`$ 行向量 $`\tilde{\mathbf{H}}_{q,:}^{-1}`$。GPTAQ 的实现只需对原始 GPTQ 框架进行少量修改
+- 由于 $`\mathbf{X}_{:,q:}^{\top}\mathbf{H}_{-q:}^{-1}=\mathbf{X}^{\top}\mathbf{H}_{-q:}^{-1}`$，式（16）使用完整的 $`\mathbf{X}^{\top}`$。预先计算 $`\Delta\mathbf{X}\mathbf{X}^{\top}\in\mathbb{R}^{n\times n}`$，再利用 $`\mathbf{L}`$ 的下三角结构，在 GPU 上并行计算 $`\mathbf{P}`$ 的各行
 
 **步骤 IV：预先计算矩阵 $`\mathbf{P}`$ 后，对两个权重更新项采用延迟批量处理，以提高 GPU 利用率**
 
@@ -63,25 +57,3 @@
 ```math
 \Delta\mathbf{W}_{:,Q:}=\frac{\hat{\mathbf{W}}_{:,Q}-\mathbf{W}_{:,Q}}{\mathbf{L}_{QQ}^{\top}}\mathbf{L}_{Q,Q:}^{\top}+\mathbf{W}_{:,Q}\mathbf{P}_{Q,Q:}\tag{17}
 ```
-
-<div class="paper-theorem" id="gptaq-lemma-41">
-
-**引理 4.1** 给定完整 Hessian 逆矩阵 $`\mathbf{H}^{-1}`$ 的 Cholesky 因子 $`\mathbf{L}`$，Hessian 逆矩阵 $`\mathbf{H}_{-q:}^{-1}=(\mathbf{X}_{-q:}\mathbf{X}_{-q:}^{\top})^{-1}`$ 等价于 $`\mathbf{L}_{q+1:,q+1:}\mathbf{L}_{q+1:,q+1:}^{\top}`$
-
-- 证明见原论文附录 A.2
-
-</div>
-
-<div class="paper-theorem" id="gptaq-theorem-42">
-
-**定理 4.2** 矩阵 $`\mathbf{P}`$ 可以表示为
-
-```math
-\mathbf{P}=\left((\Delta\mathbf{X}\mathbf{X}^{\top}\mathbf{L})\odot\mathbf{M}_U\right)\mathbf{L}^{\top}\tag{18}
-```
-
-- 其中，$`\mathbf{M}_U\in\{0,1\}^{n\times n}`$ 是一个严格上三角掩码矩阵，对角线上方的元素为 1；$`\odot`$ 表示逐元素乘法
-
-- 证明见原论文附录 A.3
-
-</div>
