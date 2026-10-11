@@ -90,9 +90,7 @@ L_q&=\mathbf{r}\mathbf{X}^{\top}\left(\mathbf{I}-\frac{1}{\mathbf{H}_{qq}^{-1}}\
 \end{aligned}\tag{A.10}
 ```
 
-- 由于 $`\mathbf{H}_{-q}^{-1}`$ 的第 $`q`$ 行已被消去，$`\mathbf{e}_q\mathbf{H}_{-q}^{-1}=\mathbf{0}`$ 为全零向量，因此式（A.10）最后一个等式中的第一项为零。又因 $`\mathbf{e}_q\mathbf{H}_{:,q}^{-1}=\mathbf{H}_{qq}^{-1}`$，最后一项可改写为 $`-2\frac{\hat{w}_q-w_q}{\mathbf{H}_{qq}^{-1}}\mathbf{r}\mathbf{X}^{\top}\mathbf{H}_{:,q}^{-1}`$
-
-- 进一步化简 $`\mathbf{H}_{q,:}^{-1}\mathbf{H}\mathbf{H}_{:,q}^{-1}`$
+- 由于 $`\mathbf{H}_{-q}^{-1}`$ 的第 $`q`$ 行已被消去，$`\mathbf{e}_q\mathbf{H}_{-q}^{-1}=\mathbf{0}`$ 为全零向量，因此式（A.10）最后一个等式中的第一项为零。又因 $`\mathbf{e}_q\mathbf{H}_{:,q}^{-1}=\mathbf{H}_{qq}^{-1}`$，最后一项可改写为 $`-2\frac{\hat{w}_q-w_q}{\mathbf{H}_{qq}^{-1}}\mathbf{r}\mathbf{X}^{\top}\mathbf{H}_{:,q}^{-1}`$。进一步化简 $`\mathbf{H}_{q,:}^{-1}\mathbf{H}\mathbf{H}_{:,q}^{-1}`$
 
 ```math
 \begin{aligned}
@@ -144,9 +142,7 @@ L_{11}=\sqrt{\mathbf{H}_{11}^{-1}},\\[0.4em]
 \end{cases}\tag{A.16}
 ```
 
-- 回顾 $`\mathbf{H}_{1:,1:}^{-1}-\frac{1}{\mathbf{H}_{11}^{-1}}\mathbf{H}_{1:,1}^{-1}\mathbf{H}_{1,1:}^{-1}`$，该式对第一行和第一列执行高斯消元，结果对应 $`\mathbf{H}_{-1}^{-1}`$。式（A.16）的第三个方程实质上对应移除第一行和第一列后的 $`\mathbf{H}_{-1}^{-1}`$，因此有 $`\mathbf{H}_{-1}^{-1}=\mathbf{L}_{2:,2:}\mathbf{L}_{2:,2:}^{\top}`$
-
-- 递归移除当前 Hessian 逆矩阵的第一行和第一列，即得 $`\mathbf{H}_{-q:}^{-1}=\mathbf{L}_{q+1:,q+1:}\mathbf{L}_{q+1:,q+1:}^{\top}`$，引理得证
+- 回顾 $`\mathbf{H}_{1:,1:}^{-1}-\frac{1}{\mathbf{H}_{11}^{-1}}\mathbf{H}_{1:,1}^{-1}\mathbf{H}_{1,1:}^{-1}`$，该式对第一行和第一列执行高斯消元，结果对应 $`\mathbf{H}_{-1}^{-1}`$。式（A.16）的第三个方程实质上对应移除第一行和第一列后的 $`\mathbf{H}_{-1}^{-1}`$，因此有 $`\mathbf{H}_{-1}^{-1}=\mathbf{L}_{2:,2:}\mathbf{L}_{2:,2:}^{\top}`$。递归移除当前 Hessian 逆矩阵的第一行和第一列，即得 $`\mathbf{H}_{-q:}^{-1}=\mathbf{L}_{q+1:,q+1:}\mathbf{L}_{q+1:,q+1:}^{\top}`$，引理得证
 
 ### A.3 Proof Of Theorem 4.2
 
