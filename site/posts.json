@@ -15,7 +15,8 @@
       "GPTAQ"
     ],
     "appendMarkdown": [
-      "gptaq-algorithm.md"
+      "gptaq-algorithm.md",
+      "gptaq-appendix.md"
     ]
   },
   {

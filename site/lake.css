@@ -815,3 +815,6 @@
 .lake-document .rotation-case > :last-child { margin-bottom: 0; }
 .lake-document .rotation-case .equation { margin: 10px 0 14px; padding: 4px 0; font-size: 16px; }
 .lake-document .rotation-case .equation mjx-container[display="true"] { margin: 0; }
+
+/* Match the Lake equation size within the GPTAQ step section only. */
+[data-post="infra-quant-iii"] #gptaq-efficient-solution .equation { font-size: 16px; }
