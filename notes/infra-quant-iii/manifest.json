@@ -1995,7 +1995,6 @@
     }
   ],
   "paragraphListItemsAfterMoves": [
-    "gptaq-arbitrary-order",
     "gptaq-residual-decomposition",
     "gptaq-cholesky-reformulation",
     "gptaq-lazy-batch",
@@ -2006,6 +2005,7 @@
     "u96121e14"
   ],
   "paragraphEmphasis": [
+    "gptaq-arbitrary-order",
     "u66a0138a",
     "ud5cde9e4"
   ]
