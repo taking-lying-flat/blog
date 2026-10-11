@@ -1983,10 +1983,6 @@
       "id": "ucb76b1e2"
     },
     {
-      "tag": "li",
-      "id": "u6a594215"
-    },
-    {
       "tag": "p",
       "id": "u01374a3c"
     }
@@ -1994,5 +1990,11 @@
   "mathRemovals": [
     "twrjN",
     "LRTXe"
+  ],
+  "listItemParagraphs": [
+    "u6a594215"
+  ],
+  "paragraphEmphasis": [
+    "u6a594215"
   ]
 }
