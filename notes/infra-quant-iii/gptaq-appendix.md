@@ -32,8 +32,6 @@
 -\frac{\lambda}{2}\mathbf{H}_{q,:}^{-1}\mathbf{e}_q^{\top}+\mathbf{r}\mathbf{X}^{\top}\mathbf{H}^{-1}\mathbf{e}_q^{\top}+w_q-\hat{w}_q=-\frac{\lambda}{2}\mathbf{H}_{qq}^{-1}+\mathbf{r}\mathbf{X}^{\top}\mathbf{H}_{:,q}^{-1}+w_q-\hat{w}_q=0\tag{A.4}
 ```
 
-- 由此求得 $`\lambda`$
-
 ```math
 \lambda=2\left(\frac{w_q-\hat{w}_q}{\mathbf{H}_{qq}^{-1}}+\frac{\mathbf{r}\mathbf{X}^{\top}\mathbf{H}_{:,q}^{-1}}{\mathbf{H}_{qq}^{-1}}\right)\tag{A.5}
 ```
@@ -55,8 +53,6 @@
 L_q=\left\|\mathbf{r}\mathbf{X}^{\top}\mathbf{H}_{-q}^{-1}\mathbf{X}-\mathbf{r}+\frac{\hat{w}_q-w_q}{\mathbf{H}_{qq}^{-1}}\cdot\left(\mathbf{H}_{q,:}^{-1}\right)\mathbf{X}\right\|_F^2\tag{A.7}
 ```
 
-- 展开该函数，得到
-
 ```math
 \begin{aligned}
 L_q&=\mathbf{r}\mathbf{X}^{\top}\mathbf{H}_{-q}^{-1}\mathbf{X}\mathbf{X}^{\top}\mathbf{H}_{-q}^{-1}\mathbf{X}\mathbf{r}^{\top}+\mathbf{r}\mathbf{r}^{\top}-2\mathbf{r}\mathbf{X}^{\top}\mathbf{H}_{-q}^{-1}\mathbf{X}\mathbf{r}^{\top}+\frac{(\hat{w}_q-w_q)^2}{(\mathbf{H}_{qq}^{-1})^2}\cdot\mathbf{H}_{q,:}^{-1}\mathbf{X}\mathbf{X}^{\top}\mathbf{H}_{:,q}^{-1}\\
@@ -70,10 +66,8 @@ L_q&=\mathbf{r}\mathbf{X}^{\top}\mathbf{H}_{-q}^{-1}\mathbf{X}\mathbf{X}^{\top}\
 
 ```math
 \begin{aligned}
-\mathbf{H}_{-q}^{-1}\mathbf{H}&=\left(\mathbf{H}^{-1}-\frac{\mathbf{H}_{:,q}^{-1}\mathbf{H}_{q,:}^{-1}}{\mathbf{H}_{qq}^{-1}}\right)\mathbf{H}\\
-&=\mathbf{I}-\left(\frac{\mathbf{H}_{:,q}^{-1}\mathbf{H}_{q,:}^{-1}}{\mathbf{H}_{qq}^{-1}}\right)\mathbf{H}\\
-&=\mathbf{I}-\left(\frac{\mathbf{H}^{-1}\mathbf{e}_q^{\top}\mathbf{e}_q\mathbf{H}^{-1}}{\mathbf{H}_{qq}^{-1}}\right)\mathbf{H}\\
-&=\mathbf{I}-\frac{1}{\mathbf{H}_{qq}^{-1}}\mathbf{H}^{-1}\mathbf{e}_q^{\top}\mathbf{e}_q
+\mathbf{H}_{-q}^{-1}\mathbf{H}&=\left(\mathbf{H}^{-1}-\frac{\mathbf{H}_{:,q}^{-1}\mathbf{H}_{q,:}^{-1}}{\mathbf{H}_{qq}^{-1}}\right)\mathbf{H}=\mathbf{I}-\left(\frac{\mathbf{H}_{:,q}^{-1}\mathbf{H}_{q,:}^{-1}}{\mathbf{H}_{qq}^{-1}}\right)\mathbf{H}\\
+&=\mathbf{I}-\left(\frac{\mathbf{H}^{-1}\mathbf{e}_q^{\top}\mathbf{e}_q\mathbf{H}^{-1}}{\mathbf{H}_{qq}^{-1}}\right)\mathbf{H}=\mathbf{I}-\frac{1}{\mathbf{H}_{qq}^{-1}}\mathbf{H}^{-1}\mathbf{e}_q^{\top}\mathbf{e}_q
 \end{aligned}\tag{A.9}
 ```
 
