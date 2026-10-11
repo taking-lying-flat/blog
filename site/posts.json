@@ -1,5 +1,24 @@
 [
   {
+    "file": "../notes/infra-quant-iii/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "infra-quant-iii",
+    "series": "infra-quant",
+    "seriesOrder": 3,
+    "category": "infra",
+    "categoryOrder": 6,
+    "date": "2026-10-11",
+    "description": "GPTAQ 论文笔记：非对称校准、最优权重更新、逐通道残差分解、Cholesky 重构与延迟批量量化。",
+    "tags": [
+      "GPTAQ"
+    ],
+    "appendMarkdown": [
+      "gptaq-algorithm.md"
+    ]
+  },
+  {
     "file": "../notes/optimizers/source.lake",
     "format": "lake",
     "numberedEquations": {"QMCxe": ["SwXTD", "DCY9w", "hypFI", "XwVML"]},
@@ -42,6 +61,8 @@
     "removeEmptyParagraphs": true,
     "tocDepth": 2,
     "slug": "infra-quant-ii",
+    "series": "infra-quant",
+    "seriesOrder": 2,
     "category": "infra",
     "categoryOrder": 5,
     "date": "2026-09-23",
@@ -176,7 +197,7 @@
     "series": "speculative-decoding",
     "seriesOrder": 3,
     "category": "infra",
-    "categoryOrder": 8,
+    "categoryOrder": 9,
     "date": "2026-10-07",
     "description": "DFlash 论文笔记：目标模型上下文特征、逐层 KV 注入、块扩散并行草稿生成，以及随机掩码块与位置加权训练",
     "tags": ["DFlash"],
@@ -194,7 +215,7 @@
     "series": "speculative-decoding",
     "seriesOrder": 2,
     "category": "infra",
-    "categoryOrder": 7,
+    "categoryOrder": 8,
     "date": "2026-10-04",
     "description": "EAGLE 系列笔记：EAGLE 的特征预测与错位 token 输入、EAGLE-2 的动态草稿树，以及 EAGLE-3 的多层特征融合与训练时测试",
     "tags": [
@@ -215,7 +236,7 @@
     "series": "speculative-decoding",
     "seriesOrder": 1,
     "category": "infra",
-    "categoryOrder": 6,
+    "categoryOrder": 7,
     "date": "2026-10-04",
     "description": "投机解码与投机采样笔记：草稿生成、并行验证、作者伪代码与分布保持证明，以及 Medusa 的多预测头、树形注意力、典型性接受和训练策略",
     "appendFiles": [
@@ -942,6 +963,8 @@
     "format": "lake",
     "tocDepth": 2,
     "slug": "infra-quant-i",
+    "series": "infra-quant",
+    "seriesOrder": 1,
     "category": "infra",
     "categoryOrder": 4,
     "date": "2026-09-23",

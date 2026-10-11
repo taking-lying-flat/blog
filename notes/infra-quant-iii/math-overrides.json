@@ -1,0 +1,74 @@
+{
+  "qbtZ8": {
+    "from": "\\min_{\\Delta\\mathbf{w}}\\left\\|(\\mathbf{w}+\\Delta\\mathbf{w})\\mathbf{X}-\\mathbf{w}\\mathbf{X}\\right\\|_F^2,\\quad \\text{s.t.}\\quad \\Delta\\mathbf{w}=\\hat{\\mathbf{w}}-\\mathbf{w}.\\qquad (1)",
+    "to": "\\min_{\\Delta\\mathbf{w}}\\left\\|(\\mathbf{w}+\\Delta\\mathbf{w})\\mathbf{X}-\\mathbf{w}\\mathbf{X}\\right\\|_F^2,\\quad \\text{s.t.}\\quad \\Delta\\mathbf{w}=\\hat{\\mathbf{w}}-\\mathbf{w}\\tag{1}"
+  },
+  "TRl5f": {
+    "from": "q=\\arg\\min_q\\frac{(\\hat{w}_q-w_q)^2}{\\mathbf{H}_{qq}^{-1}},\\qquad \\Delta\\mathbf{w}=\\frac{\\hat{w}_q-w_q}{\\mathbf{H}_{qq}^{-1}}\\cdot\\mathbf{H}_{q,:}^{-1}.\\qquad (2)",
+    "to": "q=\\arg\\min_q\\frac{(\\hat{w}_q-w_q)^2}{\\mathbf{H}_{qq}^{-1}},\\qquad \\Delta\\mathbf{w}=\\frac{\\hat{w}_q-w_q}{\\mathbf{H}_{qq}^{-1}}\\cdot\\mathbf{H}_{q,:}^{-1}\\tag{2}"
+  },
+  "KkYAS": {
+    "from": "\\mathbf{H}_{-q}^{-1}=(\\mathbf{X}_{-q}\\mathbf{X}_{-q}^{\\top})^{-1}=\\left(\\mathbf{H}^{-1}-\\frac{\\mathbf{H}_{:,q}^{-1}\\mathbf{H}_{q,:}^{-1}}{\\mathbf{H}_{qq}^{-1}}\\right).\\qquad (3)",
+    "to": "\\mathbf{H}_{-q}^{-1}=(\\mathbf{X}_{-q}\\mathbf{X}_{-q}^{\\top})^{-1}=\\left(\\mathbf{H}^{-1}-\\frac{\\mathbf{H}_{:,q}^{-1}\\mathbf{H}_{q,:}^{-1}}{\\mathbf{H}_{qq}^{-1}}\\right)\\tag{3}"
+  },
+  "K5sdN": {
+    "from": "\\min_{\\Delta\\mathbf{w}}\\left\\|(\\mathbf{w}+\\Delta\\mathbf{w})\\mathbf{X}-\\mathbf{w}\\tilde{\\mathbf{X}}\\right\\|_F^2,\\quad \\text{s.t.}\\quad \\Delta\\mathbf{w}=\\hat{\\mathbf{w}}-\\mathbf{w}.\\qquad (4)",
+    "to": "\\min_{\\Delta\\mathbf{w}}\\left\\|(\\mathbf{w}+\\Delta\\mathbf{w})\\mathbf{X}-\\mathbf{w}\\tilde{\\mathbf{X}}\\right\\|_F^2,\\quad \\text{s.t.}\\quad \\Delta\\mathbf{w}=\\hat{\\mathbf{w}}-\\mathbf{w}\\tag{4}"
+  },
+  "WBU3r": {
+    "from": "\\min_{\\Delta\\mathbf{w}}\\left\\|\\Delta\\mathbf{w}\\mathbf{X}-\\mathbf{r}\\right\\|_F^2,\\quad \\text{s.t.}\\quad \\Delta\\mathbf{w}=\\hat{\\mathbf{w}}-\\mathbf{w}.\\qquad (5)",
+    "to": "\\min_{\\Delta\\mathbf{w}}\\left\\|\\Delta\\mathbf{w}\\mathbf{X}-\\mathbf{r}\\right\\|_F^2,\\quad \\text{s.t.}\\quad \\Delta\\mathbf{w}=\\hat{\\mathbf{w}}-\\mathbf{w}\\tag{5}"
+  },
+  "aN4Ay": {
+    "from": "\\min_q\\left\\{\\min_{\\Delta\\mathbf{w}}\\left\\{\\left\\|\\Delta\\mathbf{w}\\mathbf{X}-\\mathbf{r}\\right\\|_F^2\\right\\}\\quad \\text{s.t.}\\quad \\Delta\\mathbf{w}\\mathbf{e}_q^{\\top}+w_q-\\hat{w}_q=0\\right\\}.\\qquad (6)",
+    "to": "\\min_q\\left\\{\\min_{\\Delta\\mathbf{w}}\\left\\{\\left\\|\\Delta\\mathbf{w}\\mathbf{X}-\\mathbf{r}\\right\\|_F^2\\right\\}\\quad \\text{s.t.}\\quad \\Delta\\mathbf{w}\\mathbf{e}_q^{\\top}+w_q-\\hat{w}_q=0\\right\\}\\tag{6}"
+  },
+  "O9Ynq": {
+    "from": "L=\\left\\|\\Delta\\mathbf{w}\\mathbf{X}-\\mathbf{r}\\right\\|_F^2+\\lambda\\left(\\Delta\\mathbf{w}\\mathbf{e}_q^{\\top}+w_q-\\hat{w}_q\\right).\\qquad (7)",
+    "to": "L=\\left\\|\\Delta\\mathbf{w}\\mathbf{X}-\\mathbf{r}\\right\\|_F^2+\\lambda\\left(\\Delta\\mathbf{w}\\mathbf{e}_q^{\\top}+w_q-\\hat{w}_q\\right)\\tag{7}"
+  },
+  "wAUu2": {
+    "from": "\\begin{cases}\n\\displaystyle \\frac{\\partial L}{\\partial\\Delta\\mathbf{w}}=2\\Delta\\mathbf{w}\\mathbf{H}-2\\mathbf{r}\\mathbf{X}^{\\top}+\\lambda\\mathbf{e}_q,\\\\[6pt]\n\\displaystyle \\frac{\\partial L}{\\partial\\lambda}=\\Delta\\mathbf{w}\\mathbf{e}_q^{\\top}+w_q-\\hat{w}_q.\n\\end{cases}\n\\qquad (8)",
+    "to": "\\begin{cases}\n\\displaystyle \\frac{\\partial L}{\\partial\\Delta\\mathbf{w}}=2\\Delta\\mathbf{w}\\mathbf{H}-2\\mathbf{r}\\mathbf{X}^{\\top}+\\lambda\\mathbf{e}_q,\\\\[6pt]\n\\displaystyle \\frac{\\partial L}{\\partial\\lambda}=\\Delta\\mathbf{w}\\mathbf{e}_q^{\\top}+w_q-\\hat{w}_q.\n\\end{cases}\\tag{8}"
+  },
+  "DTLpc": {
+    "from": "\\Delta\\mathbf{w}=\\frac{\\hat{w}_q-w_q}{\\mathbf{H}_{qq}^{-1}}\\cdot\\mathbf{H}_{q,:}^{-1}+\\mathbf{r}\\mathbf{X}^{\\top}\\mathbf{H}_{-q}^{-1}.\\qquad (9)",
+    "to": "\\Delta\\mathbf{w}=\\frac{\\hat{w}_q-w_q}{\\mathbf{H}_{qq}^{-1}}\\cdot\\mathbf{H}_{q,:}^{-1}+\\mathbf{r}\\mathbf{X}^{\\top}\\mathbf{H}_{-q}^{-1}\\tag{9}"
+  },
+  "mgaFV": {
+    "from": "L_q=\\frac{(\\hat{w}_q-w_q)^2}{\\mathbf{H}_{qq}^{-1}}+\\mathbf{r}\\mathbf{r}^{\\top}-\\mathbf{r}\\mathbf{X}^{\\top}\\mathbf{H}_{-q}^{-1}\\mathbf{X}\\mathbf{r}^{\\top}-2\\frac{\\hat{w}_q-w_q}{\\mathbf{H}_{qq}^{-1}}\\mathbf{r}\\mathbf{X}^{\\top}\\mathbf{H}_{:,q}^{-1}.\\qquad (10)",
+    "to": "L_q=\\frac{(\\hat{w}_q-w_q)^2}{\\mathbf{H}_{qq}^{-1}}+\\mathbf{r}\\mathbf{r}^{\\top}-\\mathbf{r}\\mathbf{X}^{\\top}\\mathbf{H}_{-q}^{-1}\\mathbf{X}\\mathbf{r}^{\\top}-2\\frac{\\hat{w}_q-w_q}{\\mathbf{H}_{qq}^{-1}}\\mathbf{r}\\mathbf{X}^{\\top}\\mathbf{H}_{:,q}^{-1}\\tag{10}"
+  },
+  "pmI3p": {
+    "from": "\\Delta\\mathbf{W}=\\frac{\\hat{\\mathbf{W}}_{:,q}-\\mathbf{W}_{:,q}}{\\mathbf{H}_{qq}^{-1}}\\cdot\\mathbf{H}_{q,:}^{-1}+\\mathbf{R}\\mathbf{X}^{\\top}\\mathbf{H}_{-q}^{-1}.\\qquad (11)",
+    "to": "\\Delta\\mathbf{W}=\\frac{\\hat{\\mathbf{W}}_{:,q}-\\mathbf{W}_{:,q}}{\\mathbf{H}_{qq}^{-1}}\\cdot\\mathbf{H}_{q,:}^{-1}+\\mathbf{R}\\mathbf{X}^{\\top}\\mathbf{H}_{-q}^{-1}\\tag{11}"
+  },
+  "OGPJA": {
+    "from": "\\mathbf{R}_{\\mathrm{new}}=\\mathbf{R}_{-q}-\\Delta\\mathbf{W}\\Delta\\mathbf{X}_{-q}.\\qquad (12)",
+    "to": "\\mathbf{R}_{\\mathrm{new}}=\\mathbf{R}_{-q}-\\Delta\\mathbf{W}\\Delta\\mathbf{X}_{-q}\\tag{12}"
+  },
+  "tQegL": {
+    "from": "\\mathbf{R}=\\mathbf{W}\\Delta\\mathbf{X}=\\sum_{q=1}^{n}\\mathbf{W}_{:,q}\\Delta\\mathbf{X}_{q,:}.\\qquad (13)",
+    "to": "\\mathbf{R}=\\mathbf{W}\\Delta\\mathbf{X}=\\sum_{q=1}^{n}\\mathbf{W}_{:,q}\\Delta\\mathbf{X}_{q,:}\\tag{13}"
+  },
+  "r5z51": {
+    "from": "\\min_{\\Delta\\mathbf{W}_{:,q:}}\\left\\|\\Delta\\mathbf{W}_{:,q:}\\mathbf{X}_{q:,:}-\\mathbf{W}_{:,q}\\Delta\\mathbf{X}_{q,:}\\right\\|_F^2,\\quad \\text{s.t.}\\quad \\Delta\\mathbf{W}_{:,q}\\mathbf{e}_q^{\\top}+\\mathbf{W}_{:,q}-\\hat{\\mathbf{W}}_{:,q}=\\mathbf{0}.\\qquad (14)",
+    "to": "\\min_{\\Delta\\mathbf{W}_{:,q:}}\\left\\|\\Delta\\mathbf{W}_{:,q:}\\mathbf{X}_{q:,:}-\\mathbf{W}_{:,q}\\Delta\\mathbf{X}_{q,:}\\right\\|_F^2,\\quad \\text{s.t.}\\quad \\Delta\\mathbf{W}_{:,q}\\mathbf{e}_q^{\\top}+\\mathbf{W}_{:,q}-\\hat{\\mathbf{W}}_{:,q}=\\mathbf{0}\\tag{14}"
+  },
+  "zTu3N": {
+    "from": "\\Delta\\mathbf{W}_{:,q:}=\\frac{\\hat{\\mathbf{W}}_{:,q}-\\mathbf{W}_{:,q}}{\\tilde{\\mathbf{H}}_{qq}^{-1}}\\cdot\\tilde{\\mathbf{H}}_{q,:}^{-1}+\\mathbf{W}_{:,q}\\Delta\\mathbf{X}_{q,:}\\mathbf{X}_{:,q:}^{\\top}\\tilde{\\mathbf{H}}_{-q}^{-1}.\\qquad (15)",
+    "to": "\\Delta\\mathbf{W}_{:,q:}=\\frac{\\hat{\\mathbf{W}}_{:,q}-\\mathbf{W}_{:,q}}{\\tilde{\\mathbf{H}}_{qq}^{-1}}\\cdot\\tilde{\\mathbf{H}}_{q,:}^{-1}+\\mathbf{W}_{:,q}\\Delta\\mathbf{X}_{q,:}\\mathbf{X}_{:,q:}^{\\top}\\tilde{\\mathbf{H}}_{-q}^{-1}\\tag{15}"
+  },
+  "v9gFh": {
+    "from": "\\mathbf{P}_{q,:}=\\Delta\\mathbf{X}_{q,:}\\mathbf{X}^{\\top}\\mathbf{L}_{q+1:,q+1:}\\mathbf{L}_{q+1:,q+1:}^{\\top}.\\qquad (16)",
+    "to": "\\mathbf{P}_{q,:}=\\Delta\\mathbf{X}_{q,:}\\mathbf{X}^{\\top}\\mathbf{L}_{q+1:,q+1:}\\mathbf{L}_{q+1:,q+1:}^{\\top}\\tag{16}"
+  },
+  "zpfVX": {
+    "from": "\\mathbf{P}=\\left((\\Delta\\mathbf{X}\\mathbf{X}^{\\top}\\mathbf{L})\\odot\\mathbf{M}_U\\right)\\mathbf{L}^{\\top}.\\qquad (17)",
+    "to": "\\mathbf{P}=\\left((\\Delta\\mathbf{X}\\mathbf{X}^{\\top}\\mathbf{L})\\odot\\mathbf{M}_U\\right)\\mathbf{L}^{\\top}\\tag{17}"
+  },
+  "C9rRH": {
+    "from": "\\Delta\\mathbf{W}_{:,Q:}=\\frac{\\hat{\\mathbf{W}}_{:,Q}-\\mathbf{W}_{:,Q}}{\\mathbf{L}_{QQ}^{\\top}}\\mathbf{L}_{Q,Q:}^{\\top}+\\mathbf{W}_{:,Q}\\mathbf{P}_{Q,Q:}.\\qquad (18)",
+    "to": "\\Delta\\mathbf{W}_{:,Q:}=\\frac{\\hat{\\mathbf{W}}_{:,Q}-\\mathbf{W}_{:,Q}}{\\mathbf{L}_{QQ}^{\\top}}\\mathbf{L}_{Q,Q:}^{\\top}+\\mathbf{W}_{:,Q}\\mathbf{P}_{Q,Q:}\\tag{18}"
+  }
+}
