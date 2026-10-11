@@ -85,11 +85,7 @@ L_q&=\mathbf{r}\mathbf{X}^{\top}\left(\mathbf{I}-\frac{1}{\mathbf{H}_{qq}^{-1}}\
 - 由于 $`\mathbf{H}_{-q}^{-1}`$ 的第 $`q`$ 行已被消去，$`\mathbf{e}_q\mathbf{H}_{-q}^{-1}=\mathbf{0}`$ 为全零向量，因此式（A.10）最后一个等式中的第一项为零。又因 $`\mathbf{e}_q\mathbf{H}_{:,q}^{-1}=\mathbf{H}_{qq}^{-1}`$，最后一项可改写为 $`-2\frac{\hat{w}_q-w_q}{\mathbf{H}_{qq}^{-1}}\mathbf{r}\mathbf{X}^{\top}\mathbf{H}_{:,q}^{-1}`$。进一步化简 $`\mathbf{H}_{q,:}^{-1}\mathbf{H}\mathbf{H}_{:,q}^{-1}`$
 
 ```math
-\begin{aligned}
-\mathbf{H}_{q,:}^{-1}\mathbf{H}\mathbf{H}_{:,q}^{-1}&=\mathbf{e}_q\mathbf{H}^{-1}\mathbf{H}\mathbf{H}^{-1}\mathbf{e}_q^{\top}\\
-&=\mathbf{e}_q\mathbf{H}^{-1}\mathbf{e}_q^{\top}\\
-&=\mathbf{H}_{qq}^{-1}
-\end{aligned}\tag{A.11}
+\mathbf{H}_{q,:}^{-1}\mathbf{H}\mathbf{H}_{:,q}^{-1}=\mathbf{e}_q\mathbf{H}^{-1}\mathbf{H}\mathbf{H}^{-1}\mathbf{e}_q^{\top}=\mathbf{e}_q\mathbf{H}^{-1}\mathbf{e}_q^{\top}=\mathbf{H}_{qq}^{-1}\tag{A.11}
 ```
 
 - 最终，$`L_q`$ 可化简为
