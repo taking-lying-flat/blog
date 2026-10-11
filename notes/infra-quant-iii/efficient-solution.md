@@ -40,6 +40,11 @@
 
 - 此外，残差分解还带来显著的计算优势，使第二项的计算复杂度降至原来的 $`1/n`$。这是因为 $`\Delta\mathbf{X}_{q,:}\mathbf{X}_{:,q:}^{\top}\mathbf{H}_{-q:}^{-1}\in\mathbb{R}^{1\times(n-q)}`$ 是一个行向量，而 $`\mathbf{W}_{:,q}`$ 是一个列向量，因此计算第二项仅需 $`O(mn)`$ 的复杂度。进一步注意到，$`\Delta\mathbf{X}_{q,:}\mathbf{X}_{:,q:}^{\top}\mathbf{H}_{-q:}^{-1}`$ 与权重更新无关，因此可以预先计算每一行并存储在矩阵 $`\mathbf{P}`$ 中。这样，在第 $`q`$ 次迭代中，就可以通过 $`\mathbf{W}_{:,q}\mathbf{P}_{q,:}`$ 高效计算第二项
 
+<!-- Original Figure 3 from li25dn.pdf, p. 4; vector crop without redrawing. -->
+<figure class="lake-figure" id="gptaq-matrix-decomposition" style="width: 440px; max-width: 100%; margin: 12px auto;">
+  <img src="assets/images/gptaq-matrix-decomposition.svg" alt="GPTAQ 论文图 3：残差校正项的矩阵融合、Cholesky 重构与并行计算" width="470" height="438" loading="lazy" decoding="async" style="display: block; width: 100%; height: auto; margin: 0;">
+</figure>
+
 **步骤 III：通过 Cholesky 重构，在保持数值稳定性的同时高效计算残差校正矩阵 $`\mathbf{P}`$**
 
 - 重复的高斯消元会累积数值误差。对 Hessian 逆矩阵进行 Cholesky 分解 $`\mathbf{H}^{-1}=\mathbf{L}\mathbf{L}^{\top}`$，其中 $`\mathbf{L}`$ 为下三角因子。通过该因子的切片与乘法计算 $`\mathbf{H}_{-q:}^{-1}`$，可将 $`\mathbf{P}_{q,:}`$ 改写为：

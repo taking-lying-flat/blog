@@ -20,10 +20,7 @@
 - 在两侧右乘 Hessian 逆矩阵，得到
 
 ```math
-\begin{aligned}
-\Delta\mathbf{w}&=-\frac{\lambda}{2}\mathbf{e}_q\mathbf{H}^{-1}+\mathbf{r}\mathbf{X}^{\top}\mathbf{H}^{-1}\\
-&=-\frac{\lambda}{2}\mathbf{H}_{q,:}^{-1}+\mathbf{r}\mathbf{X}^{\top}\mathbf{H}^{-1}
-\end{aligned}\tag{A.3}
+\Delta\mathbf{w}=-\frac{\lambda}{2}\mathbf{e}_q\mathbf{H}^{-1}+\mathbf{r}\mathbf{X}^{\top}\mathbf{H}^{-1}=-\frac{\lambda}{2}\mathbf{H}_{q,:}^{-1}+\mathbf{r}\mathbf{X}^{\top}\mathbf{H}^{-1}\tag{A.3}
 ```
 
 - 将上式代入式（A.1）的第二个方程，得到
