@@ -751,7 +751,7 @@ const searchIndex = JSON.stringify(readingOrder.map(post => ({
 const template = await readFile(path.join(root, 'template.html'), 'utf8');
 const primer = path.join(root, 'node_modules/@primer/primitives');
 const assets = new Map([
-  ...['reader.css', 'reader.js', 'engagement.js', 'theme.js', 'favicon.svg', 'lake.css', 'lake.js', 'body-serif.css', 'toc.css', 'toc.js'].map((file) => [file, path.join(root, file)]),
+  ...['reader.css', 'reader.js', 'engagement.js', 'theme.js', 'favicon.svg', 'github-avatar.jpg', 'lake.css', 'lake.js', 'body-serif.css', 'toc.css', 'toc.js'].map((file) => [file, path.join(root, file)]),
   ['garden-background.png', path.join(root, 'illustrations/garden-background.png')],
   ['starry-background.png', path.join(root, 'illustrations/starry-background.png')],
   ['anime-readers.png', path.join(root, 'illustrations/anime-readers.png')],
