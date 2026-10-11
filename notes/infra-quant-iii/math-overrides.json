@@ -29,7 +29,7 @@
   },
   "wAUu2": {
     "from": "\\begin{cases}\n\\displaystyle \\frac{\\partial L}{\\partial\\Delta\\mathbf{w}}=2\\Delta\\mathbf{w}\\mathbf{H}-2\\mathbf{r}\\mathbf{X}^{\\top}+\\lambda\\mathbf{e}_q,\\\\[6pt]\n\\displaystyle \\frac{\\partial L}{\\partial\\lambda}=\\Delta\\mathbf{w}\\mathbf{e}_q^{\\top}+w_q-\\hat{w}_q.\n\\end{cases}\n\\qquad (8)",
-    "to": "\\begin{cases}\n\\displaystyle \\frac{\\partial L}{\\partial\\Delta\\mathbf{w}}=2\\Delta\\mathbf{w}\\mathbf{H}-2\\mathbf{r}\\mathbf{X}^{\\top}+\\lambda\\mathbf{e}_q,\\\\[6pt]\n\\displaystyle \\frac{\\partial L}{\\partial\\lambda}=\\Delta\\mathbf{w}\\mathbf{e}_q^{\\top}+w_q-\\hat{w}_q.\n\\end{cases}\\tag{8}"
+    "to": "\\begin{cases}\n\\displaystyle \\frac{\\partial L}{\\partial\\Delta\\mathbf{w}}=2\\Delta\\mathbf{w}\\mathbf{H}-2\\mathbf{r}\\mathbf{X}^{\\top}+\\lambda\\mathbf{e}_q,\\\\[6pt]\n\\displaystyle \\frac{\\partial L}{\\partial\\lambda}=\\Delta\\mathbf{w}\\mathbf{e}_q^{\\top}+w_q-\\hat{w}_q\n\\end{cases}\\tag{8}"
   },
   "DTLpc": {
     "from": "\\Delta\\mathbf{w}=\\frac{\\hat{w}_q-w_q}{\\mathbf{H}_{qq}^{-1}}\\cdot\\mathbf{H}_{q,:}^{-1}+\\mathbf{r}\\mathbf{X}^{\\top}\\mathbf{H}_{-q}^{-1}.\\qquad (9)",

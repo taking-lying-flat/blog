@@ -1995,10 +1995,6 @@
     }
   ],
   "paragraphListItemsAfterMoves": [
-    "gptaq-residual-decomposition",
-    "gptaq-cholesky-reformulation",
-    "gptaq-lazy-batch",
-    "gptaq-finetuning-methods",
     "u934fa1c6",
     "udc3595a1",
     "ub13fa5c3",
@@ -2007,6 +2003,10 @@
   "paragraphEmphasis": [
     "gptaq-arbitrary-order",
     "u66a0138a",
-    "ud5cde9e4"
+    "ud5cde9e4",
+    "gptaq-residual-decomposition",
+    "gptaq-cholesky-reformulation",
+    "gptaq-lazy-batch",
+    "gptaq-finetuning-methods"
   ]
 }
