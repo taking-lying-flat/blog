@@ -5,14 +5,16 @@
     "removeEmptyParagraphs": true,
     "tocDepth": 2,
     "slug": "infra-quant-iii",
+    "moveSections": [{"heading": "ALFVe", "to": "infra-quant-i"}],
     "series": "infra-quant",
     "seriesOrder": 3,
     "category": "infra",
     "categoryOrder": 6,
     "date": "2026-10-11",
-    "description": "GPTAQ 论文笔记：非对称校准、最优权重更新、逐通道残差分解、Cholesky 重构与延迟批量量化。",
+    "description": "AWQ 论文笔记：显著权重保护、激活感知缩放与 TinyChat 边缘部署。",
     "tags": [
-      "GPTAQ"
+      "AWQ",
+      "TinyChat"
     ],
     "appendMarkdown": [
       "gptaq-algorithm.md",
@@ -964,13 +966,14 @@
     "format": "lake",
     "tocDepth": 2,
     "slug": "infra-quant-i",
+    "moveSections": [{"heading": "omTQJ", "to": "infra-quant-iii"}],
     "series": "infra-quant",
     "seriesOrder": 1,
     "category": "infra",
     "categoryOrder": 4,
     "date": "2026-09-23",
-    "description": "模型量化笔记：Optimal Brain Compression、GPTQ 与 AWQ。",
-    "tags": ["Optimal Brain Compression", "GPTQ", "AWQ"]
+    "description": "模型量化笔记：Optimal Brain Compression、GPTQ 与 GPTAQ 的最优权重更新及非对称校准。",
+    "tags": ["Optimal Brain Compression", "GPTQ", "GPTAQ"]
   },
   {
     "file": "../notes/rope.md",

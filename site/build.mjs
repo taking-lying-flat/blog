@@ -553,7 +553,16 @@ for (const post of posts) {
     const pattern = new RegExp(`<h1\\b[^>]*\\sid="${heading}"[^>]*>[\\s\\S]*?(?=<h1\\b|$)`, 'g');
     const matches = [...post.content.matchAll(pattern)];
     if (matches.length !== 1) throw new Error(`Paper section must match once: ${heading}`);
-    const section = matches[0][0];
+    const originalSection = matches[0][0];
+    let section = originalSection;
+    // Different papers can use the same visible equation number. Namespace only
+    // conflicting MathJax anchors while preserving the displayed tags.
+    for (const [, id] of section.matchAll(/\sid="(mjx-eqn:[^"]+)"/g)) {
+      if (!target.content.includes(` id="${id}"`)) continue;
+      const movedId = `${heading}-${id}`;
+      section = section.replaceAll(`id="${id}"`, `id="${movedId}"`)
+        .replaceAll(`href="#${id}"`, `href="#${movedId}"`);
+    }
     const ids = new Set([...section.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]));
     for (const id of ids) {
       if (target.content.includes(` id="${id}"`)) throw new Error(`Duplicate moved anchor: ${id}`);
@@ -563,7 +572,7 @@ for (const post of posts) {
       (_match, attribute, url) => `${attribute}="../${post.slug}/${url}"`)
       .replace(/\shref="#([^"]+)"/g, (match, id) => ids.has(id)
         ? match : ` href="../${post.slug}/#${id}"`);
-    post.content = post.content.replace(section, '').replace(/\shref="#([^"]+)"/g,
+    post.content = post.content.replace(originalSection, '').replace(/\shref="#([^"]+)"/g,
       (match, id) => ids.has(id) ? ` href="../${target.slug}/#${id}"` : match);
     target.content += addition;
     const text = section.replace(/<[^>]*>/g, '');

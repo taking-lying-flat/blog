@@ -817,7 +817,7 @@
 .lake-document .rotation-case .equation mjx-container[display="true"] { margin: 0; }
 
 /* Match Lake equation typography without extra outer padding in GPTAQ steps. */
-[data-post="infra-quant-iii"] #gptaq-efficient-solution .equation {
+[data-post="infra-quant-i"] #gptaq-efficient-solution .equation {
   font-size: 16px;
   margin: 8px 0;
   padding: 0;
