@@ -686,9 +686,9 @@ for (const post of posts) {
   post.content = adaptor.innerHTML(body);
 }
 
-// Keep the existing anchors while presenting all titles in the same typeface.
+// Keep existing anchors while normalizing title typography and series suffixes.
 for (const post of posts) {
-  post.title = plainTitle(post.title);
+  post.title = plainTitle(post.title).replace(/\s*-\s*([IVXLCDM]+)$/u, ' $1');
   post.content = normalizeEnglishTerms(normalizeHeadingText(post.content));
 }
 
