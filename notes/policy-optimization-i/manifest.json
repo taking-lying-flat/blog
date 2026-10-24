@@ -9833,7 +9833,7 @@
     {
       "paragraph": "uf46ea970",
       "before": "u58af8aae",
-      "afterText": "改进量的显式下界。",
+      "afterText": "改进量的显式下界",
       "id": "conservative-policy-update"
     }
   ],
