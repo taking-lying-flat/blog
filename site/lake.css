@@ -56,11 +56,12 @@
   margin-block: 12px;
   padding: 2px 3em;
 }
-[data-post="policy-optimization-i"] .lake-document #u91c01aa8 {
+[data-post="policy-optimization-i"] .lake-document :is(
+  #u7f448890, #uf7586304, #uce0f1377, #ud12318a7,
+  #u58256c9f, #u91c01aa8, #u9bdeb93e, #u395b94b7,
+  #uf46ea970, #uce42c36b, #u2217717c, #u97611695
+) {
   text-indent: 2em;
-}
-[data-post="policy-optimization-i"] .lake-document #u91c01aa8 .lake-math {
-  text-indent: 0;
 }
 [data-post="policy-optimization-i"] .policy-theorem {
   margin: 12px 0;
@@ -110,6 +111,7 @@
   margin-inline: .2em;
   vertical-align: baseline;
   white-space: normal;
+  text-indent: 0;
 }
 .lake-document .lake-math + .lake-math { margin-inline-start: 0; }
 .lake-document .lake-math-punctuation { display: inline-block; white-space: nowrap; }
