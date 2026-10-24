@@ -119,18 +119,18 @@
   },
   "FjN5s": {
     "from": "\\boxed{\n\\begin{aligned}\n\\eta(\\pi)\n&=\n\\mathbb{E}_{s_0,a_0,\\ldots}\n\\left[\n\\sum_{t=0}^{\\infty}\n\\gamma^t c(s_t)\n\\right],\n\\quad \\text{where} \\\\[4pt]\ns_0 &\\sim \\rho_0(s_0),\\quad\na_t \\sim \\pi(a_t \\mid s_t),\\quad\ns_{t+1} \\sim P(s_{t+1}\\mid s_t,a_t).\n\\end{aligned}\n}",
-    "to": "\\eta(\\pi) = \\mathbb{E}_{s_0,a_0,\\ldots} \\left[ \\sum_{t=0}^{\\infty} \\gamma^t c(s_t) \\right], \\quad \\text{where} s_0 \\sim \\rho_0(s_0),\\quad a_t \\sim \\pi(a_t \\mid s_t),\\quad s_{t+1} \\sim P(s_{t+1}\\mid s_t,a_t).",
-    "reason": "按用户要求移除该公式内部的强制换行，连续排成一行，保留公式内容。"
+    "to": "\\eta(\\pi) = \\mathbb{E}_{s_0,a_0,\\ldots} \\left[ \\sum_{t=0}^{\\infty} \\gamma^t c(s_t) \\right], \\quad \\text{where}\\quad s_0 \\sim \\rho_0(s_0),\\quad a_t \\sim \\pi(a_t \\mid s_t),\\quad s_{t+1} \\sim P(s_{t+1}\\mid s_t,a_t).",
+    "reason": "按用户要求移除该公式内部的强制换行，连续排成一行，保留公式内容。 在 where 后加入显式数学间距，与后面的条件分开。"
   },
   "QYQts": {
     "from": "\\boxed{\n\\begin{aligned}\nQ_{\\pi}(s_t,a_t)\n&=\n\\mathbb{E}_{s_{t+1},a_{t+1},\\ldots}\n\\left[\n\\sum_{l=0}^{\\infty}\n\\gamma^l c(s_{t+l})\n\\right],\n\\\\[6pt]\nV_{\\pi}(s_t)\n&=\n\\mathbb{E}_{a_t,s_{t+1},\\ldots}\n\\left[\n\\sum_{l=0}^{\\infty}\n\\gamma^l c(s_{t+l})\n\\right],\n\\\\[6pt]\nA_{\\pi}(s,a)\n&=\nQ_{\\pi}(s,a)-V_{\\pi}(s),\n\\quad \\text{where}\n\\\\[4pt]\na_t\n&\\sim\n\\pi(a_t \\mid s_t),\n\\quad\ns_{t+1}\n\\sim\nP(s_{t+1}\\mid s_t,a_t),\n\\quad\n\\text{for } t \\geq 0.\n\\end{aligned}\n}",
-    "to": "\\begin{aligned}\nQ_{\\pi}(s_t,a_t)&=\\mathbb E_{s_{t+1},a_{t+1},\\ldots}\\left[\\sum_{l=0}^{\\infty}\\gamma^l c(s_{t+l})\\right],\\qquad V_{\\pi}(s_t)=\\mathbb E_{a_t,s_{t+1},\\ldots}\\left[\\sum_{l=0}^{\\infty}\\gamma^l c(s_{t+l})\\right],\\\\[6pt]\nA_{\\pi}(s,a)&=Q_{\\pi}(s,a)-V_{\\pi}(s),\\quad\\text{where }a_t\\sim\\pi(a_t\\mid s_t),\\quad s_{t+1}\\sim P(s_{t+1}\\mid s_t,a_t),\\quad t\\geq0.\n\\end{aligned}",
-    "reason": "按用户要求将 Q 和 V 的定义并排放在同一行；A 的定义及 where 采样条件保留下一行。"
+    "to": "\\begin{aligned}\nQ_{\\pi}(s_t,a_t)&=\\mathbb E_{s_{t+1},a_{t+1},\\ldots}\\left[\\sum_{l=0}^{\\infty}\\gamma^l c(s_{t+l})\\right],\\qquad V_{\\pi}(s_t)=\\mathbb E_{a_t,s_{t+1},\\ldots}\\left[\\sum_{l=0}^{\\infty}\\gamma^l c(s_{t+l})\\right],\\\\[6pt]\nA_{\\pi}(s,a)&=Q_{\\pi}(s,a)-V_{\\pi}(s),\\quad\\text{where}\\quad a_t\\sim\\pi(a_t\\mid s_t),\\quad s_{t+1}\\sim P(s_{t+1}\\mid s_t,a_t),\\quad t\\geq0.\n\\end{aligned}",
+    "reason": "按用户要求将 Q 和 V 的定义并排放在同一行；A 的定义及 where 采样条件保留下一行。 在 where 后加入显式数学间距，与后面的条件分开。"
   },
   "s9lHZ": {
     "from": "\n\\boxed{\n\\begin{gathered}\n\\eta(\\tilde{\\pi})\n=\n\\eta(\\pi)\n+\n\\mathbb{E}_{s_0,a_0,s_1,a_1,\\ldots}\n\\left[\n\\sum_{t=0}^{\\infty}\n\\gamma^t A_{\\pi}(s_t,a_t)\n\\right],\n\\quad \\text{where}\n\\\\[4pt]\ns_0 \\sim \\rho_0(s_0),\n\\quad\na_t \\sim \\tilde{\\pi}(a_t \\mid s_t),\n\\quad\ns_{t+1} \\sim P(s_{t+1}\\mid s_t,a_t).\n\\end{gathered}\n}",
-    "to": "\\eta(\\tilde{\\pi}) = \\eta(\\pi) + \\mathbb{E}_{s_0,a_0,s_1,a_1,\\ldots} \\left[ \\sum_{t=0}^{\\infty} \\gamma^t A_{\\pi}(s_t,a_t) \\right], \\quad \\text{where} s_0 \\sim \\rho_0(s_0), \\quad a_t \\sim \\tilde{\\pi}(a_t \\mid s_t), \\quad s_{t+1} \\sim P(s_{t+1}\\mid s_t,a_t).",
-    "reason": "按用户要求移除该公式内部的强制换行，连续排成一行，保留公式内容。"
+    "to": "\\eta(\\tilde{\\pi}) = \\eta(\\pi) + \\mathbb{E}_{s_0,a_0,s_1,a_1,\\ldots} \\left[ \\sum_{t=0}^{\\infty} \\gamma^t A_{\\pi}(s_t,a_t) \\right], \\quad \\text{where}\\quad s_0 \\sim \\rho_0(s_0), \\quad a_t \\sim \\tilde{\\pi}(a_t \\mid s_t), \\quad s_{t+1} \\sim P(s_{t+1}\\mid s_t,a_t).",
+    "reason": "按用户要求移除该公式内部的强制换行，连续排成一行，保留公式内容。 在 where 后加入显式数学间距，与后面的条件分开。"
   },
   "qHFJD": {
     "from": "\\boxed{ \\rho_{\\pi}(s) = P(s_0=s) + \\gamma P(s_1=s) + \\gamma^2 P(s_2=s) + \\cdots }",
