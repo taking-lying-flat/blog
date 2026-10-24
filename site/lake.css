@@ -56,6 +56,12 @@
   margin-block: 12px;
   padding: 2px 3em;
 }
+[data-post="policy-optimization-i"] .lake-document #u91c01aa8 {
+  text-indent: 2em;
+}
+[data-post="policy-optimization-i"] .lake-document #u91c01aa8 .lake-math {
+  text-indent: 0;
+}
 [data-post="policy-optimization-i"] .policy-theorem {
   margin: 12px 0;
   padding: 10px 14px;
