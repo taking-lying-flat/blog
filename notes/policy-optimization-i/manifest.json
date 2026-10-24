@@ -9793,6 +9793,10 @@
     {
       "tag": "p",
       "id": "u58256c9f"
+    },
+    {
+      "tag": "p",
+      "id": "u471e61a2"
     }
   ],
   "blockRangeMoves": [
@@ -9837,6 +9841,11 @@
   ],
   "paragraphSplits": [
     {
+      "paragraph": "u38babb8c",
+      "before": "uaf72233e",
+      "id": "importance-sampling-explanation"
+    },
+    {
       "paragraph": "u201d3682",
       "before": "u36cbee07",
       "id": "mixed-policy-distance"
@@ -9853,7 +9862,10 @@
     "uce94fd93",
     "mixed-policy-distance",
     "udacbffa6",
-    "u513e7d53"
+    "u513e7d53",
+    "u38babb8c",
+    "importance-sampling-explanation",
+    "ue6ae1420"
   ],
   "mathRemovals": [
     "zz2Yq"
