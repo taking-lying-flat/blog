@@ -1,16 +1,12 @@
-## 🧮 Appendix A · Implementing Score Centering
+## 🧮 Appendix
 
-<!-- Complete translation of Appendix A.1–A.4, 2609.20807v1.pdf, pp. 12–15, including both derivations, generalized JAX code, and Figure 5. Original equations (7)–(12) map to (A.1)–(A.6). -->
-
-本节对应[原论文附录 A](https://arxiv.org/pdf/2609.20807v1#page=12)，包括 top-k 近似、与重要性采样的组合、损失函数实现，以及 top-k 消融实验。附录公式（A.1）–（A.6）对应原论文公式（7）–（12）。
-
-**符号约定** 与正文一致：固定一个前缀，$`y_t`$ 表示采样到的 token，$`v`$ 表示词表中的 token；$`p_v`$、$`q_v`$ 分别是训练器与采样器赋予它的概率，$`s_v=\nabla_\theta\log p_v`$ 是其得分，$`\bar{s}=\sum_v q_v s_v`$ 是采样器分布下的期望得分。
+<!-- Appendix A.1–A.3, 2609.20807v1.pdf. Original equations (7)–(12) map to (A.1)–(A.6). -->
 
 ### A.1 Top-k Approximation
 
 完整得分中心化在多数实际应用中的成本过高。计算正文中的得分中心化校正项，即对采样器逐 token 分布下的得分求期望，需要为每个采样位置保存完整的输出对数概率。例如，Qwen3 的词表大小约为 152K，以 FP32 保存单个位置的完整对数概率就需要约 608 KB。若一个批次包含 1024 条 rollout，每条序列长 32K，所需存储约为 20 TB。
 
-因此，论文的实验只保存采样器分布的 top-k 近似，默认取 128。但并非仅在截断后的 top-k 分布上计算期望：还会使用训练器的对数概率补齐尾部，以近似采样器的完整分布。128 是保守的默认值；图 5 表明，即使只保留 32 个 token，也能在所有实验设置中达到与完整得分中心化相当的效果。
+因此，只保存采样器分布的 top-k 近似，默认取 128。但并非仅在截断后的 top-k 分布上计算期望：还会使用训练器的对数概率补齐尾部，以近似采样器的完整分布。
 
 如何仅根据 top-k 对数概率重建采样器的完整分布？令 $`\hat q`$ 表示近似采样分布，$`H`$ 表示 top-k token 构成的头部集合，$`T`$ 表示其余 token 构成的尾部集合。头部直接使用采样器的概率，尾部使用训练器的概率，并进行缩放，使整个分布的概率之和为 1：
 
@@ -93,7 +89,7 @@ L=-R\left(
 \tag{A.6}
 ```
 
-下面的 JAX 代码实现式（A.6），完整转录自[原论文附录 A.3，第 14 页](https://arxiv.org/pdf/2609.20807v1#page=14)。`weight_fn` 指定加权函数，默认对应普通得分中心化。与正文实现一致，`train_logp` 覆盖整个词表，`samp_logp` 保存采样器的 top-k 对数概率；新增的标量 `samp_token_logp` 保存实际采样 token 的采样器对数概率，即使该 token 不在头部也必须提供。为了数值稳定，尾部概率质量以 `eps` 为下界。
+`weight_fn` 指定加权函数，默认对应普通得分中心化。`train_logp` 覆盖整个词表，`samp_logp` 保存采样器的 top-k 对数概率；`samp_token_logp` 保存实际采样 token 的采样器对数概率，即使该 token 不在头部也必须提供。为了数值稳定，尾部概率质量以 `eps` 为下界。
 
 ```python Score Centering · 支持 TIS / MIS 的通用实现
 import jax.numpy as jnp
@@ -118,20 +114,4 @@ tis_weight = lambda r: jnp.minimum(r, 2.0)
 mis_weight = lambda r: jnp.where((r >= 0.5) & (r <= 5.0), r, 0.0)
 ```
 
-<details>
-<summary>查看原论文代码截图（附录 A.3）</summary>
-<figure class="lake-figure"><a href="assets/images/score-centering-weighted-code.png"><img src="assets/images/score-centering-weighted-code.png" width="1592" height="864" alt="原论文第 14 页：支持 TIS 和 MIS 权重的通用 Score Centering JAX 实现" loading="lazy" decoding="async"></a></figure>
-</details>
-
 传入 `weight_fn=tis_weight` 或 `weight_fn=mis_weight`，即可分别与 TIS 或 MIS 组合。与式（A.6）一致，采样 token 的重要性权重和中心化系数都停止梯度。
-
-### A.4 Top-k Ablation
-
-图 5 比较了全部实验设置中的 top-k 得分中心化与完整得分中心化。保留 32 个或 128 个 token，在每一种设置下都能达到与完整得分中心化相当的效果。
-
-式（A.1）的尾部模型只需要处理 top-k 头部以外的采样器概率质量，论文在每个训练步骤都会记录这一质量。当头部包含 128 个 token 时，除 30B 模型的 INT8 W/A + INT4 KV 设置外，所有设置中头部覆盖的平均概率质量都超过 99.9%。在这一例外设置中，平均覆盖率为 99.45%，最差批次为 95.8%。这是尾部分布受量化影响最严重的设置，但图 5 表明，保留 32 个或 128 个 token 仍与完整得分中心化相当。
-
-<figure class="lake-figure">
-<a href="assets/images/score-centering-topk-ablation.png"><img src="assets/images/score-centering-topk-ablation.png" width="1592" height="1316" alt="图 5：九种实验设置中，k=32、k=128 与 full vocab 得分中心化的训练准确率曲线及种子数" loading="lazy" decoding="async"></a>
-<figcaption>图 5 · 得分中心化的 top-k 消融实验。使用 128 个或 32 个采样器对数概率，并采用式（A.1）的尾部模型，即可在所有测试设置下达到与全词表得分中心化相当的效果。每条曲线使用的随机种子数标在图例中。<a href="https://arxiv.org/pdf/2609.20807v1#page=15">原论文第 15 页</a> · 点击图片查看原图。</figcaption>
-</figure>

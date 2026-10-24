@@ -3,7 +3,6 @@
     "file": "../notes/policy-optimization-v/source.lake",
     "format": "lake",
     "appendMarkdown": [
-      {"file": "implementation-heading.md", "before": "ude06a9aa", "tag": "p"},
       "score-centering-implementation.md",
       "score-centering-appendix.md"
     ],
