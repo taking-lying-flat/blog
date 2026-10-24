@@ -187,7 +187,7 @@ export async function readLake(file, escape, renderMath) {
       `${opening}${body}${lead}</p>${listOpening}${anchor}`);
   }
   // Split prose at explicit anchors without changing its inline formulas.
-  for (const { paragraph, before, id } of manifest.paragraphSplits ?? []) {
+  for (const { paragraph, before, id, afterText } of manifest.paragraphSplits ?? []) {
     if (![paragraph, before, id].every(value => typeof value === 'string' && /^[\w-]+$/.test(value)) ||
         content.includes(` id="${id}"`)) {
       throw new Error(`Invalid Lake paragraph split: ${paragraph}`);
@@ -200,6 +200,16 @@ export async function readLake(file, escape, renderMath) {
       const anchors = [...body.matchAll(new RegExp(`<span\\b[^>]*\\sid="${before}"[^>]*>`, 'g'))];
       if (anchors.length !== 1) throw new Error(`Missing Lake paragraph split anchor: ${before}`);
       const offset = anchors[0].index;
+      if (afterText !== undefined) {
+        if (typeof afterText !== 'string' || !afterText) throw new Error(`Invalid Lake paragraph split text: ${before}`);
+        const textStart = offset + anchors[0][0].length;
+        const prefix = escape(afterText);
+        const textEnd = body.indexOf('</span>', textStart);
+        if (!body.startsWith(prefix, textStart) || textStart + prefix.length > textEnd) {
+          throw new Error(`Missing Lake paragraph split text: ${before}`);
+        }
+        return `${opening}${body.slice(0, textStart)}${prefix}</span></p><p id="${id}"><span>${body.slice(textStart + prefix.length)}</p>`;
+      }
       return `${opening}${body.slice(0, offset)}</p><p id="${id}">${body.slice(offset)}</p>`;
     });
   }

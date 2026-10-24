@@ -9777,6 +9777,14 @@
     {
       "tag": "li",
       "id": "u62558e75"
+    },
+    {
+      "tag": "p",
+      "id": "udb1b8466"
+    },
+    {
+      "tag": "li",
+      "id": "uf32d99ff"
     }
   ],
   "blockRangeMoves": [
@@ -9790,5 +9798,16 @@
     "u91c01aa8",
     "u395b94b7",
     "u97611695"
+  ],
+  "paragraphSplits": [
+    {
+      "paragraph": "uf46ea970",
+      "before": "u58af8aae",
+      "afterText": "改进量的显式下界。",
+      "id": "conservative-policy-update"
+    }
+  ],
+  "paragraphListItemsAfterMoves": [
+    "conservative-policy-update"
   ]
 }
