@@ -1,4 +1,24 @@
 {
+  "u2b7fee57": {
+    "from": "假设参数更新的方向为",
+    "to": [
+      "通过近似求解线性方程组",
+      { "math": "Hx=-g" },
+      "得到更新方向"
+    ],
+    "reason": "补齐公式 33 前通过共轭梯度求更新方向的步骤，负号与本文代价最小化约定一致。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15-supp.pdf"
+  },
+  "uf5dd2ab5": {
+    "from": "，KL 距离约束下允许的最大步长记为",
+    "to": [
+      "。共轭梯度迭代只需要计算 Hessian 与向量的乘积",
+      { "math": "Hv" },
+      "，无需显式构造完整矩阵或求逆。KL 距离约束下允许的最大步长记为"
+    ],
+    "reason": "说明共轭梯度如何避免显式构造 Hessian 及求逆，并衔接最大步长公式。",
+    "reference": "https://proceedings.mlr.press/v37/schulman15-supp.pdf"
+  },
   "u4eb651a5": {
     "from": "在较小的有限动作空间中，可以从给定状态出发，对每一个可能动作都生成一次 rollout。单个状态",
     "to": "，在较小的有限动作空间中，可以从给定状态出发，对每一个可能动作都生成一次 rollout。单个状态",
