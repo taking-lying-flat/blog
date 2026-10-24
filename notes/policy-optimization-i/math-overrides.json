@@ -1,4 +1,9 @@
 {
+  "RMVuL": {
+    "from": "Q_{\\theta_{\\mathrm{old}}}(s_t,a_t) \\approx \\sum_{l=0}^{T-t} \\gamma^l c(s_{t+l}).",
+    "to": "Q_{\\theta_{\\mathrm{old}}}(s_t,a_t) \\approx \\sum_{l=0}^{T-t} \\gamma^l c(s_{t+l})",
+    "reason": "列表说明末尾不保留句号。"
+  },
   "xV8yx": {
     "from": "\\eta(\\pi_0)\\geq \\eta(\\pi_1)\\geq \\eta(\\pi_2)\\geq \\cdots.",
     "to": "\\eta(\\pi_0)\\geq \\eta(\\pi_1)\\geq \\eta(\\pi_2)\\geq \\cdots",
