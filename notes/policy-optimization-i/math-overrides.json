@@ -124,8 +124,8 @@
   },
   "KQd4j": {
     "from": " \\beta = \\sqrt{\\frac{2\\delta}{x^T H x}}，\\theta_{k+1} = \\theta_k + \\sqrt{\\frac{2\\delta}{x^T H x}}\\,x",
-    "to": " \\beta = \\sqrt{\\frac{2\\delta}{x^T H x}},\\theta_{k+1} = \\theta_k + \\sqrt{\\frac{2\\delta}{x^T H x}}\\,x",
-    "reason": "将公式中的中文标点统一为英文标点，不改变数学含义"
+    "to": "\\beta = \\sqrt{\\frac{2\\delta}{x^T H x}}, \\qquad \\theta_{k+1} = \\theta_k + \\sqrt{\\frac{2\\delta}{x^T H x}}\\,x",
+    "reason": "将步长与参数更新式统一放在一个公式中，并在两式之间加入明确的数学间距。"
   },
   "FjN5s": {
     "from": "\\boxed{\n\\begin{aligned}\n\\eta(\\pi)\n&=\n\\mathbb{E}_{s_0,a_0,\\ldots}\n\\left[\n\\sum_{t=0}^{\\infty}\n\\gamma^t c(s_t)\n\\right],\n\\quad \\text{where} \\\\[4pt]\ns_0 &\\sim \\rho_0(s_0),\\quad\na_t \\sim \\pi(a_t \\mid s_t),\\quad\ns_{t+1} \\sim P(s_{t+1}\\mid s_t,a_t).\n\\end{aligned}\n}",

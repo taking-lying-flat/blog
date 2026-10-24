@@ -9797,6 +9797,15 @@
     {
       "tag": "p",
       "id": "u471e61a2"
+    },
+    {
+      "tag": "p",
+      "id": "ue683dce6"
+    },
+    {
+      "tag": "p",
+      "id": "udd77c655",
+      "trimFrom": "u841d3993"
     }
   ],
   "blockRangeMoves": [
@@ -9812,7 +9821,9 @@
     "u97611695",
     "uce42c36b",
     "u2217717c",
-    "ufa0bfdaf"
+    "ufa0bfdaf",
+    "u0da5a0e1",
+    "u6d08fee4"
   ],
   "listItemMerges": [
     {
