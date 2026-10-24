@@ -34,18 +34,12 @@ const categories = [
   { id: 'code', title: '源码解读' },
   { id: 'issues', title: 'GitHub Issue' },
 ];
-const articleLikes = JSON.parse(await readFile(path.join(root, '../data/article-likes.json'), 'utf8'));
-const likesConfig = JSON.parse(await readFile(path.join(root, 'likes-config.json'), 'utf8'));
-const bookmarkIcon = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-4-6 4V4.75Z"/></svg>';
 for (const post of posts) {
   if (!categories.some(({ id }) => id === post.category)) {
     throw new Error(`Missing or invalid article category: ${post.slug}`);
   }
   if (post.categoryOrder !== undefined && (!Number.isInteger(post.categoryOrder) || post.categoryOrder < 1)) {
     throw new Error(`Invalid category reading order: ${post.slug}`);
-  }
-  if (!/^[a-zA-Z0-9_-]+$/.test(likesConfig.posts[post.slug] ?? '')) {
-    throw new Error(`Missing article like counter: ${post.slug}`);
   }
 }
 const seriesGroups = new Map();
@@ -760,12 +754,10 @@ const searchIndex = JSON.stringify(readingOrder.map(post => ({
 const template = await readFile(path.join(root, 'template.html'), 'utf8');
 const primer = path.join(root, 'node_modules/@primer/primitives');
 const assets = new Map([
-  ...['reader.css', 'reader.js', 'engagement.js', 'theme.js', 'favicon.svg', 'github-avatar.jpg', 'lake.css', 'lake.js', 'body-serif.css', 'toc.css', 'toc.js'].map((file) => [file, path.join(root, file)]),
+  ...['reader.css', 'reader.js', 'theme.js', 'favicon.svg', 'github-avatar.jpg', 'lake.css', 'lake.js', 'body-serif.css', 'toc.css', 'toc.js'].map((file) => [file, path.join(root, file)]),
   ['garden-background.png', path.join(root, 'illustrations/garden-background.png')],
   ['starry-background.png', path.join(root, 'illustrations/starry-background.png')],
   ['anime-readers.png', path.join(root, 'illustrations/anime-readers.png')],
-  ['anime-like.png', path.join(root, 'illustrations/anime-like.png')],
-  ['anime-bookmark.png', path.join(root, 'illustrations/anime-bookmark.png')],
   ['gdn-architecture.png', path.join(root, 'illustrations/gdn-architecture.png')],
   ['gdn-chunk-parallel.png', path.join(root, 'illustrations/gdn-chunk-parallel.png')],
   ['gdn-model-flow.png', path.join(root, 'illustrations/gdn-model-flow.png')],
@@ -810,9 +802,7 @@ const home = page({
     <div class="home-atmosphere home-atmosphere-night">${ambientGutters('night')}</div>
   </div>
   <section class="garden-articles" aria-labelledby="post-list-title">
-    <div class="post-list-heading"><h1 id="post-list-title" aria-live="polite">全部文章 <span>${String(posts.length).padStart(2, '0')}</span></h1>
-      <button class="saved-filter" type="button" aria-pressed="false" title="查看当前浏览器收藏的文章" hidden>${bookmarkIcon}我的收藏 <span>0</span></button>
-    </div>
+    <div class="post-list-heading"><h1 id="post-list-title" aria-live="polite">全部文章 <span>${String(posts.length).padStart(2, '0')}</span></h1></div>
     <form class="post-search" role="search" data-index="assets/search-index.json?v=${version}" hidden>
       <label class="sr-only" for="search-input">搜索文章标题、标签和正文</label>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
@@ -893,17 +883,6 @@ for (const post of readingOrder) {
           ${next ? `<a class="post-next" href="../${next.slug}/"><span>下一篇 →</span>${escape(next.title)}</a>` : ''}
         </nav>` : ''}
         <a class="back-link" href="../../">← 全部文章</a>
-        <div class="article-engagement" aria-label="文章点赞与收藏">
-          <button class="engagement-button like-button" type="button" data-like-slug="${escape(post.slug)}" data-like-id="${escape(likesConfig.posts[post.slug])}" data-like-api="${escape(likesConfig.endpoint)}" aria-pressed="false" title="点赞">
-            <img src="../../assets/anime-like.png" width="112" height="112" alt="" loading="lazy" decoding="async">
-            <span class="engagement-caption"><span class="like-label">点赞</span><span class="like-count">${articleLikes.posts[post.slug] ?? 0}</span></span>
-          </button>
-          <button class="engagement-button bookmark-button" type="button" data-bookmark="${escape(post.slug)}" aria-pressed="false" hidden>
-            <img src="../../assets/anime-bookmark.png" width="112" height="112" alt="" loading="lazy" decoding="async">
-            <span class="engagement-caption bookmark-label">收藏</span>
-          </button>
-        </div>
-        <p class="engagement-status" id="engagement-status" role="status"></p>
       </footer>
     </article>${toc}`,
   });

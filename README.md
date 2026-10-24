@@ -1,1 +1,3 @@
-![文章点赞历史曲线](docs/likes-history.svg)
+# Blog
+
+[技术笔记](https://taking-lying-flat.github.io/blog/)

@@ -1,5 +1,22 @@
 [
   {
+    "file": "../notes/policy-optimization-v/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
+    "slug": "policy-optimization-v",
+    "series": "policy-optimization",
+    "seriesOrder": 5,
+    "category": "policy",
+    "date": "2026-10-24",
+    "description": "Score Centering 论文笔记：训练—推理不匹配引起的梯度漂移、得分中心化与重要性采样的关系，以及基于 top-k 概率的实现。",
+    "tags": [
+      "Score Centering",
+      "Training-Inference Mismatch",
+      "Off-Policy RL"
+    ]
+  },
+  {
     "file": "../notes/infra-quant-iii/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
