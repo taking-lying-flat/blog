@@ -20,6 +20,7 @@ import '@mathjax/src/js/input/tex/ams/AmsConfiguration.js';
 import '@mathjax/src/js/input/tex/boldsymbol/BoldsymbolConfiguration.js';
 import '@mathjax/src/js/input/tex/newcommand/NewcommandConfiguration.js';
 import '@mathjax/src/js/input/tex/color/ColorConfiguration.js';
+import '@mathjax/src/js/input/tex/cancel/CancelConfiguration.js';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const output = path.join(root, 'dist');
@@ -97,7 +98,7 @@ RegisterHTMLHandler(adaptor);
 const svg = new SVG({ fontCache: 'local', displayOverflow: 'overflow', linebreaks: { inline: false } });
 const document = mathjax.document('', {
   InputJax: new TeX({
-    packages: ['base', 'ams', 'boldsymbol', 'newcommand', 'color'],
+    packages: ['base', 'ams', 'boldsymbol', 'newcommand', 'color', 'cancel'],
     tagSide: 'right',
     formatError(_jax, error) { throw error; },
   }),

@@ -414,6 +414,60 @@
       "height": "2.009ex",
       "viewBox": "0 -576.1 895 865.1",
       "style": "vertical-align: -0.671ex;"
+    },
+    {
+      "source": "https://arxiv.org/pdf/2609.20807v1#page=6",
+      "file": "assets/images/score-centering-minimal-code.png",
+      "bytes": 115912,
+      "sha256": "ab03617e89b903275910a3252a73b7260b018c8447051a8a634de7273a73a6d6",
+      "width": 1592,
+      "height": 416,
+      "extraction": {
+        "page": 6,
+        "dpi": 288,
+        "crop": [
+          428,
+          1888,
+          1592,
+          416
+        ]
+      }
+    },
+    {
+      "source": "https://arxiv.org/pdf/2609.20807v1#page=14",
+      "file": "assets/images/score-centering-weighted-code.png",
+      "bytes": 243814,
+      "sha256": "3d701e03cd32ed90ea30ae8a4a7a9d7303b41a705853e52c756b9891ba64f4cf",
+      "width": 1592,
+      "height": 864,
+      "extraction": {
+        "page": 14,
+        "dpi": 288,
+        "crop": [
+          428,
+          340,
+          1592,
+          864
+        ]
+      }
+    },
+    {
+      "source": "https://arxiv.org/pdf/2609.20807v1#page=15",
+      "file": "assets/images/score-centering-topk-ablation.png",
+      "bytes": 365203,
+      "sha256": "cce692254715d62207e5b69e3c226fce300d1f2ac0f8170d84caa6fbcca70212",
+      "width": 1592,
+      "height": 1316,
+      "extraction": {
+        "page": 15,
+        "dpi": 288,
+        "crop": [
+          428,
+          320,
+          1592,
+          1316
+        ]
+      }
     }
   ],
   "cards": [

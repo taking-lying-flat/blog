@@ -1,0 +1,32 @@
+{
+  "uTFXG": {
+    "from": "\\mathbb{E}_p[R s_{y_t}]\n=\nR\\,\\mathbb{E}_p[s_{y_t}]\n=\nR\\cdot 0.",
+    "to": "\\mathbb{E}_p[R s_{y_t}]\n=\nR\\,\\mathbb{E}_p[s_{y_t}]\n=\nR\\cdot 0.\n\\tag{3}",
+    "reason": "Number every standalone equation consecutively in reading order, matching the other blog articles."
+  },
+  "vDDDC": {
+    "from": "\\mathbb{E}_p[s_{y_t}]\n=\n\\sum_v p_v \\nabla_\\theta \\log p_v\n=\n\\nabla_\\theta \\sum_v p_v\n=\n\\nabla_\\theta 1\n=\n0.",
+    "to": "\\mathbb{E}_p[s_{y_t}]\n=\n\\sum_v p_v \\nabla_\\theta \\log p_v\n=\n\\nabla_\\theta \\sum_v p_v\n=\n\\nabla_\\theta 1\n=\n0.\n\\tag{4}",
+    "reason": "Number every standalone equation consecutively in reading order, matching the other blog articles."
+  },
+  "kN3x5": {
+    "from": "\\tilde{s}_{y_t}\n=\ns_{y_t}-\\bar{s}.\n\\tag{4}",
+    "to": "\\tilde{s}_{y_t}\n=\ns_{y_t}-\\bar{s}.\n\\tag{6}",
+    "reason": "Number every standalone equation consecutively in reading order, matching the other blog articles."
+  },
+  "jdTvP": {
+    "from": "L\n=\n-R\n\\left(\n\\log p_{y_t}\n-\n\\sum_{v\\in H}\n\\operatorname{sg}[q_v-\\rho p_v]\\log p_v\n\\right).\n\\tag{6}",
+    "to": "L\n=\n-R\n\\left(\n\\log p_{y_t}\n-\n\\sum_{v\\in H}\n\\operatorname{sg}[q_v-\\rho p_v]\\log p_v\n\\right).\n\\tag{8}",
+    "reason": "Number every standalone equation consecutively in reading order, matching the other blog articles."
+  },
+  "WTQD0": {
+    "from": "\\underbrace{\n\\mathbb{E}_q[R s_{y_t}]\n}_{\\text{policy gradient update}}\n=\n\\underbrace{\n\\mathbb{E}_q[R]\\,\\bar{s}\n}_{\\text{drift}}\n+\n\\underbrace{\n\\operatorname{Cov}_q(R,s_{y_t})\n}_{\\text{signal}}.\n\\tag{3}",
+    "to": "{\\color{#273348}\n\\underbrace{\\mathbb{E}_q[R s_{y_t}]}_{\\text{policy gradient update}}\n=\n{\\color{#c65d4a}\\underbrace{\\mathbb{E}_q[R]\\,\\bar{s}}_{\\text{“drift”}}}\n+\n{\\color{#077f78}\\underbrace{\\operatorname{Cov}_q(R,s_{y_t})}_{\\text{“signal”}}}\n}\n\\tag{5}",
+    "reason": "Restore equation (3) colors and labels from 2609.20807v1.pdf p. 5: #273348 update, #c65d4a drift, #077f78 signal. Renumber after the two unnumbered identities."
+  },
+  "hx2xm": {
+    "from": "\\begin{aligned}\n\\mathbb{E}_q[R\\tilde{s}_{y_t}]\n&=\n\\underbrace{\n\\mathbb{E}_q[R]\\,\n\\mathbb{E}_q[\\tilde{s}_{y_t}]\n}_{\\mathbb{E}_q[\\tilde{s}_{y_t}]=\\bar{s}-\\bar{s}=0}\n+\n\\operatorname{Cov}_q(R,\\tilde{s}_{y_t})\n\\\\\n&=\n\\operatorname{Cov}_q(R,\\tilde{s}_{y_t})\n\\\\\n&=\n\\operatorname{Cov}_q(R,s_{y_t}).\n\\end{aligned}\n\\tag{5}",
+    "to": "\\begin{aligned}\n\\mathbb{E}_q[R\\tilde{s}_{y_t}]\n&={\\color{#7030ae}\\overset{\\mathbb{E}_q[\\tilde{s}_{y_t}]=\\bar{s}-\\bar{s}=0}{\\cancel{\\mathbb{E}_q[R]\\,\\mathbb{E}_q[\\tilde{s}_{y_t}]}}}\n+\\operatorname{Cov}_q(R,\\tilde{s}_{y_t})\\\\\n&=\\operatorname{Cov}_q(R,\\tilde{s}_{y_t})\\\\\n&=\\operatorname{Cov}_q(R,s_{y_t})\n\\quad\\longleftarrow\\quad\n\\begin{gathered}\n\\text{only difference to on-policy update}\\\\[-0.2em]\n\\text{is the covariance sampling distribution}\n\\end{gathered}\n\\end{aligned}\n\\tag{7}",
+    "reason": "Restore equation (5) purple #7030ae canceled drift term, zero-mean annotation above it, and the covariance-distribution annotation from 2609.20807v1.pdf p. 5. Renumber after the two unnumbered identities."
+  }
+}
