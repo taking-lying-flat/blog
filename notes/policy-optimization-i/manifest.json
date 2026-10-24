@@ -9723,6 +9723,12 @@
       "asset": "assets/math/29dac1bb46607a9859d5438c8b831c80.svg"
     }
   ],
+  "sectionRemovals": [
+    {
+      "from": "OeIHc",
+      "before": "mAQOn"
+    }
+  ],
   "blockRemovals": [
     {
       "tag": "p",
