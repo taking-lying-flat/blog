@@ -9837,6 +9837,11 @@
   ],
   "paragraphSplits": [
     {
+      "paragraph": "u201d3682",
+      "before": "u36cbee07",
+      "id": "mixed-policy-distance"
+    },
+    {
       "paragraph": "uf46ea970",
       "before": "u58af8aae",
       "afterText": "改进量的显式下界",
@@ -9845,6 +9850,15 @@
   ],
   "paragraphListItemsAfterMoves": [
     "conservative-policy-update",
-    "uce94fd93"
+    "uce94fd93",
+    "mixed-policy-distance",
+    "udacbffa6",
+    "u513e7d53"
+  ],
+  "mathRemovals": [
+    "zz2Yq"
+  ],
+  "paragraphEmphasis": [
+    "uf46ea970"
   ]
 }

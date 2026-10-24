@@ -1,4 +1,9 @@
 {
+  "xV8yx": {
+    "from": "\\eta(\\pi_0)\\geq \\eta(\\pi_1)\\geq \\eta(\\pi_2)\\geq \\cdots.",
+    "to": "\\eta(\\pi_0)\\geq \\eta(\\pi_1)\\geq \\eta(\\pi_2)\\geq \\cdots",
+    "reason": "列表说明末尾不保留句号。"
+  },
   "cz1JC": {
     "from": "\\epsilon = \\max_s \\left| \\mathbb{E}_{a\\sim\\pi_{\\mathrm{new}}(a\\mid s)} \\left[ A_{\\pi_{\\mathrm{old}}}(s,a) \\right] \\right|.",
     "to": "\\epsilon = \\max_{s,a}\\left|A_{\\pi_{\\mathrm{old}}}(s,a)\\right|.",
