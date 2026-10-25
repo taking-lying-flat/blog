@@ -101,8 +101,8 @@
   },
   "EE1ae": {
     "from": "\\begin{aligned}\n\\tilde{Q}^{\\pi, \\gamma}(s, a) &= Q^{\\pi, \\gamma}(s, a) - \\Phi(s) \\\\\n\\tilde{V}^{\\pi, \\gamma}(s, a) &= V^{\\pi, \\gamma}(s) - \\Phi(s) \\\\\n\\tilde{A}^{\\pi, \\gamma}(s, a) &= (Q^{\\pi, \\gamma}(s, a) - \\Phi(s)) - (V^{\\pi, \\gamma}(s) - \\Phi(s)) = A^{\\pi, \\gamma}(s, a).\n\\end{aligned}",
-    "to": "\\begin{aligned}\n\\tilde{Q}^{\\pi, \\gamma}(s, a) &= Q^{\\pi, \\gamma}(s, a) - \\Phi(s) \\\\\n\\tilde{V}^{\\pi, \\gamma}(s) &= V^{\\pi, \\gamma}(s) - \\Phi(s) \\\\\n\\tilde{A}^{\\pi, \\gamma}(s, a) &= (Q^{\\pi, \\gamma}(s, a) - \\Phi(s)) - (V^{\\pi, \\gamma}(s) - \\Phi(s)) = A^{\\pi, \\gamma}(s, a).\n\\end{aligned}",
-    "reason": "状态价值函数仅以状态为参数。",
+    "to": "\\begin{aligned}\n\\tilde{Q}^{\\pi,\\gamma}(s,a) &= Q^{\\pi,\\gamma}(s,a)-\\Phi(s),\\qquad \\tilde{V}^{\\pi,\\gamma}(s)=V^{\\pi,\\gamma}(s)-\\Phi(s) \\\\[0.5em]\n\\tilde{A}^{\\pi,\\gamma}(s,a) &= (Q^{\\pi,\\gamma}(s,a)-\\Phi(s))-(V^{\\pi,\\gamma}(s)-\\Phi(s))=A^{\\pi,\\gamma}(s,a)\n\\end{aligned}",
+    "reason": "状态价值函数仅以状态为参数。按要求将 Q、V 的关系合并为第一行，优势函数关系保留在第二行，两式间增加间距。",
     "reference": "https://arxiv.org/pdf/1506.02438"
   },
   "qibui": {

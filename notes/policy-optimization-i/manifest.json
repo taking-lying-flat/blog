@@ -9827,7 +9827,9 @@
     "u30f24c98",
     "u319b2996",
     "uba679115",
-    "u5c895a2b"
+    "u5c895a2b",
+    "uafa24063",
+    "udcd53429"
   ],
   "listItemMerges": [
     {
@@ -9843,9 +9845,15 @@
   ],
   "listItemParagraphs": [
     ["ub0758bd5", "u896f8e86"],
-    "uce94fd93"
+    "uce94fd93",
+    "u6a9a4ce5"
   ],
   "paragraphJoins": [
+    {
+      "into": "u6a9a4ce5",
+      "next": "u4baed4ef",
+      "separator": "。"
+    },
     {
       "into": "gae-bootstrap-limit",
       "next": "u87e2530e",
@@ -9905,7 +9913,8 @@
     "u38babb8c",
     "importance-sampling-explanation",
     "ue6ae1420",
-    "gae-bootstrap-limit"
+    "gae-bootstrap-limit",
+    "u6a9a4ce5"
   ],
   "blockquoteUnwraps": [
     "ud77f1aa6"
