@@ -884,5 +884,6 @@
       "separator": "。"
     }
   ],
-  "paragraphListItemsAfterMoves": ["ud972954a", "uc8999f4a", "u9cdd064c"]
+  "paragraphListItemsAfterMoves": ["ud972954a", "uc8999f4a", "u9cdd064c"],
+  "paragraphEmphasis": ["ue9b71e26"]
 }
