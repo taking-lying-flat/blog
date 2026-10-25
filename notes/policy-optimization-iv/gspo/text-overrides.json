@@ -59,7 +59,7 @@
       {
         "math": "\\hat{A}_{i,t}=\\hat{A}_i"
       },
-      " 时，GSPO-token 与 GSPO 在优化目标、裁剪条件和理论梯度上具有数值一致性，而 GSPO-token 在逐 token 调整优势方面具有更高的灵活性"
+      " 时，GSPO-token 与 GSPO 在优化目标、裁剪条件和理论梯度上具有数值一致性，而 GSPO-token 在逐 token 调整优势方面具有更高灵活性"
     ],
     "reason": "补回原论文两种目标等价所需的 token 优势一致条件"
   }
