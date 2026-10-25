@@ -38,8 +38,6 @@ GC_{\mathcal A}(q,o,t,\pi_{\mathrm{rf}})
 \right]\tag{10}
 ```
 
-- 对参数求导可得
-
 ```math
 \nabla_\theta\mathcal J_{\mathrm{SFT}}(\theta)
 =\mathbb E_{(q,o)\sim P_{\mathrm{sft}}}\left[
