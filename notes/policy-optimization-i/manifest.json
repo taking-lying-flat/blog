@@ -9806,6 +9806,10 @@
       "tag": "p",
       "id": "udd77c655",
       "trimFrom": "u841d3993"
+    },
+    {
+      "tag": "li",
+      "id": "ud3013385"
     }
   ],
   "blockRangeMoves": [
@@ -9834,7 +9838,9 @@
   "listItemMerges": [
     {
       "into": "u5f30c944",
-      "items": ["u11eec09d"]
+      "items": [
+        "u11eec09d"
+      ]
     }
   ],
   "paragraphMerges": [
@@ -9844,7 +9850,10 @@
     }
   ],
   "listItemParagraphs": [
-    ["ub0758bd5", "u896f8e86"],
+    [
+      "ub0758bd5",
+      "u896f8e86"
+    ],
     "uce94fd93",
     "u6a9a4ce5"
   ],
