@@ -2974,5 +2974,25 @@
       },
       "asset": "assets/images/1755430204190-4c757aac-adfe-4c92-8a89-fc817b517269.png"
     }
+  ],
+  "listItemParagraphs": ["u64c774ee"],
+  "paragraphListItemsAfterMoves": ["u64c774ee"],
+  "paragraphJoins": [
+    {
+      "into": "u475d1941",
+      "next": "u61c82387",
+      "separator": "。"
+    },
+    {
+      "into": "u64c774ee",
+      "next": "ub2b9f93f",
+      "separator": "。"
+    }
+  ],
+  "blockRemovals": [
+    {
+      "tag": "p",
+      "id": "u0c647b48"
+    }
   ]
 }

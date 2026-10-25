@@ -1,53 +1,48 @@
 {
   "N9Wmx": {
     "from": "\\log P_{\\theta}(y\\mid x)=\\frac{1}{|y|}\\sum_{t=1}^{m}\\log\\pi_{\\theta}(y_t\\mid x,y_{<t}).",
-    "to": "\\log P_{\\theta}(y\\mid x)=\\frac{1}{|y|}\\sum_{t=1}^{|y|}\\log\\pi_{\\theta}(y_t\\mid x,y_{<t})\\tag{1}",
-    "reason": "统一长度下标与本篇编号"
-  },
-  "UwyPY": {
-    "from": "\\operatorname{odds}_{\\theta}(y\\mid x)=\\frac{P_{\\theta}(y\\mid x)}{1-P_{\\theta}(y\\mid x)}.",
-    "to": "\\operatorname{odds}_{\\theta}(y\\mid x)=\\frac{P_{\\theta}(y\\mid x)}{1-P_{\\theta}(y\\mid x)}\\tag{2}",
-    "reason": "连续编号"
+    "to": "\\log P_{\\theta}(y\\mid x)=\\frac{1}{|y|}\\sum_{t=1}^{|y|}\\log\\pi_{\\theta}(y_t\\mid x,y_{<t}),\\qquad \\operatorname{odds}_{\\theta}(y\\mid x)=\\frac{P_{\\theta}(y\\mid x)}{1-P_{\\theta}(y\\mid x)}\\tag{1}",
+    "reason": "统一长度下标，将平均对数似然与几率定义合为同一行，并共用编号（1）。"
   },
   "kWSyx": {
     "from": "\\operatorname{OR}_{\\theta}(x,y_w,y_l)=\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}.\\tag{1}",
-    "to": "\\operatorname{OR}_{\\theta}(x,y_w,y_l)=\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}\\tag{3}",
-    "reason": "连续编号"
+    "to": "\\operatorname{OR}_{\\theta}(x,y_w,y_l)=\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}\\tag{2}",
+    "reason": "连续编号 合并前两个定义后，ORPO 部分编号顺延。"
   },
   "igHRB": {
     "from": "\\mathcal{L}_{\\mathrm{SFT}}(\\mathbf{x},\\mathbf{y})=-\\frac{1}{m}\\sum_{k=1}^{m}\\log P(x^{(k)},y^{(k)}).\\tag{2}",
-    "to": "\\mathcal{L}_{\\mathrm{SFT}}(x,y;\\theta)=-\\frac{1}{m}\\sum_{k=1}^{m}\\log\\pi_{\\theta}(y_k\\mid x,y_{<k}),\\qquad m=|y|\\tag{4}",
-    "reason": "明确因果语言模型条件似然"
+    "to": "\\mathcal{L}_{\\mathrm{SFT}}(x,y;\\theta)=-\\frac{1}{m}\\sum_{k=1}^{m}\\log\\pi_{\\theta}(y_k\\mid x,y_{<k}),\\qquad m=|y|\\tag{3}",
+    "reason": "明确因果语言模型条件似然 合并前两个定义后，ORPO 部分编号顺延。"
   },
   "lWLNo": {
     "from": "\\mathcal{L}_{\\mathrm{SFT}}(\\mathbf{x},\\mathbf{y})=-\\frac{1}{m}\\sum_{k=1}^{m}\\sum_{i=1}^{|V|}y_i^{(k)}\\cdot\\log\\left(p_i^{(k)}\\right).\\tag{3}",
-    "to": "\\mathcal{L}_{\\mathrm{SFT}}(x,y;\\theta)=-\\frac{1}{m}\\sum_{k=1}^{m}\\sum_{i=1}^{|V|}y_i^{(k)}\\log p_i^{(k)}\\tag{5}",
-    "reason": "统一符号与连续编号"
+    "to": "\\mathcal{L}_{\\mathrm{SFT}}(x,y;\\theta)=-\\frac{1}{m}\\sum_{k=1}^{m}\\sum_{i=1}^{|V|}y_i^{(k)}\\log p_i^{(k)}\\tag{4}",
+    "reason": "统一符号与连续编号 合并前两个定义后，ORPO 部分编号顺延。"
   },
   "D6aHK": {
     "from": "\\mathcal{L}(d;\\theta)=\\mathcal{L}_{\\mathrm{SFT}}(x,y_w;\\theta)+\\lambda\\mathcal{L}_{\\mathrm{OR}}(d;\\theta).\\tag{4}",
-    "to": "\\mathcal{L}(d;\\theta)=\\mathcal{L}_{\\mathrm{SFT}}(x,y_w;\\theta)+\\lambda\\mathcal{L}_{\\mathrm{OR}}(d;\\theta)\\tag{6}",
-    "reason": "连续编号"
+    "to": "\\mathcal{L}(d;\\theta)=\\mathcal{L}_{\\mathrm{SFT}}(x,y_w;\\theta)+\\lambda\\mathcal{L}_{\\mathrm{OR}}(d;\\theta)\\tag{5}",
+    "reason": "连续编号 合并前两个定义后，ORPO 部分编号顺延。"
   },
   "cI70G": {
     "from": "\\mathcal{L}_{\\mathrm{OR}}(d;\\theta)=-\\log\\sigma\\left(\\log\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}\\right).\\tag{5}",
-    "to": "\\mathcal{L}_{\\mathrm{OR}}(d;\\theta)=-\\log\\sigma\\left(\\log\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}\\right)\\tag{7}",
-    "reason": "连续编号"
+    "to": "\\mathcal{L}_{\\mathrm{OR}}(d;\\theta)=-\\log\\sigma\\left(\\log\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}\\right)\\tag{6}",
+    "reason": "连续编号 合并前两个定义后，ORPO 部分编号顺延。"
   },
   "YHE6n": {
     "from": "\\nabla_{\\theta}\\mathcal{L}_{\\mathrm{OR}}=\\delta(d)\\cdot h(d).\\tag{6}",
-    "to": "-\\nabla_{\\theta}\\mathcal{L}_{\\mathrm{OR}}=\\delta(d)\\,h(d)\\tag{8}",
-    "reason": "将原文的正向对比量明确记为负梯度，即最小化损失的下降方向"
+    "to": "-\\nabla_{\\theta}\\mathcal{L}_{\\mathrm{OR}}=\\delta(d)\\,h(d)\\tag{7}",
+    "reason": "将原文的正向对比量明确记为负梯度，即最小化损失的下降方向 合并前两个定义后，ORPO 部分编号顺延。"
   },
   "hvUIV": {
     "from": "\\delta(d)=\\left[1+\\frac{\\operatorname{odds}_{\\theta}P(y_w\\mid x)}{\\operatorname{odds}_{\\theta}P(y_l\\mid x)}\\right]^{-1}.\\tag{7}",
-    "to": "\\delta(d)=\\left[1+\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}\\right]^{-1}\\tag{9}",
-    "reason": "统一 odds 记号并连续编号"
+    "to": "\\delta(d)=\\left[1+\\frac{\\operatorname{odds}_{\\theta}(y_w\\mid x)}{\\operatorname{odds}_{\\theta}(y_l\\mid x)}\\right]^{-1}\\tag{8}",
+    "reason": "统一 odds 记号并连续编号 合并前两个定义后，ORPO 部分编号顺延。"
   },
   "Ay1lS": {
     "from": "h(d)=\\frac{\\nabla_{\\theta}\\log P_{\\theta}(y_w\\mid x)}{1-P_{\\theta}(y_w\\mid x)}-\\frac{\\nabla_{\\theta}\\log P_{\\theta}(y_l\\mid x)}{1-P_{\\theta}(y_l\\mid x)}.\\tag{8}",
-    "to": "h(d)=\\frac{\\nabla_{\\theta}\\log P_{\\theta}(y_w\\mid x)}{1-P_{\\theta}(y_w\\mid x)}-\\frac{\\nabla_{\\theta}\\log P_{\\theta}(y_l\\mid x)}{1-P_{\\theta}(y_l\\mid x)}\\tag{10}",
-    "reason": "连续编号"
+    "to": "h(d)=\\frac{\\nabla_{\\theta}\\log P_{\\theta}(y_w\\mid x)}{1-P_{\\theta}(y_w\\mid x)}-\\frac{\\nabla_{\\theta}\\log P_{\\theta}(y_l\\mid x)}{1-P_{\\theta}(y_l\\mid x)}\\tag{9}",
+    "reason": "连续编号 合并前两个定义后，ORPO 部分编号顺延。"
   },
   "r2Ram": {
     "from": "(1-p_i^{(k)})",
