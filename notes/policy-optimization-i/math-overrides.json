@@ -251,5 +251,15 @@
     "from": "\\begin{aligned}\n& V^{\\pi, \\gamma}(s_t) := \\mathbb{E}_{\\substack{s_{t+1:\\infty}, \\\\ a_{t:\\infty}}} \\left[ \\sum_{l=0}^{\\infty} \\gamma^l r_{t+l} \\right] \\qquad \\qquad Q^{\\pi, \\gamma}(s_t, a_t) := \\mathbb{E}_{\\substack{s_{t+1:\\infty}, \\\\ a_{t+1:\\infty}}} \\left[ \\sum_{l=0}^{\\infty} \\gamma^l r_{t+l} \\right] \\\\\n& A^{\\pi, \\gamma}(s_t, a_t) := Q^{\\pi, \\gamma}(s_t, a_t) - V^{\\pi, \\gamma}(s_t).\n\\end{aligned}",
     "to": "V^{\\pi,\\gamma}(s_t) := \\mathbb{E}_{\\substack{s_{t+1:\\infty}, \\\\ a_{t:\\infty}}} \\left[ \\sum_{l=0}^{\\infty} \\gamma^l r_{t+l} \\right], \\quad Q^{\\pi,\\gamma}(s_t,a_t) := \\mathbb{E}_{\\substack{s_{t+1:\\infty}, \\\\ a_{t+1:\\infty}}} \\left[ \\sum_{l=0}^{\\infty} \\gamma^l r_{t+l} \\right], \\quad A^{\\pi,\\gamma}(s_t,a_t) := Q^{\\pi,\\gamma}(s_t,a_t) - V^{\\pi,\\gamma}(s_t)",
     "reason": "按要求将折扣状态价值、状态动作价值及优势函数定义排在同一行，保留数学内容并去掉末尾句号。"
+  },
+  "Wyk2q": {
+    "from": "\\begin{aligned} \\min_{\\phi}\\quad &\\sum_{n=1}^{N} \\left( V_{\\phi}(s_n)-\\hat V_n \\right)^2 \\\\ \\text{s.t.}\\quad & \\frac{1}{N} \\sum_{n=1}^{N} \\frac{ \\left( V_{\\phi}(s_n)-V_{\\phi_{\\mathrm{old}}}(s_n) \\right)^2 }{ 2\\sigma^2 } \\leq \\epsilon . \\end{aligned} ",
+    "to": "\\min_{\\phi}\\quad \\sum_{n=1}^{N} \\left( V_{\\phi}(s_n)-\\hat V_n \\right)^2 , \\qquad \\text{s.t.}\\quad  \\frac{1}{N} \\sum_{n=1}^{N} \\frac{ \\left( V_{\\phi}(s_n)-V_{\\phi_{\\mathrm{old}}}(s_n) \\right)^2 }{ 2\\sigma^2 } \\leq \\epsilon",
+    "reason": "将目标函数与约束条件排在同一行，两者之间保留明确的数学间距，去掉末尾标点。"
+  },
+  "ZHHQy": {
+    "from": "\\begin{aligned} \\min_{\\phi}\\quad & g^{\\mathrm T}\\left(\\phi-\\phi_{\\mathrm{old}}\\right)\\\\ \\text{s.t.}\\quad &\\frac{1}{2} \\left(\\phi-\\phi_{\\mathrm{old}}\\right)^{\\mathrm T} H \\left(\\phi-\\phi_{\\mathrm{old}}\\right) \\leq \\epsilon , \\end{aligned}",
+    "to": "\\min_{\\phi}\\quad  g^{\\mathrm T}\\left(\\phi-\\phi_{\\mathrm{old}}\\right), \\qquad \\text{s.t.}\\quad \\frac{1}{2} \\left(\\phi-\\phi_{\\mathrm{old}}\\right)^{\\mathrm T} H \\left(\\phi-\\phi_{\\mathrm{old}}\\right) \\leq \\epsilon",
+    "reason": "将目标函数与约束条件排在同一行，两者之间保留明确的数学间距，去掉末尾标点。"
   }
 }
