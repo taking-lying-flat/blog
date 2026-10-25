@@ -1,6 +1,6 @@
 <div class="policy-theorem" id="gae-just-definition">
 
-**定义（γ-just 估计器）。** 若估计器 $`\hat A_t`$ 满足下式，则称其为 $`\gamma`$-just
+- **定义（γ-just 估计器）。** 若估计器 $`\hat A_t`$ 满足下式，则称其为 $`\gamma`$-just
 
 ```math
 \mathbb E_{\substack{s_{0:\infty}\\a_{0:\infty}}}
