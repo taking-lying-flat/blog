@@ -113,12 +113,8 @@ GC_{\mathrm{RFT}}(q,o,t)=\mathbb I(q,o)=
 - 将采样回答按偏好标注整理为 $`(q,o^+,o^-)\sim\mathcal D_{\mathrm{pref}}`$，其中 $`o^+`$ 为偏好回答。按回答长度归一化，记平均对数概率比为 $`s_\theta(q,o)`$，并定义 $`\Delta_\theta=s_\theta(q,o^+)-s_\theta(q,o^-)`$
 
 ```math
-\begin{aligned}
-s_\theta(q,o)&=\frac{1}{|o|}\sum_{t=1}^{|o|}
-\log\frac{\pi_\theta(o_t\mid h_t)}{\pi_{\mathrm{ref}}(o_t\mid h_t)}\\
-\mathcal J_{\mathrm{DPO}}(\theta)
-&=\mathbb E_{\mathcal D_{\mathrm{pref}}}\left[\log\sigma(\beta\Delta_\theta)\right]
-\end{aligned}\tag{16}
+s_\theta(q,o)=\frac{1}{|o|}\sum_{t=1}^{|o|}\log\frac{\pi_\theta(o_t\mid h_t)}{\pi_{\mathrm{ref}}(o_t\mid h_t)},\qquad
+\mathcal J_{\mathrm{DPO}}(\theta)=\mathbb E_{\mathcal D_{\mathrm{pref}}}\left[\log\sigma(\beta\Delta_\theta)\right]\tag{16}
 ```
 
 - 对同一偏好对，两个回答共享系数 $`c_\theta`$，但在梯度中符号相反，其中 $`h_t^\pm=(q,o_{<t}^\pm)`$

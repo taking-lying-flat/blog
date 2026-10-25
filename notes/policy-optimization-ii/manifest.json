@@ -6613,6 +6613,20 @@
       "asset": "assets/images/1790666137022-cce45dfc-5036-4514-856a-78d51a3f76af.png"
     }
   ],
+  "listItemSplits": [
+    {
+      "item": "u7e98cf4d",
+      "before": "ue4a128c9",
+      "afterText": "实验表明，策略约束是抑制过度优化、维持 PPO 长期训练稳定性的关键，其中 token 级 KL 惩罚能够限制策略偏离原始分布，并支持更长的训练过程。将采样策略固定为参考模型、复用该分布下的样本，并结合 KL 惩罚后，可进一步稳定训练，但会降低策略模型的最终性能",
+      "id": "entropy-bonus-sensitivity"
+    },
+    {
+      "item": "uf54684de",
+      "before": "u887c9406",
+      "afterText": "然而，该方法的高方差也带来挑战。这种方差源于环境的随机性，例如一个回合内发生的随机事件，以及策略本身的随机性，使得不同轨迹可能产生不同的回报。为降低这种方差，一种常见策略是在策略梯度更新规则中，使用优势函数估计代替原始回报",
+      "id": "advantage-definition-explanation"
+    }
+  ],
   "listItemMerges": [
     {
       "into": "ud36e655a",
@@ -6635,6 +6649,18 @@
     {
       "tag": "li",
       "id": "u090265ef"
+    },
+    {
+      "tag": "li",
+      "id": "uf8d00766"
+    },
+    {
+      "tag": "li",
+      "id": "advantage-definition-explanation"
+    },
+    {
+      "tag": "li",
+      "id": "u4dafc5f4"
     }
   ]
 }
