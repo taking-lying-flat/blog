@@ -9847,7 +9847,7 @@
   ],
   "paragraphJoins": [
     {
-      "into": "ufd202b12",
+      "into": "gae-bootstrap-limit",
       "next": "u87e2530e",
       "separator": "。"
     },
@@ -9874,6 +9874,12 @@
   ],
   "paragraphSplits": [
     {
+      "paragraph": "ufd202b12",
+      "before": "u86fe57d4",
+      "afterText": "，该估计量的偏差通常会逐渐减小",
+      "id": "gae-bootstrap-limit"
+    },
+    {
       "paragraph": "u38babb8c",
       "before": "uaf72233e",
       "id": "importance-sampling-explanation"
@@ -9898,7 +9904,11 @@
     "u513e7d53",
     "u38babb8c",
     "importance-sampling-explanation",
-    "ue6ae1420"
+    "ue6ae1420",
+    "gae-bootstrap-limit"
+  ],
+  "blockquoteUnwraps": [
+    "ud77f1aa6"
   ],
   "mathRemovals": [
     "zz2Yq"

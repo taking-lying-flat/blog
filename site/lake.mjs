@@ -208,7 +208,8 @@ export async function readLake(file, escape, renderMath) {
         if (!body.startsWith(prefix, textStart) || textStart + prefix.length > textEnd) {
           throw new Error(`Missing Lake paragraph split text: ${before}`);
         }
-        return `${opening}${body.slice(0, textStart)}${prefix}</span></p><p id="${id}"><span>${body.slice(textStart + prefix.length)}</p>`;
+        const strong = body.slice(0, offset).endsWith('<strong>');
+        return `${opening}${body.slice(0, textStart)}${prefix}</span>${strong ? '</strong>' : ''}</p><p id="${id}">${strong ? '<strong>' : ''}<span>${body.slice(textStart + prefix.length)}</p>`;
       }
       return `${opening}${body.slice(0, offset)}</p><p id="${id}">${body.slice(offset)}</p>`;
     });
@@ -358,6 +359,13 @@ export async function readLake(file, escape, renderMath) {
     if (tag === 'li') {
       content = content.replace(/<(ul|ol)\b[^>]*>\s*<\/\1>/g, '');
     }
+  }
+  // Remove selected quote wrappers while retaining their contents.
+  for (const id of manifest.blockquoteUnwraps ?? []) {
+    if (!/^[\w-]+$/.test(id)) throw new Error(`Invalid Lake quote unwrap: ${id}`);
+    const pattern = new RegExp(`<blockquote\\b[^>]*\\sid="${id}"[^>]*>([\\s\\S]*?)<\\/blockquote>`, 'g');
+    if ([...content.matchAll(pattern)].length !== 1) throw new Error(`Lake quote unwrap must match once: ${id}`);
+    content = content.replace(pattern, '$1');
   }
   // Restore complete lists to ordinary prose without changing their contents.
   for (const entry of manifest.listItemParagraphs ?? []) {

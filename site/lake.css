@@ -56,7 +56,8 @@
   margin-block: 12px;
   padding: 2px 3em;
 }
-[data-post="policy-optimization-i"] .lake-document #u5c895a2b strong { font-weight: inherit; }
+[data-post="policy-optimization-i"] .lake-document :is(#u5c895a2b, #gae-bootstrap-limit) strong { font-weight: inherit; }
+[data-post="policy-optimization-i"] .lake-document #gae-bootstrap-limit [data-lake-id] { color: inherit !important; }
 [data-post="policy-optimization-i"] .policy-theorem {
   margin: 12px 0;
   padding: 10px 14px;
