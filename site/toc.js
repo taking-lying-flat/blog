@@ -9,7 +9,7 @@ if (paperToc) {
   const preferenceKey = 'blog-paper-toc';
   let preference;
   try { preference = localStorage.getItem(preferenceKey); } catch {}
-  panel.open = preference ? preference === 'open' : !matchMedia('(max-width: 1199px)').matches;
+  panel.open = preference !== 'closed';
   const syncPanel = () => main.classList.toggle('toc-collapsed', !panel.open);
   syncPanel();
   panel.addEventListener('toggle', () => {

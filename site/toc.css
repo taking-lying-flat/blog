@@ -1,11 +1,15 @@
 /* Only explicitly selected paper notes receive a reading sidebar. */
 .post-page.has-paper-toc {
-  --toc-width: clamp(168px, calc(100vw - 1104px), 224px);
+  --toc-width: 224px;
   display: grid;
-  grid-template-columns: minmax(0, 1024px) var(--toc-width);
+  grid-template-columns: 1024px var(--toc-width);
   align-items: start;
   gap: 24px;
-  max-width: calc(1096px + var(--toc-width));
+  width: 1320px;
+  max-width: none;
+}
+@media screen {
+  .post-page-shell:has(.has-paper-toc:not(.toc-collapsed)) { min-width: 1320px; }
 }
 .has-paper-toc > .post-single { min-width: 0; }
 .post-toc { position: sticky; top: 28px; min-width: 0; margin-top: 22px; font: 400 13px/1.6 var(--sans); }
@@ -24,20 +28,12 @@
 .toc-list ol .toc-link { font-size: 12px; }
 .toc-link:hover { color: var(--accent); background: var(--surface); }
 .toc-link[aria-current="location"] { border-left-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
-.post-page.has-paper-toc.toc-collapsed { display: block; max-width: 1072px; }
+.post-page.has-paper-toc.toc-collapsed { display: block; width: 1072px; max-width: none; }
 .toc-collapsed .post-toc { position: fixed; top: 102px; right: 20px; margin: 0; z-index: 2; }
 .toc-collapsed .toc-panel { border: 1px solid var(--line); border-radius: 6px; padding: 0; background: var(--page); }
 .toc-collapsed .toc-panel summary { padding: 8px 12px; }
-@media (max-width: 1199px) {
-  .post-page.has-paper-toc { display: block; max-width: 1072px; }
-  .post-toc { position: fixed; top: 90px; right: 16px; width: min(280px, calc(100vw - 32px)); margin: 0; z-index: 2; }
-  .toc-panel { border: 1px solid var(--line); border-radius: 6px; padding: 10px; background: var(--page); box-shadow: var(--card-shadow); }
-  .toc-panel nav { max-height: calc(100vh - 170px); }
-  .toc-collapsed .post-toc { top: 90px; right: 16px; width: auto; }
-}
-/* Keep the collapsed toggle in the gutter beside a full-width desktop article. */
-@media (min-width: 1152px) and (max-width: 1279px) {
-  .toc-collapsed .post-toc { right: 0; }
-  .toc-collapsed .toc-panel summary { padding: 6px 3px; font-size: 12px; }
-  .toc-collapsed .toc-show { display: none; }
+@media print {
+  .post-page.has-paper-toc,
+  .post-page.has-paper-toc.toc-collapsed { display: block; width: auto; max-width: none; }
+  .post-toc { display: none; }
 }

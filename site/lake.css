@@ -214,7 +214,7 @@
 .lake-document .lake-image-cropped { position: relative; overflow: hidden; }
 .lake-document .lake-image-cropped img { position: absolute; display: block; max-width: none; }
 /* Small local fits must stay clear of the table-of-contents column. */
-@media (min-width: 1152px) {
+@container article-reading (min-width: 1024px) {
   .lake-document #u151ed2ee { width: calc(100% + 16px); }
   /* Keep the quantization projection and AWQ search endings on their lines. */
   .lake-document :is(#u85c0c527, #uf2442aea) { width: calc(100% + 32px); }
@@ -223,14 +223,6 @@
     width: calc(100% + 16px);
   }
   .lake-document :is(#u74939caa, #ub461f999) { width: calc(100% + 32px); }
-}
-@media (max-width: 640px) {
-  .lake-document h1 { font-size: 26px; line-height: 36px; margin: 36px 0 18px; }
-  .lake-document h2 { font-size: 22px; line-height: 30px; margin: 30px 0 15px; }
-  .lake-document > :first-child { margin-top: 0; }
-}
-@media (max-width: 600px) {
-  .lake-document { margin-inline: -20px; padding-inline: 20px; }
 }
 
 .lake-document .lake-figure { margin: 18px auto; max-width: 100%; white-space: normal; }
@@ -296,12 +288,12 @@
 [data-post="deepseek-ai-ii"] .lake-document :is(#u47166d57, #u4cc2ea74, #u947b4cfd, #u5fa3c8bf, #u1d3dd13b) { text-align: center; }
 
 /* Give only these inline-formula passages extra room on desktop. */
-@media (min-width: 1200px) {
+@container article-reading (min-width: 1024px) {
   [data-post="deepseek-ai-ii"] .lake-document :is(#u4875df5a, #ue4d81327) {
     width: calc(100% + 16px);
   }
 }
-@media (min-width: 1440px) {
+@container article-reading (min-width: 1024px) {
   [data-post="deepseek-ai-ii"] .lake-document #u4ec32556 {
     width: calc(100% + 64px);
     margin-left: -48px;
@@ -603,9 +595,6 @@
   min-width: 0;
   text-align: left;
 }
-@media (max-width: 760px) {
-  [data-post="genai-sakura-ii"] .ddpm-algorithms { grid-template-columns: minmax(0, 1fr); }
-}
 
 /* LLaDA: paper-style LaTeX algorithms, scoped to the diffusion article. */
 [data-post="diffusion-language-models"] .lake-document h1 { margin-block: 28px 14px; }
@@ -682,9 +671,6 @@
   padding: 14px;
   font-size: 13px;
   line-height: 1.65;
-}
-@media (max-width: 900px) {
-  [data-post="spec-decoding-ii"] .eagle2-walkthrough-grid { grid-template-columns: minmax(0, 1fr); }
 }
 [data-post="spec-decoding-ii"] :is(#ueb0d034f, #u21d054d6, #u8968370a, #u4895d391, #ube432db6) {
   font: 500 .875em/1.7 var(--mono);
@@ -793,11 +779,6 @@
 .lake-document .lake-image-panel { flex: 0 1 calc((100% - 16px) * var(--lake-panel-ratio) / var(--lake-pair-ratio-total)); min-width: 0; }
 .lake-document .lake-image-panel > p { margin: 0; min-height: 0; text-align: center; }
 .lake-document .lake-image-pair .lake-image { display: block; width: 100% !important; max-width: 100%; height: auto; margin: 0; }
-@media (max-width: 640px) {
-  .lake-document .lake-image-pair { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .lake-document .lake-image-panel > p { aspect-ratio: var(--lake-pair-max-ratio); }
-  .lake-document .lake-image-pair .lake-image { width: auto !important; height: 100%; margin: 0 auto; }
-}
 
 
 /* Distinct pale backgrounds for the three rotation notes. */

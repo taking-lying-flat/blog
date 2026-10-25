@@ -44,7 +44,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .menu span { font-size: 12px; }
 .main { width: 100%; max-width: 828px; min-height: calc(100vh - 158px); margin: auto; padding: 30px 24px 56px; }
 .post-page { max-width: 1072px; }
-@media (min-width: 1152px) {
+@media screen {
+  .post-page-shell { min-width: 1072px; -webkit-text-size-adjust: none; text-size-adjust: none; }
+  .post-page { width: 1072px; max-width: none; }
   .post-single { container: article-reading / inline-size; }
 }
 h1, h2, h3, h4 { color: var(--ink); line-height: 1.45; }
@@ -113,7 +115,7 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
   [data-post="qwen35-gated-deltanet"] .prose .table-scroll { margin: 14px 0 16px; }
   [data-post="qwen35-gated-deltanet"] .prose :is(th, td) { padding: 7px 12px; }
 }
-@media screen and (min-width: 800px) {
+@media screen {
   [data-post="ms-swift-chatml-rendering"] .prose :is(p, ul, ol) { margin-bottom: 10px; }
   [data-post="ms-swift-chatml-rendering"] .prose :is(p, li) { text-wrap: pretty; }
   [data-post="ms-swift-chatml-rendering"] .prose li { margin-block: 4px; }
@@ -334,25 +336,13 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .skip-link:focus { top: 12px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 @media (max-width: 600px) {
-  .nav { min-height: 70px; padding-inline: 20px; gap: 6px; }
-  .logo { gap: 5px; }
-  .logo > a { padding-inline: 10px; font-size: 20px; }
-  .menu { gap: 3px; font-size: 12px; }
-  .menu a { padding-inline: 9px; }
-  .main { padding: 15px 20px 38px; }
-  h1 { font-size: 28px; }
-  .post-header h1 { text-wrap: pretty; }
-  .post-header { margin-top: 18px; margin-bottom: 28px; padding-bottom: 22px; }
-  .post-meta { font-size: 12px; }
-  .post-meta > * + *::before { margin-inline: 6px; }
-  .prose { font-size: 16px; }
-  .equation { font-size: 16px; margin: 22px 0; }
-  .code-block { margin-block: 25px 29px; }
-  .code-caption { gap: 10px; padding-inline: 14px; }
-  .code-caption-text { font-size: 11px; }
-  .code-language { display: none; }
-  .copy-button { padding-inline: 7px; }
-  .code-block pre { gap: 12px; padding: 18px 14px 20px; font-size: 13px; }
+  :where(body:not(.post-page-shell)) .nav { min-height: 70px; padding-inline: 20px; gap: 6px; }
+  :where(body:not(.post-page-shell)) .logo { gap: 5px; }
+  :where(body:not(.post-page-shell)) .logo > a { padding-inline: 10px; font-size: 20px; }
+  :where(body:not(.post-page-shell)) .menu { gap: 3px; font-size: 12px; }
+  :where(body:not(.post-page-shell)) .menu a { padding-inline: 9px; }
+  :where(body:not(.post-page-shell)) .main { padding: 15px 20px 38px; }
+  :where(body:not(.post-page-shell)) h1 { font-size: 28px; }
   .home-page { padding-top: 26px; padding-bottom: 40px; }
   .post-list { gap: 14px; }
   .post-list-heading { margin-bottom: 18px; }
@@ -361,22 +351,16 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
   .entry-footer { gap: 12px; }
   .entry-details { flex-direction: column; align-items: flex-start; gap: 5px; }
   .home-page-shell .site-footer { padding-inline: 20px; gap: 5px 14px; }
-  .prose h2 { font-size: 21px; }
-  .prose h3 { font-size: 18px; }
-  .prose h4 { font-size: 16px; }
-  .prose blockquote { padding: 15px 17px; }
-  .post-pagination { grid-template-columns: 1fr; }
-  .post-pagination .post-next { grid-column: 1; text-align: left; }
   .archive-year { padding: 22px 20px; }
   .archive-month { grid-template-columns: 36px minmax(0, 1fr); gap: 12px; }
   .archive-entry { padding-left: 17px; }
   .archive-entry h4 { font-size: 16px; }
-  .site-footer, .home-page-shell .site-footer { min-height: 166px; padding-top: 88px; padding-bottom: 20px; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; }
-  .footer-art { height: 150px; }
+  :where(body:not(.post-page-shell)) .site-footer { min-height: 166px; padding-top: 88px; padding-bottom: 20px; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; }
+  :where(body:not(.post-page-shell)) .footer-art { height: 150px; }
 }
 @media (max-width: 360px) {
-  .nav { padding-block: 12px; }
-  .menu { width: 100%; justify-content: space-between; }
+  :where(body:not(.post-page-shell)) .nav { padding-block: 12px; }
+  :where(body:not(.post-page-shell)) .menu { width: 100%; justify-content: space-between; }
 }
 @media (prefers-reduced-motion: reduce) {
   .post-entry, .entry-arrow { transition: none; }
