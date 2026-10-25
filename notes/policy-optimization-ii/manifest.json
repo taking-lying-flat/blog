@@ -6613,6 +6613,12 @@
       "asset": "assets/images/1790666137022-cce45dfc-5036-4514-856a-78d51a3f76af.png"
     }
   ],
+  "listItemMerges": [
+    {
+      "into": "ud36e655a",
+      "items": ["u8eed2d63"]
+    }
+  ],
   "blockRemovals": [
     {
       "tag": "p",
