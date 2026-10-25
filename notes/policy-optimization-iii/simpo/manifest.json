@@ -1574,5 +1574,11 @@
       },
       "asset": "assets/images/1755432972764-1f2978f5-9e2a-4c19-afaf-961266d9701b.png"
     }
+  ],
+  "blockRemovals": [
+    {
+      "tag": "li",
+      "id": "ueb768463"
+    }
   ]
 }
