@@ -244,7 +244,7 @@
   },
   "aAYjn": {
     "from": "\\begin{aligned}\n& V^{\\pi}(s_t) := \\mathbb{E}_{\\substack{s_{t+1:\\infty}, \\\\ a_{t:\\infty}}} \\left[ \\sum_{l=0}^{\\infty} r_{t+l} \\right] \\qquad Q^{\\pi}(s_t, a_t) := \\mathbb{E}_{\\substack{s_{t+1:\\infty}, \\\\ a_{t+1:\\infty}}} \\left[ \\sum_{l=0}^{\\infty} r_{t+l} \\right] \\quad  \\\\\n& A^{\\pi}(s_t, a_t) := Q^{\\pi}(s_t, a_t) - V^{\\pi}(s_t), \\quad \\text{(Advantage function)}. \n\\end{aligned}",
-    "to": "V^{\\pi}(s_t) := \\mathbb{E}_{\\substack{s_{t+1:\\infty}, \\\\ a_{t:\\infty}}} \\left[ \\sum_{l=0}^{\\infty} r_{t+l} \\right], \\quad Q^{\\pi}(s_t, a_t) := \\mathbb{E}_{\\substack{s_{t+1:\\infty}, \\\\ a_{t+1:\\infty}}} \\left[ \\sum_{l=0}^{\\infty} r_{t+l} \\right], \\quad A^{\\pi}(s_t, a_t) := Q^{\\pi}(s_t, a_t) - V^{\\pi}(s_t)\\quad\\text{(Advantage function)}",
-    "reason": "按要求将状态价值、状态动作价值及优势函数定义排在同一行，保留数学内容和说明。"
+    "to": "V^{\\pi}(s_t) := \\mathbb{E}_{\\substack{s_{t+1:\\infty}, \\\\ a_{t:\\infty}}} \\left[ \\sum_{l=0}^{\\infty} r_{t+l} \\right], \\quad Q^{\\pi}(s_t, a_t) := \\mathbb{E}_{\\substack{s_{t+1:\\infty}, \\\\ a_{t+1:\\infty}}} \\left[ \\sum_{l=0}^{\\infty} r_{t+l} \\right], \\quad A^{\\pi}(s_t, a_t) := Q^{\\pi}(s_t, a_t) - V^{\\pi}(s_t)",
+    "reason": "按要求将三个定义排在同一行，并删除末尾的英文 Advantage function 说明。"
   }
 }
