@@ -298,9 +298,6 @@
     "appendFiles": [
       "../notes/chain-of-thought/cot-decoding/source.lake",
       "../notes/chain-of-thought/cpo/source.lake"
-    ],
-    "appendMarkdown": [
-      { "file": "cot-decoding-sampling-note.md", "before": "cpo" }
     ]
   },
   {
