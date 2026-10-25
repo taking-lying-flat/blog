@@ -182,7 +182,7 @@ GC_{\mathrm{PPO}}(q,o,t)=A_t\tag{22}
 <p class="lake-derivation-title">GRPO · 组相对策略优化</p>
 <div class="lake-derivation-body">
 
-- 对每个问题采样 $`G`$ 条回答，记联合采样分布为 $`\mathcal D_{G,0}`$，上下文为 $`h_{i,t}=(q,o_{i,<t})`$。沿用 PPO 的概率比定义 $`\rho_{i,t}(\theta)`$，并记 $`u_{i,t}(\theta)=\pi_{\mathrm{ref}}(o_{i,t}\mid h_{i,t})/\pi_\theta(o_{i,t}\mid h_{i,t})`$
+- 记联合采样分布为 $`\mathcal D_{G,0}`$，上下文为 $`h_{i,t}=(q,o_{i,<t})`$。沿用 PPO 的概率比定义 $`\rho_{i,t}(\theta)`$，并记 $`u_{i,t}(\theta)=\pi_{\mathrm{ref}}(o_{i,t}\mid h_{i,t})/\pi_\theta(o_{i,t}\mid h_{i,t})`$
 - 固定组内优势 $`\hat A_{i,t}`$，在更新起点附近，GRPO 的未裁剪代理目标可写为
 
 ```math
