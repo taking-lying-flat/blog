@@ -169,8 +169,6 @@ GC_{\mathrm{DPO}}^+=c_\theta,\qquad GC_{\mathrm{DPO}}^-=-c_\theta\tag{18}
 \right]\tag{21}
 ```
 
-- 此时的**梯度系数**就是优势估计
-
 ```math
 GC_{\mathrm{PPO}}(q,o,t)=A_t\tag{22}
 ```
