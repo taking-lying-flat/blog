@@ -501,12 +501,6 @@
           "math": "\\mathbb E_{\\substack{s_{0:\\infty}\\\\a_{0:\\infty}}}\n\\left[\\hat A_t(s_{0:\\infty},a_{0:\\infty})\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t)\\right]\n=\\mathbb E_{\\substack{s_{0:\\infty}\\\\a_{0:\\infty}}}\n\\left[A^{\\pi,\\gamma}(s_t,a_t)\\nabla_\\theta\\log\\pi_\\theta(a_t\\mid s_t)\\right]."
         },
         "uc8eef4fd",
-        {
-          "math": "\\hat A_t(s_{0:\\infty},a_{0:\\infty})\n=Q_t(s_{t:\\infty},a_{t:\\infty})-b_t(s_{0:t},a_{0:t-1}),"
-        },
-        {
-          "math": "\\mathbb E_{s_{t+1:\\infty},\\,a_{t+1:\\infty}\\mid s_t,a_t}\n\\left[Q_t(s_{t:\\infty},a_{t:\\infty})\\right]=Q^{\\pi,\\gamma}(s_t,a_t)."
-        },
         "ud23a2193",
         "ua8535f1e",
         "u57cac598",
@@ -547,11 +541,6 @@
         "file": "gae-just-definition.md",
         "before": "ub5061403",
         "tag": "li"
-      },
-      {
-        "file": "gae-just-proposition.md",
-        "before": "ud23a2193",
-        "tag": "p"
       },
       {
         "file": "trpo-policy-iteration-algorithm.md",

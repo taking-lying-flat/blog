@@ -9831,6 +9831,12 @@
       "items": ["u11eec09d"]
     }
   ],
+  "paragraphMerges": [
+    {
+      "paragraph": "u81d4c47c",
+      "listItem": "u21962a05"
+    }
+  ],
   "listItemParagraphs": [
     ["ub0758bd5", "u896f8e86"],
     "uce94fd93"
