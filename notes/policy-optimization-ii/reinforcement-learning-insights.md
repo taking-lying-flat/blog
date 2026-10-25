@@ -175,8 +175,6 @@ GC_{\mathrm{DPO}}^+=c_\theta,\qquad GC_{\mathrm{DPO}}^-=-c_\theta\tag{18}
 GC_{\mathrm{PPO}}(q,o,t)=A_t\tag{22}
 ```
 
-- $`A_t`$ 由奖励与学习得到的价值函数通过 GAE 估计。上述简化描述的是更新起点的梯度；复用同一批样本进行多轮更新时，仍需考虑概率比与裁剪
-
 </div>
 </section>
 
