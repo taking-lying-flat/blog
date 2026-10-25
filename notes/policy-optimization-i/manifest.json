@@ -9826,7 +9826,8 @@
     "u6d08fee4",
     "u30f24c98",
     "u319b2996",
-    "uba679115"
+    "uba679115",
+    "u5c895a2b"
   ],
   "listItemMerges": [
     {
@@ -9845,6 +9846,11 @@
     "uce94fd93"
   ],
   "paragraphJoins": [
+    {
+      "into": "ufd202b12",
+      "next": "u87e2530e",
+      "separator": "。"
+    },
     {
       "into": "u7f448890",
       "next": "ub0758bd5",
