@@ -868,13 +868,21 @@
       "asset": "assets/math/40abd4f06d1cfaa64db65a38b51a8c8d.svg"
     }
   ],
-  "listItemParagraphs": [["ud44abb4d", "ud972954a"]],
+  "listItemParagraphs": [
+    ["ud44abb4d", "ud972954a"],
+    ["uc8999f4a", "u9cdd064c", "u3dad2c45"]
+  ],
   "paragraphJoins": [
     {
       "into": "uc051975d",
       "next": "ud44abb4d",
       "separator": "。"
+    },
+    {
+      "into": "u9cdd064c",
+      "next": "u3dad2c45",
+      "separator": "。"
     }
   ],
-  "paragraphListItemsAfterMoves": ["ud972954a"]
+  "paragraphListItemsAfterMoves": ["ud972954a", "uc8999f4a"]
 }
