@@ -867,5 +867,14 @@
       },
       "asset": "assets/math/40abd4f06d1cfaa64db65a38b51a8c8d.svg"
     }
-  ]
+  ],
+  "listItemParagraphs": [["ud44abb4d", "ud972954a"]],
+  "paragraphJoins": [
+    {
+      "into": "uc051975d",
+      "next": "ud44abb4d",
+      "separator": "。"
+    }
+  ],
+  "paragraphListItemsAfterMoves": ["ud972954a"]
 }
