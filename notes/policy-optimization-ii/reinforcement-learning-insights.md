@@ -132,8 +132,6 @@ c_\theta=\beta\sigma(-\beta\Delta_\theta),\qquad
 GC_{\mathrm{DPO}}^+=c_\theta,\qquad GC_{\mathrm{DPO}}^-=-c_\theta\tag{18}
 ```
 
-- 若采用前文标准 DPO 的序列对数概率比约定，则去掉 $`s_\theta`$ 及对应梯度中的长度归一化因子，链式求导形式不变
-
 </div>
 </section>
 
