@@ -565,12 +565,5 @@
       },
       "asset": "assets/images/1790970704647-d2370d9d-e9a6-4881-8b7b-c8e78a6d31c8.png"
     }
-  ],
-  "blockRemovals": [
-    { "tag": "li", "id": "u122faef3" },
-    { "tag": "li", "id": "u39960925" },
-    { "tag": "li", "id": "u8e608265" },
-    { "tag": "li", "id": "u90508cac" },
-    { "tag": "li", "id": "u6029a90a" }
   ]
 }

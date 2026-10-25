@@ -1,5 +1,11 @@
 [
   {
+    "id": "tot-method-summary",
+    "start": "uc713038d",
+    "before": "uf65a6c75",
+    "file": "tot-method-summary.md"
+  },
+  {
     "id": "tot-search-typeset",
     "start": "uf65a6c75",
     "file": "tot-search-algorithms.md"
