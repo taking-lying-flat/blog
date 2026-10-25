@@ -9855,9 +9855,15 @@
       "u896f8e86"
     ],
     "uce94fd93",
-    "u6a9a4ce5"
+    "u6a9a4ce5",
+    "u7f3c7a8f"
   ],
   "paragraphJoins": [
+    {
+      "into": "u7f3c7a8f",
+      "next": "uc3bdbb14",
+      "separator": "。"
+    },
     {
       "into": "u110f901b",
       "next": "u5bef552a",
