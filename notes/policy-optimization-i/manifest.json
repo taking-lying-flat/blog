@@ -9859,6 +9859,11 @@
   ],
   "paragraphJoins": [
     {
+      "into": "u110f901b",
+      "next": "u5bef552a",
+      "separator": "。"
+    },
+    {
       "into": "u6a9a4ce5",
       "next": "u4baed4ef",
       "separator": "。"
