@@ -131,7 +131,7 @@
     "slug": "on-policy-distill",
     "category": "policy",
     "date": "2026-10-06",
-    "description": "OnPolicy Distill 笔记：OPD 的自生成序列蒸馏、GKD 与强化学习目标，以及 DOPD 的特权错觉、词元级优势和双重蒸馏。",
+    "description": "OnPolicy Distill 笔记：OPD 的自生成序列蒸馏、GKD 与强化学习目标，以及 DOPD 的特权错觉、token 级优势和双重蒸馏。",
     "tags": [
       "OPD",
       "DOPD"
