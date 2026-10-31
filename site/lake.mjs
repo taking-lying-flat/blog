@@ -105,6 +105,13 @@ export async function readLake(file, escape, renderMath) {
       content = content.replace(emptyBlock, '');
     }
   }
+  // Lake exports often retain an editor space before Chinese punctuation.
+  // Normalize only plain authored spans, leaving code and formula assets intact.
+  content = content.replace(
+    /(<span\b[^>]*\bdata-lake-id="[^"]+"[^>]*>)([^<>]*)(<\/span>)/g,
+    (_match, opening, text, closing) =>
+      `${opening}${text.replace(/[ \t]+([，。；：！？])/gu, '$1')}${closing}`,
+  );
   // Restore list boundaries at explicit, direct-child text anchors.
   for (const { item, before, id, afterText } of manifest.listItemSplits ?? []) {
     if (![item, before, id].every(value => typeof value === 'string' && /^[\w-]+$/.test(value)) ||

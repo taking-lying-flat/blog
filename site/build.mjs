@@ -199,7 +199,9 @@ function normalizeEnglishTerms(content) {
     const kind = adaptor.kind(node);
     if (kind === '#text') {
       const original = adaptor.value(node);
-      const text = original.replace(/[ \t]*词元[ \t]*/g, ' token ');
+      const text = original
+        .replace(/[ \t]*词元[ \t]*/g, ' token ')
+        .replace(/[ \t]+([，。；：！？])/gu, '$1');
       const terms = /(?<![A-Za-z0-9_])(?:top[-‐‑–](?:[kp]|\d+)|n[-‐‑–]grams?|pass@(?:k|\d+))(?![A-Za-z0-9_])/gi;
       let end = 0;
       for (const match of text.matchAll(terms)) {
@@ -258,7 +260,11 @@ function cleanProsePunctuation(tokens) {
   // Leave code, math, link targets and HTML attributes intact.
   for (const token of tokens) {
     for (const child of token.children ?? []) {
-      if (child.type === 'text') child.content = child.content.replace(/[“”‘’「」『』]/gu, '');
+      if (child.type === 'text') {
+        child.content = child.content
+          .replace(/[“”‘’「」『』]/gu, '')
+          .replace(/[ \t]+([，。；：！？])/gu, '$1');
+      }
     }
   }
   for (let i = 0; i < tokens.length; i++) {
@@ -273,6 +279,42 @@ function cleanProsePunctuation(tokens) {
       break;
     }
   }
+}
+
+// Keep MathJax's internal equation anchors unique when several independently
+// exported papers are assembled into one reading page. Visible paper numbers
+// still restart at each h1; only the DOM anchors receive a paper prefix.
+function namespaceMathJaxEquationAnchors(post) {
+  if (post.format !== 'lake' || !post.content.includes('mjx-eqn:')) return;
+  const parsed = adaptor.parse(post.content, 'text/html');
+  const body = adaptor.body(parsed);
+  let paper;
+  const visit = (node, linksOnly = false) => {
+    const kind = adaptor.kind(node);
+    if (['#text', '#comment'].includes(kind)) return;
+    if (kind === 'h1') paper = adaptor.getAttribute(node, 'id');
+    if (!linksOnly) {
+      const id = adaptor.getAttribute(node, 'id');
+      if (id?.startsWith('mjx-eqn:')) {
+        if (!paper) throw new Error(`Equation anchor before paper heading: ${post.slug}`);
+        adaptor.setAttribute(node, 'id', `${paper}-${id}`);
+      }
+    } else {
+      for (const attribute of ['href', 'xlink:href']) {
+        const value = adaptor.getAttribute(node, attribute);
+        if (value?.startsWith('#mjx-eqn:')) {
+          if (!paper) throw new Error(`Equation link before paper heading: ${post.slug}`);
+          adaptor.setAttribute(node, attribute, `#${paper}-${value.slice(1)}`);
+        }
+      }
+    }
+    if (['pre', 'code'].includes(kind)) return;
+    for (const child of [...adaptor.childNodes(node)]) visit(child, linksOnly);
+  };
+  visit(body);
+  paper = undefined;
+  visit(body, true);
+  post.content = adaptor.innerHTML(body);
 }
 
 const tableWrapper = '<div class="table-scroll" role="region" aria-label="表格" tabindex="0">';
@@ -579,6 +621,8 @@ for (const post of posts) {
   }
 }
 
+for (const post of posts) namespaceMathJaxEquationAnchors(post);
+
 // Label existing formula blocks without changing their contents or line layout.
 for (const post of posts) {
   if (!post.numberedEquationBlocks) continue;
@@ -588,14 +632,21 @@ for (const post of posts) {
     if (!/^[\w-]+$/.test(paper) || !Array.isArray(blocks)) {
       throw new Error(`Invalid formula block numbering: ${post.slug}`);
     }
-    const keys = blocks.map(block => {
+    const items = blocks.map(block => {
       const key = typeof block === 'string' && /^[\w-]+$/.test(block)
-        ? `id:${block}` : typeof block?.math === 'string' ? `math:${block.math.trim()}` : undefined;
-      if (!key || selected.has(key)) throw new Error(`Invalid formula block: ${post.slug}`);
+        ? `id:${block}`
+        : typeof block?.id === 'string' && /^[\w-]+$/.test(block.id)
+          ? `id:${block.id}`
+          : typeof block?.math === 'string' ? `math:${block.math.trim()}` : undefined;
+      const label = typeof block === 'object' && block !== null && block.label !== undefined
+        ? String(block.label) : undefined;
+      if (!key || selected.has(key) || (label !== undefined && !/^[\w.-]{1,12}$/.test(label))) {
+        throw new Error(`Invalid formula block: ${post.slug}`);
+      }
       selected.add(key);
-      return key;
+      return { key, label };
     });
-    groups.set(paper, keys);
+    groups.set(paper, items);
   }
   const parsed = adaptor.parse(post.content, 'text/html');
   const body = adaptor.body(parsed);
@@ -611,17 +662,18 @@ for (const post of posts) {
         ? `math:${(adaptor.getAttribute(node, 'aria-label') ?? '').trim()}` : undefined;
     if (selected.has(key)) {
       const index = counts.get(paper);
-      if (groups.get(paper)?.[index] !== key) {
+      const item = groups.get(paper)?.[index];
+      if (item?.key !== key) {
         throw new Error(`Formula block order changed: ${post.slug}/${key}`);
       }
-      const number = index + 1;
+      const number = item.label ?? String(index + 1);
       adaptor.setAttribute(node, 'class', [...classes.filter(Boolean), 'lake-numbered-block'].join(' '));
       adaptor.setAttribute(node, 'data-equation-paper', paper);
-      adaptor.setAttribute(node, 'data-equation-number', String(number));
+      adaptor.setAttribute(node, 'data-equation-number', number);
       adaptor.append(node, adaptor.node('span', {
         class: 'lake-block-equation-number', id: `equation-${paper}-${number}`,
       }, [adaptor.text(`(${number})`)]));
-      counts.set(paper, number);
+      counts.set(paper, index + 1);
       return;
     }
     for (const child of [...adaptor.childNodes(node)]) visit(child);

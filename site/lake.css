@@ -194,7 +194,7 @@
 }
 /* Remove trailing export breaks from the GAE, delta-rule and transpose paragraphs. */
 .lake-document :is(#u3f7c57e0, #u829c456a, #u9509cdfc) > br { display: none; }
-/* The group OBS update is an unnumbered display equation. */
+/* Keep the group OBS update on its own display line. */
 .lake-document #ue3e6cab9 > [data-card-id="zSMaf"] {
   display: block;
   margin: 12px auto 16px;
@@ -272,6 +272,20 @@
 [data-post="policy-optimization-iv"] .lake-document h2 { margin-block: 24px 12px; }
 [data-post="policy-optimization-iv"] .lake-document > :first-child { margin-top: 0; }
 [data-post="policy-optimization-iv"] .lake-document #u3e2c3f67 { font-style: normal; }
+
+/* CJK text should stay upright even when an imported emphasis wrapper is italic. */
+[data-post="genai-sakura-ii"] .lake-document :is(
+  #ua306f502, #ubbcf7605, #u4f1b58d8, #u4fafe991
+),
+[data-post="training-infrastructure"] .lake-document #u8700be97 {
+  font-style: normal;
+}
+
+/* OPD and DOPD share one numbered-block alignment and reserve a label gutter. */
+[data-post="on-policy-distill"] .lake-document .lake-numbered-block {
+  margin-block: 12px;
+  padding: 2px 3em;
+}
 
 /* SAPO: distinguish the steps of the final derivation without extra panels. */
 [data-post="policy-optimization-iv"] .lake-document :is(#uefd7a9b7, #uf194c48c, #u2fa3125f, #uc4facc47, #ufe61298e, #u099ba64f) {

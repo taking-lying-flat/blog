@@ -37,6 +37,12 @@
       "AWQ",
       "TinyChat"
     ],
+    "numberedEquationBlocks": {
+      "omTQJ": [
+        "u106960bc", "u34ee4746", "u8215ce9f", "u1d3a6eee",
+        "uc4d8a4cb", "u80fbc338", "ub35bc4ba"
+      ]
+    },
     "appendMarkdown": [
       "gptaq-algorithm.md",
       "gptaq-appendix.md"
@@ -95,7 +101,17 @@
       "QuaRot",
       "SpinQuant",
       "FlatQuant"
-    ]
+    ],
+    "numberedEquationBlocks": {
+      "p3y0O": [
+        "u7c424311", "ufa407363", "ueec5a358",
+        "u2e13acf0", "uc1688d65", "ufad7ea29"
+      ],
+      "nWDCe": [
+        "u86b58680", "u5b291ebb", "u3874991b",
+        "ud1ac8d58", "uc8eda3fc"
+      ]
+    }
   },
   {
     "file": "../notes/on-policy-distill/source.lake",
@@ -120,22 +136,20 @@
       "OPD",
       "DOPD"
     ],
-    "numberedEquations": {
-      "vbvd6": [
-        "RQD9p",
-        "rZzFx",
-        "Nh5yr",
-        "ex9XM",
-        "TAcN7",
-        "oTO3Q",
-        "m01O2",
-        "AcYov",
-        "e9MZM",
-        "KGge0",
-        "rYXsl"
-      ]
-    },
     "numberedEquationBlocks": {
+      "vbvd6": [
+        "ucc580c2a",
+        "u0fe566f8",
+        "ub710e716",
+        "u87e43dc2",
+        "u0e192ff9",
+        "ucac4c8c9",
+        "ude2a9c05",
+        "u4853e3db",
+        "u5ca82cb3",
+        "u029de135",
+        "ud1be2e64"
+      ],
       "b6GdL": [
         "u1d10df3d",
         "ud44a80c8",
@@ -202,7 +216,13 @@
         "before": "TDbP8"
       }
     ],
-    "tags": ["Flow-GRPO", "DiffusionNFT"]
+    "tags": ["Flow-GRPO", "DiffusionNFT"],
+    "numberedEquationBlocks": {
+      "TDbP8": [
+        {"id": "ub7734609", "label": "S1"},
+        {"id": "u6ce70bbc", "label": "S2"}
+      ]
+    }
   },
   {
     "file": "../notes/diffusion-language-models/source.lake",
@@ -300,7 +320,10 @@
       "Speculative Decoding",
       "Speculative Sampling",
       "Medusa"
-    ]
+    ],
+    "numberedEquationBlocks": {
+      "MBRa0": ["uec74479d"]
+    }
   },
   {
     "file": "../notes/chain-of-thought/source.lake",
@@ -360,6 +383,11 @@
       "YaRN",
       "Dual Chunk Attention"
     ],
+    "numberedEquationBlocks": {
+      "zEpBv": [
+        {"id": "u6a37c602", "label": "6a"}
+      ]
+    },
     "appendFiles": [
       "../notes/positional-encoding/yarn/source.lake",
       "../notes/positional-encoding/dca/source.lake"
@@ -585,7 +613,23 @@
     "category": "llm",
     "date": "2026-09-26",
     "description": "Token Mixer 笔记：Gated DeltaNet、Kimi Linear 与 Gated DeltaNet-2。",
-    "tags": ["Gated DeltaNet", "Kimi Linear", "Gated DeltaNet-2"]
+    "tags": ["Gated DeltaNet", "Kimi Linear", "Gated DeltaNet-2"],
+    "numberedEquationBlocks": {
+      "a5y85": [
+        "u5542a520", "u7f10f250", "ub5cc97cc", "u218279ec", "u18df2c27",
+        "u84a3b342", "u90bbb8ae", "u2062f592", "u5419c0b2", "u4c10faf0",
+        "u3d7c1106", "ued6509dd", "uce3bd051", "u97e395d4", "uf9f86df9",
+        "ud25be315", "u285634e5", "u9b0c8d02", "ua02418ac", "u286558e7",
+        "udee8049e", "uce507b7b", "u70d10411", "u4012eab1", "uc2fafff2"
+      ],
+      "hzFCL": [
+        "uf6379d01", "u17eb516e", "uc749ac78", "u3690fcd1", "u6d5ceee7",
+        "uc54437af", "u4d34b143", "ubf288cb8", "uef91f157", "u324dd384",
+        "ubde0f637", "u3ef886e5", "u4e25b7d6", "ub53ff0e0", "u4b6e4cdb",
+        "u85571b1b", "u66b3828a", "u3c1122e0", "ue8f2dfc4", "u5feb4ba5",
+        "uc3256c06", "u3373b22e", "u6e3b5301", "u6ea1a6ce", "ud7cff298"
+      ]
+    }
   },
   {
     "file": "../notes/flash-attn/source.lake",
@@ -596,7 +640,14 @@
     "categoryOrder": 3,
     "date": "2026-09-26",
     "description": "FlashAttention 系列笔记：I/O 感知、分块与重计算、任务划分、异步流水线与 FP8。",
-    "tags": ["FlashAttention", "FlashAttention-2", "FlashAttention-3"]
+    "tags": ["FlashAttention", "FlashAttention-2", "FlashAttention-3"],
+    "numberedEquationBlocks": {
+      "lvd5X": ["u7e6c235f", "u0c98f6f7", "ub6d220d9", "ua82ead16"],
+      "OImP6": [
+        "u8f4811b6", "u18f2ddb5", "uaf945723", "ua20d6173",
+        "u6cbe8ef8", "ue98f95a8", "u3ab23f7d"
+      ]
+    }
   },
   {
     "file": "../notes/genai-flow-ii/source.lake",
@@ -987,6 +1038,12 @@
         "hwNEu", "xcS92", "cJVb2", "JByus", "wZNpT", "rN9Ad", "O5X0u", "Krn9X"
       ]
     },
+    "numberedEquationBlocks": {
+      "XA3KL": [
+        {"id": "ufebfae49", "label": "8a"},
+        {"id": "ubc890d18", "label": "9a"}
+      ]
+    },
     "appendMarkdown": [
       {"file": "aevb-algorithm.md", "before": "u43acc958", "tag": "p"}
     ]
@@ -1003,7 +1060,12 @@
     "categoryOrder": 4,
     "date": "2026-09-23",
     "description": "模型量化笔记：Optimal Brain Compression、GPTQ 与 GPTAQ 的最优权重更新及非对称校准。",
-    "tags": ["Optimal Brain Compression", "GPTQ", "GPTAQ"]
+    "tags": ["Optimal Brain Compression", "GPTQ", "GPTAQ"],
+    "numberedEquationBlocks": {
+      "ghZ6T": [
+        {"id": "u35f77afd", "label": "3a"}
+      ]
+    }
   },
   {
     "file": "../notes/rope.md",
