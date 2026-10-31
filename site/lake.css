@@ -248,14 +248,6 @@
 [data-post="policy-optimization-ii"] .lake-revised-section .equation { margin: 8px 0; }
 [data-post="policy-optimization-ii"] .lake-document .lake-derivation { margin-block: 18px; }
 
-/* Keep the sequence-level distillation label upright with a real CJK bold face. */
-[data-post="on-policy-distill"] .lake-document #u12c2910a {
-  font-family: "Noto Sans SC Variable", var(--lake-font);
-  font-style: normal;
-  font-weight: 700;
-  font-synthesis: none;
-}
-
 .lake-document .lake-appendix .equation { font-size: 16px; }
 .lake-document .lake-derivation { margin: 10px 0; border: 1px solid var(--derivation-border); background: var(--derivation-background); }
 .lake-document .lake-derivation-title { margin: 0 0 8px; padding: 8px 12px 0; font-weight: 700; }
@@ -279,6 +271,7 @@
 [data-post="policy-optimization-iv"] .lake-document h1 { margin-block: 28px 14px; }
 [data-post="policy-optimization-iv"] .lake-document h2 { margin-block: 24px 12px; }
 [data-post="policy-optimization-iv"] .lake-document > :first-child { margin-top: 0; }
+[data-post="policy-optimization-iv"] .lake-document #u3e2c3f67 { font-style: normal; }
 
 /* SAPO: distinguish the steps of the final derivation without extra panels. */
 [data-post="policy-optimization-iv"] .lake-document :is(#uefd7a9b7, #uf194c48c, #u2fa3125f, #uc4facc47, #ufe61298e, #u099ba64f) {
