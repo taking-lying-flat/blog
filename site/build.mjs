@@ -166,7 +166,7 @@ function normalizeHeadingText(content) {
   });
 }
 // English terms remain prose even when an export splits off k/p as a math card.
-function normalizeEnglishTerms(content) {
+function normalizeEnglishTerms(content, preserveText = false) {
   const parsed = adaptor.parse(content, 'text/html');
   const body = adaptor.body(parsed);
   const mathClass = /(?:^|\s)(?:lake-math|math-inline|math-display|equation)(?:\s|$)/;
@@ -199,7 +199,7 @@ function normalizeEnglishTerms(content) {
     const kind = adaptor.kind(node);
     if (kind === '#text') {
       const original = adaptor.value(node);
-      const text = original
+      const text = preserveText ? original : original
         .replace(/[ \t]*词元[ \t]*/g, ' token ')
         .replace(/[ \t]+([，。；：！？])/gu, '$1');
       const terms = /(?<![A-Za-z0-9_])(?:top[-‐‑–](?:[kp]|\d+)|n[-‐‑–]grams?|pass@(?:k|\d+))(?![A-Za-z0-9_])/gi;
@@ -736,7 +736,7 @@ for (const post of posts) {
 // Keep existing anchors while normalizing title typography and series suffixes.
 for (const post of posts) {
   post.title = plainTitle(post.title).replace(/\s*-\s*([IVXLCDM]+)$/u, ' $1');
-  post.content = normalizeEnglishTerms(normalizeHeadingText(post.content));
+  post.content = normalizeEnglishTerms(normalizeHeadingText(post.content), post.preserveLakeText);
 }
 
 function renderPaperToc(post) {

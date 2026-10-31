@@ -240,6 +240,10 @@
 .lake-document .lake-revised-section .equation { margin: 12px 0; padding: 2px 0 4px; }
 .lake-document .lake-revised-section .equation mjx-container[display="true"] { width: 100%; margin: 0; }
 
+/* Technical Report II: the source export split one damaged inline formula
+   across a superscript span; the visible formula is restored in place. */
+[data-post="technical-report-ii"] .lake-document sup:has(> #ue02a57bf:empty) { display: none; }
+
 [data-post="policy-optimization-ii"] .lake-document h1 { margin-block: 28px 14px; }
 [data-post="policy-optimization-ii"] .lake-document h2 { margin-block: 24px 12px; }
 [data-post="policy-optimization-ii"] .lake-document > :first-child { margin-top: 0; }

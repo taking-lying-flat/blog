@@ -3,6 +3,7 @@
     "file": "../notes/technical-report-ii/source.lake",
     "format": "lake",
     "removeEmptyParagraphs": true,
+    "preserveLakeText": true,
     "tocDepth": 2,
     "slug": "technical-report-ii",
     "category": "llm",
