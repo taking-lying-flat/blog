@@ -248,6 +248,14 @@
 [data-post="policy-optimization-ii"] .lake-revised-section .equation { margin: 8px 0; }
 [data-post="policy-optimization-ii"] .lake-document .lake-derivation { margin-block: 18px; }
 
+/* Keep the sequence-level distillation label upright with a real CJK bold face. */
+[data-post="on-policy-distill"] .lake-document #u12c2910a {
+  font-family: "Noto Sans SC Variable", var(--lake-font);
+  font-style: normal;
+  font-weight: 700;
+  font-synthesis: none;
+}
+
 .lake-document .lake-appendix .equation { font-size: 16px; }
 .lake-document .lake-derivation { margin: 10px 0; border: 1px solid var(--derivation-border); background: var(--derivation-background); }
 .lake-document .lake-derivation-title { margin: 0 0 8px; padding: 8px 12px 0; font-weight: 700; }
