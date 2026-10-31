@@ -5,12 +5,12 @@ order follow the source; line numbers are presentation only. -->
 
 ```math
 \begin{array}{r l}
-1:&\textbf{Given:}\ \text{teacher model }p_T,\ \text{student model }p_S^\theta,\ \text{dataset }(X,Y)\text{ containing input-output pairs}\\[-0.25em]
-2:&\textbf{Hyperparameters:}\ \text{student data fraction }\lambda\in[0,1],\ \text{divergence }D,\ \text{learning rate }\eta\\[-0.25em]
+1:&\textbf{Given:}\ \text{teacher }p_T,\ \text{student }p_S^\theta,\ \text{dataset }(X,Y)\text{ of input-output pairs}\\[-0.25em]
+2:&\textbf{Hyperparameters:}\ \text{student fraction }\lambda\in[0,1],\ \text{divergence }D,\ \text{learning rate }\eta\\[-0.25em]
 3:&\textbf{for each step }k=1,\ldots,K\textbf{ do}\\[-0.25em]
 4:&\quad\text{Generate }u\sim\operatorname{Uniform}(0,1)\\[-0.25em]
 5:&\quad\textbf{if }u\leq\lambda\textbf{ then}\\[-0.25em]
-6:&\qquad\text{Sample }x\text{ from }X\text{ and generate }y\sim p_S^\theta(\cdot\mid x)\text{ to obtain }B=\{(x_b,y_b)\}_{b=1}^{B}\\[-0.25em]
+6:&\qquad\text{Sample }x\text{ from }X;\ \text{generate }y\sim p_S^\theta(\cdot\mid x);\ B\gets\{(x_b,y_b)\}_{b=1}^{B}\\[-0.25em]
 7:&\quad\textbf{else}\\[-0.25em]
 8:&\qquad\text{Sample }B=\{(x_b,y_b)\}_{b=1}^{B}\text{ from }(X,Y)\\[-0.25em]
 9:&\quad\textbf{end if}\\[-0.25em]

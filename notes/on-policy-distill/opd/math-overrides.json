@@ -1,8 +1,8 @@
 {
   "Nh5yr": {
     "from": "\\begin{aligned}\nD_{\\mathrm{JSD}(\\beta)}(P\\|Q)\n={}&\n\\beta D_{\\mathrm{KL}}\n\\left(\nP\n\\middle\\|\n\\beta P+(1-\\beta)Q\n\\right)\n\\\\\n&+\n(1-\\beta)D_{\\mathrm{KL}}\n\\left(\nQ\n\\middle\\|\n\\beta P+(1-\\beta)Q\n\\right).\n\\end{aligned}\n\\tag{1}",
-    "to": "\\begin{aligned}\nD_{\\mathrm{JSD}(\\beta)}(P\\|Q)\n={}&\n\\beta D_{\\mathrm{KL}}\n\\left(\nP\n\\middle\\|\n\\beta P+(1-\\beta)Q\n\\right)\n\\\\\n&+\n(1-\\beta)D_{\\mathrm{KL}}\n\\left(\nQ\n\\middle\\|\n\\beta P+(1-\\beta)Q\n\\right).\n\\end{aligned}",
-    "reason": "Use the blog's responsive equation numbering instead of an embedded tag."
+    "to": "D_{\\mathrm{JSD}(\\beta)}(P\\|Q)\n=\n\\beta D_{\\mathrm{KL}}\\left(P\\middle\\|\\beta P+(1-\\beta)Q\\right)\n+\n(1-\\beta)D_{\\mathrm{KL}}\\left(Q\\middle\\|\\beta P+(1-\\beta)Q\\right).",
+    "reason": "Keep the expression on one line and use the blog's responsive equation numbering instead of an embedded tag."
   },
   "TAcN7": {
     "from": "D\\left(p_T\\middle\\|p_S^\\theta\\right)(y\\mid x)\n:=\n\\frac{1}{L_y}\n\\sum_{n=1}^{L_y}\nD\\left(\np_T(\\cdot\\mid y_{<n},x)\n\\middle\\|\np_S^\\theta(\\cdot\\mid y_{<n},x)\n\\right).\n\\tag{2}",
@@ -19,9 +19,14 @@
     "to": "\\mathcal L_{\\mathrm{OD}}(\\theta)\n:=\n\\mathbb E_{x\\sim X}\n\\left[\n\\mathbb E_{y\\sim p_S(\\cdot\\mid x)}\n\\left[\nD_{\\mathrm{KL}}\n\\left(p_T\\middle\\|p_S^\\theta\\right)(y\\mid x)\n\\right]\n\\right].",
     "reason": "Use the blog's responsive equation numbering instead of an embedded tag."
   },
+  "KGge0": {
+    "from": "\\begin{aligned}\n\\mathcal L_{\\mathrm{GKD}}(\\theta)\n:={}&\n(1-\\lambda)\n\\mathbb E_{(x,y)\\sim(X,Y)}\n\\left[\nD\\left(p_T\\middle\\|p_S^\\theta\\right)(y\\mid x)\n\\right]\n\\\\\n&+\n\\lambda\n\\mathbb E_{x\\sim X}\n\\left[\n\\mathbb E_{y\\sim p_S(\\cdot\\mid x)}\n\\left[\nD\\left(p_T\\middle\\|p_S^\\theta\\right)(y\\mid x)\n\\right]\n\\right].\n\\end{aligned}",
+    "to": "\\mathcal L_{\\mathrm{GKD}}(\\theta)\n:=\n(1-\\lambda)\\mathbb E_{(x,y)\\sim(X,Y)}\\left[D\\left(p_T\\middle\\|p_S^\\theta\\right)(y\\mid x)\\right]\n+\n\\lambda\\mathbb E_{x\\sim X}\\left[\\mathbb E_{y\\sim p_S(\\cdot\\mid x)}\\left[D\\left(p_T\\middle\\|p_S^\\theta\\right)(y\\mid x)\\right]\\right].",
+    "reason": "The two terms fit the article column without a forced line break."
+  },
   "rYXsl": {
     "from": "\\begin{aligned}\n\\mathbb E_{x\\sim X}\n\\Bigg[\n&\n(1-\\alpha)\n\\underbrace{\n\\mathbb E_{y\\sim p_S^\\theta(\\cdot\\mid x)}\n\\left[r(y)\\right]\n}_{\\text{强化学习目标}}\n\\\\\n&\n-\n\\alpha\n\\underbrace{\n\\mathbb E_{y\\sim p_S(\\cdot\\mid x)}\n\\left[\nD\\left(p_T\\middle\\|p_S^\\theta\\right)(y\\mid x)\n\\right]\n}_{\\text{广义同策略蒸馏}}\n\\Bigg].\n\\end{aligned}\n\\tag{5}",
-    "to": "\\begin{aligned}\n\\mathbb E_{x\\sim X}\n\\Bigg[\n&\n(1-\\alpha)\n\\underbrace{\n\\mathbb E_{y\\sim p_S^\\theta(\\cdot\\mid x)}\n\\left[r(y)\\right]\n}_{\\text{reinforcement learning objective}}\n\\\\\n&\n-\n\\alpha\n\\underbrace{\n\\mathbb E_{y\\sim p_S(\\cdot\\mid x)}\n\\left[\nD\\left(p_T\\middle\\|p_S^\\theta\\right)(y\\mid x)\n\\right]\n}_{\\text{generalized on-policy distillation}}\n\\Bigg].\n\\end{aligned}",
-    "reason": "Replace Chinese formula annotations with English and use the blog's responsive equation numbering."
+    "to": "\\mathbb E_{x\\sim X}\\Bigg[\n(1-\\alpha)\\underbrace{\\mathbb E_{y\\sim p_S^\\theta(\\cdot\\mid x)}\\left[r(y)\\right]}_{\\text{reinforcement learning objective}}\n-\n\\alpha\\underbrace{\\mathbb E_{y\\sim p_S(\\cdot\\mid x)}\\left[D\\left(p_T\\middle\\|p_S^\\theta\\right)(y\\mid x)\\right]}_{\\text{generalized on-policy distillation}}\n\\Bigg].",
+    "reason": "Replace Chinese annotations with English, keep the objective on one line and use responsive numbering."
   }
 }
