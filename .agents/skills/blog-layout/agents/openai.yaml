@@ -1,0 +1,3 @@
+interface:
+  display_name: "Blog Layout"
+  short_description: "Apply fixed layout values to every blog"

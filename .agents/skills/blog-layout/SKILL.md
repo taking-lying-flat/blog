@@ -1,0 +1,33 @@
+---
+name: blog-layout
+description: Apply the repository-wide fixed desktop layout values and formula-parenthesis rule whenever editing any blog, regardless of source format.
+---
+
+# 所有博客统一排版固定值
+
+以下数值适用于所有博客，不得加入单篇文章的名称、选择器或局部例外。除非用户明确给出新数值，否则保持不变。
+
+| 项目 | 固定值 |
+| --- | --- |
+| 阅读页宽度 | `1072px` |
+| 阅读页内边距 | `30px 24px 56px` |
+| 正文字号 | `16px` |
+| 正文字重 | `400` |
+| 行高 | `1.9` |
+| 字间距 | `.008em` |
+| 文档外边距 | `0 -24px` |
+| 文档内边距 | `24px` |
+| 一级标题 | `28px / 38px` |
+| 一级标题外边距 | `38px 0 19px` |
+| 二级标题 | `24px / 34px` |
+| 二级标题外边距 | `34px 0 17px` |
+| 段落最小高度 | `24px` |
+| 段落下间距 | `8.352px` |
+| 列表缩进 | `2em` |
+| 列表项下间距 | `4.176px` |
+| 普通插图外边距 | `18px auto` |
+| 强调字重 | `700` |
+
+## 公式括号
+
+只保留数学语义需要的括号，不给完整的行内公式额外套普通文本括号。
