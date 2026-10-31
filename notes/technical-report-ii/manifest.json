@@ -20,6 +20,29 @@
     "separators": 0,
     "code": 0
   },
-  "assets": [],
-  "cards": []
+  "assets": [
+    {
+      "file": "assets/images/qwen38-flash-next-architecture.png",
+      "source": "https://qianwen-res.oss-accelerate.aliyuncs.com/Qwen3.8-Flash-Next/architecture.png",
+      "bytes": 572469,
+      "sha256": "fb0bdf105c4ca49a5cc6a2033c01cdb8b5a400811558eede4188b0bc469b9eb9",
+      "width": 2885,
+      "height": 2930
+    }
+  ],
+  "cards": [],
+  "listItemMerges": [
+    {
+      "into": "u069d1cc3",
+      "items": ["u5bb5128a"]
+    }
+  ],
+  "listItemSplits": [
+    {
+      "item": "u198bc3b8",
+      "before": "uf629ba4d",
+      "id": "u8f82a94c",
+      "afterText": "仅以 GR 中的门控为变量进行的成对对照实验进一步证实，该门控是新方案相较于 Qwen3.5 架构获得更大稳定裕度的关键因素之一"
+    }
+  ]
 }

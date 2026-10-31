@@ -232,6 +232,7 @@
 .lake-document .lake-figure-crop { display: block; position: relative; overflow: hidden; }
 .lake-document .lake-figure-crop img { position: absolute; max-width: none; }
 [data-post="policy-optimization-i"] .lake-document #gae-code-image { width: 760px; margin: 12px auto; }
+[data-post="technical-report-ii"] .lake-document #qwen38-flash-next-architecture { width: min(100%, 820px); }
 .lake-document .lake-figure figcaption { margin-top: 8px; color: #656d76; font-size: 13px; text-align: center; }
 
 .lake-document .lake-image-source { display: block; margin: -8px 0 12px; font-size: 13px; line-height: var(--article-line-height); white-space: normal; }
