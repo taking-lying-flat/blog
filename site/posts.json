@@ -1,6 +1,9 @@
 [
   {
-    "file": "../notes/technical-report-ii.md",
+    "file": "../notes/technical-report-ii/source.lake",
+    "format": "lake",
+    "removeEmptyParagraphs": true,
+    "tocDepth": 2,
     "slug": "technical-report-ii",
     "category": "llm",
     "date": "2026-10-31",

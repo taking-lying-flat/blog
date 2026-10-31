@@ -1,0 +1,25 @@
+{
+  "source": {
+    "file": "source.lake",
+    "sha256": "79382fb498442cb9bf983b52c4bddc37d80f2f01c06cd34f7865b80e1ac86069",
+    "bytes": 8366,
+    "title": "无标题文档",
+    "originalFile": "无标题文档.lake"
+  },
+  "title": "Technical Report II",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "counts": {
+    "math": 0,
+    "images": 0,
+    "separators": 0,
+    "code": 0
+  },
+  "assets": [],
+  "cards": []
+}
