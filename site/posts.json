@@ -1,5 +1,18 @@
 [
   {
+    "file": "../notes/technical-report-ii.md",
+    "slug": "technical-report-ii",
+    "category": "llm",
+    "date": "2026-10-31",
+    "description": "Technical Report II：Qwen3.8-Flash-Next 的 Gated DeltaNet、Qwen Sparse Attention、门控残差、n-gram 嵌入与 Muon 训练方案。",
+    "tags": [
+      "Qwen3.8-Flash-Next",
+      "Qwen Sparse Attention",
+      "Gated Residual",
+      "Muon"
+    ]
+  },
+  {
     "file": "../notes/policy-optimization-v/source.lake",
     "format": "lake",
     "appendMarkdown": [
