@@ -74,7 +74,7 @@
     "category": "llm",
     "numberedEquations": {"vj7TD": ["rRDTk"]},
     "date": "2026-10-06",
-    "description": "Omni-Modal 笔记：MiniCPM-o 4.5 的全模态架构、Omni-Flow 与训练，以及 Qwen3.5-Omni 的架构、预训练与后训练。",
+    "description": "Technical Report I：MiniCPM-o 4.5 的全模态架构、Omni-Flow 与训练，以及 Qwen3.5-Omni 的架构、预训练与后训练。",
     "tags": [
       "MiniCPM-o 4.5",
       "Qwen3.5-Omni"
