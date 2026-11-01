@@ -1,0 +1,656 @@
+{
+  "source": {
+    "file": "source.lake",
+    "sha256": "a39c024ce5d8204c0093dbdffc08bec5eda1293f950d13626707d27d0dbdaf5f",
+    "bytes": 16794,
+    "title": "无标题文档",
+    "originalFile": "无标题文档.lake"
+  },
+  "title": "Optimization",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "counts": {
+    "math": 4,
+    "images": 2,
+    "separators": 0,
+    "code": 0
+  },
+  "assets": [
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/bb622e0f59cb8240aa8022f524cd4b33.svg",
+      "file": "assets/math/bb622e0f59cb8240aa8022f524cd4b33.svg",
+      "bytes": 2287,
+      "sha256": "e94ade6eb8c6b9a7f0a4890f37da05607181501789d8e7ee8d0e4cc2212780d0",
+      "width": "6.348ex",
+      "height": "2.176ex",
+      "viewBox": "0 -791.3 2732.9 936.9",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/f718bd3a472a9e97c47c50de671fe4cf.svg",
+      "file": "assets/math/f718bd3a472a9e97c47c50de671fe4cf.svg",
+      "bytes": 8324,
+      "sha256": "4e7b599ea5e445f922e84b386534dbe4655d0354b931f12fd1b46288d4398c2e",
+      "width": "26.683ex",
+      "height": "4.843ex",
+      "viewBox": "0 -1293.7 11488.4 2085",
+      "style": "vertical-align: -1.838ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/482268ee87db7cb147c2d0321186c3fa.svg",
+      "file": "assets/math/482268ee87db7cb147c2d0321186c3fa.svg",
+      "bytes": 3962,
+      "sha256": "ae0c94a416f8a7ec496a7fcc929c3fc8e665530ab2c1044f149f19a4cdf85dfd",
+      "width": "10.47ex",
+      "height": "2.676ex",
+      "viewBox": "0 -1006.6 4507.8 1152.1",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/__latex/551bc4510e83d6b3ebf520588610976a.svg",
+      "file": "assets/math/551bc4510e83d6b3ebf520588610976a.svg",
+      "bytes": 4144,
+      "sha256": "3f7e08caeeb05994721bea67488688c680e99a5a346b36ba1bd8877720984b74",
+      "width": "10.47ex",
+      "height": "2.676ex",
+      "viewBox": "0 -1006.6 4507.8 1152.1",
+      "style": "vertical-align: -0.338ex;"
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1793526925289-2fd9b8ff-251a-4c07-bb89-94789aab04e0.png",
+      "file": "assets/images/1793526925289-2fd9b8ff-251a-4c07-bb89-94789aab04e0.png",
+      "bytes": 223594,
+      "sha256": "4249a6d44cbb967f0d37ece6a03634ad68003ceb39ad313cfc85237512a88c39",
+      "width": 1314,
+      "height": 608
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1793526847768-4f4f5f57-734f-4e3d-9ba9-4430ce97bfcc.png",
+      "file": "assets/images/1793526847768-4f4f5f57-734f-4e3d-9ba9-4430ce97bfcc.png",
+      "bytes": 299232,
+      "sha256": "122ef7a130367ac81314544099564b8affe615508029a55f583c9dea363bee71",
+      "width": 1319,
+      "height": 607
+    }
+  ],
+  "cards": [
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22A%5C%5Ctimes%20B%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Fbb622e0f59cb8240aa8022f524cd4b33.svg%22%2C%22id%22%3A%22BbXl0%22%7D",
+        "style": "color: #DF2A3F"
+      },
+      "value": {
+        "code": "A\\times B",
+        "src": "https://cdn.nlark.com/yuque/__latex/bb622e0f59cb8240aa8022f524cd4b33.svg",
+        "id": "BbXl0"
+      },
+      "asset": "assets/math/bb622e0f59cb8240aa8022f524cd4b33.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%22%5C%5Cgamma(A%2CB)%3D0.2%5C%5Csqrt%7B%5C%5Cmax(A%2CB)%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2Ff718bd3a472a9e97c47c50de671fe4cf.svg%22%2C%22id%22%3A%22kDenL%22%7D",
+        "style": "color: #DF2A3F"
+      },
+      "value": {
+        "code": "\\gamma(A,B)=0.2\\sqrt{\\max(A,B)}",
+        "src": "https://cdn.nlark.com/yuque/__latex/f718bd3a472a9e97c47c50de671fe4cf.svg",
+        "id": "kDenL"
+      },
+      "asset": "assets/math/f718bd3a472a9e97c47c50de671fe4cf.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%227.2%5C%5Ctimes10%5E%7B-3%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F482268ee87db7cb147c2d0321186c3fa.svg%22%2C%22id%22%3A%22aBfoh%22%7D"
+      },
+      "value": {
+        "code": "7.2\\times10^{-3}",
+        "src": "https://cdn.nlark.com/yuque/__latex/482268ee87db7cb147c2d0321186c3fa.svg",
+        "id": "aBfoh"
+      },
+      "asset": "assets/math/482268ee87db7cb147c2d0321186c3fa.svg"
+    },
+    {
+      "kind": "math",
+      "attributes": {
+        "type": "inline",
+        "name": "math",
+        "value": "data:%7B%22code%22%3A%227.8%5C%5Ctimes10%5E%7B-3%7D%22%2C%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F__latex%2F551bc4510e83d6b3ebf520588610976a.svg%22%2C%22id%22%3A%22rRuI7%22%7D"
+      },
+      "value": {
+        "code": "7.8\\times10^{-3}",
+        "src": "https://cdn.nlark.com/yuque/__latex/551bc4510e83d6b3ebf520588610976a.svg",
+        "id": "rRuI7"
+      },
+      "asset": "assets/math/551bc4510e83d6b3ebf520588610976a.svg"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1793526925289-2fd9b8ff-251a-4c07-bb89-94789aab04e0.png%22%2C%22taskId%22%3A%22ub6c53b4e-d247-4f81-aa89-459cb2fc800%22%2C%22clientId%22%3A%22u55d9a5d2-333b-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A725.2000732421875%2C%22height%22%3A336%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A223594%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1314%2C%22originHeight%22%3A608%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22B%3A6.3M-25.2M%2CN%3D3.60X10%22%2C%22x%22%3A907%2C%22y%22%3A421%2C%22width%22%3A266%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22BRAPEDBATCHSIZE.%22%2C%22x%22%3A855%2C%22y%22%3A573%2C%22width%22%3A268%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%22ACONSTANTBATCHSIZE.%22%2C%22x%22%3A168%2C%22y%22%3A573%2C%22width%22%3A283%2C%22height%22%3A26%7D%2C%7B%22text%22%3A%22CONSUMEDTOKENSB%22%2C%22x%22%3A934%2C%22y%22%3A520%2C%22width%22%3A208%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22ONSUMEDTOKENSB)%22%2C%22x%22%3A267%2C%22y%22%3A519%2C%22width%22%3A205%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22B%3A6.3M-25.2MN%3D5.39XI10%22%2C%22x%22%3A898%2C%22y%22%3A390%2C%22width%22%3A269%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22-B%3D12.6M%2C7%3D3.49X10%22%2C%22x%22%3A133%2C%22y%22%3A431%2C%22width%22%3A250%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22B-37.7M%2CN-6.92X10%22%2C%22x%22%3A150%2C%22y%22%3A400%2C%22width%22%3A234%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A702%2C%22y%22%3A173%2C%22width%22%3A19%2C%22height%22%3A135%7D%2C%7B%22text%22%3A%22%E4%B8%80B%3D25.2M%2CN%3D5.39X10-%22%2C%22x%22%3A884%2C%22y%22%3A359%2C%22width%22%3A244%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22B-25.2M%2CM-5.39X10%22%2C%22x%22%3A160%2C%22y%22%3A370%2C%22width%22%3A216%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A11%2C%22y%22%3A170%2C%22width%22%3A22%2C%22height%22%3A146%7D%2C%7B%22text%22%3A%22%E5%9B%BE%22%2C%22x%22%3A778%2C%22y%22%3A422%2C%22width%22%3A82%2C%22height%22%3A34%7D%2C%7B%22text%22%3A%221.85%22%2C%22x%22%3A48%2C%22y%22%3A116%2C%22width%22%3A42%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%222000%22%2C%22x%22%3A995%2C%22y%22%3A485%2C%22width%22%3A68%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%221.5705%22%2C%22x%22%3A1012%2C%22y%22%3A248%2C%22width%22%3A53%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%223000%22%2C%22x%22%3A454%2C%22y%22%3A485%2C%22width%22%3A60%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%221.65%22%2C%22x%22%3A50%2C%22y%22%3A346%2C%22width%22%3A44%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%222000%22%2C%22x%22%3A318%2C%22y%22%3A485%2C%22width%22%3A74%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%228%22%2C%22x%22%3A55%2C%22y%22%3A236%2C%22width%22%3A32%2C%22height%22%3A74%7D%2C%7B%22text%22%3A%223000%22%2C%22x%22%3A1118%2C%22y%22%3A484%2C%22width%22%3A64%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%224000%22%2C%22x%22%3A1260%2C%22y%22%3A483%2C%22width%22%3A48%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%224000%22%2C%22x%22%3A587%2C%22y%22%3A489%2C%22width%22%3A47%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%221000%22%2C%22x%22%3A209%2C%22y%22%3A484%2C%22width%22%3A49%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%220%22%2C%22x%22%3A53%2C%22y%22%3A173%2C%22width%22%3A39%2C%22height%22%3A63%7D%2C%7B%22text%22%3A%221.55%22%2C%22x%22%3A42%2C%22y%22%3A456%2C%22width%22%3A55%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%221.60%22%2C%22x%22%3A50%2C%22y%22%3A402%2C%22width%22%3A40%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%221000%22%2C%22x%22%3A883%2C%22y%22%3A484%2C%22width%22%3A48%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%224020%22%2C%22x%22%3A1236%2C%22y%22%3A308%2C%22width%22%3A30%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%22.5710%22%2C%22x%22%3A297%2C%22y%22%3A110%2C%22width%22%3A41%2C%22height%22%3A14%7D%2C%7B%22text%22%3A%2216%22%2C%22x%22%3A732%2C%22y%22%3A411%2C%22width%22%3A44%2C%22height%22%3A29%7D%2C%7B%22text%22%3A%22.95%22%2C%22x%22%3A53%2C%22y%22%3A8%2C%22width%22%3A34%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%223990%22%2C%22x%22%3A1109%2C%22y%22%3A305%2C%22width%22%3A32%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%221.90%22%2C%22x%22%3A47%2C%22y%22%3A63%2C%22width%22%3A45%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22.5720%22%2C%22x%22%3A300%2C%22y%22%3A27%2C%22width%22%3A53%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22.5715%22%2C%22x%22%3A297%2C%22y%22%3A69%2C%22width%22%3A45%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%221.570%22%2C%22x%22%3A297%2C%22y%22%3A150%2C%22width%22%3A37%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%221.5715-%22%2C%22x%22%3A1010%2C%22y%22%3A139%2C%22width%22%3A59%2C%22height%22%3A16%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23faf8f7%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22ub2489972%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1793526925289-2fd9b8ff-251a-4c07-bb89-94789aab04e0.png",
+        "taskId": "ub6c53b4e-d247-4f81-aa89-459cb2fc800",
+        "clientId": "u55d9a5d2-333b-4",
+        "originalType": "binary",
+        "width": 725.2000732421875,
+        "height": 336,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 223594,
+        "from": "paste",
+        "originWidth": 1314,
+        "originHeight": 608,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "B:6.3M-25.2M,N=3.60X10",
+            "x": 907,
+            "y": 421,
+            "width": 266,
+            "height": 21
+          },
+          {
+            "text": "BRAPEDBATCHSIZE.",
+            "x": 855,
+            "y": 573,
+            "width": 268,
+            "height": 26
+          },
+          {
+            "text": "ACONSTANTBATCHSIZE.",
+            "x": 168,
+            "y": 573,
+            "width": 283,
+            "height": 26
+          },
+          {
+            "text": "CONSUMEDTOKENSB",
+            "x": 934,
+            "y": 520,
+            "width": 208,
+            "height": 21
+          },
+          {
+            "text": "ONSUMEDTOKENSB)",
+            "x": 267,
+            "y": 519,
+            "width": 205,
+            "height": 22
+          },
+          {
+            "text": "B:6.3M-25.2MN=5.39XI10",
+            "x": 898,
+            "y": 390,
+            "width": 269,
+            "height": 19
+          },
+          {
+            "text": "-B=12.6M,7=3.49X10",
+            "x": 133,
+            "y": 431,
+            "width": 250,
+            "height": 19
+          },
+          {
+            "text": "B-37.7M,N-6.92X10",
+            "x": 150,
+            "y": 400,
+            "width": 234,
+            "height": 17
+          },
+          {
+            "text": "",
+            "x": 702,
+            "y": 173,
+            "width": 19,
+            "height": 135
+          },
+          {
+            "text": "一B=25.2M,N=5.39X10-",
+            "x": 884,
+            "y": 359,
+            "width": 244,
+            "height": 19
+          },
+          {
+            "text": "B-25.2M,M-5.39X10",
+            "x": 160,
+            "y": 370,
+            "width": 216,
+            "height": 16
+          },
+          {
+            "text": "",
+            "x": 11,
+            "y": 170,
+            "width": 22,
+            "height": 146
+          },
+          {
+            "text": "图",
+            "x": 778,
+            "y": 422,
+            "width": 82,
+            "height": 34
+          },
+          {
+            "text": "1.85",
+            "x": 48,
+            "y": 116,
+            "width": 42,
+            "height": 24
+          },
+          {
+            "text": "2000",
+            "x": 995,
+            "y": 485,
+            "width": 68,
+            "height": 18
+          },
+          {
+            "text": "1.5705",
+            "x": 1012,
+            "y": 248,
+            "width": 53,
+            "height": 14
+          },
+          {
+            "text": "3000",
+            "x": 454,
+            "y": 485,
+            "width": 60,
+            "height": 19
+          },
+          {
+            "text": "1.65",
+            "x": 50,
+            "y": 346,
+            "width": 44,
+            "height": 17
+          },
+          {
+            "text": "2000",
+            "x": 318,
+            "y": 485,
+            "width": 74,
+            "height": 20
+          },
+          {
+            "text": "8",
+            "x": 55,
+            "y": 236,
+            "width": 32,
+            "height": 74
+          },
+          {
+            "text": "3000",
+            "x": 1118,
+            "y": 484,
+            "width": 64,
+            "height": 20
+          },
+          {
+            "text": "4000",
+            "x": 1260,
+            "y": 483,
+            "width": 48,
+            "height": 20
+          },
+          {
+            "text": "4000",
+            "x": 587,
+            "y": 489,
+            "width": 47,
+            "height": 15
+          },
+          {
+            "text": "1000",
+            "x": 209,
+            "y": 484,
+            "width": 49,
+            "height": 21
+          },
+          {
+            "text": "0",
+            "x": 53,
+            "y": 173,
+            "width": 39,
+            "height": 63
+          },
+          {
+            "text": "1.55",
+            "x": 42,
+            "y": 456,
+            "width": 55,
+            "height": 23
+          },
+          {
+            "text": "1.60",
+            "x": 50,
+            "y": 402,
+            "width": 40,
+            "height": 17
+          },
+          {
+            "text": "1000",
+            "x": 883,
+            "y": 484,
+            "width": 48,
+            "height": 21
+          },
+          {
+            "text": "4020",
+            "x": 1236,
+            "y": 308,
+            "width": 30,
+            "height": 13
+          },
+          {
+            "text": ".5710",
+            "x": 297,
+            "y": 110,
+            "width": 41,
+            "height": 14
+          },
+          {
+            "text": "16",
+            "x": 732,
+            "y": 411,
+            "width": 44,
+            "height": 29
+          },
+          {
+            "text": ".95",
+            "x": 53,
+            "y": 8,
+            "width": 34,
+            "height": 16
+          },
+          {
+            "text": "3990",
+            "x": 1109,
+            "y": 305,
+            "width": 32,
+            "height": 18
+          },
+          {
+            "text": "1.90",
+            "x": 47,
+            "y": 63,
+            "width": 45,
+            "height": 19
+          },
+          {
+            "text": ".5720",
+            "x": 300,
+            "y": 27,
+            "width": 53,
+            "height": 18
+          },
+          {
+            "text": ".5715",
+            "x": 297,
+            "y": 69,
+            "width": 45,
+            "height": 17
+          },
+          {
+            "text": "1.570",
+            "x": 297,
+            "y": 150,
+            "width": 37,
+            "height": 15
+          },
+          {
+            "text": "1.5715-",
+            "x": 1010,
+            "y": 139,
+            "width": 59,
+            "height": 16
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#faf8f7",
+        "__spacing": "both",
+        "id": "ub2489972",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1793526925289-2fd9b8ff-251a-4c07-bb89-94789aab04e0.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1793526847768-4f4f5f57-734f-4e3d-9ba9-4430ce97bfcc.png%22%2C%22taskId%22%3A%22u8f7e7b0c-24a2-45b5-9aca-75be0986b58%22%2C%22clientId%22%3A%22u55d9a5d2-333b-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A692.2000732421875%2C%22height%22%3A319%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A299232%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1319%2C%22originHeight%22%3A607%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22APRE-CLIPGRADIENTNORM.%22%2C%22x%22%3A156%2C%22y%22%3A572%2C%22width%22%3A316%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22TRAININGSTEP(THOUSANDS)%22%2C%22x%22%3A910%2C%22y%22%3A539%2C%22width%22%3A248%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22BMAXIMUMMLPOUTPUT.%22%2C%22x%22%3A826%2C%22y%22%3A572%2C%22width%22%3A328%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22TRAININGSTEPTHOUSANDS%22%2C%22x%22%3A236%2C%22y%22%3A539%2C%22width%22%3A239%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A686%2C%22y%22%3A122%2C%22width%22%3A21%2C%22height%22%3A275%7D%2C%7B%22text%22%3A%22ADAMW%2CQWEN3.5STRUCTURE%22%2C%22x%22%3A346%2C%22y%22%3A51%2C%22width%22%3A255%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22%22%2C%22x%22%3A14%2C%22y%22%3A134%2C%22width%22%3A23%2C%22height%22%3A258%7D%2C%7B%22text%22%3A%22ADAMW%2CQWEN3.5STRUCTURE%22%2C%22x%22%3A1032%2C%22y%22%3A51%2C%22width%22%3A243%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%22MUON%2BGATEDRESIDUAL%22%2C%22x%22%3A1036%2C%22y%22%3A100%2C%22width%22%3A219%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22MUON%2BGATEDRESIDUAL%22%2C%22x%22%3A349%2C%22y%22%3A101%2C%22width%22%3A228%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22MUONQWEN3.5STRUCTURE%22%2C%22x%22%3A348%2C%22y%22%3A76%2C%22width%22%3A244%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22MUON%2CQWEN3.5STRUCTURE%22%2C%22x%22%3A1036%2C%22y%22%3A75%2C%22width%22%3A228%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%222000%22%2C%22x%22%3A717%2C%22y%22%3A100%2C%22width%22%3A48%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%221500%22%2C%22x%22%3A710%2C%22y%22%3A196%2C%22width%22%3A54%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%220.5%22%2C%22x%22%3A55%2C%22y%22%3A67%2C%22width%22%3A35%2C%22height%22%3A31%7D%2C%7B%22text%22%3A%220.05%22%2C%22x%22%3A44%2C%22y%22%3A395%2C%22width%22%3A45%2C%22height%22%3A29%7D%2C%7B%22text%22%3A%221000%22%2C%22x%22%3A718%2C%22y%22%3A286%2C%22width%22%3A43%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22100%22%2C%22x%22%3A1271%2C%22y%22%3A504%2C%22width%22%3A34%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22100%22%2C%22x%22%3A586%2C%22y%22%3A505%2C%22width%22%3A45%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%220.03%22%2C%22x%22%3A49%2C%22y%22%3A476%2C%22width%22%3A41%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2260%22%2C%22x%22%3A382%2C%22y%22%3A506%2C%22width%22%3A50%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2280%22%2C%22x%22%3A491%2C%22y%22%3A505%2C%22width%22%3A36%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2240%22%2C%22x%22%3A294%2C%22y%22%3A506%2C%22width%22%3A35%2C%22height%22%3A18%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23faf1ed%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u43f5b7b2%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1793526847768-4f4f5f57-734f-4e3d-9ba9-4430ce97bfcc.png",
+        "taskId": "u8f7e7b0c-24a2-45b5-9aca-75be0986b58",
+        "clientId": "u55d9a5d2-333b-4",
+        "originalType": "binary",
+        "width": 692.2000732421875,
+        "height": 319,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 299232,
+        "from": "paste",
+        "originWidth": 1319,
+        "originHeight": 607,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "APRE-CLIPGRADIENTNORM.",
+            "x": 156,
+            "y": 572,
+            "width": 316,
+            "height": 23
+          },
+          {
+            "text": "TRAININGSTEP(THOUSANDS)",
+            "x": 910,
+            "y": 539,
+            "width": 248,
+            "height": 21
+          },
+          {
+            "text": "BMAXIMUMMLPOUTPUT.",
+            "x": 826,
+            "y": 572,
+            "width": 328,
+            "height": 22
+          },
+          {
+            "text": "TRAININGSTEPTHOUSANDS",
+            "x": 236,
+            "y": 539,
+            "width": 239,
+            "height": 20
+          },
+          {
+            "text": "",
+            "x": 686,
+            "y": 122,
+            "width": 21,
+            "height": 275
+          },
+          {
+            "text": "ADAMW,QWEN3.5STRUCTURE",
+            "x": 346,
+            "y": 51,
+            "width": 255,
+            "height": 17
+          },
+          {
+            "text": "",
+            "x": 14,
+            "y": 134,
+            "width": 23,
+            "height": 258
+          },
+          {
+            "text": "ADAMW,QWEN3.5STRUCTURE",
+            "x": 1032,
+            "y": 51,
+            "width": 243,
+            "height": 16
+          },
+          {
+            "text": "MUON+GATEDRESIDUAL",
+            "x": 1036,
+            "y": 100,
+            "width": 219,
+            "height": 21
+          },
+          {
+            "text": "MUON+GATEDRESIDUAL",
+            "x": 349,
+            "y": 101,
+            "width": 228,
+            "height": 20
+          },
+          {
+            "text": "MUONQWEN3.5STRUCTURE",
+            "x": 348,
+            "y": 76,
+            "width": 244,
+            "height": 19
+          },
+          {
+            "text": "MUON,QWEN3.5STRUCTURE",
+            "x": 1036,
+            "y": 75,
+            "width": 228,
+            "height": 19
+          },
+          {
+            "text": "2000",
+            "x": 717,
+            "y": 100,
+            "width": 48,
+            "height": 23
+          },
+          {
+            "text": "1500",
+            "x": 710,
+            "y": 196,
+            "width": 54,
+            "height": 20
+          },
+          {
+            "text": "0.5",
+            "x": 55,
+            "y": 67,
+            "width": 35,
+            "height": 31
+          },
+          {
+            "text": "0.05",
+            "x": 44,
+            "y": 395,
+            "width": 45,
+            "height": 29
+          },
+          {
+            "text": "1000",
+            "x": 718,
+            "y": 286,
+            "width": 43,
+            "height": 22
+          },
+          {
+            "text": "100",
+            "x": 1271,
+            "y": 504,
+            "width": 34,
+            "height": 21
+          },
+          {
+            "text": "100",
+            "x": 586,
+            "y": 505,
+            "width": 45,
+            "height": 20
+          },
+          {
+            "text": "0.03",
+            "x": 49,
+            "y": 476,
+            "width": 41,
+            "height": 21
+          },
+          {
+            "text": "60",
+            "x": 382,
+            "y": 506,
+            "width": 50,
+            "height": 19
+          },
+          {
+            "text": "80",
+            "x": 491,
+            "y": 505,
+            "width": 36,
+            "height": 17
+          },
+          {
+            "text": "40",
+            "x": 294,
+            "y": 506,
+            "width": 35,
+            "height": 18
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#faf1ed",
+        "__spacing": "both",
+        "id": "u43f5b7b2",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1793526847768-4f4f5f57-734f-4e3d-9ba9-4430ce97bfcc.png"
+    }
+  ]
+}
