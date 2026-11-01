@@ -5,7 +5,8 @@
     "appendFiles": [
       "../notes/technical-report-ii/gdn-hybrid/source.lake",
       "../notes/technical-report-ii/qsa/source.lake",
-      "../notes/technical-report-ii/gated-residual/source.lake"
+      "../notes/technical-report-ii/gated-residual/source.lake",
+      "../notes/technical-report-ii/ngram/source.lake"
     ],
     "removeEmptyParagraphs": true,
     "preserveLakeText": true,

@@ -1,0 +1,2052 @@
+{
+  "source": {
+    "file": "source.lake",
+    "sha256": "a7a7121b21218429bdd3a19c31121d060c532aa47a287014f38eb7ef9ac8870d",
+    "bytes": 33485,
+    "title": "无标题文档",
+    "originalFile": "无标题文档.lake"
+  },
+  "title": "N-gram Embedding",
+  "metadata": {
+    "doc-version": "1",
+    "viewport": "adapt",
+    "typography": "classic",
+    "paragraphSpacing": "relax",
+    "defaultFontsize": "16"
+  },
+  "counts": {
+    "math": 0,
+    "images": 3,
+    "separators": 0,
+    "code": 0
+  },
+  "assets": [
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1793525988932-5781fda2-6e56-4468-a099-cde2bf8e2947.png",
+      "file": "assets/images/1793525988932-5781fda2-6e56-4468-a099-cde2bf8e2947.png",
+      "bytes": 176335,
+      "sha256": "37e4dca2edb8b6784c6334f44fdfd153468e5c52f7df075b9e2a468911740719",
+      "width": 1326,
+      "height": 331
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1793526081199-b7334d91-348a-4938-b2df-62392acda26c.png",
+      "file": "assets/images/1793526081199-b7334d91-348a-4938-b2df-62392acda26c.png",
+      "bytes": 107266,
+      "sha256": "154b3b22a31eb35458342e0cfbc2bdce07360680775fa9939a76f3e405e828cf",
+      "width": 1334,
+      "height": 184
+    },
+    {
+      "source": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1793526105948-5d343b89-a092-4b18-82bd-6a4d4172908b.png",
+      "file": "assets/images/1793526105948-5d343b89-a092-4b18-82bd-6a4d4172908b.png",
+      "bytes": 131443,
+      "sha256": "ee788f0f36d639253f8352d68df51ae01d160d0fa427567bbd9d76f99ebf8a75",
+      "width": 1341,
+      "height": 236
+    }
+  ],
+  "cards": [
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1793525988932-5781fda2-6e56-4468-a099-cde2bf8e2947.png%22%2C%22taskId%22%3A%22uce3983c8-9d5f-4946-9019-580f5b57cc9%22%2C%22clientId%22%3A%22u560f831e-ff56-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A886%2C%22height%22%3A221%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A176335%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1326%2C%22originHeight%22%3A331%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22MIMLU-PROSUPERGPQA%22%2C%22x%22%3A339%2C%22y%22%3A51%2C%22width%22%3A257%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22AYERINDEX%22%2C%22x%22%3A18%2C%22y%22%3A54%2C%22width%22%3A108%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22W%2FON-GRAMEMB%22%2C%22x%22%3A18%2C%22y%22%3A86%2C%22width%22%3A152%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22EVAIPLUSMULTIPL-%22%2C%22x%22%3A1039%2C%22y%22%3A49%2C%22width%22%3A188%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22ULTILINGUAL%22%2C%22x%22%3A921%2C%22y%22%3A23%2C%22width%22%3A100%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22ATHGSMSK%22%2C%22x%22%3A628%2C%22y%22%3A50%2C%22width%22%3A142%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%222ND%2B15TH%22%2C%22x%22%3A16%2C%22y%22%3A266%2C%22width%22%3A98%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22EASONIN%22%2C%22x%22%3A803%2C%22y%22%3A25%2C%22width%22%3A78%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%22STEM%22%2C%22x%22%3A652%2C%22y%22%3A18%2C%22width%22%3A78%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22IMIMU%22%2C%22x%22%3A927%2C%22y%22%3A49%2C%22width%22%3A87%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2246.62%22%2C%22x%22%3A1253%2C%22y%22%3A193%2C%22width%22%3A59%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2221.49%22%2C%22x%22%3A509%2C%22y%22%3A128%2C%22width%22%3A55%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2245.56%22%2C%22x%22%3A1163%2C%22y%22%3A128%2C%22width%22%3A57%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22CODE%22%2C%22x%22%3A1104%2C%22y%22%3A20%2C%22width%22%3A75%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%221.544%22%2C%22x%22%3A197%2C%22y%22%3A195%2C%22width%22%3A61%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22KNOWLEDGE%22%2C%22x%22%3A370%2C%22y%22%3A24%2C%22width%22%3A121%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2264.22%22%2C%22x%22%3A260%2C%22y%22%3A193%2C%22width%22%3A66%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2253.09%22%2C%22x%22%3A1055%2C%22y%22%3A127%2C%22width%22%3A55%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2247.94%22%2C%22x%22%3A1255%2C%22y%22%3A128%2C%22width%22%3A58%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2243.61%22%2C%22x%22%3A1161%2C%22y%22%3A194%2C%22width%22%3A59%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%222ND%2B25TH%22%2C%22x%22%3A17%2C%22y%22%3A292%2C%22width%22%3A95%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%221.541%22%2C%22x%22%3A201%2C%22y%22%3A238%2C%22width%22%3A51%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2222.13%22%2C%22x%22%3A510%2C%22y%22%3A234%2C%22width%22%3A53%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22MIMLU%22%2C%22x%22%3A255%2C%22y%22%3A49%2C%22width%22%3A84%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22.541%22%2C%22x%22%3A207%2C%22y%22%3A131%2C%22width%22%3A44%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%2243.85%22%2C%22x%22%3A1164%2C%22y%22%3A267%2C%22width%22%3A56%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2233.80%22%2C%22x%22%3A621%2C%22y%22%3A193%2C%22width%22%3A57%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2220.81%22%2C%22x%22%3A510%2C%22y%22%3A194%2C%22width%22%3A55%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2264.71%22%2C%22x%22%3A272%2C%22y%22%3A128%2C%22width%22%3A53%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2210TH%22%2C%22x%22%3A14%2C%22y%22%3A194%2C%22width%22%3A42%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2264.00%22%2C%22x%22%3A711%2C%22y%22%3A130%2C%22width%22%3A51%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2221.25%22%2C%22x%22%3A511%2C%22y%22%3A266%2C%22width%22%3A53%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2237.32%22%2C%22x%22%3A625%2C%22y%22%3A128%2C%22width%22%3A49%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%220SS%22%2C%22x%22%3A208%2C%22y%22%3A57%2C%22width%22%3A45%2C%22height%22%3A13%7D%2C%7B%22text%22%3A%2263.23%22%2C%22x%22%3A709%2C%22y%22%3A267%2C%22width%22%3A53%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2263.82%22%2C%22x%22%3A257%2C%22y%22%3A267%2C%22width%22%3A69%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2247.01%22%2C%22x%22%3A1256%2C%22y%22%3A267%2C%22width%22%3A55%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2254.81%22%2C%22x%22%3A932%2C%22y%22%3A193%2C%22width%22%3A57%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2236.20%22%2C%22x%22%3A622%2C%22y%22%3A170%2C%22width%22%3A57%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2244.33%22%2C%22x%22%3A1165%2C%22y%22%3A238%2C%22width%22%3A55%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2245.60%22%2C%22x%22%3A1160%2C%22y%22%3A172%2C%22width%22%3A59%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2244.73%22%2C%22x%22%3A1165%2C%22y%22%3A290%2C%22width%22%3A58%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2264.33%22%2C%22x%22%3A712%2C%22y%22%3A290%2C%22width%22%3A52%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2251.69%22%2C%22x%22%3A1059%2C%22y%22%3A290%2C%22width%22%3A51%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2236.12%22%2C%22x%22%3A622%2C%22y%22%3A214%2C%22width%22%3A54%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2235.80%22%2C%22x%22%3A384%2C%22y%22%3A130%2C%22width%22%3A50%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2233.43%22%2C%22x%22%3A370%2C%22y%22%3A86%2C%22width%22%3A67%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%2247.40%22%2C%22x%22%3A1256%2C%22y%22%3A237%2C%22width%22%3A56%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2251.05%22%2C%22x%22%3A1055%2C%22y%22%3A171%2C%22width%22%3A54%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2263.36%22%2C%22x%22%3A262%2C%22y%22%3A173%2C%22width%22%3A64%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2265.07%22%2C%22x%22%3A268%2C%22y%22%3A216%2C%22width%22%3A58%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2235.40%22%2C%22x%22%3A383%2C%22y%22%3A290%2C%22width%22%3A52%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2255.79%22%2C%22x%22%3A932%2C%22y%22%3A169%2C%22width%22%3A57%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2234.81%22%2C%22x%22%3A379%2C%22y%22%3A171%2C%22width%22%3A55%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2246.89%22%2C%22x%22%3A1254%2C%22y%22%3A172%2C%22width%22%3A60%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2261.26%22%2C%22x%22%3A710%2C%22y%22%3A173%2C%22width%22%3A52%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22.585%22%2C%22x%22%3A208%2C%22y%22%3A85%2C%22width%22%3A43%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%221.543%22%2C%22x%22%3A200%2C%22y%22%3A216%2C%22width%22%3A55%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2247.75%22%2C%22x%22%3A1256%2C%22y%22%3A289%2C%22width%22%3A55%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2252.66%22%2C%22x%22%3A1057%2C%22y%22%3A238%2C%22width%22%3A52%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2221.80%22%2C%22x%22%3A513%2C%22y%22%3A290%2C%22width%22%3A53%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2263.50%22%2C%22x%22%3A711%2C%22y%22%3A217%2C%22width%22%3A50%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%2244.90%22%2C%22x%22%3A1163%2C%22y%22%3A150%2C%22width%22%3A56%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%2250.15%22%2C%22x%22%3A1055%2C%22y%22%3A148%2C%22width%22%3A55%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%227.40%22%2C%22x%22%3A626%2C%22y%22%3A290%2C%22width%22%3A55%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2222.33%22%2C%22x%22%3A511%2C%22y%22%3A172%2C%22width%22%3A54%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22BBH%22%2C%22x%22%3A814%2C%22y%22%3A51%2C%22width%22%3A52%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2255.99%22%2C%22x%22%3A937%2C%22y%22%3A236%2C%22width%22%3A52%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22.544%22%2C%22x%22%3A203%2C%22y%22%3A173%2C%22width%22%3A56%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%2256.64%22%2C%22x%22%3A935%2C%22y%22%3A130%2C%22width%22%3A54%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2235.74%22%2C%22x%22%3A621%2C%22y%22%3A147%2C%22width%22%3A54%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2232.52%22%2C%22x%22%3A619%2C%22y%22%3A83%2C%22width%22%3A62%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2245.42%22%2C%22x%22%3A1154%2C%22y%22%3A83%2C%22width%22%3A70%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2263.15%22%2C%22x%22%3A709%2C%22y%22%3A150%2C%22width%22%3A52%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22AVG%22%2C%22x%22%3A1249%2C%22y%22%3A54%2C%22width%22%3A63%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2262.17%22%2C%22x%22%3A708%2C%22y%22%3A194%2C%22width%22%3A52%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2221.30%22%2C%22x%22%3A510%2C%22y%22%3A105%2C%22width%22%3A56%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2234.95%22%2C%22x%22%3A380%2C%22y%22%3A215%2C%22width%22%3A51%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2234.99%22%2C%22x%22%3A378%2C%22y%22%3A192%2C%22width%22%3A57%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2220.97%22%2C%22x%22%3A495%2C%22y%22%3A82%2C%22width%22%3A73%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2263.20%22%2C%22x%22%3A266%2C%22y%22%3A149%2C%22width%22%3A59%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2246.76%22%2C%22x%22%3A1255%2C%22y%22%3A149%2C%22width%22%3A59%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2255.73%22%2C%22x%22%3A814%2C%22y%22%3A237%2C%22width%22%3A57%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2255.68%22%2C%22x%22%3A937%2C%22y%22%3A267%2C%22width%22%3A52%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2255.32%22%2C%22x%22%3A815%2C%22y%22%3A171%2C%22width%22%3A54%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%221.541%22%2C%22x%22%3A201%2C%22y%22%3A268%2C%22width%22%3A55%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2256.52%22%2C%22x%22%3A816%2C%22y%22%3A265%2C%22width%22%3A53%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%2264.19%22%2C%22x%22%3A269%2C%22y%22%3A106%2C%22width%22%3A57%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2250.44%22%2C%22x%22%3A1057%2C%22y%22%3A267%2C%22width%22%3A53%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2264.70%22%2C%22x%22%3A264%2C%22y%22%3A239%2C%22width%22%3A62%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2221.35%22%2C%22x%22%3A509%2C%22y%22%3A215%2C%22width%22%3A53%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2265.73%22%2C%22x%22%3A709%2C%22y%22%3A107%2C%22width%22%3A52%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2262.78%22%2C%22x%22%3A266%2C%22y%22%3A83%2C%22width%22%3A62%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2236.20%22%2C%22x%22%3A622%2C%22y%22%3A106%2C%22width%22%3A57%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2220.67%22%2C%22x%22%3A510%2C%22y%22%3A149%2C%22width%22%3A54%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2255.02%22%2C%22x%22%3A934%2C%22y%22%3A148%2C%22width%22%3A53%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2234.93%22%2C%22x%22%3A380%2C%22y%22%3A148%2C%22width%22%3A50%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2253.40%22%2C%22x%22%3A816%2C%22y%22%3A84%2C%22width%22%3A48%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2257.56%22%2C%22x%22%3A814%2C%22y%22%3A128%2C%22width%22%3A50%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2245.44%22%2C%22x%22%3A1255%2C%22y%22%3A82%2C%22width%22%3A58%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2256.45%22%2C%22x%22%3A939%2C%22y%22%3A290%2C%22width%22%3A52%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2257.15%22%2C%22x%22%3A815%2C%22y%22%3A215%2C%22width%22%3A53%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2259.21%22%2C%22x%22%3A696%2C%22y%22%3A83%2C%22width%22%3A65%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2252.21%22%2C%22x%22%3A1054%2C%22y%22%3A214%2C%22width%22%3A52%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2252.13%22%2C%22x%22%3A1055%2C%22y%22%3A82%2C%22width%22%3A60%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2252.69%22%2C%22x%22%3A1054%2C%22y%22%3A193%2C%22width%22%3A53%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2255.54%22%2C%22x%22%3A814%2C%22y%22%3A193%2C%22width%22%3A55%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2263.31%22%2C%22x%22%3A712%2C%22y%22%3A238%2C%22width%22%3A51%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%222ND%22%2C%22x%22%3A13%2C%22y%22%3A130%2C%22width%22%3A38%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2235.15%22%2C%22x%22%3A382%2C%22y%22%3A236%2C%22width%22%3A51%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2235.63%22%2C%22x%22%3A384%2C%22y%22%3A267%2C%22width%22%3A49%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2256.71%22%2C%22x%22%3A814%2C%22y%22%3A149%2C%22width%22%3A51%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2225TH%22%2C%22x%22%3A17%2C%22y%22%3A240%2C%22width%22%3A48%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%2255.98%22%2C%22x%22%3A936%2C%22y%22%3A215%2C%22width%22%3A51%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2236.26%22%2C%22x%22%3A623%2C%22y%22%3A238%2C%22width%22%3A57%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2215TH%22%2C%22x%22%3A16%2C%22y%22%3A216%2C%22width%22%3A40%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%2235.25%22%2C%22x%22%3A380%2C%22y%22%3A104%2C%22width%22%3A53%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2257.79%22%2C%22x%22%3A817%2C%22y%22%3A289%2C%22width%22%3A49%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22.540%22%2C%22x%22%3A201%2C%22y%22%3A291%2C%22width%22%3A54%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%2264.94%22%2C%22x%22%3A259%2C%22y%22%3A291%2C%22width%22%3A69%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2254.06%22%2C%22x%22%3A936%2C%22y%22%3A83%2C%22width%22%3A57%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2237.48%22%2C%22x%22%3A624%2C%22y%22%3A267%2C%22width%22%3A52%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2244.42%22%2C%22x%22%3A1163%2C%22y%22%3A215%2C%22width%22%3A55%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2247.37%22%2C%22x%22%3A1254%2C%22y%22%3A213%2C%22width%22%3A57%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%224.45%22%2C%22x%22%3A1164%2C%22y%22%3A106%2C%22width%22%3A55%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2250.95%22%2C%22x%22%3A1058%2C%22y%22%3A105%2C%22width%22%3A54%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2256.00%22%2C%22x%22%3A816%2C%22y%22%3A106%2C%22width%22%3A50%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22.54%22%2C%22x%22%3A210%2C%22y%22%3A109%2C%22width%22%3A40%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%2247.30%22%2C%22x%22%3A1257%2C%22y%22%3A106%2C%22width%22%3A55%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22543%22%2C%22x%22%3A206%2C%22y%22%3A151%2C%22width%22%3A49%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%224TH%22%2C%22x%22%3A13%2C%22y%22%3A173%2C%22width%22%3A41%2C%22height%22%3A16%7D%2C%7B%22text%22%3A%221ST%22%2C%22x%22%3A17%2C%22y%22%3A109%2C%22width%22%3A37%2C%22height%22%3A15%7D%2C%7B%22text%22%3A%223RD%22%2C%22x%22%3A12%2C%22y%22%3A150%2C%22width%22%3A40%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2256.16%22%2C%22x%22%3A937%2C%22y%22%3A106%2C%22width%22%3A51%2C%22height%22%3A17%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f4f2f0%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22ub71d673a%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1793525988932-5781fda2-6e56-4468-a099-cde2bf8e2947.png",
+        "taskId": "uce3983c8-9d5f-4946-9019-580f5b57cc9",
+        "clientId": "u560f831e-ff56-4",
+        "originalType": "binary",
+        "width": 886,
+        "height": 221,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 176335,
+        "from": "paste",
+        "originWidth": 1326,
+        "originHeight": 331,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "MIMLU-PROSUPERGPQA",
+            "x": 339,
+            "y": 51,
+            "width": 257,
+            "height": 22
+          },
+          {
+            "text": "AYERINDEX",
+            "x": 18,
+            "y": 54,
+            "width": 108,
+            "height": 19
+          },
+          {
+            "text": "W/ON-GRAMEMB",
+            "x": 18,
+            "y": 86,
+            "width": 152,
+            "height": 18
+          },
+          {
+            "text": "EVAIPLUSMULTIPL-",
+            "x": 1039,
+            "y": 49,
+            "width": 188,
+            "height": 23
+          },
+          {
+            "text": "ULTILINGUAL",
+            "x": 921,
+            "y": 23,
+            "width": 100,
+            "height": 17
+          },
+          {
+            "text": "ATHGSMSK",
+            "x": 628,
+            "y": 50,
+            "width": 142,
+            "height": 22
+          },
+          {
+            "text": "2ND+15TH",
+            "x": 16,
+            "y": 266,
+            "width": 98,
+            "height": 22
+          },
+          {
+            "text": "EASONIN",
+            "x": 803,
+            "y": 25,
+            "width": 78,
+            "height": 15
+          },
+          {
+            "text": "STEM",
+            "x": 652,
+            "y": 18,
+            "width": 78,
+            "height": 24
+          },
+          {
+            "text": "IMIMU",
+            "x": 927,
+            "y": 49,
+            "width": 87,
+            "height": 22
+          },
+          {
+            "text": "46.62",
+            "x": 1253,
+            "y": 193,
+            "width": 59,
+            "height": 20
+          },
+          {
+            "text": "21.49",
+            "x": 509,
+            "y": 128,
+            "width": 55,
+            "height": 19
+          },
+          {
+            "text": "45.56",
+            "x": 1163,
+            "y": 128,
+            "width": 57,
+            "height": 18
+          },
+          {
+            "text": "CODE",
+            "x": 1104,
+            "y": 20,
+            "width": 75,
+            "height": 22
+          },
+          {
+            "text": "1.544",
+            "x": 197,
+            "y": 195,
+            "width": 61,
+            "height": 18
+          },
+          {
+            "text": "KNOWLEDGE",
+            "x": 370,
+            "y": 24,
+            "width": 121,
+            "height": 18
+          },
+          {
+            "text": "64.22",
+            "x": 260,
+            "y": 193,
+            "width": 66,
+            "height": 20
+          },
+          {
+            "text": "53.09",
+            "x": 1055,
+            "y": 127,
+            "width": 55,
+            "height": 20
+          },
+          {
+            "text": "47.94",
+            "x": 1255,
+            "y": 128,
+            "width": 58,
+            "height": 19
+          },
+          {
+            "text": "43.61",
+            "x": 1161,
+            "y": 194,
+            "width": 59,
+            "height": 19
+          },
+          {
+            "text": "2ND+25TH",
+            "x": 17,
+            "y": 292,
+            "width": 95,
+            "height": 16
+          },
+          {
+            "text": "1.541",
+            "x": 201,
+            "y": 238,
+            "width": 51,
+            "height": 17
+          },
+          {
+            "text": "22.13",
+            "x": 510,
+            "y": 234,
+            "width": 53,
+            "height": 22
+          },
+          {
+            "text": "MIMLU",
+            "x": 255,
+            "y": 49,
+            "width": 84,
+            "height": 23
+          },
+          {
+            "text": ".541",
+            "x": 207,
+            "y": 131,
+            "width": 44,
+            "height": 13
+          },
+          {
+            "text": "43.85",
+            "x": 1164,
+            "y": 267,
+            "width": 56,
+            "height": 21
+          },
+          {
+            "text": "33.80",
+            "x": 621,
+            "y": 193,
+            "width": 57,
+            "height": 21
+          },
+          {
+            "text": "20.81",
+            "x": 510,
+            "y": 194,
+            "width": 55,
+            "height": 19
+          },
+          {
+            "text": "64.71",
+            "x": 272,
+            "y": 128,
+            "width": 53,
+            "height": 19
+          },
+          {
+            "text": "10TH",
+            "x": 14,
+            "y": 194,
+            "width": 42,
+            "height": 18
+          },
+          {
+            "text": "64.00",
+            "x": 711,
+            "y": 130,
+            "width": 51,
+            "height": 17
+          },
+          {
+            "text": "21.25",
+            "x": 511,
+            "y": 266,
+            "width": 53,
+            "height": 21
+          },
+          {
+            "text": "37.32",
+            "x": 625,
+            "y": 128,
+            "width": 49,
+            "height": 21
+          },
+          {
+            "text": "0SS",
+            "x": 208,
+            "y": 57,
+            "width": 45,
+            "height": 13
+          },
+          {
+            "text": "63.23",
+            "x": 709,
+            "y": 267,
+            "width": 53,
+            "height": 21
+          },
+          {
+            "text": "63.82",
+            "x": 257,
+            "y": 267,
+            "width": 69,
+            "height": 21
+          },
+          {
+            "text": "47.01",
+            "x": 1256,
+            "y": 267,
+            "width": 55,
+            "height": 22
+          },
+          {
+            "text": "54.81",
+            "x": 932,
+            "y": 193,
+            "width": 57,
+            "height": 20
+          },
+          {
+            "text": "36.20",
+            "x": 622,
+            "y": 170,
+            "width": 57,
+            "height": 20
+          },
+          {
+            "text": "44.33",
+            "x": 1165,
+            "y": 238,
+            "width": 55,
+            "height": 18
+          },
+          {
+            "text": "45.60",
+            "x": 1160,
+            "y": 172,
+            "width": 59,
+            "height": 17
+          },
+          {
+            "text": "44.73",
+            "x": 1165,
+            "y": 290,
+            "width": 58,
+            "height": 19
+          },
+          {
+            "text": "64.33",
+            "x": 712,
+            "y": 290,
+            "width": 52,
+            "height": 18
+          },
+          {
+            "text": "51.69",
+            "x": 1059,
+            "y": 290,
+            "width": 51,
+            "height": 18
+          },
+          {
+            "text": "36.12",
+            "x": 622,
+            "y": 214,
+            "width": 54,
+            "height": 20
+          },
+          {
+            "text": "35.80",
+            "x": 384,
+            "y": 130,
+            "width": 50,
+            "height": 18
+          },
+          {
+            "text": "33.43",
+            "x": 370,
+            "y": 86,
+            "width": 67,
+            "height": 25
+          },
+          {
+            "text": "47.40",
+            "x": 1256,
+            "y": 237,
+            "width": 56,
+            "height": 19
+          },
+          {
+            "text": "51.05",
+            "x": 1055,
+            "y": 171,
+            "width": 54,
+            "height": 18
+          },
+          {
+            "text": "63.36",
+            "x": 262,
+            "y": 173,
+            "width": 64,
+            "height": 17
+          },
+          {
+            "text": "65.07",
+            "x": 268,
+            "y": 216,
+            "width": 58,
+            "height": 17
+          },
+          {
+            "text": "35.40",
+            "x": 383,
+            "y": 290,
+            "width": 52,
+            "height": 18
+          },
+          {
+            "text": "55.79",
+            "x": 932,
+            "y": 169,
+            "width": 57,
+            "height": 20
+          },
+          {
+            "text": "34.81",
+            "x": 379,
+            "y": 171,
+            "width": 55,
+            "height": 20
+          },
+          {
+            "text": "46.89",
+            "x": 1254,
+            "y": 172,
+            "width": 60,
+            "height": 17
+          },
+          {
+            "text": "61.26",
+            "x": 710,
+            "y": 173,
+            "width": 52,
+            "height": 17
+          },
+          {
+            "text": ".585",
+            "x": 208,
+            "y": 85,
+            "width": 43,
+            "height": 15
+          },
+          {
+            "text": "1.543",
+            "x": 200,
+            "y": 216,
+            "width": 55,
+            "height": 17
+          },
+          {
+            "text": "47.75",
+            "x": 1256,
+            "y": 289,
+            "width": 55,
+            "height": 20
+          },
+          {
+            "text": "52.66",
+            "x": 1057,
+            "y": 238,
+            "width": 52,
+            "height": 17
+          },
+          {
+            "text": "21.80",
+            "x": 513,
+            "y": 290,
+            "width": 53,
+            "height": 18
+          },
+          {
+            "text": "63.50",
+            "x": 711,
+            "y": 217,
+            "width": 50,
+            "height": 16
+          },
+          {
+            "text": "44.90",
+            "x": 1163,
+            "y": 150,
+            "width": 56,
+            "height": 16
+          },
+          {
+            "text": "50.15",
+            "x": 1055,
+            "y": 148,
+            "width": 55,
+            "height": 19
+          },
+          {
+            "text": "7.40",
+            "x": 626,
+            "y": 290,
+            "width": 55,
+            "height": 18
+          },
+          {
+            "text": "22.33",
+            "x": 511,
+            "y": 172,
+            "width": 54,
+            "height": 19
+          },
+          {
+            "text": "BBH",
+            "x": 814,
+            "y": 51,
+            "width": 52,
+            "height": 20
+          },
+          {
+            "text": "55.99",
+            "x": 937,
+            "y": 236,
+            "width": 52,
+            "height": 20
+          },
+          {
+            "text": ".544",
+            "x": 203,
+            "y": 173,
+            "width": 56,
+            "height": 15
+          },
+          {
+            "text": "56.64",
+            "x": 935,
+            "y": 130,
+            "width": 54,
+            "height": 17
+          },
+          {
+            "text": "35.74",
+            "x": 621,
+            "y": 147,
+            "width": 54,
+            "height": 21
+          },
+          {
+            "text": "32.52",
+            "x": 619,
+            "y": 83,
+            "width": 62,
+            "height": 19
+          },
+          {
+            "text": "45.42",
+            "x": 1154,
+            "y": 83,
+            "width": 70,
+            "height": 18
+          },
+          {
+            "text": "63.15",
+            "x": 709,
+            "y": 150,
+            "width": 52,
+            "height": 18
+          },
+          {
+            "text": "AVG",
+            "x": 1249,
+            "y": 54,
+            "width": 63,
+            "height": 21
+          },
+          {
+            "text": "62.17",
+            "x": 708,
+            "y": 194,
+            "width": 52,
+            "height": 18
+          },
+          {
+            "text": "21.30",
+            "x": 510,
+            "y": 105,
+            "width": 56,
+            "height": 20
+          },
+          {
+            "text": "34.95",
+            "x": 380,
+            "y": 215,
+            "width": 51,
+            "height": 18
+          },
+          {
+            "text": "34.99",
+            "x": 378,
+            "y": 192,
+            "width": 57,
+            "height": 20
+          },
+          {
+            "text": "20.97",
+            "x": 495,
+            "y": 82,
+            "width": 73,
+            "height": 20
+          },
+          {
+            "text": "63.20",
+            "x": 266,
+            "y": 149,
+            "width": 59,
+            "height": 18
+          },
+          {
+            "text": "46.76",
+            "x": 1255,
+            "y": 149,
+            "width": 59,
+            "height": 19
+          },
+          {
+            "text": "55.73",
+            "x": 814,
+            "y": 237,
+            "width": 57,
+            "height": 20
+          },
+          {
+            "text": "55.68",
+            "x": 937,
+            "y": 267,
+            "width": 52,
+            "height": 21
+          },
+          {
+            "text": "55.32",
+            "x": 815,
+            "y": 171,
+            "width": 54,
+            "height": 20
+          },
+          {
+            "text": "1.541",
+            "x": 201,
+            "y": 268,
+            "width": 55,
+            "height": 19
+          },
+          {
+            "text": "56.52",
+            "x": 816,
+            "y": 265,
+            "width": 53,
+            "height": 24
+          },
+          {
+            "text": "64.19",
+            "x": 269,
+            "y": 106,
+            "width": 57,
+            "height": 19
+          },
+          {
+            "text": "50.44",
+            "x": 1057,
+            "y": 267,
+            "width": 53,
+            "height": 21
+          },
+          {
+            "text": "64.70",
+            "x": 264,
+            "y": 239,
+            "width": 62,
+            "height": 17
+          },
+          {
+            "text": "21.35",
+            "x": 509,
+            "y": 215,
+            "width": 53,
+            "height": 19
+          },
+          {
+            "text": "65.73",
+            "x": 709,
+            "y": 107,
+            "width": 52,
+            "height": 17
+          },
+          {
+            "text": "62.78",
+            "x": 266,
+            "y": 83,
+            "width": 62,
+            "height": 21
+          },
+          {
+            "text": "36.20",
+            "x": 622,
+            "y": 106,
+            "width": 57,
+            "height": 19
+          },
+          {
+            "text": "20.67",
+            "x": 510,
+            "y": 149,
+            "width": 54,
+            "height": 18
+          },
+          {
+            "text": "55.02",
+            "x": 934,
+            "y": 148,
+            "width": 53,
+            "height": 19
+          },
+          {
+            "text": "34.93",
+            "x": 380,
+            "y": 148,
+            "width": 50,
+            "height": 19
+          },
+          {
+            "text": "53.40",
+            "x": 816,
+            "y": 84,
+            "width": 48,
+            "height": 19
+          },
+          {
+            "text": "57.56",
+            "x": 814,
+            "y": 128,
+            "width": 50,
+            "height": 18
+          },
+          {
+            "text": "45.44",
+            "x": 1255,
+            "y": 82,
+            "width": 58,
+            "height": 21
+          },
+          {
+            "text": "56.45",
+            "x": 939,
+            "y": 290,
+            "width": 52,
+            "height": 19
+          },
+          {
+            "text": "57.15",
+            "x": 815,
+            "y": 215,
+            "width": 53,
+            "height": 19
+          },
+          {
+            "text": "59.21",
+            "x": 696,
+            "y": 83,
+            "width": 65,
+            "height": 18
+          },
+          {
+            "text": "52.21",
+            "x": 1054,
+            "y": 214,
+            "width": 52,
+            "height": 19
+          },
+          {
+            "text": "52.13",
+            "x": 1055,
+            "y": 82,
+            "width": 60,
+            "height": 22
+          },
+          {
+            "text": "52.69",
+            "x": 1054,
+            "y": 193,
+            "width": 53,
+            "height": 19
+          },
+          {
+            "text": "55.54",
+            "x": 814,
+            "y": 193,
+            "width": 55,
+            "height": 20
+          },
+          {
+            "text": "63.31",
+            "x": 712,
+            "y": 238,
+            "width": 51,
+            "height": 18
+          },
+          {
+            "text": "2ND",
+            "x": 13,
+            "y": 130,
+            "width": 38,
+            "height": 17
+          },
+          {
+            "text": "35.15",
+            "x": 382,
+            "y": 236,
+            "width": 51,
+            "height": 20
+          },
+          {
+            "text": "35.63",
+            "x": 384,
+            "y": 267,
+            "width": 49,
+            "height": 22
+          },
+          {
+            "text": "56.71",
+            "x": 814,
+            "y": 149,
+            "width": 51,
+            "height": 18
+          },
+          {
+            "text": "25TH",
+            "x": 17,
+            "y": 240,
+            "width": 48,
+            "height": 16
+          },
+          {
+            "text": "55.98",
+            "x": 936,
+            "y": 215,
+            "width": 51,
+            "height": 18
+          },
+          {
+            "text": "36.26",
+            "x": 623,
+            "y": 238,
+            "width": 57,
+            "height": 19
+          },
+          {
+            "text": "15TH",
+            "x": 16,
+            "y": 216,
+            "width": 40,
+            "height": 16
+          },
+          {
+            "text": "35.25",
+            "x": 380,
+            "y": 104,
+            "width": 53,
+            "height": 21
+          },
+          {
+            "text": "57.79",
+            "x": 817,
+            "y": 289,
+            "width": 49,
+            "height": 19
+          },
+          {
+            "text": ".540",
+            "x": 201,
+            "y": 291,
+            "width": 54,
+            "height": 16
+          },
+          {
+            "text": "64.94",
+            "x": 259,
+            "y": 291,
+            "width": 69,
+            "height": 17
+          },
+          {
+            "text": "54.06",
+            "x": 936,
+            "y": 83,
+            "width": 57,
+            "height": 20
+          },
+          {
+            "text": "37.48",
+            "x": 624,
+            "y": 267,
+            "width": 52,
+            "height": 21
+          },
+          {
+            "text": "44.42",
+            "x": 1163,
+            "y": 215,
+            "width": 55,
+            "height": 18
+          },
+          {
+            "text": "47.37",
+            "x": 1254,
+            "y": 213,
+            "width": 57,
+            "height": 21
+          },
+          {
+            "text": "4.45",
+            "x": 1164,
+            "y": 106,
+            "width": 55,
+            "height": 17
+          },
+          {
+            "text": "50.95",
+            "x": 1058,
+            "y": 105,
+            "width": 54,
+            "height": 19
+          },
+          {
+            "text": "56.00",
+            "x": 816,
+            "y": 106,
+            "width": 50,
+            "height": 18
+          },
+          {
+            "text": ".54",
+            "x": 210,
+            "y": 109,
+            "width": 40,
+            "height": 12
+          },
+          {
+            "text": "47.30",
+            "x": 1257,
+            "y": 106,
+            "width": 55,
+            "height": 18
+          },
+          {
+            "text": "543",
+            "x": 206,
+            "y": 151,
+            "width": 49,
+            "height": 15
+          },
+          {
+            "text": "4TH",
+            "x": 13,
+            "y": 173,
+            "width": 41,
+            "height": 16
+          },
+          {
+            "text": "1ST",
+            "x": 17,
+            "y": 109,
+            "width": 37,
+            "height": 15
+          },
+          {
+            "text": "3RD",
+            "x": 12,
+            "y": 150,
+            "width": 40,
+            "height": 17
+          },
+          {
+            "text": "56.16",
+            "x": 937,
+            "y": 106,
+            "width": 51,
+            "height": 17
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f4f2f0",
+        "__spacing": "both",
+        "id": "ub71d673a",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1793525988932-5781fda2-6e56-4468-a099-cde2bf8e2947.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1793526081199-b7334d91-348a-4938-b2df-62392acda26c.png%22%2C%22taskId%22%3A%22u09cb8bc1-7ff8-4f6b-a94c-22999a9255d%22%2C%22clientId%22%3A%22u560f831e-ff56-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A910%2C%22height%22%3A126%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A107266%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1334%2C%22originHeight%22%3A184%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22C-EVALCMML%22%2C%22x%22%3A1005%2C%22y%22%3A49%2C%22width%22%3A158%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22ULTILINGUAL%22%2C%22x%22%3A1203%2C%22y%22%3A17%2C%22width%22%3A107%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22PARAM.RATIO%22%2C%22x%22%3A17%2C%22y%22%3A52%2C%22width%22%3A126%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%22OSUPERGPOA%22%2C%22x%22%3A550%2C%22y%22%3A50%2C%22width%22%3A149%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22REASONING%22%2C%22x%22%3A897%2C%22y%22%3A17%2C%22width%22%3A97%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22MATHGSMSK%22%2C%22x%22%3A718%2C%22y%22%3A48%2C%22width%22%3A154%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22VOCAB.SCALE%22%2C%22x%22%3A17%2C%22y%22%3A18%2C%22width%22%3A117%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%225X(10%25)%22%2C%22x%22%3A10%2C%22y%22%3A100%2C%22width%22%3A101%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22KNOWLEDGE%22%2C%22x%22%3A473%2C%22y%22%3A18%2C%22width%22%3A129%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2230X(50%25)%22%2C%22x%22%3A13%2C%22y%22%3A147%2C%22width%22%3A101%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22NONEOO%22%2C%22x%22%3A13%2C%22y%22%3A83%2C%22width%22%3A110%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2225.22%22%2C%22x%22%3A603%2C%22y%22%3A78%2C%22width%22%3A78%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22UNCHEATABLE%22%2C%22x%22%3A239%2C%22y%22%3A18%2C%22width%22%3A111%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22MIMLU-PROS%22%2C%22x%22%3A449%2C%22y%22%3A49%2C%22width%22%3A143%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22MIMMLU%22%2C%22x%22%3A1205%2C%22y%22%3A49%2C%22width%22%3A99%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2210X(25%25%22%2C%22x%22%3A11%2C%22y%22%3A123%2C%22width%22%3A99%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2274.45%22%2C%22x%22%3A810%2C%22y%22%3A144%2C%22width%22%3A58%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2274.79%22%2C%22x%22%3A798%2C%22y%22%3A80%2C%22width%22%3A71%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2224.18%22%2C%22x%22%3A614%2C%22y%22%3A144%2C%22width%22%3A54%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22MMLU%22%2C%22x%22%3A374%2C%22y%22%3A49%2C%22width%22%3A71%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%221.201%22%2C%22x%22%3A173%2C%22y%22%3A146%2C%22width%22%3A49%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2246.02%22%2C%22x%22%3A722%2C%22y%22%3A81%2C%22width%22%3A71%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2267.75%22%2C%22x%22%3A382%2C%22y%22%3A146%2C%22width%22%3A54%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2265.55%22%2C%22x%22%3A916%2C%22y%22%3A147%2C%22width%22%3A55%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2272.49%22%2C%22x%22%3A1019%2C%22y%22%3A145%2C%22width%22%3A47%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22CHINESE%22%2C%22x%22%3A1046%2C%22y%22%3A18%2C%22width%22%3A94%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2244.62%22%2C%22x%22%3A727%2C%22y%22%3A145%2C%22width%22%3A51%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%225.59%22%2C%22x%22%3A272%2C%22y%22%3A146%2C%22width%22%3A48%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2224.25%22%2C%22x%22%3A614%2C%22y%22%3A96%2C%22width%22%3A56%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%2265.71%22%2C%22x%22%3A912%2C%22y%22%3A82%2C%22width%22%3A61%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2268.15%22%2C%22x%22%3A381%2C%22y%22%3A100%2C%22width%22%3A51%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2268.25%22%2C%22x%22%3A381%2C%22y%22%3A81%2C%22width%22%3A56%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2270.93%22%2C%22x%22%3A1014%2C%22y%22%3A100%2C%22width%22%3A52%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2256.66%22%2C%22x%22%3A1227%2C%22y%22%3A148%2C%22width%22%3A62%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2242.61%22%2C%22x%22%3A486%2C%22y%22%3A147%2C%22width%22%3A51%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%221.202%22%2C%22x%22%3A174%2C%22y%22%3A81%2C%22width%22%3A50%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2273.28%22%2C%22x%22%3A1112%2C%22y%22%3A147%2C%22width%22%3A50%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%22STEM%22%2C%22x%22%3A754%2C%22y%22%3A15%2C%22width%22%3A83%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2267.71%22%2C%22x%22%3A382%2C%22y%22%3A123%2C%22width%22%3A49%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2270.78%22%2C%22x%22%3A1012%2C%22y%22%3A83%2C%22width%22%3A60%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2244.38%22%2C%22x%22%3A477%2C%22y%22%3A81%2C%22width%22%3A66%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2273.31%22%2C%22x%22%3A1113%2C%22y%22%3A123%2C%22width%22%3A47%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2272.86%22%2C%22x%22%3A810%2C%22y%22%3A100%2C%22width%22%3A55%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22.197%22%2C%22x%22%3A177%2C%22y%22%3A124%2C%22width%22%3A46%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2244.66%22%2C%22x%22%3A489%2C%22y%22%3A124%2C%22width%22%3A49%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2245.64%22%2C%22x%22%3A727%2C%22y%22%3A101%2C%22width%22%3A60%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2265.39%22%2C%22x%22%3A921%2C%22y%22%3A99%2C%22width%22%3A49%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%225.55%22%2C%22x%22%3A276%2C%22y%22%3A81%2C%22width%22%3A45%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2244.49%22%2C%22x%22%3A485%2C%22y%22%3A99%2C%22width%22%3A53%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22BBH%22%2C%22x%22%3A905%2C%22y%22%3A48%2C%22width%22%3A80%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22PPL%22%2C%22x%22%3A263%2C%22y%22%3A49%2C%22width%22%3A65%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2257.49%22%2C%22x%22%3A1227%2C%22y%22%3A100%2C%22width%22%3A57%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2256.22%22%2C%22x%22%3A1232%2C%22y%22%3A124%2C%22width%22%3A50%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%220S%22%2C%22x%22%3A182%2C%22y%22%3A34%2C%22width%22%3A28%2C%22height%22%3A12%7D%2C%7B%22text%22%3A%2258.32%22%2C%22x%22%3A1222%2C%22y%22%3A83%2C%22width%22%3A65%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2273.44%22%2C%22x%22%3A1110%2C%22y%22%3A101%2C%22width%22%3A51%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%221.200%22%2C%22x%22%3A174%2C%22y%22%3A100%2C%22width%22%3A50%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2270.71%22%2C%22x%22%3A1017%2C%22y%22%3A124%2C%22width%22%3A45%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%225.54%22%2C%22x%22%3A278%2C%22y%22%3A100%2C%22width%22%3A38%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2273.01%22%2C%22x%22%3A1098%2C%22y%22%3A84%2C%22width%22%3A66%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2265.54%22%2C%22x%22%3A922%2C%22y%22%3A123%2C%22width%22%3A43%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%225.55%22%2C%22x%22%3A278%2C%22y%22%3A124%2C%22width%22%3A38%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2273.65%22%2C%22x%22%3A815%2C%22y%22%3A124%2C%22width%22%3A47%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2225.64%22%2C%22x%22%3A617%2C%22y%22%3A123%2C%22width%22%3A49%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2246.56%22%2C%22x%22%3A729%2C%22y%22%3A124%2C%22width%22%3A50%2C%22height%22%3A19%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f2f0ee%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22u597135ea%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1793526081199-b7334d91-348a-4938-b2df-62392acda26c.png",
+        "taskId": "u09cb8bc1-7ff8-4f6b-a94c-22999a9255d",
+        "clientId": "u560f831e-ff56-4",
+        "originalType": "binary",
+        "width": 910,
+        "height": 126,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 107266,
+        "from": "paste",
+        "originWidth": 1334,
+        "originHeight": 184,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "C-EVALCMML",
+            "x": 1005,
+            "y": 49,
+            "width": 158,
+            "height": 19
+          },
+          {
+            "text": "ULTILINGUAL",
+            "x": 1203,
+            "y": 17,
+            "width": 107,
+            "height": 21
+          },
+          {
+            "text": "PARAM.RATIO",
+            "x": 17,
+            "y": 52,
+            "width": 126,
+            "height": 17
+          },
+          {
+            "text": "OSUPERGPOA",
+            "x": 550,
+            "y": 50,
+            "width": 149,
+            "height": 18
+          },
+          {
+            "text": "REASONING",
+            "x": 897,
+            "y": 17,
+            "width": 97,
+            "height": 22
+          },
+          {
+            "text": "MATHGSMSK",
+            "x": 718,
+            "y": 48,
+            "width": 154,
+            "height": 20
+          },
+          {
+            "text": "VOCAB.SCALE",
+            "x": 17,
+            "y": 18,
+            "width": 117,
+            "height": 18
+          },
+          {
+            "text": "5X(10%)",
+            "x": 10,
+            "y": 100,
+            "width": 101,
+            "height": 22
+          },
+          {
+            "text": "KNOWLEDGE",
+            "x": 473,
+            "y": 18,
+            "width": 129,
+            "height": 21
+          },
+          {
+            "text": "30X(50%)",
+            "x": 13,
+            "y": 147,
+            "width": 101,
+            "height": 19
+          },
+          {
+            "text": "NONEOO",
+            "x": 13,
+            "y": 83,
+            "width": 110,
+            "height": 18
+          },
+          {
+            "text": "25.22",
+            "x": 603,
+            "y": 78,
+            "width": 78,
+            "height": 23
+          },
+          {
+            "text": "UNCHEATABLE",
+            "x": 239,
+            "y": 18,
+            "width": 111,
+            "height": 18
+          },
+          {
+            "text": "MIMLU-PROS",
+            "x": 449,
+            "y": 49,
+            "width": 143,
+            "height": 18
+          },
+          {
+            "text": "MIMMLU",
+            "x": 1205,
+            "y": 49,
+            "width": 99,
+            "height": 18
+          },
+          {
+            "text": "10X(25%",
+            "x": 11,
+            "y": 123,
+            "width": 99,
+            "height": 20
+          },
+          {
+            "text": "74.45",
+            "x": 810,
+            "y": 144,
+            "width": 58,
+            "height": 20
+          },
+          {
+            "text": "74.79",
+            "x": 798,
+            "y": 80,
+            "width": 71,
+            "height": 20
+          },
+          {
+            "text": "24.18",
+            "x": 614,
+            "y": 144,
+            "width": 54,
+            "height": 21
+          },
+          {
+            "text": "MMLU",
+            "x": 374,
+            "y": 49,
+            "width": 71,
+            "height": 18
+          },
+          {
+            "text": "1.201",
+            "x": 173,
+            "y": 146,
+            "width": 49,
+            "height": 19
+          },
+          {
+            "text": "46.02",
+            "x": 722,
+            "y": 81,
+            "width": 71,
+            "height": 18
+          },
+          {
+            "text": "67.75",
+            "x": 382,
+            "y": 146,
+            "width": 54,
+            "height": 19
+          },
+          {
+            "text": "65.55",
+            "x": 916,
+            "y": 147,
+            "width": 55,
+            "height": 18
+          },
+          {
+            "text": "72.49",
+            "x": 1019,
+            "y": 145,
+            "width": 47,
+            "height": 19
+          },
+          {
+            "text": "CHINESE",
+            "x": 1046,
+            "y": 18,
+            "width": 94,
+            "height": 18
+          },
+          {
+            "text": "44.62",
+            "x": 727,
+            "y": 145,
+            "width": 51,
+            "height": 20
+          },
+          {
+            "text": "5.59",
+            "x": 272,
+            "y": 146,
+            "width": 48,
+            "height": 19
+          },
+          {
+            "text": "24.25",
+            "x": 614,
+            "y": 96,
+            "width": 56,
+            "height": 23
+          },
+          {
+            "text": "65.71",
+            "x": 912,
+            "y": 82,
+            "width": 61,
+            "height": 19
+          },
+          {
+            "text": "68.15",
+            "x": 381,
+            "y": 100,
+            "width": 51,
+            "height": 20
+          },
+          {
+            "text": "68.25",
+            "x": 381,
+            "y": 81,
+            "width": 56,
+            "height": 19
+          },
+          {
+            "text": "70.93",
+            "x": 1014,
+            "y": 100,
+            "width": 52,
+            "height": 21
+          },
+          {
+            "text": "56.66",
+            "x": 1227,
+            "y": 148,
+            "width": 62,
+            "height": 17
+          },
+          {
+            "text": "42.61",
+            "x": 486,
+            "y": 147,
+            "width": 51,
+            "height": 18
+          },
+          {
+            "text": "1.202",
+            "x": 174,
+            "y": 81,
+            "width": 50,
+            "height": 19
+          },
+          {
+            "text": "73.28",
+            "x": 1112,
+            "y": 147,
+            "width": 50,
+            "height": 18
+          },
+          {
+            "text": "STEM",
+            "x": 754,
+            "y": 15,
+            "width": 83,
+            "height": 22
+          },
+          {
+            "text": "67.71",
+            "x": 382,
+            "y": 123,
+            "width": 49,
+            "height": 20
+          },
+          {
+            "text": "70.78",
+            "x": 1012,
+            "y": 83,
+            "width": 60,
+            "height": 18
+          },
+          {
+            "text": "44.38",
+            "x": 477,
+            "y": 81,
+            "width": 66,
+            "height": 20
+          },
+          {
+            "text": "73.31",
+            "x": 1113,
+            "y": 123,
+            "width": 47,
+            "height": 21
+          },
+          {
+            "text": "72.86",
+            "x": 810,
+            "y": 100,
+            "width": 55,
+            "height": 20
+          },
+          {
+            "text": ".197",
+            "x": 177,
+            "y": 124,
+            "width": 46,
+            "height": 18
+          },
+          {
+            "text": "44.66",
+            "x": 489,
+            "y": 124,
+            "width": 49,
+            "height": 19
+          },
+          {
+            "text": "45.64",
+            "x": 727,
+            "y": 101,
+            "width": 60,
+            "height": 20
+          },
+          {
+            "text": "65.39",
+            "x": 921,
+            "y": 99,
+            "width": 49,
+            "height": 20
+          },
+          {
+            "text": "5.55",
+            "x": 276,
+            "y": 81,
+            "width": 45,
+            "height": 20
+          },
+          {
+            "text": "44.49",
+            "x": 485,
+            "y": 99,
+            "width": 53,
+            "height": 20
+          },
+          {
+            "text": "BBH",
+            "x": 905,
+            "y": 48,
+            "width": 80,
+            "height": 19
+          },
+          {
+            "text": "PPL",
+            "x": 263,
+            "y": 49,
+            "width": 65,
+            "height": 18
+          },
+          {
+            "text": "57.49",
+            "x": 1227,
+            "y": 100,
+            "width": 57,
+            "height": 20
+          },
+          {
+            "text": "56.22",
+            "x": 1232,
+            "y": 124,
+            "width": 50,
+            "height": 20
+          },
+          {
+            "text": "0S",
+            "x": 182,
+            "y": 34,
+            "width": 28,
+            "height": 12
+          },
+          {
+            "text": "58.32",
+            "x": 1222,
+            "y": 83,
+            "width": 65,
+            "height": 18
+          },
+          {
+            "text": "73.44",
+            "x": 1110,
+            "y": 101,
+            "width": 51,
+            "height": 20
+          },
+          {
+            "text": "1.200",
+            "x": 174,
+            "y": 100,
+            "width": 50,
+            "height": 20
+          },
+          {
+            "text": "70.71",
+            "x": 1017,
+            "y": 124,
+            "width": 45,
+            "height": 20
+          },
+          {
+            "text": "5.54",
+            "x": 278,
+            "y": 100,
+            "width": 38,
+            "height": 20
+          },
+          {
+            "text": "73.01",
+            "x": 1098,
+            "y": 84,
+            "width": 66,
+            "height": 18
+          },
+          {
+            "text": "65.54",
+            "x": 922,
+            "y": 123,
+            "width": 43,
+            "height": 19
+          },
+          {
+            "text": "5.55",
+            "x": 278,
+            "y": 124,
+            "width": 38,
+            "height": 17
+          },
+          {
+            "text": "73.65",
+            "x": 815,
+            "y": 124,
+            "width": 47,
+            "height": 18
+          },
+          {
+            "text": "25.64",
+            "x": 617,
+            "y": 123,
+            "width": 49,
+            "height": 21
+          },
+          {
+            "text": "46.56",
+            "x": 729,
+            "y": 124,
+            "width": 50,
+            "height": 19
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f2f0ee",
+        "__spacing": "both",
+        "id": "u597135ea",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1793526081199-b7334d91-348a-4938-b2df-62392acda26c.png"
+    },
+    {
+      "kind": "image",
+      "attributes": {
+        "type": "inline",
+        "name": "image",
+        "value": "data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2026%2Fpng%2F38583525%2F1793526105948-5d343b89-a092-4b18-82bd-6a4d4172908b.png%22%2C%22taskId%22%3A%22uc39226d8-50d0-42ff-87ed-f4ca61d54a0%22%2C%22clientId%22%3A%22u560f831e-ff56-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A881%2C%22height%22%3A155%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A131443%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A1341%2C%22originHeight%22%3A236%2C%22ratio%22%3A1.25%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22ocrLocations%22%3A%5B%7B%22text%22%3A%22MLU-PROSUPERGPQA%22%2C%22x%22%3A362%2C%22y%22%3A53%2C%22width%22%3A254%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%22ULTILINGUAL%22%2C%22x%22%3A1189%2C%22y%22%3A20%2C%22width%22%3A123%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22MATHGSM8K%22%2C%22x%22%3A635%2C%22y%22%3A52%2C%22width%22%3A181%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%22KNOWLEDGE%22%2C%22x%22%3A372%2C%22y%22%3A20%2C%22width%22%3A123%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22C-EVALCMMLL%22%2C%22x%22%3A968%2C%22y%22%3A55%2C%22width%22%3A183%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22MMLU%22%2C%22x%22%3A253%2C%22y%22%3A53%2C%22width%22%3A79%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22OCAB.SCALE%22%2C%22x%22%3A27%2C%22y%22%3A57%2C%22width%22%3A123%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22MMIMLU%22%2C%22x%22%3A1196%2C%22y%22%3A54%2C%22width%22%3A110%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%22CHINESE%22%2C%22x%22%3A1014%2C%22y%22%3A21%2C%22width%22%3A99%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%22EASONING%22%2C%22x%22%3A852%2C%22y%22%3A23%2C%22width%22%3A98%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22STEM%22%2C%22x%22%3A691%2C%22y%22%3A17%2C%22width%22%3A77%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%2221.11%22%2C%22x%22%3A526%2C%22y%22%3A183%2C%22width%22%3A58%2C%22height%22%3A27%7D%2C%7B%22text%22%3A%2255.82%22%2C%22x%22%3A1216%2C%22y%22%3A185%2C%22width%22%3A63%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%2235.21%22%2C%22x%22%3A379%2C%22y%22%3A185%2C%22width%22%3A59%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%2264.85%22%2C%22x%22%3A252%2C%22y%22%3A189%2C%22width%22%3A69%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%2221.49%22%2C%22x%22%3A528%2C%22y%22%3A140%2C%22width%22%3A58%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2256.23%22%2C%22x%22%3A870%2C%22y%22%3A187%2C%22width%22%3A58%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%2272.12%22%2C%22x%22%3A980%2C%22y%22%3A140%2C%22width%22%3A61%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%2264.14%22%2C%22x%22%3A254%2C%22y%22%3A114%2C%22width%22%3A70%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2264.70%22%2C%22x%22%3A256%2C%22y%22%3A166%2C%22width%22%3A68%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2221.83%22%2C%22x%22%3A527%2C%22y%22%3A113%2C%22width%22%3A61%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%2262.78%22%2C%22x%22%3A258%2C%22y%22%3A90%2C%22width%22%3A67%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2236.98%22%2C%22x%22%3A651%2C%22y%22%3A167%2C%22width%22%3A53%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2235.34%22%2C%22x%22%3A651%2C%22y%22%3A189%2C%22width%22%3A59%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%2272.48%22%2C%22x%22%3A1082%2C%22y%22%3A139%2C%22width%22%3A59%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2262.96%22%2C%22x%22%3A750%2C%22y%22%3A190%2C%22width%22%3A62%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2257.56%22%2C%22x%22%3A870%2C%22y%22%3A140%2C%22width%22%3A59%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2263.08%22%2C%22x%22%3A753%2C%22y%22%3A167%2C%22width%22%3A53%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%221.526%22%2C%22x%22%3A174%2C%22y%22%3A190%2C%22width%22%3A59%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2237.32%22%2C%22x%22%3A651%2C%22y%22%3A140%2C%22width%22%3A54%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2273.75%22%2C%22x%22%3A981%2C%22y%22%3A165%2C%22width%22%3A55%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%2271.75%22%2C%22x%22%3A978%2C%22y%22%3A113%2C%22width%22%3A63%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%2272.73%22%2C%22x%22%3A1084%2C%22y%22%3A165%2C%22width%22%3A56%2C%22height%22%3A25%7D%2C%7B%22text%22%3A%2256.64%22%2C%22x%22%3A1215%2C%22y%22%3A141%2C%22width%22%3A62%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2233.43%22%2C%22x%22%3A371%2C%22y%22%3A89%2C%22width%22%3A74%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%221.534%22%2C%22x%22%3A175%2C%22y%22%3A165%2C%22width%22%3A56%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%2256.65%22%2C%22x%22%3A1216%2C%22y%22%3A166%2C%22width%22%3A60%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%2220.97%22%2C%22x%22%3A527%2C%22y%22%3A90%2C%22width%22%3A69%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22LOSS%22%2C%22x%22%3A169%2C%22y%22%3A59%2C%22width%22%3A58%2C%22height%22%3A17%7D%2C%7B%22text%22%3A%2266.91%22%2C%22x%22%3A979%2C%22y%22%3A91%2C%22width%22%3A61%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%221.541%22%2C%22x%22%3A176%2C%22y%22%3A141%2C%22width%22%3A57%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2264.00%22%2C%22x%22%3A754%2C%22y%22%3A141%2C%22width%22%3A54%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2253.40%22%2C%22x%22%3A867%2C%22y%22%3A90%2C%22width%22%3A64%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%22200X%22%2C%22x%22%3A24%2C%22y%22%3A191%2C%22width%22%3A50%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2254.06%22%2C%22x%22%3A1214%2C%22y%22%3A91%2C%22width%22%3A66%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2265.09%22%2C%22x%22%3A751%2C%22y%22%3A116%2C%22width%22%3A57%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2256.03%22%2C%22x%22%3A871%2C%22y%22%3A166%2C%22width%22%3A56%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2274.94%22%2C%22x%22%3A982%2C%22y%22%3A190%2C%22width%22%3A59%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2235.87%22%2C%22x%22%3A380%2C%22y%22%3A166%2C%22width%22%3A57%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2259.21%22%2C%22x%22%3A746%2C%22y%22%3A91%2C%22width%22%3A64%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2235.80%22%2C%22x%22%3A377%2C%22y%22%3A139%2C%22width%22%3A63%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2264.71%22%2C%22x%22%3A254%2C%22y%22%3A140%2C%22width%22%3A73%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2255.94%22%2C%22x%22%3A1214%2C%22y%22%3A115%2C%22width%22%3A64%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2268.10%22%2C%22x%22%3A1076%2C%22y%22%3A91%2C%22width%22%3A69%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%2257.13%22%2C%22x%22%3A867%2C%22y%22%3A113%2C%22width%22%3A64%2C%22height%22%3A24%7D%2C%7B%22text%22%3A%22100X%22%2C%22x%22%3A23%2C%22y%22%3A167%2C%22width%22%3A49%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%2237.38%22%2C%22x%22%3A650%2C%22y%22%3A116%2C%22width%22%3A56%2C%22height%22%3A20%7D%2C%7B%22text%22%3A%221.585%22%2C%22x%22%3A176%2C%22y%22%3A91%2C%22width%22%3A56%2C%22height%22%3A21%7D%2C%7B%22text%22%3A%2272.29%22%2C%22x%22%3A1079%2C%22y%22%3A114%2C%22width%22%3A65%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%22ONE%22%2C%22x%22%3A24%2C%22y%22%3A93%2C%22width%22%3A57%2C%22height%22%3A18%7D%2C%7B%22text%22%3A%2221.93%22%2C%22x%22%3A527%2C%22y%22%3A166%2C%22width%22%3A57%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2273.24%22%2C%22x%22%3A1087%2C%22y%22%3A190%2C%22width%22%3A55%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%2234.46%22%2C%22x%22%3A375%2C%22y%22%3A114%2C%22width%22%3A69%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2250X%22%2C%22x%22%3A23%2C%22y%22%3A141%2C%22width%22%3A47%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%221.553%22%2C%22x%22%3A176%2C%22y%22%3A114%2C%22width%22%3A59%2C%22height%22%3A23%7D%2C%7B%22text%22%3A%2220X%22%2C%22x%22%3A22%2C%22y%22%3A116%2C%22width%22%3A49%2C%22height%22%3A19%7D%2C%7B%22text%22%3A%22BBH%22%2C%22x%22%3A861%2C%22y%22%3A55%2C%22width%22%3A74%2C%22height%22%3A22%7D%2C%7B%22text%22%3A%2232.52%22%2C%22x%22%3A651%2C%22y%22%3A90%2C%22width%22%3A58%2C%22height%22%3A20%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f3f2f0%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22ue1816bc0%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D"
+      },
+      "value": {
+        "src": "https://cdn.nlark.com/yuque/0/2026/png/38583525/1793526105948-5d343b89-a092-4b18-82bd-6a4d4172908b.png",
+        "taskId": "uc39226d8-50d0-42ff-87ed-f4ca61d54a0",
+        "clientId": "u560f831e-ff56-4",
+        "originalType": "binary",
+        "width": 881,
+        "height": 155,
+        "linkTarget": "_blank",
+        "name": "image.png",
+        "size": 131443,
+        "from": "paste",
+        "originWidth": 1341,
+        "originHeight": 236,
+        "ratio": 1.25,
+        "status": "done",
+        "style": "none",
+        "ocrLocations": [
+          {
+            "text": "MLU-PROSUPERGPQA",
+            "x": 362,
+            "y": 53,
+            "width": 254,
+            "height": 25
+          },
+          {
+            "text": "ULTILINGUAL",
+            "x": 1189,
+            "y": 20,
+            "width": 123,
+            "height": 22
+          },
+          {
+            "text": "MATHGSM8K",
+            "x": 635,
+            "y": 52,
+            "width": 181,
+            "height": 27
+          },
+          {
+            "text": "KNOWLEDGE",
+            "x": 372,
+            "y": 20,
+            "width": 123,
+            "height": 23
+          },
+          {
+            "text": "C-EVALCMMLL",
+            "x": 968,
+            "y": 55,
+            "width": 183,
+            "height": 23
+          },
+          {
+            "text": "MMLU",
+            "x": 253,
+            "y": 53,
+            "width": 79,
+            "height": 24
+          },
+          {
+            "text": "OCAB.SCALE",
+            "x": 27,
+            "y": 57,
+            "width": 123,
+            "height": 21
+          },
+          {
+            "text": "MMIMLU",
+            "x": 1196,
+            "y": 54,
+            "width": 110,
+            "height": 23
+          },
+          {
+            "text": "CHINESE",
+            "x": 1014,
+            "y": 21,
+            "width": 99,
+            "height": 20
+          },
+          {
+            "text": "EASONING",
+            "x": 852,
+            "y": 23,
+            "width": 98,
+            "height": 19
+          },
+          {
+            "text": "STEM",
+            "x": 691,
+            "y": 17,
+            "width": 77,
+            "height": 25
+          },
+          {
+            "text": "21.11",
+            "x": 526,
+            "y": 183,
+            "width": 58,
+            "height": 27
+          },
+          {
+            "text": "55.82",
+            "x": 1216,
+            "y": 185,
+            "width": 63,
+            "height": 25
+          },
+          {
+            "text": "35.21",
+            "x": 379,
+            "y": 185,
+            "width": 59,
+            "height": 25
+          },
+          {
+            "text": "64.85",
+            "x": 252,
+            "y": 189,
+            "width": 69,
+            "height": 23
+          },
+          {
+            "text": "21.49",
+            "x": 528,
+            "y": 140,
+            "width": 58,
+            "height": 21
+          },
+          {
+            "text": "56.23",
+            "x": 870,
+            "y": 187,
+            "width": 58,
+            "height": 25
+          },
+          {
+            "text": "72.12",
+            "x": 980,
+            "y": 140,
+            "width": 61,
+            "height": 23
+          },
+          {
+            "text": "64.14",
+            "x": 254,
+            "y": 114,
+            "width": 70,
+            "height": 22
+          },
+          {
+            "text": "64.70",
+            "x": 256,
+            "y": 166,
+            "width": 68,
+            "height": 21
+          },
+          {
+            "text": "21.83",
+            "x": 527,
+            "y": 113,
+            "width": 61,
+            "height": 23
+          },
+          {
+            "text": "62.78",
+            "x": 258,
+            "y": 90,
+            "width": 67,
+            "height": 21
+          },
+          {
+            "text": "36.98",
+            "x": 651,
+            "y": 167,
+            "width": 53,
+            "height": 20
+          },
+          {
+            "text": "35.34",
+            "x": 651,
+            "y": 189,
+            "width": 59,
+            "height": 24
+          },
+          {
+            "text": "72.48",
+            "x": 1082,
+            "y": 139,
+            "width": 59,
+            "height": 22
+          },
+          {
+            "text": "62.96",
+            "x": 750,
+            "y": 190,
+            "width": 62,
+            "height": 21
+          },
+          {
+            "text": "57.56",
+            "x": 870,
+            "y": 140,
+            "width": 59,
+            "height": 21
+          },
+          {
+            "text": "63.08",
+            "x": 753,
+            "y": 167,
+            "width": 53,
+            "height": 19
+          },
+          {
+            "text": "1.526",
+            "x": 174,
+            "y": 190,
+            "width": 59,
+            "height": 21
+          },
+          {
+            "text": "37.32",
+            "x": 651,
+            "y": 140,
+            "width": 54,
+            "height": 21
+          },
+          {
+            "text": "73.75",
+            "x": 981,
+            "y": 165,
+            "width": 55,
+            "height": 24
+          },
+          {
+            "text": "71.75",
+            "x": 978,
+            "y": 113,
+            "width": 63,
+            "height": 24
+          },
+          {
+            "text": "72.73",
+            "x": 1084,
+            "y": 165,
+            "width": 56,
+            "height": 25
+          },
+          {
+            "text": "56.64",
+            "x": 1215,
+            "y": 141,
+            "width": 62,
+            "height": 20
+          },
+          {
+            "text": "33.43",
+            "x": 371,
+            "y": 89,
+            "width": 74,
+            "height": 22
+          },
+          {
+            "text": "1.534",
+            "x": 175,
+            "y": 165,
+            "width": 56,
+            "height": 23
+          },
+          {
+            "text": "56.65",
+            "x": 1216,
+            "y": 166,
+            "width": 60,
+            "height": 23
+          },
+          {
+            "text": "20.97",
+            "x": 527,
+            "y": 90,
+            "width": 69,
+            "height": 21
+          },
+          {
+            "text": "LOSS",
+            "x": 169,
+            "y": 59,
+            "width": 58,
+            "height": 17
+          },
+          {
+            "text": "66.91",
+            "x": 979,
+            "y": 91,
+            "width": 61,
+            "height": 20
+          },
+          {
+            "text": "1.541",
+            "x": 176,
+            "y": 141,
+            "width": 57,
+            "height": 20
+          },
+          {
+            "text": "64.00",
+            "x": 754,
+            "y": 141,
+            "width": 54,
+            "height": 18
+          },
+          {
+            "text": "53.40",
+            "x": 867,
+            "y": 90,
+            "width": 64,
+            "height": 21
+          },
+          {
+            "text": "200X",
+            "x": 24,
+            "y": 191,
+            "width": 50,
+            "height": 19
+          },
+          {
+            "text": "54.06",
+            "x": 1214,
+            "y": 91,
+            "width": 66,
+            "height": 20
+          },
+          {
+            "text": "65.09",
+            "x": 751,
+            "y": 116,
+            "width": 57,
+            "height": 19
+          },
+          {
+            "text": "56.03",
+            "x": 871,
+            "y": 166,
+            "width": 56,
+            "height": 22
+          },
+          {
+            "text": "74.94",
+            "x": 982,
+            "y": 190,
+            "width": 59,
+            "height": 21
+          },
+          {
+            "text": "35.87",
+            "x": 380,
+            "y": 166,
+            "width": 57,
+            "height": 21
+          },
+          {
+            "text": "59.21",
+            "x": 746,
+            "y": 91,
+            "width": 64,
+            "height": 19
+          },
+          {
+            "text": "35.80",
+            "x": 377,
+            "y": 139,
+            "width": 63,
+            "height": 21
+          },
+          {
+            "text": "64.71",
+            "x": 254,
+            "y": 140,
+            "width": 73,
+            "height": 21
+          },
+          {
+            "text": "55.94",
+            "x": 1214,
+            "y": 115,
+            "width": 64,
+            "height": 21
+          },
+          {
+            "text": "68.10",
+            "x": 1076,
+            "y": 91,
+            "width": 69,
+            "height": 20
+          },
+          {
+            "text": "57.13",
+            "x": 867,
+            "y": 113,
+            "width": 64,
+            "height": 24
+          },
+          {
+            "text": "100X",
+            "x": 23,
+            "y": 167,
+            "width": 49,
+            "height": 19
+          },
+          {
+            "text": "37.38",
+            "x": 650,
+            "y": 116,
+            "width": 56,
+            "height": 20
+          },
+          {
+            "text": "1.585",
+            "x": 176,
+            "y": 91,
+            "width": 56,
+            "height": 21
+          },
+          {
+            "text": "72.29",
+            "x": 1079,
+            "y": 114,
+            "width": 65,
+            "height": 22
+          },
+          {
+            "text": "ONE",
+            "x": 24,
+            "y": 93,
+            "width": 57,
+            "height": 18
+          },
+          {
+            "text": "21.93",
+            "x": 527,
+            "y": 166,
+            "width": 57,
+            "height": 22
+          },
+          {
+            "text": "73.24",
+            "x": 1087,
+            "y": 190,
+            "width": 55,
+            "height": 23
+          },
+          {
+            "text": "34.46",
+            "x": 375,
+            "y": 114,
+            "width": 69,
+            "height": 22
+          },
+          {
+            "text": "50X",
+            "x": 23,
+            "y": 141,
+            "width": 47,
+            "height": 19
+          },
+          {
+            "text": "1.553",
+            "x": 176,
+            "y": 114,
+            "width": 59,
+            "height": 23
+          },
+          {
+            "text": "20X",
+            "x": 22,
+            "y": 116,
+            "width": 49,
+            "height": 19
+          },
+          {
+            "text": "BBH",
+            "x": 861,
+            "y": 55,
+            "width": 74,
+            "height": 22
+          },
+          {
+            "text": "32.52",
+            "x": 651,
+            "y": 90,
+            "width": 58,
+            "height": 20
+          }
+        ],
+        "showTitle": false,
+        "title": "",
+        "rotation": 0,
+        "crop": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "averageHue": "#f3f2f0",
+        "__spacing": "both",
+        "id": "ue1816bc0",
+        "margin": {
+          "top": true,
+          "bottom": true
+        }
+      },
+      "asset": "assets/images/1793526105948-5d343b89-a092-4b18-82bd-6a4d4172908b.png"
+    }
+  ]
+}
