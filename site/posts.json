@@ -2,6 +2,9 @@
   {
     "file": "../notes/technical-report-ii/source.lake",
     "format": "lake",
+    "appendFiles": [
+      "../notes/technical-report-ii/gdn-hybrid/source.lake"
+    ],
     "removeEmptyParagraphs": true,
     "preserveLakeText": true,
     "tocDepth": 2,
