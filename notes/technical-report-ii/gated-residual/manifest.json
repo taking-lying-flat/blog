@@ -20,6 +20,12 @@
     "separators": 0,
     "code": 0
   },
+  "blockRemovals": [
+    {
+      "tag": "p",
+      "id": "uc3852887"
+    }
+  ],
   "assets": [
     {
       "source": "https://cdn.nlark.com/yuque/__latex/08843ad184698b2d78d7a39e060b9574.svg",
