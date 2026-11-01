@@ -7,6 +7,9 @@
       "../notes/technical-report-ii/qsa/source.lake",
       "../notes/technical-report-ii/gated-residual/source.lake"
     ],
+    "appendMarkdown": [
+      "gated-residual-path-examples.md"
+    ],
     "removeEmptyParagraphs": true,
     "preserveLakeText": true,
     "tocDepth": 2,
