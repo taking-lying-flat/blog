@@ -2054,12 +2054,5 @@
       },
       "asset": "assets/images/1793502661376-171bce46-cced-4ee4-99d7-dc9f56b94b08.png"
     }
-  ],
-  "listItemPrepends": [
-    {
-      "before": "u29f0b7f2",
-      "id": "gr-path-examples",
-      "text": "三个代表性路径进一步说明这种分工。Layer 0 GDN → Layer 15 attention 的贡献占比由参考模型的 0.020 提升至 GR 的 0.138，并在第 10–19 层各读取块中保持在 0.072–0.138；Layer 10 GDN → Layer 11 attention 的贡献增量为 0.117，表明 GR 同时强化局部连接。Layer 0 MLP 的同一输出还可分别经长程分支和局部分支传至 Layer 15 与 Layer 2，贡献占比分别由 0.008 提升至 0.058、由 0.139 提升至 0.192，说明多分支残差流能够为同一历史输出建立不同跨度和强度的传播路径"
-    }
   ]
 }
