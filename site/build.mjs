@@ -28,6 +28,7 @@ const siteUrl = 'https://taking-lying-flat.github.io/blog/';
 const posts = JSON.parse(await readFile(path.join(root, 'posts.json'), 'utf8'))
   .sort((a, b) => b.date.localeCompare(a.date));
 const categories = [
+  { id: 'reports', title: '技术报告' },
   { id: 'llm', title: '大模型' },
   { id: 'infra', title: 'AI Infra' },
   { id: 'policy', title: '策略优化' },
