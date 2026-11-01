@@ -367,6 +367,19 @@ export async function readLake(file, escape, renderMath) {
       content = content.replace(/<(ul|ol)\b[^>]*>\s*<\/\1>/g, '');
     }
   }
+  // Insert reviewed prose as the first item of an existing Lake list.
+  for (const { before, id, text } of manifest.listItemPrepends ?? []) {
+    if (![before, id].every(value => typeof value === 'string' && /^[\w-]+$/.test(value)) ||
+        typeof text !== 'string' || !text || content.includes(` id="${id}"`)) {
+      throw new Error(`Invalid Lake list item prepend: ${id}`);
+    }
+    const target = new RegExp(`<li\\b[^>]*\\sid="${before}"[^>]*>`, 'g');
+    if ([...content.matchAll(target)].length !== 1) {
+      throw new Error(`Lake list item prepend target must match once: ${before}`);
+    }
+    content = content.replace(target, opening =>
+      `<li id="${id}"><span>${escape(text)}</span></li>${opening}`);
+  }
   // Remove selected quote wrappers while retaining their contents.
   for (const id of manifest.blockquoteUnwraps ?? []) {
     if (!/^[\w-]+$/.test(id)) throw new Error(`Invalid Lake quote unwrap: ${id}`);
