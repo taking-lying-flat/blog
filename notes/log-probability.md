@@ -2,19 +2,28 @@
 
 # Log-Probability Computation
 
+自回归模型读取前缀 $`x_{\le t}`$ 后，得到隐藏状态 $`h_t`$，再经 LM head 投影为全词表 logits：$`z_t=Wh_t+b\in\mathbb R^V`$。其中 $`V`$ 是词表大小，$`z_{t,j}`$ 是第 $`j`$ 个 token 的未归一化得分；当前位置 $`t`$ 的输出用于评分下一个 token $`x_{t+1}`$。以下使用自然对数，温度为 1。
+
 ```math
 \begin{aligned}
 \log P_\theta(x_{t+1}\mid x_{\le t})
 &=\operatorname{logsoftmax}(z_t)_{x_{t+1}}\\[4pt]
+&=\log\frac{\exp(z_{t,x_{t+1}})}
+{\sum_{j=0}^{V-1}\exp(z_{t,j})}\\[4pt]
+&=z_{t,x_{t+1}}-\log\sum_{j=0}^{V-1}\exp(z_{t,j})\\[4pt]
+&=z_{t,x_{t+1}}-\log\left[
+\exp(m_t)\sum_{j=0}^{V-1}\exp(z_{t,j}-m_t)\right]\\[4pt]
 &=z_{t,x_{t+1}}-
 \left[m_t+\log\sum_{j=0}^{V-1}\exp(z_{t,j}-m_t)\right],
 \qquad m_t=\max_j z_{t,j}.
 \end{aligned}
 ```
 
-其中，$`z_t=Wh_t+b\in\mathbb R^V`$ 是模型读取 $`x_{\le t}`$ 后得到的全词表 logits，$`x_{t+1}`$ 是目标 token ID，$`V`$ 是词表大小。目标 logit 减去全词表的 log-sum-exp，即得到该 token 的 log-prob；减去最大值 $`m_t`$ 用于稳定指数计算。以下使用自然对数、温度为 1，位置 $`t`$ 的输出对齐目标 $`x_{t+1}`$。
+先按 softmax 定义，把目标 token 的指数得分除以整个词表的指数和，得到条件概率。取对数后，分式变为两项之差：分子的 $`\log\exp(z_{t,x_{t+1}})`$ 还原为目标 logit，分母则留下全词表的 log-sum-exp。因此，计算一个目标 token 的 log-prob，需要取得它自身的得分，以及所有候选共同决定的归一化项。
 
-**Megatron Core**：每个 rank 持有一个词表分片，通过 MAX 归约得到 $`m_t`$，通过两次 SUM 归约合并目标值和指数和。下面合并了[源码](https://github.com/NVIDIA/Megatron-LM/blob/37cb4f261f103a7c882b5e310082fd0b7dbb226f/megatron/core/tensor_parallel/cross_entropy.py#L159)中的前向计算，省略 autograd 封装，取 `label_smoothing=0`。
+最后两行处理数值稳定性。将每一项写成 $`\exp(z_{t,j})=\exp(m_t)\exp(z_{t,j}-m_t)`$，从求和中提出公共因子 $`\exp(m_t)`$，再利用 $`\log\exp(m_t)=m_t`$，便得到最终形式。实现时直接采用最后一行，只计算移位后的指数。减去最大值后，指数的输入都不大于零，至少有一项为零；这既保留了原来的概率，也避免直接对较大的 logits 取指数造成上溢。
+
+**Megatron Core**：词表沿 tensor parallel rank 切分，各卡持有自己的 logits 分片。MAX 归约给出全词表最大值，随后各卡在同一尺度上计算目标值和指数和，再通过 SUM 归约合并。下面合并了[源码](https://github.com/NVIDIA/Megatron-LM/blob/37cb4f261f103a7c882b5e310082fd0b7dbb226f/megatron/core/tensor_parallel/cross_entropy.py#L159)中的前向计算，省略 autograd 封装，取 `label_smoothing=0`。
 
 ```python Megatron Core · vocab_parallel_cross_entropy
 import torch.distributed as dist
@@ -35,7 +44,9 @@ dist.all_reduce(sum_exp, op=dist.ReduceOp.SUM, group=tp_group)
 log_prob = target_z - sum_exp.log()               # 等于 -CE
 ```
 
-**vLLM**：[指定 token 的 kernel](https://github.com/vllm-project/vllm/blob/dfebb42d096d5c6a04aa5a1722195e37cb8e0b2d/vllm/v1/worker/gpu/sample/logprob.py#L17) 先扫描整行 logits 求最大值，再累计指数和，最后只写出请求的 token 分数。下面省略指针步长与输出存储；`row_ptr` 指向当前行，`topk_ids` 是请求评分的词表 ID。
+`target` 使用全局词表 ID，减去当前分片起点后得到本地索引。只有持有目标 token 的 rank 提供目标值，其余 rank 将这一项置零。这里的 `target_z` 已经减过全局最大值 $`m_t`$，所以最后直接减去 `sum_exp.log()`，便与上面的统一公式对应。
+
+**vLLM**：[指定 token 的 kernel](https://github.com/vllm-project/vllm/blob/dfebb42d096d5c6a04aa5a1722195e37cb8e0b2d/vllm/v1/worker/gpu/sample/logprob.py#L17) 在同一个 kernel 中完成全词表归约和目标值提取。下面省略指针步长与输出存储；`row_ptr` 指向当前行，`topk_ids` 是请求评分的词表 ID。
 
 ```python vLLM · _topk_log_softmax_kernel
 max_val = float("-inf")
@@ -56,7 +67,9 @@ target_z = tl.load(row_ptr + topk_ids).to(tl.float32)
 log_prob = target_z - max_val - tl.log(sum_exp)
 ```
 
-**Liger-Kernel**：[`_selective_logprob_forward`](https://github.com/linkedin/Liger-Kernel/blob/4dce24bbb70d8bda18e373b5f0f469a51ab77a2c/src/liger_kernel/chunked_loss/fused_linear_ppo.py#L18) 对当前位置块逐块投影词表，在线更新最大值和指数和。新最大值出现时，用 `exp(m - m_new)` 重缩放旧累积和；目标所在块同时取出目标 logit。下面保留核心计算，省略外层位置分块，取 `bias=None`。
+第一次遍历得到整行最大值 `max_val`，第二次以它为基准，用 FP32 累计指数和。最后加载的 `target_z` 是目标 token 的原始 logit，因此要同时减去 `max_val` 和 `log(sum_exp)`。即使只请求少量 token，归一化项仍由整个词表计算，输出阶段才选取指定位置。
+
+**Liger-Kernel**：[`_selective_logprob_forward`](https://github.com/linkedin/Liger-Kernel/blob/4dce24bbb70d8bda18e373b5f0f469a51ab77a2c/src/liger_kernel/chunked_loss/fused_linear_ppo.py#L18) 从隐藏状态出发，逐块计算词表投影，并在线更新最大值和指数和。每处理一个词表块，就把它的统计量并入已有结果。下面保留核心计算，省略外层位置分块，取 `bias=None`。
 
 ```python Liger-Kernel · _selective_logprob_forward
 # h: 当前块隐藏状态 [C, D]；targets: [C]；weight: [V, D]
@@ -81,3 +94,7 @@ for start in range(0, weight.shape[0], vocab_chunk_size):
 log_z = m + sum_exp.log()
 log_prob = target_z - log_z
 ```
+
+循环中的 `sum_exp` 始终以当前最大值 `m` 为基准。当新块使最大值增大到 `m_new` 时，旧累积和乘以 `exp(m - m_new)`，便转换到新的尺度，再与当前块的指数和相加。这样可以逐块完成全词表归一化。
+
+目标 token 所在的块同时提供 `target_z`。遍历完成后，`m + log(sum_exp)` 就是完整的 log-sum-exp，最后相减得到 log-prob。该实现会保存 `log_z`，在反向重算当前块的 logits 时恢复其概率。
