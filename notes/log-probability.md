@@ -1,5 +1,397 @@
 # Log-Probability 的计算
 
+# Cross-Entropy Loss
+
+本节译自 Drazen Zaric 的 [《从第一性原理推导交叉熵损失：从二分类到大语言模型蒸馏》](https://drazenzaric.com/blog/cross-entropy-loss/)。译文保留原文的推导顺序，校正公式中的明显笔误，并补充最优解收敛所需的条件。
+
+## 二元逻辑回归与二元交叉熵
+
+考虑由输入与目标标签构成的数据集
+
+```math
+\begin{array}{c}
+(x^{(1)},y^{(1)})\\
+(x^{(2)},y^{(2)})\\
+\vdots\\
+(x^{(m)},y^{(m)})
+\end{array}\tag{1}
+```
+
+以及逻辑模型
+
+```math
+\hat y^{(i)}=h\!\left(f(x^{(i)};\theta)\right)
+=\frac{1}{1+e^{-f(x^{(i)};\theta)}}.\tag{2}
+```
+
+每个标签 $`y^{(i)}`$ 取值为 0 或 1，对应欺诈与非欺诈、用户流失与未流失、患病与未患病、猫与狗等二分类任务。$`f(x;\theta)`$ 表示由参数 $`\theta`$ 确定的函数；在神经网络中，$`f`$ 对应网络结构，$`x`$ 为输入，$`\theta`$ 为网络权重。$`h`$ 为 logistic 函数，因此 $`h(f(x;\theta))`$ 对应 PyTorch 中的 `torch.sigmoid(model(x))`。
+
+将模型输出 $`\hat y^{(i)}`$ 解释为标签取 1 的条件概率估计，可得
+
+```math
+\begin{aligned}
+P(y^{(i)}=1\mid x^{(i)};\theta)&=\hat y^{(i)},\\
+P(y^{(i)}=0\mid x^{(i)};\theta)&=1-\hat y^{(i)}.
+\end{aligned}\tag{3}
+```
+
+两种情形可统一写为伯努利分布的概率质量函数：
+
+```math
+\begin{aligned}
+P(y^{(i)}\mid x^{(i)};\theta)
+&=\bigl(\hat y^{(i)}\bigr)^{y^{(i)}}
+\bigl(1-\hat y^{(i)}\bigr)^{1-y^{(i)}}\\[4pt]
+&=\begin{cases}
+\hat y^{(i)},&y^{(i)}=1,\\
+1-\hat y^{(i)},&y^{(i)}=0.
+\end{cases}
+\end{aligned}\tag{4}
+```
+
+逻辑回归通过选择参数 $`\theta`$，使观测标签在模型下的联合条件概率最大。将该概率视为参数的函数，即得到似然函数。对于相互独立的样本，数据集 $`X,y`$ 对应的似然为
+
+```math
+\begin{aligned}
+\mathcal L(\theta;X,y)
+&=\prod_{i=1}^{m}P(y^{(i)}\mid x^{(i)};\theta)\\[4pt]
+&=\prod_{i=1}^{m}
+\bigl(\hat y^{(i)}\bigr)^{y^{(i)}}
+\bigl(1-\hat y^{(i)}\bigr)^{1-y^{(i)}}.
+\end{aligned}\tag{5}
+```
+
+最大似然估计寻找使该函数最大的参数：
+
+```math
+\theta_{\mathrm{MLE}}
+=\underset{\theta}{\operatorname{argmax}}\,
+\mathcal L(\theta;X,y).\tag{6}
+```
+
+由于对数函数在正数域上严格递增，最大化似然与最大化对数似然具有相同的最优解：
+
+```math
+\theta_{\mathrm{MLE}}
+=\underset{\theta}{\operatorname{argmax}}\,\mathcal L
+=\underset{\theta}{\operatorname{argmax}}\,\log\mathcal L.
+\tag{7}
+```
+
+记对数似然为 $`\ell(\theta)=\log\mathcal L(\theta)`$，利用对数的运算性质，有
+
+```math
+\begin{aligned}
+\ell(\theta)
+&=\log\mathcal L(\theta)\\[4pt]
+&=\log\prod_{i=1}^{m}
+\bigl(\hat y^{(i)}\bigr)^{y^{(i)}}
+\bigl(1-\hat y^{(i)}\bigr)^{1-y^{(i)}}\\[4pt]
+&=\sum_{i=1}^{m}\log\left[
+\bigl(\hat y^{(i)}\bigr)^{y^{(i)}}
+\bigl(1-\hat y^{(i)}\bigr)^{1-y^{(i)}}\right]\\[4pt]
+&=\sum_{i=1}^{m}\left[
+y^{(i)}\log\hat y^{(i)}
++(1-y^{(i)})\log(1-\hat y^{(i)})\right].
+\end{aligned}\tag{8}
+```
+
+模型训练通常写为损失最小化问题。对最大化目标取负，即得到负对数似然，也就是二元交叉熵损失：
+
+```math
+J(\theta)=-\ell(\theta)
+=-\sum_{i=1}^{m}\left[
+y^{(i)}\log\hat y^{(i)}
++(1-y^{(i)})\log(1-\hat y^{(i)})\right].\tag{9}
+```
+
+## 多分类、Softmax 与交叉熵
+
+多分类任务的目标标签表示 $`C`$ 个类别中的一个。例如，图像分类可将猫、狗、牛、马依次编码为 0、1、2、3；语言建模则根据输入序列，预测词表 $`V`$ 中哪个 token 应当出现在下一位置。GPT 类自回归语言模型将后者表述为多分类问题：对给定前缀 $`x`$，估计每个词表 token $`w_i\in V`$ 的条件概率 $`P(w_i\mid x)`$。
+
+对每个类别 $`j=1,\ldots,C`$，设其得分函数为 $`f_j(x;\theta_j)`$。目标是构造类别分布，因此所有类别的预测概率之和必须为 1。分别对各类别应用 sigmoid 无法保证这一约束，softmax 则将整个得分向量映射为概率向量：
+
+```math
+\operatorname{softmax}(t_1,t_2,\ldots,t_C)
+=\begin{bmatrix}
+\dfrac{\exp(t_1)}{\sum_{j=1}^{C}\exp(t_j)}\\[8pt]
+\vdots\\[4pt]
+\dfrac{\exp(t_C)}{\sum_{j=1}^{C}\exp(t_j)}
+\end{bmatrix}.\tag{10}
+```
+
+softmax 的各分量位于 $`[0,1]`$ 内，且总和为 1。相应的多分类概率模型为
+
+```math
+\begin{aligned}
+\hat y^{(i)}
+&=\begin{bmatrix}
+\hat P(y^{(i)}=1\mid x^{(i)};\theta)\\
+\vdots\\
+\hat P(y^{(i)}=C\mid x^{(i)};\theta)
+\end{bmatrix}\\[6pt]
+&=\operatorname{softmax}\!\left(
+f_1(x^{(i)};\theta_1),\ldots,f_C(x^{(i)};\theta_C)\right)\\[6pt]
+&=\begin{bmatrix}
+\dfrac{\exp(f_1(x^{(i)};\theta_1))}
+{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))}\\[8pt]
+\vdots\\[4pt]
+\dfrac{\exp(f_C(x^{(i)};\theta_C))}
+{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))}
+\end{bmatrix}.
+\end{aligned}\tag{11}
+```
+
+沿用最大似然原则，负对数似然可写为
+
+```math
+\begin{aligned}
+J(\theta)=-\ell(\theta)
+&=-\log\prod_{i=1}^{m}\hat P(y^{(i)}\mid x^{(i)};\theta)\\[4pt]
+&=-\log\prod_{i=1}^{m}\hat y^{(i)}_{y^{(i)}}\\[4pt]
+&=-\log\prod_{i=1}^{m}
+\operatorname{softmax}\!\left(
+f_1(x^{(i)};\theta_1),\ldots,f_C(x^{(i)};\theta_C)
+\right)_{y^{(i)}}\\[4pt]
+&=-\sum_{i=1}^{m}\log
+\frac{\exp(f_{y^{(i)}}(x^{(i)};\theta_{y^{(i)}}))}
+{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))}.
+\end{aligned}\tag{12}
+```
+
+在神经网络中，分类头通常为输出维度等于类别数 $`C`$ 的线性层，其输出称为 logits；对 logits 应用 softmax，即得到预测类别概率。式 (12) 对应多分类交叉熵损失。PyTorch 的 `CrossEntropyLoss` 直接接收 logits，也就是式中的 $`f_j`$。
+
+## 熵、交叉熵与 KL 散度
+
+离散随机变量 $`X`$ 的分布记为 $`P_X`$，其 Shannon 熵定义为
+
+```math
+H(P_X)=-\sum_{x\in\mathcal X}P_X(x)\log P_X(x).
+\tag{13}
+```
+
+该定义以事件发生时的信息量为基础：事件的概率越低，其发生所携带的信息量越大；独立事件联合发生的信息量等于各自信息量之和。$`-\log P_X(x)`$ 满足这些要求，对其按 $`P_X`$ 取期望，即得到分布的不确定性度量。
+
+设实际分布为 $`P_X`$，模型分布为 $`Q_X`$。当样本来自 $`P_X`$，却使用 $`Q_X`$ 衡量事件的信息量时，其期望为
+
+```math
+H(P_X,Q_X)=-\sum_{x\in\mathcal X}P_X(x)\log Q_X(x).
+\tag{14}
+```
+
+该量称为 $`P_X`$ 与 $`Q_X`$ 的交叉熵，通常不满足对称性，即 $`H(P_X,Q_X)\ne H(Q_X,P_X)`$。交叉熵与真实分布自身的熵之差，定义了相对熵，也称 Kullback–Leibler 散度：
+
+```math
+\begin{aligned}
+D_{\mathrm{KL}}(P\Vert Q)
+&=\left[-\sum_{x\in\mathcal X}P(x)\log Q(x)\right]
+-\left[-\sum_{x\in\mathcal X}P(x)\log P(x)\right]\\[4pt]
+&=H(P,Q)-H(P)\\[4pt]
+&=\sum_{x\in\mathcal X}P(x)\log\frac{P(x)}{Q(x)}.
+\end{aligned}\tag{15}
+```
+
+因此，$`D_{\mathrm{KL}}(P\Vert Q)`$ 衡量使用 $`Q`$ 代替真实分布 $`P`$ 时增加的期望信息量。它满足 $`D_{\mathrm{KL}}(P\Vert Q)\ge0`$，且仅在两分布相同时取零，因而可用于衡量模型分布对真实分布的逼近程度。
+
+对于 softmax 分类模型，目标是以 $`\hat P_{Y\mid X}(y\mid x;\theta)`$ 逼近真实条件分布 $`P_{Y\mid X}(y\mid x)`$。固定输入 $`x`$ 后，两者的 KL 散度为
+
+```math
+\begin{aligned}
+D_{\mathrm{KL}}\!\left(P_{Y\mid X=x}\Vert\hat P_{Y\mid X=x};\theta\right)
+&=-\sum_{j=1}^{C}P(y=j\mid x)\log\hat P(y=j\mid x;\theta)\\[4pt]
+&\quad+\sum_{j=1}^{C}P(y=j\mid x)\log P(y=j\mid x)\\[4pt]
+&=\sum_{j=1}^{C}P(y=j\mid x)
+\log\frac{P(y=j\mid x)}{\hat P(y=j\mid x;\theta)}.
+\end{aligned}\tag{16}
+```
+
+若只对条件分布建模，并保持输入边缘分布 $`P_X`$ 不变，则 $`\hat P_{X,Y}(x,y;\theta)=P_X(x)\hat P_{Y\mid X}(y\mid x;\theta)`$。由联合分布计算 KL 散度时，概率比值中的 $`P_X(x)`$ 因子相消：
+
+```math
+\begin{aligned}
+D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta)
+&=\sum_{x,y}P_{X,Y}(x,y)
+\log\frac{P_{X,Y}(x,y)}{\hat P_{X,Y}(x,y;\theta)}\\[4pt]
+&=\sum_{x,y}P_{X,Y}(x,y)
+\log\frac{P(y\mid x)\cancel{P_X(x)}}
+{\hat P(y\mid x;\theta)\cancel{P_X(x)}}\\[4pt]
+&=\mathbb E_{X,Y}\!\left[
+\log\frac{P(Y\mid X)}{\hat P(Y\mid X;\theta)}\right].
+\end{aligned}\tag{17}
+```
+
+给定 $`n`$ 个独立同分布样本 $`(x^{(i)},y^{(i)})`$，在相应期望存在时，大数定律给出固定 $`\theta`$ 下的收敛关系：
+
+```math
+\begin{aligned}
+\frac{1}{n}\sum_{i=1}^{n}
+\log\frac{P(y^{(i)}\mid x^{(i)})}
+{\hat P(y^{(i)}\mid x^{(i)};\theta)}
+&\xrightarrow[n\to\infty]{}
+\mathbb E_{X,Y}\!\left[
+\log\frac{P(Y\mid X)}{\hat P(Y\mid X;\theta)}\right]\\[4pt]
+&=D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta).
+\end{aligned}\tag{18}
+```
+
+这使得总体 KL 目标可以通过样本平均来近似。若进一步满足最优解唯一、经验目标一致收敛以及保证极小值稳定的正则条件，经验最优参数才可相应收敛到总体最优参数：
+
+```math
+\begin{aligned}
+&\underset{\theta}{\operatorname{argmin}}
+\left\{\frac{1}{n}\sum_{i=1}^{n}
+\log\frac{P(y^{(i)}\mid x^{(i)})}
+{\hat P(y^{(i)}\mid x^{(i)};\theta)}\right\}\\[4pt]
+&\qquad\xrightarrow[n\to\infty]{}
+\underset{\theta}{\operatorname{argmin}}
+D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta).
+\end{aligned}\tag{19}
+```
+
+最优解的收敛不能仅由式 (18) 的逐点收敛直接推出。不过，对于任意固定数据集，真实分布项与模型参数 $`\theta`$ 无关，因此经验目标的优化可精确化简为最大似然估计：
+
+```math
+\begin{aligned}
+&\underset{\theta}{\operatorname{argmin}}
+\left\{\frac{1}{n}\sum_{i=1}^{n}
+\log\frac{P(y^{(i)}\mid x^{(i)})}
+{\hat P(y^{(i)}\mid x^{(i)};\theta)}\right\}\\[4pt]
+&\quad=\underset{\theta}{\operatorname{argmax}}
+\left\{\frac{1}{n}\sum_{i=1}^{n}
+\log\hat P(y^{(i)}\mid x^{(i)};\theta)\right\}\\[4pt]
+&\quad=\underset{\theta}{\operatorname{argmax}}
+\left\{\frac{1}{n}\log\prod_{i=1}^{n}
+\hat P(y^{(i)}\mid x^{(i)};\theta)\right\}\\[4pt]
+&\quad=\underset{\theta}{\operatorname{argmax}}
+\left\{\frac{1}{n}\ell(\theta)\right\}.
+\end{aligned}\tag{20}
+```
+
+由此，基于信息论的分布拟合目标与最大似然原则得到相同的经验优化问题。交叉熵这一名称也可从 KL 的分解直接得到：真实分布的熵不依赖 $`\theta`$，最小化 KL 等价于最小化其中的交叉熵项。
+
+```math
+\begin{aligned}
+\underset{\theta}{\operatorname{argmin}}
+D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta)
+&=\underset{\theta}{\operatorname{argmin}}
+\left\{\underbrace{H(P_{X,Y},\hat P_{X,Y})}_{\text{cross-entropy}}
+-\underbrace{H(P_{X,Y})}_{\text{entropy}}\right\}\\[4pt]
+&=\underset{\theta}{\operatorname{argmin}}
+H(P_{X,Y},\hat P_{X,Y}).
+\end{aligned}\tag{21}
+```
+
+在相同的目标分布和取样方式下，最大化对数似然、最小化交叉熵以及最小化对应的 KL 目标具有一致的优化方向；总体目标与有限样本经验目标之间的关系则由上述估计条件决定。
+
+## 模型蒸馏中的交叉熵
+
+模型蒸馏以教师模型 $`M^{\mathrm{teacher}}`$ 的输出作为训练信号，使学生模型 $`M^{\mathrm{student}}`$ 学习其预测分布，学生模型通常具有更小的规模。
+
+常规监督学习只观测输入 $`x^{(i)}`$ 及其标签 $`y^{(i)}`$；标签来自某个未知分布，但完整分布本身不可直接获得。蒸馏则利用已训练教师输出的条件概率 $`P^{\mathrm{teacher}}(y\mid x)`$，将其作为学生要拟合的目标条件分布。
+
+标签平滑也使用概率分布作为监督目标。例如，将真实类别的目标概率由 100% 调整为 $`\varepsilon\%`$，并向其余 $`k-1`$ 个类别各分配 $`\frac{100-\varepsilon}{k-1}\%`$。与硬标签相比，此时每个输入对应的是一整个目标概率向量。
+
+为利用这些分布信息，仍从 KL 最小化及其交叉熵形式出发。将联合分布分解为输入边缘分布与标签条件分布，可得
+
+```math
+\begin{aligned}
+&\underset{\theta}{\operatorname{argmin}}
+D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta)\\[4pt]
+&\quad=\underset{\theta}{\operatorname{argmin}}
+H(P_{X,Y},\hat P_{X,Y})\\[4pt]
+&\quad=\underset{\theta}{\operatorname{argmin}}
+\left\{-\sum_{x,y}P_{X,Y}(x,y)
+\log\hat P_{X,Y}(x,y;\theta)\right\}\\[4pt]
+&\quad=\underset{\theta}{\operatorname{argmin}}
+\left\{-\sum_x P_X(x)\sum_y P_{Y\mid X}(y\mid x)
+\log\!\left[\hat P_{Y\mid X}(y\mid x;\theta)P_X(x)\right]\right\}\\[4pt]
+&\quad=\underset{\theta}{\operatorname{argmin}}
+\left\{-\sum_x P_X(x)\sum_y P_{Y\mid X}(y\mid x)
+\log\hat P_{Y\mid X}(y\mid x;\theta)+H(P_X)\right\}\\[4pt]
+&\quad=\underset{\theta}{\operatorname{argmin}}
+\left\{-\sum_x P_X(x)\sum_y P_{Y\mid X}(y\mid x)
+\log\hat P_{Y\mid X}(y\mid x;\theta)\right\}\\[4pt]
+&\quad=\underset{\theta}{\operatorname{argmin}}
+\left\{-\mathbb E_X\!\left[
+\sum_y P_{Y\mid X}(y\mid X)
+\log\hat P_{Y\mid X}(y\mid X;\theta)\right]\right\}.
+\end{aligned}\tag{22}
+```
+
+其中 $`H(P_X)`$ 与 $`\theta`$ 无关，因此不影响最优参数。这一推导依赖两个条件：模型只拟合条件分布，输入边缘分布仍由数据来源确定；训练数据提供独立同分布的输入样本，而每个输入的监督目标是完整条件分布，因而需要估计的是对 $`X`$ 的期望。
+
+对固定参数 $`\theta`$，相应的经验交叉熵收敛于总体交叉熵：
+
+```math
+\begin{aligned}
+R_n(\theta)
+&=-\frac{1}{n}\sum_{i=1}^{n}\sum_{y\in\mathcal Y}
+P_{Y\mid X}(y\mid x^{(i)})
+\log\hat P_{Y\mid X}(y\mid x^{(i)};\theta)\\[4pt]
+&\xrightarrow[n\to\infty]{}
+-\mathbb E_X\!\left[\sum_{y\in\mathcal Y}
+P_{Y\mid X}(y\mid X)
+\log\hat P_{Y\mid X}(y\mid X;\theta)\right].
+\end{aligned}\tag{23}
+```
+
+在式 (19) 所述的一致性条件下，最小化经验目标可用于估计总体目标的最优参数。对于 softmax 模型，预测条件概率为
+
+```math
+\hat P_{Y\mid X}(y\mid x;\theta)
+=\frac{\exp(f_y(x;\theta_y))}
+{\sum_{j=1}^{C}\exp(f_j(x;\theta_j))}.
+\tag{24}
+```
+
+代入经验目标，得到以概率分布为标签的交叉熵损失：
+
+```math
+\begin{aligned}
+J(\theta)
+&=-\frac{1}{n}\sum_{i=1}^{n}\sum_{y\in\mathcal Y}
+P_{Y\mid X}(y\mid x^{(i)})
+\log\hat P_{Y\mid X}(y\mid x^{(i)};\theta)\\[4pt]
+&=-\frac{1}{n}\sum_{i=1}^{n}\sum_{y\in\mathcal Y}
+P_{Y\mid X}(y\mid x^{(i)})
+\log\frac{\exp(f_y(x^{(i)};\theta_y))}
+{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))}.
+\end{aligned}\tag{25}
+```
+
+这与 PyTorch 在目标为类别概率、类别权重均为 1 时采用的平均交叉熵一致。`CrossEntropyLoss` 既接受类别索引，也接受各类别的目标概率；后者适用于混合标签、标签平滑及其他软标签场景。
+
+沿用 PyTorch 文档的记号，令 $`x_{n,c}`$ 为输入 logit，$`y_{n,c}`$ 为目标概率，$`w_c`$ 为类别权重，$`C`$ 为类别数，$`N`$ 为参与计算的位置总数。未归约损失为
+
+```math
+\ell(x,y)=L=(\ell_1,\ldots,\ell_N)^{\mathsf T},
+\qquad
+\ell_n=-\sum_{c=1}^{C}w_c y_{n,c}
+\log\frac{\exp(x_{n,c})}{\sum_{i=1}^{C}\exp(x_{n,i})}.
+\tag{26}
+```
+
+对于概率标签，`mean` 与 `sum` 分别对应
+
+```math
+\ell(x,y)=\begin{cases}
+\dfrac{1}{N}\displaystyle\sum_{n=1}^{N}\ell_n,
+&\text{reduction}=\texttt{mean},\\[8pt]
+\displaystyle\sum_{n=1}^{N}\ell_n,
+&\text{reduction}=\texttt{sum}.
+\end{cases}\tag{27}
+```
+
+式 (26) 保留了概率标签因子 $`y_{n,c}`$；原文转录的公式遗漏了这一项。这里的 $`N`$ 包含批量维度及额外位置维度，与 PyTorch 的[交叉熵文档](https://docs.pytorch.org/docs/2.15/generated/torch.nn.CrossEntropyLoss.html)一致。
+
+<strong>原文参考文献</strong>
+
+1. Andrew Ng、Tengyu Ma，[*CS229 Lecture Notes*](https://cs229.stanford.edu/main_notes.pdf)，2023。
+2. Christopher M. Bishop，*Pattern Recognition and Machine Learning*，2006。
+3. *Maximum likelihood estimation* 中关于最小化 KL 散度与交叉熵的讨论。
+4. *Knowledge distillation*。
+5. Samuel Cohen，*Information Theory, Lecture 1: Defining Entropy and Information*，Oxford Mathematics。
+
 # Log-Probability Computation
 
 设训练序列为 $`x=(x_0,\ldots,x_T)`$，$`x_0`$ 为起始 token。自回归预训练对后续所有 token 计算负对数似然；仅监督回答的 SFT 将损失限制在回答位置。若 $`x_{1:M}`$ 为提示词，$`x_{M+1:T}`$ 为参考回答，则
@@ -10,10 +402,10 @@
 &=-\frac{1}{T}\sum_{t=0}^{T-1}\ln P_\theta(x_{t+1}\mid x_{\le t}),\\[4pt]
 \mathcal L_{\mathrm{SFT}}(\theta)
 &=-\frac{1}{T-M}\sum_{t=M}^{T-1}\ln P_\theta(x_{t+1}\mid x_{\le t}).
-\end{aligned}\tag{1}
+\end{aligned}\tag{28}
 ```
 
-逐 token 的硬标签交叉熵（CE）等于负对数似然（NLL）。记词表大小为 $`V`$，位置 $`t`$ 的 logits 为 $`z_t\in\mathbb R^V`$，目标 token 的 one-hot 标签为 $`q_{t,j}=\mathbf 1\{j=x_{t+1}\}`$，则
+语言模型在每个位置执行一次词表分类：输入为前缀 $`x_{\le t}`$，观测类别为下一 token $`x_{t+1}`$。记词表大小为 $`V`$、当前位置的 logits 为 $`z_t\in\mathbb R^V`$，该观测标签可表示为 one-hot 向量 $`q_{t,j}=\mathbf 1\{j=x_{t+1}\}`$。它表示当前样本的监督目标，完整的真实条件分布并不要求为 one-hot。将这一标签代入交叉熵，词表求和只保留目标 token 对应的一项：
 
 ```math
 \begin{aligned}
@@ -22,7 +414,7 @@
 &=-\sum_{j=0}^{V-1}q_{t,j}\ln\operatorname{softmax}(z_t)_j\\[4pt]
 &=-\ln P_\theta(x_{t+1}\mid x_{\le t})
 =\ell_t^{\mathrm{NLL}}.
-\end{aligned}\tag{2}
+\end{aligned}\tag{29}
 ```
 
 隐藏状态 $`h_t`$ 经 LM head 投影为 $`z_t=Wh_t+b`$。目标 token 的 log-prob 等于目标 logit 与全词表 log-sum-exp 之差：
@@ -39,10 +431,10 @@
 &=z_{t,x_{t+1}}-
 \left[m_t+\ln\sum_{j=0}^{V-1}\exp(z_{t,j}-m_t)\right],
 \qquad m_t=\max_j z_{t,j}.
-\end{aligned}\tag{3}
+\end{aligned}\tag{30}
 ```
 
-式 (3) 先将概率比值的对数展开为两项之差，再从指数和中提出 $`\exp(m_t)`$。移位后的指数输入均不大于零，可避免指数上溢；计算结果取负即为式 (2) 的逐 token 损失。
+式 (30) 先将概率比值的对数展开为两项之差，再从指数和中提出 $`\exp(m_t)`$。移位后的指数输入均不大于零，可避免指数上溢；计算结果取负即为式 (29) 的逐 token 损失。
 
 <strong>教师强制</strong>（teacher forcing）以真实 token 序列作为 `input_ids`，经 embedding 和带因果掩码的 Transformer 得到隐藏状态。位置 $`t`$ 仅依赖真实前缀 $`x_{\le t}`$，以 $`x_{t+1}`$ 为监督目标，因此整段序列的条件概率可在一次前向中并行计算。预训练与 SFT 均使用真实前缀构造这些预测。
 
@@ -62,9 +454,9 @@ if labels is not None:
     loss = loss_fct(shift_logits, shift_labels)
 ```
 
-`logits[..., :-1, :]` 与 `labels[..., 1:]` 将 $`z_t`$ 对齐到目标 $`x_{t+1}`$。`CrossEntropyLoss` 忽略标记为 `-100` 的标签，对其余位置计算式 (2) 的负对数似然。
+`labels[..., 1:]` 提供式 (29) 中 one-hot 向量非零项的类别索引，`logits[..., :-1, :]` 提供对应前缀的预测。标签错位来自输入前缀与下一 token 的位置关系；实际计算只需整数标签，无需显式构造 one-hot 张量。`CrossEntropyLoss` 忽略标记为 `-100` 的位置，并对其余标签计算负对数似然。
 
-**Megatron Core**：[词表并行交叉熵](https://github.com/NVIDIA/Megatron-LM/blob/37cb4f261f103a7c882b5e310082fd0b7dbb226f/megatron/core/tensor_parallel/cross_entropy.py#L159)将式 (3) 的计算分布到各个 tensor parallel rank。MAX 归约得到全词表最大值，SUM 归约合并目标 logit 与指数和。核心前向取 `label_smoothing=0`：
+**Megatron Core**：[词表并行交叉熵](https://github.com/NVIDIA/Megatron-LM/blob/37cb4f261f103a7c882b5e310082fd0b7dbb226f/megatron/core/tensor_parallel/cross_entropy.py#L159)将式 (30) 的计算分布到各个 tensor parallel rank。MAX 归约得到全词表最大值，SUM 归约合并目标 logit 与指数和。核心前向取 `label_smoothing=0`：
 
 ```python Megatron Core · vocab_parallel_cross_entropy
 import torch.distributed as dist
