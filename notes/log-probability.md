@@ -1,30 +1,22 @@
-# Log-Probability 的计算
+# Cross-Entropy
 
 # Cross-Entropy Loss
 
-本节译自 Drazen Zaric 的 [《从第一性原理推导交叉熵损失：从二分类到大语言模型蒸馏》](https://drazenzaric.com/blog/cross-entropy-loss/)。译文保留原文的推导顺序，校正公式中的明显笔误，并补充最优解收敛所需的条件。
-
-## 二元逻辑回归与二元交叉熵
-
-考虑由输入与目标标签构成的数据集
+设二分类数据集为
 
 ```math
-\begin{array}{c}
-(x^{(1)},y^{(1)})\\
-(x^{(2)},y^{(2)})\\
-\vdots\\
-(x^{(m)},y^{(m)})
-\end{array}\tag{1}
+\mathcal D=\{(x^{(i)},y^{(i)})\}_{i=1}^{m},
+\qquad y^{(i)}\in\{0,1\}.\tag{1}
 ```
 
-以及逻辑模型
+模型通过 logistic 函数将得分映射为类别概率：
 
 ```math
 \hat y^{(i)}=h\!\left(f(x^{(i)};\theta)\right)
 =\frac{1}{1+e^{-f(x^{(i)};\theta)}}.\tag{2}
 ```
 
-每个标签 $`y^{(i)}`$ 取值为 0 或 1，对应欺诈与非欺诈、用户流失与未流失、患病与未患病、猫与狗等二分类任务。$`f(x;\theta)`$ 表示由参数 $`\theta`$ 确定的函数；在神经网络中，$`f`$ 对应网络结构，$`x`$ 为输入，$`\theta`$ 为网络权重。$`h`$ 为 logistic 函数，因此 $`h(f(x;\theta))`$ 对应 PyTorch 中的 `torch.sigmoid(model(x))`。
+其中，$`f(x;\theta)`$ 为参数化得分函数，$`x`$ 为输入，$`\theta`$ 为模型参数，$`h`$ 为 logistic 函数。在神经网络中，式 (2) 对应 PyTorch 的 `torch.sigmoid(model(x))`。
 
 将模型输出 $`\hat y^{(i)}`$ 解释为标签取 1 的条件概率估计，可得
 
@@ -49,7 +41,7 @@ P(y^{(i)}\mid x^{(i)};\theta)
 \end{aligned}\tag{4}
 ```
 
-逻辑回归通过选择参数 $`\theta`$，使观测标签在模型下的联合条件概率最大。将该概率视为参数的函数，即得到似然函数。对于相互独立的样本，数据集 $`X,y`$ 对应的似然为
+最大似然估计选择使观测标签的联合条件概率最大的参数 $`\theta`$。对相互独立的样本，数据集 $`X,y`$ 的似然函数为
 
 ```math
 \begin{aligned}
@@ -61,7 +53,7 @@ P(y^{(i)}\mid x^{(i)};\theta)
 \end{aligned}\tag{5}
 ```
 
-最大似然估计寻找使该函数最大的参数：
+相应的参数估计为
 
 ```math
 \theta_{\mathrm{MLE}}
@@ -105,40 +97,26 @@ y^{(i)}\log\hat y^{(i)}
 +(1-y^{(i)})\log(1-\hat y^{(i)})\right].\tag{9}
 ```
 
-## 多分类、Softmax 与交叉熵
+多分类任务将标签空间扩展为 $`C`$ 个类别。自回归语言建模即为词表上的多分类问题：给定前缀 $`x`$，估计每个 token $`w_i\in V`$ 作为下一 token 的条件概率 $`P(w_i\mid x)`$。
 
-多分类任务的目标标签表示 $`C`$ 个类别中的一个。例如，图像分类可将猫、狗、牛、马依次编码为 0、1、2、3；语言建模则根据输入序列，预测词表 $`V`$ 中哪个 token 应当出现在下一位置。GPT 类自回归语言模型将后者表述为多分类问题：对给定前缀 $`x`$，估计每个词表 token $`w_i\in V`$ 的条件概率 $`P(w_i\mid x)`$。
-
-对每个类别 $`j=1,\ldots,C`$，设其得分函数为 $`f_j(x;\theta_j)`$。目标是构造类别分布，因此所有类别的预测概率之和必须为 1。分别对各类别应用 sigmoid 无法保证这一约束，softmax 则将整个得分向量映射为概率向量：
+记各类别的得分函数为 $`f_j(x;\theta_j)`$，$`j=1,\ldots,C`$。类别概率之和须为 1，独立应用 sigmoid 不满足这一约束；softmax 则将得分向量 $`t=(t_1,\ldots,t_C)`$ 映射为概率向量，其第 $`j`$ 个分量为
 
 ```math
-\operatorname{softmax}(t_1,t_2,\ldots,t_C)
-=\begin{bmatrix}
-\dfrac{\exp(t_1)}{\sum_{j=1}^{C}\exp(t_j)}\\[8pt]
-\vdots\\[4pt]
-\dfrac{\exp(t_C)}{\sum_{j=1}^{C}\exp(t_j)}
-\end{bmatrix}.\tag{10}
+\operatorname{softmax}(t)_j
+=\frac{\exp(t_j)}{\sum_{k=1}^{C}\exp(t_k)},
+\qquad j=1,\ldots,C.\tag{10}
 ```
 
-softmax 的各分量位于 $`[0,1]`$ 内，且总和为 1。相应的多分类概率模型为
+对有限得分，softmax 的各分量均为正且总和为 1。相应的多分类概率模型可按分量表示为
 
 ```math
 \begin{aligned}
-\hat y^{(i)}
-&=\begin{bmatrix}
-\hat P(y^{(i)}=1\mid x^{(i)};\theta)\\
-\vdots\\
-\hat P(y^{(i)}=C\mid x^{(i)};\theta)
-\end{bmatrix}\\[6pt]
+\hat y^{(i)}_j
+&=\hat P(y^{(i)}=j\mid x^{(i)};\theta)\\[4pt]
 &=\operatorname{softmax}\!\left(
-f_1(x^{(i)};\theta_1),\ldots,f_C(x^{(i)};\theta_C)\right)\\[6pt]
-&=\begin{bmatrix}
-\dfrac{\exp(f_1(x^{(i)};\theta_1))}
-{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))}\\[8pt]
-\vdots\\[4pt]
-\dfrac{\exp(f_C(x^{(i)};\theta_C))}
-{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))}
-\end{bmatrix}.
+f_1(x^{(i)};\theta_1),\ldots,f_C(x^{(i)};\theta_C)\right)_j\\[4pt]
+&=\frac{\exp(f_j(x^{(i)};\theta_j))}
+{\sum_{k=1}^{C}\exp(f_k(x^{(i)};\theta_k))}.
 \end{aligned}\tag{11}
 ```
 
@@ -161,7 +139,7 @@ f_1(x^{(i)};\theta_1),\ldots,f_C(x^{(i)};\theta_C)
 
 在神经网络中，分类头通常为输出维度等于类别数 $`C`$ 的线性层，其输出称为 logits；对 logits 应用 softmax，即得到预测类别概率。式 (12) 对应多分类交叉熵损失。PyTorch 的 `CrossEntropyLoss` 直接接收 logits，也就是式中的 $`f_j`$。
 
-## 熵、交叉熵与 KL 散度
+# Entropy and KL Divergence
 
 离散随机变量 $`X`$ 的分布记为 $`P_X`$，其 Shannon 熵定义为
 
@@ -170,7 +148,7 @@ H(P_X)=-\sum_{x\in\mathcal X}P_X(x)\log P_X(x).
 \tag{13}
 ```
 
-该定义以事件发生时的信息量为基础：事件的概率越低，其发生所携带的信息量越大；独立事件联合发生的信息量等于各自信息量之和。$`-\log P_X(x)`$ 满足这些要求，对其按 $`P_X`$ 取期望，即得到分布的不确定性度量。
+事件的自信息为 $`-\log P_X(x)`$：概率越低，自信息越大；独立事件的联合自信息具有可加性。熵是自信息在分布 $`P_X`$ 下的期望，用于度量该分布的不确定性。
 
 设实际分布为 $`P_X`$，模型分布为 $`Q_X`$。当样本来自 $`P_X`$，却使用 $`Q_X`$ 衡量事件的信息量时，其期望为
 
@@ -179,7 +157,7 @@ H(P_X,Q_X)=-\sum_{x\in\mathcal X}P_X(x)\log Q_X(x).
 \tag{14}
 ```
 
-该量称为 $`P_X`$ 与 $`Q_X`$ 的交叉熵，通常不满足对称性，即 $`H(P_X,Q_X)\ne H(Q_X,P_X)`$。交叉熵与真实分布自身的熵之差，定义了相对熵，也称 Kullback–Leibler 散度：
+这一定义称为交叉熵，通常不满足对称性。交叉熵与目标分布自身的熵之差为相对熵，即 Kullback–Leibler 散度：
 
 ```math
 \begin{aligned}
@@ -234,7 +212,7 @@ D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta)
 \end{aligned}\tag{18}
 ```
 
-这使得总体 KL 目标可以通过样本平均来近似。若进一步满足最优解唯一、经验目标一致收敛以及保证极小值稳定的正则条件，经验最优参数才可相应收敛到总体最优参数：
+式 (18) 给出了总体 KL 目标的样本近似。若进一步满足最优解唯一、经验目标一致收敛及极小值稳定性等正则条件，经验最优参数可收敛到总体最优参数：
 
 ```math
 \begin{aligned}
@@ -267,7 +245,7 @@ D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta).
 \end{aligned}\tag{20}
 ```
 
-由此，基于信息论的分布拟合目标与最大似然原则得到相同的经验优化问题。交叉熵这一名称也可从 KL 的分解直接得到：真实分布的熵不依赖 $`\theta`$，最小化 KL 等价于最小化其中的交叉熵项。
+因此，信息论中的分布拟合与最大似然估计对应相同的经验优化问题。由于真实分布的熵不依赖 $`\theta`$，最小化 KL 等价于最小化交叉熵：
 
 ```math
 \begin{aligned}
@@ -283,7 +261,7 @@ H(P_{X,Y},\hat P_{X,Y}).
 
 在相同的目标分布和取样方式下，最大化对数似然、最小化交叉熵以及最小化对应的 KL 目标具有一致的优化方向；总体目标与有限样本经验目标之间的关系则由上述估计条件决定。
 
-## 模型蒸馏中的交叉熵
+# Knowledge Distillation
 
 模型蒸馏以教师模型 $`M^{\mathrm{teacher}}`$ 的输出作为训练信号，使学生模型 $`M^{\mathrm{student}}`$ 学习其预测分布，学生模型通常具有更小的规模。
 
@@ -383,14 +361,6 @@ P_{Y\mid X}(y\mid x^{(i)})
 ```
 
 式 (26) 保留了概率标签因子 $`y_{n,c}`$；原文转录的公式遗漏了这一项。这里的 $`N`$ 包含批量维度及额外位置维度，与 PyTorch 的[交叉熵文档](https://docs.pytorch.org/docs/2.15/generated/torch.nn.CrossEntropyLoss.html)一致。
-
-<strong>原文参考文献</strong>
-
-1. Andrew Ng、Tengyu Ma，[*CS229 Lecture Notes*](https://cs229.stanford.edu/main_notes.pdf)，2023。
-2. Christopher M. Bishop，*Pattern Recognition and Machine Learning*，2006。
-3. *Maximum likelihood estimation* 中关于最小化 KL 散度与交叉熵的讨论。
-4. *Knowledge distillation*。
-5. Samuel Cohen，*Information Theory, Lecture 1: Defining Entropy and Information*，Oxford Mathematics。
 
 # Log-Probability Computation
 
