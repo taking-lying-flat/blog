@@ -57,6 +57,8 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .post-meta { display: flex; flex-wrap: wrap; gap: 4px 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
 .post-meta > * + *::before { content: "·"; margin: 0 9px; }
 .prose { font-family: var(--reading); font-size: 17px; font-weight: 500; line-height: var(--article-line-height); }
+/* Markdown paper notes share the Lake typography without export whitespace. */
+.prose.lake-document { white-space: normal; }
 .prose a { color: var(--accent); }
 .prose :is(h1, h2) { text-align: center; }
 .prose :is(h3, h4, h5, h6) { text-align: left; }

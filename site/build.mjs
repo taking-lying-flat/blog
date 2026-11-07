@@ -928,7 +928,7 @@ for (const post of readingOrder) {
         <h1 id="${escape(post.titleId)}">${escape(post.title)}</h1>
         <div class="post-meta">${metadata(post)}<span>taking-lying-flat</span></div>
       </header>
-      <div class="${post.format === 'lake' ? 'lake-document' : 'prose'}">${post.content}</div>
+      <div class="${post.format === 'lake' ? 'lake-document' : `prose${post.layout === 'paper' ? ' lake-document' : ''}`}">${post.content}</div>
       <footer class="post-footer">
         <div class="post-topics" aria-label="文章主题">${post.tags.map((tag) => `<span>${escape(tag)}</span>`).join('')}</div>
         <div class="post-actions"><a href="#top">返回顶部 ↑</a></div>

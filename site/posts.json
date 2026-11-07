@@ -1096,6 +1096,15 @@
     }
   },
   {
+    "file": "../notes/log-probability.md",
+    "slug": "log-probability",
+    "category": "code",
+    "layout": "paper",
+    "tocDepth": 2,
+    "date": "2026-11-07",
+    "tags": ["Log-Probability", "Megatron Core", "vLLM", "Liger-Kernel"]
+  },
+  {
     "file": "../notes/rope.md",
     "slug": "rope",
     "category": "code",
