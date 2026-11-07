@@ -555,6 +555,9 @@ for (const post of posts) {
     usedIds.set(baseId, occurrence + 1);
     const id = occurrence ? `${baseId}-${occurrence}` : baseId;
     tokens[i].attrSet('id', id);
+    if (post.layout === 'paper' && ['h1', 'h2'].includes(tokens[i].tag)) {
+      tokens[i].attrSet('style', 'text-align: center');
+    }
   }
   if (post.slug === 'rope') {
     for (const section of ropeSections) {
@@ -580,6 +583,9 @@ for (const post of posts) {
   const firstParagraph = tokens.findIndex((token, i) => token.type === 'paragraph_open' && tokens[i + 1]?.content);
   post.description = inlineText(tokens[firstParagraph + 1]).slice(0, 180) || post.title;
   post.content = markdown.renderer.render(tokens, markdown.options, { slug: post.slug });
+  if (post.layout === 'paper') {
+    post.content = `<section class="lake-revised-section lake-appendix">${post.content.trim()}</section>`;
+  }
 }
 
 // Move complete paper sections without rewriting their archived Lake sources.
@@ -928,7 +934,7 @@ for (const post of readingOrder) {
         <h1 id="${escape(post.titleId)}">${escape(post.title)}</h1>
         <div class="post-meta">${metadata(post)}<span>taking-lying-flat</span></div>
       </header>
-      <div class="${post.format === 'lake' ? 'lake-document' : `prose${post.layout === 'paper' ? ' lake-document' : ''}`}">${post.content}</div>
+      <div class="${post.format === 'lake' || post.layout === 'paper' ? 'lake-document' : 'prose'}">${post.content}</div>
       <footer class="post-footer">
         <div class="post-topics" aria-label="文章主题">${post.tags.map((tag) => `<span>${escape(tag)}</span>`).join('')}</div>
         <div class="post-actions"><a href="#top">返回顶部 ↑</a></div>
