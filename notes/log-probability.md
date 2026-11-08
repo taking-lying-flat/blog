@@ -398,7 +398,7 @@ m=\max_{j\ne y}z_j.\tag{35}
 
 # 🐨 Autoregressive Pretraining and SFT
 
-设序列为 $`x=(x_0,\ldots,x_T)`$，以首个 token $`x_0`$ 为初始上下文。由条件概率定义 $`P(A,B\mid C)=P(A\mid C)P(B\mid A,C)`$，递归展开得到概率链式法则：
+设序列为 $`x=(x_0,\ldots,x_T)`$，以首 token $`x_0`$ 为初始上下文。由条件概率定义 $`P(A,B\mid C)=P(A\mid C)P(B\mid A,C)`$，递归展开得到概率链式法则：
 
 ```math
 \begin{aligned}
@@ -414,7 +414,8 @@ P_\theta(x_{1:T}\mid x_0)
 ```math
 -\ln P_\theta(x_{1:T}\mid x_0)
 =-\sum_{t=0}^{T-1}\ln P_\theta(x_{t+1}\mid x_{\le t})
-=\sum_{t=0}^{T-1}\ell_t.\tag{37}
+=\sum_{t=0}^{T-1}\ell_t,\qquad
+\text{where}\quad \ell_t=-\ln P_\theta(x_{t+1}\mid x_{\le t}).\tag{37}
 ```
 
 若 $`x_{1:M}`$ 为提示词、$`x_{M+1:T}`$ 为回答，仅监督回答的 SFT 最大化回答的条件似然。链式分解使提示词的概率因子相消：
@@ -450,54 +451,17 @@ P_\theta(x_{M+1:T}\mid x_{\le M})
 
 **预训练（PT）。** 文档 token 按自回归顺序提供监督，文档结束标记也可以作为下一 token 的预测目标。Qwen 使用 `<|endoftext|>` 表示文档边界；多个文档拼接时，该标记位于相邻文档之间。它作为词表中的一个预测类别，其损失仍为前文的 $`-\ln p_y`$。
 
-**Megatron Core** 的词表并行交叉熵将归一化计算分配至各张量并行 rank：MAX 归约得到全词表最大值，SUM 归约汇总目标 logit 与指数和。以下为 `label_smoothing=0` 时的前向核心，省略自定义反向传播与训练循环：
-
-```python Megatron Core · vocab_parallel_cross_entropy
-# 来源：Megatron Core 词表并行交叉熵，前向计算节选。
-# https://github.com/NVIDIA/Megatron-LM/blob/37cb4f261f103a7c882b5e310082fd0b7dbb226f/megatron/core/tensor_parallel/cross_entropy.py
-import torch.distributed as dist
-
-z = vocab_parallel_logits.float()                 # [..., V_local]
-m = z.amax(dim=-1)
-dist.all_reduce(m, op=dist.ReduceOp.MAX, group=tp_group)
-z = z - m.unsqueeze(-1)
-
-outside = (target < vocab_start_index) | (target >= vocab_end_index)
-local_id = (target - vocab_start_index).masked_fill(outside, 0)
-target_z = z.gather(-1, local_id.unsqueeze(-1)).squeeze(-1)
-target_z = target_z.masked_fill(outside, 0)
-sum_exp = z.exp().sum(dim=-1)
-
-dist.all_reduce(target_z, op=dist.ReduceOp.SUM, group=tp_group)
-dist.all_reduce(sum_exp, op=dist.ReduceOp.SUM, group=tp_group)
-log_prob = target_z - sum_exp.log()               # 等于 -CE
-```
-
-`target` 为全局词表 ID，仅包含该 token 的词表分片提供目标 logit，其余 rank 的贡献为零。`target_z` 已减去全局最大值，再减去 `sum_exp.log()` 即得到目标 log-prob；取负后按式 (39) 的有效位置掩码归约。该计算同样适用于 SFT。
-
 Qwen2.5-7B Base 的 `generation_config.json` 将 `<|endoftext|>` 对应的 `151643` 设为生成停止 ID。**文档边界参与训练，停止配置作用于生成**；拼接训练序列可以跨过文档边界继续计算。
-
-```python Qwen2.5-7B Base · generation_config.json 摘录
-# 来源：Qwen 官方文档与模型仓库。
-# https://qwen.readthedocs.io/en/latest/getting_started/concepts.html
-# https://huggingface.co/Qwen/Qwen2.5-7B/blob/main/generation_config.json
-generation_config = {
-    "eos_token_id": 151643,                       # <|endoftext|>
-}
-```
 
 **监督微调（SFT）。** 仅监督回答时，提示词仍参与前向计算，标签设为 `-100`；回答及其结束标记保留真实 token ID。多轮对话按各段 assistant 回答构造监督掩码。Qwen2.5-Instruct 的聊天模板在每条消息末尾插入 `<|im_end|>`，回答末尾的该标记应参与监督，使模型学习结束回答；用户与系统消息及其结束标记均不计入损失。
 
 Transformers v4.44.2 的 `Qwen2ForCausalLM.forward` 将标签与预测错开一位。`response_mask` 标记回答及结束 token，`attention_mask` 排除填充，两者均与 `input_ids` 同形。**标签掩码应用于原始 token 位置，错位操作在损失分支中执行**：
 
 ```python Transformers · Qwen2ForCausalLM.forward
-# 标签准备：仅保留回答及其结束标记，填充位置不参与损失。
-# https://huggingface.co/docs/trl/en/sft_trainer#train-on-assistant-messages-only
+# https://github.com/huggingface/transformers/blob/v4.44.2/src/transformers/models/qwen2/modeling_qwen2.py
 labels = input_ids.clone()
 labels[~response_mask.bool() | ~attention_mask.bool()] = -100
 
-# 模型损失分支：Transformers v4.44.2，省略 Transformer 主干。
-# https://github.com/huggingface/transformers/blob/v4.44.2/src/transformers/models/qwen2/modeling_qwen2.py
 from torch.nn import CrossEntropyLoss
 
 logits = self.lm_head(hidden_states).float()
@@ -508,23 +472,6 @@ shift_logits = shift_logits.view(-1, self.config.vocab_size)
 shift_labels = shift_labels.view(-1).to(shift_logits.device)
 loss = loss_fct(shift_logits, shift_labels)
 ```
-
-类别索引直接指定 one-hot 向量的非零项，无需构造完整标签向量。`CrossEntropyLoss` 忽略 `-100`，对其余标签的负对数似然求平均。Qwen2.5-Instruct 的填充 ID 与 `<|endoftext|>` 共用 `151643`，因此应依据 `attention_mask` 识别填充，避免同时屏蔽真实文档结束标记。PT 也可使用此损失分支，只需保留全部有效位置的标签。
-
-Qwen2.5-7B-Instruct 的 tokenizer 将 `<|im_end|>` 设为 EOS，而生成配置保留两个停止 ID：`151645` 对应 `<|im_end|>`，`151643` 对应 `<|endoftext|>`。**生成任一停止 token 即满足结束条件**；列表中的两个 ID 是可选停止值，EOS 则是配置中的用途名称。
-
-```python Qwen2.5-7B-Instruct · EOS 与生成停止配置
-# 来源：官方 tokenizer_config.json 与 generation_config.json，相关字段摘录。
-# https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/tokenizer_config.json
-# https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/generation_config.json
-tokenizer_config = {"eos_token": "<|im_end|>"}     # ID 151645
-generation_config = {
-    "eos_token_id": [151645, 151643],             # <|im_end|> 或 <|endoftext|>
-    "pad_token_id": 151643,
-}
-```
-
-训练数据按聊天模板使用 `add_generation_prompt=False`，模板已附加的 `<|im_end|>` 无需重复添加。`generation_config.eos_token_id` 控制生成停止，不决定训练标签或监督掩码；上述单个与两个停止 ID 的区别属于 Qwen2.5 Base 与 Instruct 的具体配置，其他模型应以各自配置为准。
 
 # 🐼 Log-Probability Computation
 
