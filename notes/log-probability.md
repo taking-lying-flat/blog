@@ -2,27 +2,17 @@
 
 # 🦊 Binary logistic regression, binary cross-entropy loss
 
-交叉熵损失以目标分布为权重，计算模型预测概率的平均负对数值。硬标签监督下，逐样本交叉熵等于观测标签的负对数似然；自回归语言模型按前缀预测下一 token，因此序列负对数似然可分解为逐 token 损失之和：
-
-```math
-\mathcal L_{\mathrm{NLL}}(x_{1:T};\theta)
-=-\ln P_\theta(x_{1:T})
-=-\sum_{t=1}^{T}\ln P_\theta(x_t\mid x_{<t}).\tag{1}
-```
-
-式 (1) 的每一项是 token 在模型分布下的条件自信息，单位为 nat；除以 $`\ln 2`$ 后，可解释为以 bit 计量的[理想码长](https://d2l.smola.org/chapter_mdl-information-theory/mdl-coding-compression.html)。对有效 token 取平均时，损失单位为 nat/token。这里的码长表示概率编码代价，不等于 token 所对应字符串的字符数或字节数。
-
 设二分类数据集包含 $`m`$ 个样本，第 $`i`$ 个样本的输入为 $`x^{(i)}`$，标签为 $`y^{(i)}\in\{0,1\}`$。模型通过 logistic 函数将得分映射为类别概率：
 
 ```math
 \hat y^{(i)}=h\!\left(f(x^{(i)};\theta)\right)
-=\frac{1}{1+e^{-f(x^{(i)};\theta)}}.\tag{2}
+=\frac{1}{1+e^{-f(x^{(i)};\theta)}}.\tag{1}
 ```
 
-其中，$`f(x;\theta)`$ 为参数化得分函数，$`\theta`$ 为模型参数，$`h`$ 为 logistic 函数，式 (2) 对应 PyTorch 的 `torch.sigmoid(model(x))`。输出 $`\hat y^{(i)}`$ 表示标签取 1 的条件概率，伯努利模型为
+其中，$`f(x;\theta)`$ 为参数化得分函数，$`\theta`$ 为模型参数，$`h`$ 为 logistic 函数，式 (1) 对应 PyTorch 的 `torch.sigmoid(model(x))`。输出 $`\hat y^{(i)}`$ 表示标签取 1 的条件概率，伯努利模型为
 
 ```math
-P(y^{(i)}=1\mid x^{(i)};\theta)=\hat y^{(i)},\qquad P(y^{(i)}=0\mid x^{(i)};\theta)=1-\hat y^{(i)}.\tag{3}
+P(y^{(i)}=1\mid x^{(i)};\theta)=\hat y^{(i)},\qquad P(y^{(i)}=0\mid x^{(i)};\theta)=1-\hat y^{(i)}.\tag{2}
 ```
 
 ```math
@@ -33,7 +23,7 @@ P(y^{(i)}\mid x^{(i)};\theta)
 \hat y^{(i)},&y^{(i)}=1,\\
 1-\hat y^{(i)},&y^{(i)}=0.
 \end{cases}
-\tag{4}
+\tag{3}
 ```
 
 最大似然估计选择使观测标签的联合条件概率最大的参数 $`\theta`$。对相互独立的样本，数据集 $`X,y`$ 的似然函数为
@@ -43,13 +33,13 @@ P(y^{(i)}\mid x^{(i)};\theta)
 =\prod_{i=1}^{m}P(y^{(i)}\mid x^{(i)};\theta)=\prod_{i=1}^{m}
 \bigl(\hat y^{(i)}\bigr)^{y^{(i)}}
 \bigl(1-\hat y^{(i)}\bigr)^{1-y^{(i)}}.
-\tag{5}
+\tag{4}
 ```
 
 ```math
 \theta_{\mathrm{MLE}}
 =\underset{\theta}{\operatorname{argmax}}\,
-\mathcal L(\theta;X,y).\tag{6}
+\mathcal L(\theta;X,y).\tag{5}
 ```
 
 由于对数函数在正数域上严格递增，最大化似然与最大化对数似然具有相同的最优解：
@@ -58,7 +48,7 @@ P(y^{(i)}\mid x^{(i)};\theta)
 \theta_{\mathrm{MLE}}
 =\underset{\theta}{\operatorname{argmax}}\,\mathcal L
 =\underset{\theta}{\operatorname{argmax}}\,\log\mathcal L.
-\tag{7}
+\tag{6}
 ```
 
 记 $`\ell(\theta)=\log\mathcal L(\theta)`$，将乘积转为对数之和，得到
@@ -75,7 +65,7 @@ P(y^{(i)}\mid x^{(i)};\theta)
 &=\sum_{i=1}^{m}\left[
 y^{(i)}\log\hat y^{(i)}
 +(1-y^{(i)})\log(1-\hat y^{(i)})\right].
-\end{aligned}\tag{8}
+\end{aligned}\tag{7}
 ```
 
 对数似然取负即为二元交叉熵损失：
@@ -84,7 +74,7 @@ y^{(i)}\log\hat y^{(i)}
 J(\theta)=-\ell(\theta)
 =-\sum_{i=1}^{m}\left[
 y^{(i)}\log\hat y^{(i)}
-+(1-y^{(i)})\log(1-\hat y^{(i)})\right].\tag{9}
++(1-y^{(i)})\log(1-\hat y^{(i)})\right].\tag{8}
 ```
 
 多分类将标签空间扩展为 $`C`$ 个类别；自回归语言建模即在词表 $`V`$ 上估计下一 token 的条件概率 $`P(w_i\mid x)`$。记各类别得分为 $`f_j(x;\theta_j)`$。类别概率之和须为 1，独立应用 sigmoid 无法保证此约束；softmax 则将得分向量 $`t=(t_1,\ldots,t_C)`$ 映射为概率向量：
@@ -94,7 +84,7 @@ y^{(i)}\log\hat y^{(i)}
 =\left[
 \frac{e^{t_1}}{\sum_{j=1}^{C}e^{t_j}},\ldots,
 \frac{e^{t_C}}{\sum_{j=1}^{C}e^{t_j}}
-\right]^{\mathsf T}.\tag{10}
+\right]^{\mathsf T}.\tag{9}
 ```
 
 对有限得分，各分量均为正且总和为 1。多分类概率模型及其负对数似然为
@@ -108,7 +98,7 @@ y^{(i)}\log\hat y^{(i)}
 \frac{\exp(f_1(x^{(i)};\theta_1))}{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))},\ldots,
 \frac{\exp(f_C(x^{(i)};\theta_C))}{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))}
 \right]^{\mathsf T}.
-\end{gathered}\tag{11}
+\end{gathered}\tag{10}
 ```
 
 ```math
@@ -122,10 +112,20 @@ f_1(x^{(i)};\theta_1),\ldots,f_C(x^{(i)};\theta_C)
 \right)_{y^{(i)}} =-\sum_{i=1}^{m}\log
 \frac{\exp(f_{y^{(i)}}(x^{(i)};\theta_{y^{(i)}}))}
 {\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))}.
-\end{aligned}\tag{12}
+\end{aligned}\tag{11}
 ```
 
-在神经网络中，分类头通常为输出维度等于类别数 $`C`$ 的线性层，其输出称为 logits；对 logits 应用 softmax，即得到预测类别概率。式 (12) 对应多分类交叉熵损失。PyTorch 的 `CrossEntropyLoss` 直接接收 logits，也就是式中的 $`f_j`$。
+在神经网络中，分类头通常为输出维度等于类别数 $`C`$ 的线性层，其输出称为 logits；对 logits 应用 softmax，即得到预测类别概率。式 (11) 对应多分类交叉熵损失。PyTorch 的 `CrossEntropyLoss` 直接接收 logits，也就是式中的 $`f_j`$。
+
+交叉熵损失以目标分布为权重，计算模型预测概率的平均负对数值。硬标签监督下，逐样本交叉熵等于观测标签的负对数似然；自回归语言模型按前缀预测下一 token，因此序列负对数似然可分解为逐 token 损失之和：
+
+```math
+\mathcal L_{\mathrm{NLL}}(x_{1:T};\theta)
+=-\ln P_\theta(x_{1:T})
+=-\sum_{t=1}^{T}\ln P_\theta(x_t\mid x_{<t}).\tag{12}
+```
+
+式 (12) 的每一项是 token 在模型分布下的条件自信息，单位为 nat；除以 $`\ln 2`$ 后，可解释为以 bit 计量的[理想码长](https://d2l.smola.org/chapter_mdl-information-theory/mdl-coding-compression.html)。对有效 token 取平均时，损失单位为 nat/token。这里的码长表示概率编码代价。
 
 # Entropy and KL Divergence
 
