@@ -106,7 +106,7 @@ f_1(x^{(i)};\theta_1),\ldots,f_C(x^{(i)};\theta_C)
 \end{aligned}\tag{10}
 ```
 
-神经网络的分类头通常为输出维度等于类别数 $`C`$ 的线性层，其输出称为 logits，经 softmax 归一化后得到类别概率。式 (10) 给出了多分类交叉熵损失。<strong>交叉熵是模型预测概率的负对数在目标分布下的期望</strong>。<strong style="color: #1d5ea6">硬标签监督下，逐样本交叉熵等于观测标签的负对数似然</strong>；自回归语言模型根据前缀预测下一 token，序列负对数似然因而分解为逐 token 损失之和：
+神经网络的分类头通常为输出维度等于类别数 $`C`$ 的线性层，其输出称为 logits，经 softmax 归一化后得到类别概率。式 (10) 给出多分类交叉熵损失。<strong>交叉熵是模型预测概率的负对数在目标分布下的期望</strong>。<strong style="color: #1d5ea6">硬标签监督下，逐样本交叉熵等于观测标签的负对数似然</strong>；自回归语言模型根据前缀预测下一 token，序列负对数似然因而分解为逐 token 损失之和：
 
 ```math
 \mathcal L_{\mathrm{NLL}}(x_{1:T};\theta)
@@ -316,9 +316,7 @@ p_j=P_\theta(X=j\mid h)=\frac{e^{z_j}}{Z},\qquad
 Z=\sum_{k=0}^{V-1}e^{z_k},\qquad j=0,\ldots,V-1.\tag{27}
 ```
 
-有限 logits 保证 $`0<p_j<1`$ 且 $`\sum_jp_j=1`$。
-
-令 $`B=\mathbf1\{X=y\}`$，以 1 和 0 分别表示目标事件及其补事件。由于 $`\{X\ne y\}`$ 是所有非目标事件 $`\{X=j\}`$、$`j\ne y`$ 的互斥并集，概率可加性给出
+有限 logits 保证 $`0<p_j<1`$ 且 $`\sum_jp_j=1`$。令 $`B=\mathbf1\{X=y\}`$，以 1 和 0 分别表示目标事件及其补事件。由于 $`\{X\ne y\}`$ 是所有非目标事件 $`\{X=j\}`$、$`j\ne y`$ 的互斥并集，概率可加性给出
 
 ```math
 P_\theta(B=1\mid h)=p_y,\qquad
@@ -326,9 +324,7 @@ P_\theta(B=0\mid h)=\sum_{j\ne y}P_\theta(X=j\mid h)
 =\sum_{j\ne y}p_j=1-p_y.\tag{28}
 ```
 
-因此 $`B\mid h\sim\operatorname{Bernoulli}(p_y)`$，按“目标／其余”的顺序，合并后的概率向量为 $`\bar p=(p_y,1-p_y)`$。合并前后总概率均为 1，无需重新归一化。
-
-设目标分布为 $`q=(q_0,\ldots,q_{V-1})`$，满足 $`q_j\ge0`$、$`\sum_jq_j=1`$。交叉熵按 $`q_j`$ 对整个词表加权，此处尚未对 $`q`$ 作 one-hot 假设。按相同的事件划分，目标分布合并为 $`\bar q=(q_y,1-q_y)`$。对每个非目标类，$`p_j=(1-p_y)\frac{p_j}{1-p_y}`$，其中 $`p_j/(1-p_y)`$ 是非目标事件发生时类别 $`j`$ 的条件概率。将这一分解代入交叉熵定义，
+因此 $`B\mid h\sim\operatorname{Bernoulli}(p_y)`$，按“目标／其余”的顺序，合并分布为 $`\bar p=(p_y,1-p_y)`$，总概率仍为 1。任意目标分布 $`q=(q_0,\ldots,q_{V-1})`$ 满足 $`q_j\ge0`$、$`\sum_jq_j=1`$，同样合并为 $`\bar q=(q_y,1-q_y)`$。交叉熵按 $`q_j`$ 对整个词表加权；对非目标类作分解 $`p_j=(1-p_y)\frac{p_j}{1-p_y}`$，其中 $`p_j/(1-p_y)`$ 是非目标事件下类别 $`j`$ 的条件概率，代入交叉熵定义可得
 
 ```math
 \begin{aligned}
@@ -343,9 +339,7 @@ H(q,p)
 \end{aligned}\tag{29}
 ```
 
-第一项 $`H(\bar q,\bar p)=-q_y\ln p_y-(1-q_y)\ln(1-p_y)`$ 是合并后的二元交叉熵；剩余项 $`-\sum_{j\ne y}q_j\ln\frac{p_j}{1-p_y}`$ 保留了非目标类内部的监督信息。它一般不为零，因此概率合并不能直接推出损失相等。
-
-当监督标签是一个确定的 token $`y`$ 时，才取硬标签分布 $`q_y=1`$、$`q_j=0\ (j\ne y)`$，此时 $`\bar q=(1,0)`$。分别代入原始交叉熵与合并后的交叉熵，
+其中 $`H(\bar q,\bar p)=-q_y\ln p_y-(1-q_y)\ln(1-p_y)`$ 为二元交叉熵；剩余项 $`-\sum_{j\ne y}q_j\ln\frac{p_j}{1-p_y}`$ 保留非目标类内部的监督信息，一般不为零，因此概率合并不能直接推出损失相等。当以确定的 token $`y`$ 作硬标签时，$`q_y=1`$、$`q_j=0\ (j\ne y)`$，相应地 $`\bar q=(1,0)`$。代入交叉熵可得
 
 ```math
 \begin{aligned}
@@ -356,9 +350,7 @@ H(\bar q,\bar p)
 \end{aligned}\tag{30}
 ```
 
-<strong style="color: #1d5ea6">在 one-hot 监督下，非目标类内部的损失项为零，合并前后的交叉熵相等。</strong>这一等价关系适用于上述不带类别权重的硬标签损失。
-
-该伯努利分布的二元 logit 为其对数几率。代入式 (27) 与式 (28)，概率比中的公共归一化因子 $`Z`$ 相消：
+<strong style="color: #1d5ea6">在 one-hot 监督下，非目标类内部的损失项为零，合并前后的交叉熵相等。</strong>这一结论针对不带类别权重的硬标签损失。该伯努利分布的二元 logit 为其对数几率；代入式 (27) 与式 (28)，公共归一化因子 $`Z`$ 相消：
 
 ```math
 \Delta=\ln\frac{p_y}{1-p_y}
@@ -367,7 +359,7 @@ H(\bar q,\bar p)
 =z_y-\ln\sum_{j\ne y}e^{z_j}.\tag{31}
 ```
 
-令 $`s=\operatorname{LSE}_{j\ne y}(z_j)=\ln\sum_{j\ne y}e^{z_j}`$，则 $`\Delta=z_y-s`$。由 $`e^s=\sum_{j\ne y}e^{z_j}`$，$`s`$ 对应非目标类合并后的指数权重。以 $`(z_y,s)`$ 为二分类 logits，得到
+令 $`s=\ln\sum_{j\ne y}e^{z_j}`$，则 $`\Delta=z_y-s`$。由 $`e^s=\sum_{j\ne y}e^{z_j}`$，$`s`$ 对应非目标类合并后的指数权重。以 $`(z_y,s)`$ 为二分类 logits，得到
 
 ```math
 \operatorname{softmax}(z_y,s)
@@ -375,7 +367,7 @@ H(\bar q,\bar p)
 =\left(p_y,1-p_y\right)=\bar p.\tag{32}
 ```
 
-<strong style="color: #1d5ea6">概率空间中的类别求和，对应 logits 空间中的 log-sum-exp；目标 logit 与该合并值之差即为二元 logit。</strong>由 $`p_y/(1-p_y)=e^\Delta`$ 可得
+二分类概率由得分差 $`\Delta=z_y-s`$ 确定。由 $`p_y/(1-p_y)=e^\Delta`$ 可得
 
 ```math
 p_y=\frac{e^\Delta}{1+e^\Delta}
@@ -383,7 +375,7 @@ p_y=\frac{e^\Delta}{1+e^\Delta}
 1-p_y=\sigma(-\Delta).\tag{33}
 ```
 
-在上述硬标签条件下，将式 (31)、(33) 代入式 (30)，多分类交叉熵等价于二元 logistic 损失：
+合并针对当前目标，$`\Delta`$ 仍依赖全部词表得分。在上述硬标签条件下，将式 (31)、(33) 代入式 (30)，多分类交叉熵等价于二元 logistic 损失：
 
 ```math
 \ell=H(q,p)=H(\bar q,\bar p)
@@ -393,7 +385,16 @@ p_y=\frac{e^\Delta}{1+e^\Delta}
 =\operatorname{softplus}(-\Delta).\tag{34}
 ```
 
-合并针对当前目标，$`\Delta`$ 仍依赖全部词表得分。
+上述合并项 $`s=\ln\sum_{j\ne y}e^{z_j}`$ 称为 log-sum-exp。它将概率质量的求和表示为 logits 的合并，也可通过最大值平移稳定求值。令 $`m=\max_{j\ne y}z_j`$，从指数和中提取 $`e^m`$，则
+
+```math
+s=\operatorname{LSE}_{j\ne y}(z_j)
+=\ln\left(e^m\sum_{j\ne y}e^{z_j-m}\right)
+=m+\ln\sum_{j\ne y}e^{z_j-m},\qquad
+m=\max_{j\ne y}z_j.\tag{35}
+```
+
+<strong style="color: #1d5ea6">采用最大值平移的 log-sum-exp 计算，可避免指数上溢。</strong>由于 $`z_j-m\le0`$，各指数项均不大于 1，且至少一项等于 1；指数和位于 $`[1,V-1]`$，也避免对零取对数。实现时直接计算式 (35) 的最后一式，无需显式求 $`e^m`$。
 
 # 🐨 Autoregressive Pretraining and SFT
 
@@ -405,7 +406,7 @@ P_\theta(x_{1:T}\mid x_0)
 &=P_\theta(x_1\mid x_0)P_\theta(x_{2:T}\mid x_{\le 1})\\[4pt]
 &=P_\theta(x_1\mid x_0)P_\theta(x_2\mid x_{\le 1})\cdots P_\theta(x_T\mid x_{\le T-1})
 =\prod_{t=0}^{T-1}P_\theta(x_{t+1}\mid x_{\le t}).
-\end{aligned}\tag{35}
+\end{aligned}\tag{36}
 ```
 
 链式分解在每一步保留完整前缀，无需假设 token 相互独立。对乘积取负对数，序列损失就是逐 token 损失之和：
@@ -413,7 +414,7 @@ P_\theta(x_{1:T}\mid x_0)
 ```math
 -\ln P_\theta(x_{1:T}\mid x_0)
 =-\sum_{t=0}^{T-1}\ln P_\theta(x_{t+1}\mid x_{\le t})
-=\sum_{t=0}^{T-1}\ell_t.\tag{36}
+=\sum_{t=0}^{T-1}\ell_t.\tag{37}
 ```
 
 若 $`x_{1:M}`$ 为提示词、$`x_{M+1:T}`$ 为回答，[仅监督回答的 SFT](https://huggingface.co/docs/trl/en/sft_trainer#train-on-completion-only)最大化回答的条件似然。链式分解使提示词的概率因子相消：
@@ -421,7 +422,7 @@ P_\theta(x_{1:T}\mid x_0)
 ```math
 P_\theta(x_{M+1:T}\mid x_{\le M})
 =\frac{P_\theta(x_{1:T}\mid x_0)}{P_\theta(x_{1:M}\mid x_0)}
-=\prod_{t=M}^{T-1}P_\theta(x_{t+1}\mid x_{\le t}).\tag{37}
+=\prod_{t=M}^{T-1}P_\theta(x_{t+1}\mid x_{\le t}).\tag{38}
 ```
 
 令 $`a_t\in\{0,1\}`$ 表示是否监督位置 $`t`$ 对下一 token 的预测，且至少有一个有效监督位置。将掩码应用于逐 token 损失，并按有效位置数归约：
@@ -429,7 +430,7 @@ P_\theta(x_{M+1:T}\mid x_{\le M})
 ```math
 \mathcal L(a;\theta)
 =\frac{\sum_{t=0}^{T-1}a_t\ell_t}{\sum_{t=0}^{T-1}a_t}
-=-\frac{\sum_{t=0}^{T-1}a_t\ln P_\theta(x_{t+1}\mid x_{\le t})}{\sum_{t=0}^{T-1}a_t}.\tag{38}
+=-\frac{\sum_{t=0}^{T-1}a_t\ln P_\theta(x_{t+1}\mid x_{\le t})}{\sum_{t=0}^{T-1}a_t}.\tag{39}
 ```
 
 不含填充时，PT 取所有 $`a_t=1`$；仅监督回答的 SFT 取 $`a_t=\mathbf1\{t\ge M\}`$，得到
@@ -440,7 +441,7 @@ P_\theta(x_{M+1:T}\mid x_{\le M})
 &=-\frac{1}{T}\sum_{t=0}^{T-1}\ln P_\theta(x_{t+1}\mid x_{\le t}),\\[4pt]
 \mathcal L_{\mathrm{SFT}}(\theta)
 &=-\frac{1}{T-M}\sum_{t=M}^{T-1}\ln P_\theta(x_{t+1}\mid x_{\le t}).
-\end{aligned}\tag{39}
+\end{aligned}\tag{40}
 ```
 
 <strong style="color: #1d5ea6">PT 与 SFT 使用相同的逐 token 负对数似然；上述损失形式的差异来自监督位置和平均时的分母。</strong>批量数据可按全部有效监督位置累加分子与分母，多轮对话则通过掩码选择回答片段。
@@ -463,17 +464,17 @@ P_\theta(x_{M+1:T}\mid x_{\le M})
 &=z_{t,x_{t+1}}-
 \left[m_t+\ln\sum_{j=0}^{V-1}\exp(z_{t,j}-m_t)\right],
 \qquad m_t=\max_j z_{t,j}.
-\end{aligned}\tag{40}
+\end{aligned}\tag{41}
 ```
 
-式 (40) 将概率比值的对数展开为两项之差，并从指数和中提取 $`\exp(m_t)`$。平移后的指数输入均不大于零，从而避免指数上溢；结果取负即得到式 (34) 的逐 token 损失。
+式 (41) 将概率比值的对数展开为两项之差，并从指数和中提取 $`\exp(m_t)`$。平移后的指数输入均不大于零，从而避免指数上溢；结果取负即得到式 (34) 的逐 token 损失。
 
 目标 log-prob 通过归一化项依赖所有词表 logits。由 $`\ell_t=-z_{t,y_t}+\ln\sum_k\exp(z_{t,k})`$ 求导，得到
 
 ```math
 \frac{\partial\ell_t}{\partial z_{t,j}}
 =-\mathbf 1\{j=y_t\}+\frac{\exp(z_{t,j})}{\sum_{k=0}^{V-1}\exp(z_{t,k})}
-=p_{t,j}-\mathbf 1\{j=y_t\}.\tag{41}
+=p_{t,j}-\mathbf 1\{j=y_t\}.\tag{42}
 ```
 
 Transformers [`LlamaForCausalLM.forward`（v4.44.2）](https://github.com/huggingface/transformers/blob/v4.44.2/src/transformers/models/llama/modeling_llama.py#L1208) 接收与 `input_ids` 位置对齐的 `labels`，并在损失分支中将 logits 与标签错开一位：
@@ -494,7 +495,7 @@ if labels is not None:
 
 `labels[..., 1:]` 提供式 (30) 中 one-hot 向量非零项的类别索引，`logits[..., :-1, :]` 提供对应前缀的预测。这一错位使前缀预测与下一 token 对齐；计算时仅需类别索引，无需显式构造 one-hot 张量。`CrossEntropyLoss` 忽略标记为 `-100` 的位置，并对其余标签计算负对数似然。
 
-**Megatron Core**：[词表并行交叉熵](https://github.com/NVIDIA/Megatron-LM/blob/37cb4f261f103a7c882b5e310082fd0b7dbb226f/megatron/core/tensor_parallel/cross_entropy.py#L159)将式 (40) 的计算分配至各张量并行 rank。MAX 归约得到全词表最大值，SUM 归约汇总目标 logit 与指数和。以下前向计算取 `label_smoothing=0`：
+**Megatron Core**：[词表并行交叉熵](https://github.com/NVIDIA/Megatron-LM/blob/37cb4f261f103a7c882b5e310082fd0b7dbb226f/megatron/core/tensor_parallel/cross_entropy.py#L159)将式 (41) 的计算分配至各张量并行 rank。MAX 归约得到全词表最大值，SUM 归约汇总目标 logit 与指数和。以下前向计算取 `label_smoothing=0`：
 
 ```python Megatron Core · vocab_parallel_cross_entropy
 import torch.distributed as dist
