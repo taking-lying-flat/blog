@@ -499,17 +499,7 @@ loss = loss_fct(shift_logits, shift_labels)
 
 **归一化求和需要足够的表示范围。** 若采用 FP16 求和，大词表的累加结果仍可能超过其最大有限值 65504。指数、归约与对数采用 FP32 可扩大计算范围，但仍需最大值平移；已经产生的 `inf` 或零值不能通过后续类型转换恢复。
 
-**反向传播。** 训练通过负对数似然的梯度更新模型。虽然每个位置仅提取目标 token 的 log-prob，式 (41) 的归一化项仍包含全部词表 logits，因此各类别均参与梯度计算。对损失 $`\ell_t=-z_{t,x_{t+1}}+\ln\sum_k\exp(z_{t,k})`$ 求导：
-
-```math
-\frac{\partial\ell_t}{\partial z_{t,j}}
-=-\mathbf 1\{j=x_{t+1}\}+\frac{\exp(z_{t,j})}{\sum_{k=0}^{V-1}\exp(z_{t,k})}
-=p_{t,j}-\mathbf 1\{j=x_{t+1}\}.\tag{42}
-```
-
-目标类别的梯度为 $`p_{t,x_{t+1}}-1`$，每个非目标类别的梯度为 $`p_{t,j}`$。**提取一个目标 log-prob 即可形成逐 token 损失，反向传播仍通过归一化项向其余类别传递梯度。**
-
-**Liger-Kernel** 在损失计算中的核心优化是<strong>融合词表投影与损失计算，减少完整词表中间张量的存储和读写</strong>。其 `_selective_logprob_forward` 用于 PPO 中的目标 token 评分，沿 token 位置与词表两个维度分块，每块完成投影后立即更新归一化统计量，并提取目标 logit。若共有 $`N`$ 个预测位置、词表大小为 $`V`$，每块包含 $`C`$ 个位置与 $`K`$ 个类别，临时 logits 的存储规模由 $`O(NV)`$ 降至 $`O(CK)`$。<strong>归一化覆盖全部类别，最终返回每个位置的目标 log-prob，以及供反向重计算使用的 log-sum-exp。</strong>
+**Liger-Kernel** 将词表投影与损失计算融合，按 token 位置和词表两个维度分块。每次仅生成当前块的 logits，并立即更新归一化统计量、提取目标 logit；临时 logits 的存储规模由位置块与词表块的大小决定，从而避免保存完整的全序列词表矩阵。<strong>归一化仍覆盖全部类别，每个位置仅返回目标 log-prob 与供反向重计算使用的 log-sum-exp。</strong>
 
 ```python Liger-Kernel · _selective_logprob_forward
 m = torch.full((h.shape[0],), -float("inf"), device=h.device, dtype=torch.float32)
