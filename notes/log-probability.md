@@ -485,7 +485,7 @@ loss = loss_fct(shift_logits, shift_labels)
 \end{aligned}\tag{41}
 ```
 
-式 (41) 将分子与分母同时除以 $`\exp(m_t)`$，保持概率比值不变。对有限 logits，平移后的指数输入 $`a=z_{t,j}-m_t\le0`$，各指数项不大于 1，且至少一项等于 1。**最大值平移避免单个指数项上溢，并保证指数和不因所有项同时下溢而变为零；较小的指数项仍可能下溢。**
+式 (41) 将分子与分母同时除以 $`\exp(m_t)`$，保持概率比值不变。对有限 logits，取 $`m_t=\max_j z_{t,j}`$ 后，最大 logit 对应的指数项为 $`\exp(0)=1`$，其余指数项介于 0 与 1 之间，因此 $`1\le\sum_j\exp(z_{t,j}-m_t)\le V`$。<strong>指数项不超过 1，避免单项指数上溢；指数和至少为 1，保证取对数时输入不为零。</strong>较小的指数项仍可能下溢，累加结果能否表示则取决于计算精度与词表大小。
 
 **上溢与下溢区间。** 以下区间针对 $`\exp(a)`$ 的结果写入相应格式，采用最近偶数舍入并保留次正规数，端点保留两位小数。上溢产生 $`+\infty`$；次正规数位于最小正规正数与零之间，仍可非零；继续减小 $`a`$，结果最终舍入为零。
 
@@ -499,40 +499,17 @@ loss = loss_fct(shift_logits, shift_labels)
 
 在式 (41) 中，上述 $`a`$ 是**目标或非目标 logit 与最大 logit 的差**。因此，FP16 下落后最大值约 17.33 以上的指数项可能归零，BF16 与 FP32 的对应间隔约为 92.88 和 103.97。直接计算 log-prob 使用 $`z_{t,x_{t+1}}-m_t`$，无需先求目标概率再取对数，可避免目标概率舍入为零后产生 $`\ln0=-\infty`$。
 
-**指数项不溢出，不代表求和不溢出。** 平移后的指数和介于 1 与词表大小 $`V`$ 之间；若采用 FP16 求和，大词表的累加结果仍可能超过其最大有限值 65504。指数、归约与对数采用 FP32 可扩大计算范围，但仍需最大值平移；已经产生的 `inf` 或零值不能通过后续类型转换恢复。
+**归一化求和需要足够的表示范围。** 若采用 FP16 求和，大词表的累加结果仍可能超过其最大有限值 65504。指数、归约与对数采用 FP32 可扩大计算范围，但仍需最大值平移；已经产生的 `inf` 或零值不能通过后续类型转换恢复。
 
-目标 log-prob 通过归一化项依赖所有词表 logits。由 $`\ell_t=-z_{t,y_t}+\ln\sum_k\exp(z_{t,k})`$ 求导，得到
+**反向传播。** 训练通过负对数似然的梯度更新模型。虽然每个位置仅提取目标 token 的 log-prob，式 (41) 的归一化项仍包含全部词表 logits，因此各类别均参与梯度计算。对损失 $`\ell_t=-z_{t,x_{t+1}}+\ln\sum_k\exp(z_{t,k})`$ 求导：
 
 ```math
 \frac{\partial\ell_t}{\partial z_{t,j}}
-=-\mathbf 1\{j=y_t\}+\frac{\exp(z_{t,j})}{\sum_{k=0}^{V-1}\exp(z_{t,k})}
-=p_{t,j}-\mathbf 1\{j=y_t\}.\tag{42}
+=-\mathbf 1\{j=x_{t+1}\}+\frac{\exp(z_{t,j})}{\sum_{k=0}^{V-1}\exp(z_{t,k})}
+=p_{t,j}-\mathbf 1\{j=x_{t+1}\}.\tag{42}
 ```
 
-**vLLM** 的指定 token 评分内核用于推理，在同一内核中完成全词表归约与目标 logit 提取。`row_ptr` 指向当前行，`topk_ids` 为待评分 token 的词表 ID：
-
-```python vLLM · _topk_log_softmax_kernel
-# 来源：vLLM 推理阶段的 log-prob 计算，内核节选。
-# https://github.com/vllm-project/vllm/blob/dfebb42d096d5c6a04aa5a1722195e37cb8e0b2d/vllm/v1/worker/gpu/sample/logprob.py
-max_val = float("-inf")
-for i in range(0, vocab_size, BLOCK_SIZE):
-    block = i + tl.arange(0, BLOCK_SIZE)
-    z = tl.load(row_ptr + block, mask=block < vocab_size, other=-float("inf"))
-    max_val = tl.max(tl.maximum(z, max_val))
-max_val = max_val.to(tl.float32)
-
-sum_exp = 0.0
-for i in range(0, vocab_size, BLOCK_SIZE):
-    block = i + tl.arange(0, BLOCK_SIZE)
-    z = tl.load(row_ptr + block, mask=block < vocab_size, other=0.0)
-    e = tl.exp(z.to(tl.float32) - max_val)
-    sum_exp += tl.sum(tl.where(block < vocab_size, e, 0.0))
-
-target_z = tl.load(row_ptr + topk_ids).to(tl.float32)
-log_prob = target_z - max_val - tl.log(sum_exp)
-```
-
-两次遍历分别计算整行最大值与 FP32 指数和。由于 `target_z` 保留原始 logit，计算时需同时减去 `max_val` 和 `log(sum_exp)`，<strong>归一化分母覆盖完整词表</strong>。
+目标类别的梯度为 $`p_{t,x_{t+1}}-1`$，每个非目标类别的梯度为 $`p_{t,j}`$。**提取一个目标 log-prob 即可形成逐 token 损失，反向传播仍通过归一化项向其余类别传递梯度。**
 
 **Liger-Kernel** 的 `_selective_logprob_forward` 用于 PPO 中的目标 token 评分，分块计算词表投影，并在线更新最大值与指数和。以下代码省略外层的位置分块，取 `bias=None`：
 
