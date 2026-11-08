@@ -309,16 +309,16 @@ P_{Y\mid X}(y\mid x^{(i)})
 
 # 🐯 From Vocabulary Probabilities to Binary Cross-Entropy
 
-固定预测位置 $`t`$ 与前缀 $`h=x_{\le t}`$，记下一 token 为随机变量 $`X`$，观测目标为 $`y_t=x_{t+1}`$。以下省略位置下标，简记 $`y=y_t`$、$`z=z_t`$、$`p=p_t`$。设词表大小 $`V\ge2`$，logits $`z\in\mathbb R^V`$，模型分布为
+给定前缀 $`h`$，设下一 token 为随机变量 $`X`$，观测目标为 $`y`$。词表大小为 $`V\ge2`$，模型输出 logits $`z\in\mathbb R^V`$，对应的概率分布为
 
 ```math
 p_j=P_\theta(X=j\mid h)=\frac{e^{z_j}}{Z},\qquad
 Z=\sum_{k=0}^{V-1}e^{z_k},\qquad j=0,\ldots,V-1.\tag{27}
 ```
 
-有限 logits 保证 $`0<p_j<1`$ 且 $`\sum_jp_j=1`$。本节证明：<strong style="color: #1d5ea6">固定目标 $`y`$ 后，合并其余类别保持目标概率及硬标签交叉熵不变。</strong>
+有限 logits 保证 $`0<p_j<1`$ 且 $`\sum_jp_j=1`$。<strong style="color: #1d5ea6">固定目标 $`y`$ 后，合并其余类别保持目标概率及硬标签交叉熵不变。</strong>
 
-令 $`B=\mathbf1\{X=y\}`$，将下一 token 的取值划分为“等于目标”与“不等于目标”两个事件。事件 $`\{X\ne y\}`$ 是所有 $`\{X=j\}`$、$`j\ne y`$ 的互斥并集，因此由概率可加性，
+令 $`B=\mathbf1\{X=y\}`$，以 1 和 0 分别表示目标事件及其补事件。由于 $`\{X\ne y\}`$ 是所有非目标事件 $`\{X=j\}`$、$`j\ne y`$ 的互斥并集，概率可加性给出
 
 ```math
 P_\theta(B=1\mid h)=p_y,\qquad
@@ -326,9 +326,9 @@ P_\theta(B=0\mid h)=\sum_{j\ne y}P_\theta(X=j\mid h)
 =\sum_{j\ne y}p_j=1-p_y.\tag{28}
 ```
 
-这就得到伯努利分布 $`B\mid h\sim\operatorname{Bernoulli}(p_y)`$。按“目标／其余”的顺序，合并后的概率向量为 $`\bar p=(p_y,1-p_y)`$。概率质量的求和来自这一事件划分，总概率保持为 1，无需再次归一化。
+因此 $`B\mid h\sim\operatorname{Bernoulli}(p_y)`$，按“目标／其余”的顺序，合并后的概率向量为 $`\bar p=(p_y,1-p_y)`$。合并前后总概率均为 1，无需重新归一化。
 
-观测标签 $`y`$ 的 one-hot 分布为 $`q_j=\mathbf1\{j=y\}`$。对标签作同样的合并，目标类的质量仍为 1，其余类的质量之和为 0，因而 $`\bar q=(1,0)`$。将这两个标签分布分别代入交叉熵定义，在不使用类别权重时，
+硬标签分布 $`q_j=\mathbf1\{j=y\}`$ 的概率质量全部位于目标类，作同样的合并得到 $`\bar q=(1,0)`$。不使用类别权重时，合并前后的交叉熵满足
 
 ```math
 H(q,p)=-\sum_{j=0}^{V-1}q_j\ln p_j
@@ -337,9 +337,9 @@ H(q,p)=-\sum_{j=0}^{V-1}q_j\ln p_j
 =H(\bar q,\bar p).\tag{29}
 ```
 
-式 (29) 证明了合并前后的损失恒等。关键条件是<strong>one-hot 标签在非目标类上的权重全部为零</strong>，因此省去这些类别内部的概率分配不会改变交叉熵。对于一般概率标签，式中化简为 $`-\ln p_y`$ 的步骤不成立；式 (28) 的概率合并仍然成立。
+这一等式使用了<strong>one-hot 标签在非目标类上的权重全部为零</strong>的条件，因此舍去这些类别内部的概率分配不改变交叉熵。一般概率标签仍可按式 (28) 合并，但其交叉熵不能据此化简为 $`-\ln p_y`$。
 
-接下来求这一伯努利分布对应的 logit。二元 logit 由对数几率 $`\Delta=\ln[p_y/(1-p_y)]`$ 确定。将式 (27) 代入式 (28)，概率比中的公共归一化因子 $`Z`$ 相消，得到
+该伯努利分布的二元 logit 为其对数几率。代入式 (27) 与式 (28)，概率比中的公共归一化因子 $`Z`$ 相消：
 
 ```math
 \Delta=\ln\frac{p_y}{1-p_y}
@@ -348,7 +348,7 @@ H(q,p)=-\sum_{j=0}^{V-1}q_j\ln p_j
 =z_y-\ln\sum_{j\ne y}e^{z_j}.\tag{30}
 ```
 
-记 $`s=\operatorname{LSE}_{j\ne y}(z_j)=\ln\sum_{j\ne y}e^{z_j}`$，则 $`\Delta=z_y-s`$。由于 $`e^s=\sum_{j\ne y}e^{z_j}`$，$`s`$ 正好表示其余类别合并后的指数权重所对应的 logit。以 $`(z_y,s)`$ 为两个类别的得分，有
+令 $`s=\operatorname{LSE}_{j\ne y}(z_j)=\ln\sum_{j\ne y}e^{z_j}`$，则 $`\Delta=z_y-s`$。由 $`e^s=\sum_{j\ne y}e^{z_j}`$，$`s`$ 对应非目标类合并后的指数权重。以 $`(z_y,s)`$ 为二分类 logits，得到
 
 ```math
 \operatorname{softmax}(z_y,s)
@@ -356,7 +356,7 @@ H(q,p)=-\sum_{j=0}^{V-1}q_j\ln p_j
 =\left(p_y,1-p_y\right)=\bar p.\tag{31}
 ```
 
-因此，<strong style="color: #1d5ea6">概率空间中的类别求和，对应 logits 空间中的 log-sum-exp；目标 logit 减去这个合并值，就是二元事件的 logit。</strong>由 $`p_y/(1-p_y)=e^\Delta`$ 解出目标概率，得到与 sigmoid 的对应关系：
+<strong style="color: #1d5ea6">概率空间中的类别求和，对应 logits 空间中的 log-sum-exp；目标 logit 与该合并值之差即为二元 logit。</strong>由 $`p_y/(1-p_y)=e^\Delta`$ 可得
 
 ```math
 p_y=\frac{e^\Delta}{1+e^\Delta}
@@ -364,7 +364,7 @@ p_y=\frac{e^\Delta}{1+e^\Delta}
 1-p_y=\sigma(-\Delta).\tag{32}
 ```
 
-将式 (30) 和式 (32) 代回已经证明的损失等式 (29)，原多分类交叉熵便可写成二元 logistic 损失：
+将式 (30)、(32) 代入式 (29)，多分类交叉熵等价于二元 logistic 损失：
 
 ```math
 \ell=H(q,p)=H(\bar q,\bar p)
@@ -374,7 +374,7 @@ p_y=\frac{e^\Delta}{1+e^\Delta}
 =\operatorname{softplus}(-\Delta).\tag{33}
 ```
 
-这些等式对任意有限 logits 均成立；合并始终针对当前给定的目标，计算 $`\Delta`$ 仍需要全部词表得分。恢复位置下标后，逐 token 损失为 $`\ell_t=-\ln P_\theta(x_{t+1}\mid x_{\le t})`$，目标 token 的 log-prob 为 $`-\ell_t`$，对应概率为 $`e^{-\ell_t}`$。
+合并针对当前目标，$`\Delta`$ 仍依赖全部词表得分。对位置 $`t`$ 的目标 $`y_t=x_{t+1}`$，逐 token 损失为 $`\ell_t=-\ln P_\theta(x_{t+1}\mid x_{\le t})`$，目标 token 的 log-prob 为 $`-\ell_t`$，对应概率为 $`e^{-\ell_t}`$。
 
 # 🐨 Autoregressive Pretraining and SFT
 
