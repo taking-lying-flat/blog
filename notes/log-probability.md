@@ -51,8 +51,6 @@ P(y^{(i)}\mid x^{(i)};\theta)
 \tag{6}
 ```
 
-记对数似然为 $`\ell(\theta)=\log\mathcal L(\theta)`$，展开乘积可得
-
 ```math
 \begin{aligned}
 \ell(\theta)
