@@ -324,7 +324,7 @@ P_\theta(B=0\mid h)=\sum_{j\ne y}P_\theta(X=j\mid h)
 =\sum_{j\ne y}p_j=1-p_y.\tag{28}
 ```
 
-因此 $`B\mid h\sim\operatorname{Bernoulli}(p_y)`$，按“目标／其余”的顺序，合并分布为 $`\bar p=(p_y,1-p_y)`$，总概率仍为 1。任意目标分布 $`q=(q_0,\ldots,q_{V-1})`$ 满足 $`q_j\ge0`$、$`\sum_jq_j=1`$，同样合并为 $`\bar q=(q_y,1-q_y)`$。交叉熵按 $`q_j`$ 对整个词表加权；对非目标类作分解 $`p_j=(1-p_y)\frac{p_j}{1-p_y}`$，其中 $`p_j/(1-p_y)`$ 是非目标事件下类别 $`j`$ 的条件概率，代入交叉熵定义可得
+因此 $`B\mid h\sim\operatorname{Bernoulli}(p_y)`$，按“目标／其余”的顺序，合并分布为 $`\bar p=(p_y,1-p_y)`$，总概率仍为 1。任意目标分布 $`q=(q_0,\ldots,q_{V-1})`$ 满足 $`q_j\ge0`$、$`\sum_jq_j=1`$，同样合并为 $`\bar q=(q_y,1-q_y)`$。交叉熵按 $`q_j`$ 对整个词表加权；对非目标类作分解 $`p_j=(1-p_y)\frac{p_j}{1-p_y}`$，代入交叉熵定义可得
 
 ```math
 \begin{aligned}
@@ -385,7 +385,7 @@ p_y=\frac{e^\Delta}{1+e^\Delta}
 =\operatorname{softplus}(-\Delta).\tag{34}
 ```
 
-上述合并项 $`s=\ln\sum_{j\ne y}e^{z_j}`$ 称为 log-sum-exp。它将概率质量的求和表示为 logits 的合并，也可通过最大值平移稳定求值。令 $`m=\max_{j\ne y}z_j`$，从指数和中提取 $`e^m`$，则
+上述合并项 $`s=\ln\sum_{j\ne y}e^{z_j}`$ 称为 log-sum-exp。它将概率质量的求和表示为 logits 的合并，也可通过最大值平移稳定求值：
 
 ```math
 s=\operatorname{LSE}_{j\ne y}(z_j)
@@ -394,7 +394,7 @@ s=\operatorname{LSE}_{j\ne y}(z_j)
 m=\max_{j\ne y}z_j.\tag{35}
 ```
 
-<strong style="color: #1d5ea6">采用最大值平移的 log-sum-exp 计算，可避免指数上溢。</strong>由于 $`z_j-m\le0`$，各指数项均不大于 1，且至少一项等于 1；指数和位于 $`[1,V-1]`$，也避免对零取对数。实现时直接计算式 (35) 的最后一式，无需显式求 $`e^m`$。
+<strong style="color: #1d5ea6">采用最大值平移的 log-sum-exp 计算，可避免指数上溢。</strong>
 
 # 🐨 Autoregressive Pretraining and SFT
 
