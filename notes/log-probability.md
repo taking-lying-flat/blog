@@ -398,7 +398,7 @@ m=\max_{j\ne y}z_j.\tag{35}
 
 # 🐨 Autoregressive Pretraining and SFT
 
-设序列为 $`x=(x_0,\ldots,x_T)`$，$`x_0`$ 为固定起始 token。由条件概率定义 $`P(A,B\mid C)=P(A\mid C)P(B\mid A,C)`$，递归展开得到[概率链式法则](https://web.stanford.edu/~jurafsky/slp3/3.pdf)：
+设序列为 $`x=(x_0,\ldots,x_T)`$，以首个 token $`x_0`$ 为初始上下文。由条件概率定义 $`P(A,B\mid C)=P(A\mid C)P(B\mid A,C)`$，递归展开得到概率链式法则：
 
 ```math
 \begin{aligned}
@@ -417,7 +417,7 @@ P_\theta(x_{1:T}\mid x_0)
 =\sum_{t=0}^{T-1}\ell_t.\tag{37}
 ```
 
-若 $`x_{1:M}`$ 为提示词、$`x_{M+1:T}`$ 为回答，[仅监督回答的 SFT](https://huggingface.co/docs/trl/en/sft_trainer#train-on-completion-only)最大化回答的条件似然。链式分解使提示词的概率因子相消：
+若 $`x_{1:M}`$ 为提示词、$`x_{M+1:T}`$ 为回答，仅监督回答的 SFT 最大化回答的条件似然。链式分解使提示词的概率因子相消：
 
 ```math
 P_\theta(x_{M+1:T}\mid x_{\le M})
@@ -448,6 +448,84 @@ P_\theta(x_{M+1:T}\mid x_{\le M})
 
 <strong>教师强制</strong>（teacher forcing）将真实 token 序列作为 `input_ids`，经嵌入层和带因果掩码的 Transformer 得到隐藏状态。位置 $`t`$ 仅依赖真实前缀 $`x_{\le t}`$，以 $`x_{t+1}`$ 为监督目标，因此<strong>各位置的条件概率可在一次前向传播中并行计算</strong>。预训练与 SFT 均采用真实前缀进行预测。
 
+**预训练（PT）。** 文档 token 按自回归顺序提供监督，文档结束标记也可以作为下一 token 的预测目标。Qwen 使用 `<|endoftext|>` 表示文档边界；多个文档拼接时，该标记位于相邻文档之间。它作为词表中的一个预测类别，其损失仍为前文的 $`-\ln p_y`$。
+
+**Megatron Core** 的词表并行交叉熵将归一化计算分配至各张量并行 rank：MAX 归约得到全词表最大值，SUM 归约汇总目标 logit 与指数和。以下为 `label_smoothing=0` 时的前向核心，省略自定义反向传播与训练循环：
+
+```python Megatron Core · vocab_parallel_cross_entropy
+# 来源：Megatron Core 词表并行交叉熵，前向计算节选。
+# https://github.com/NVIDIA/Megatron-LM/blob/37cb4f261f103a7c882b5e310082fd0b7dbb226f/megatron/core/tensor_parallel/cross_entropy.py
+import torch.distributed as dist
+
+z = vocab_parallel_logits.float()                 # [..., V_local]
+m = z.amax(dim=-1)
+dist.all_reduce(m, op=dist.ReduceOp.MAX, group=tp_group)
+z = z - m.unsqueeze(-1)
+
+outside = (target < vocab_start_index) | (target >= vocab_end_index)
+local_id = (target - vocab_start_index).masked_fill(outside, 0)
+target_z = z.gather(-1, local_id.unsqueeze(-1)).squeeze(-1)
+target_z = target_z.masked_fill(outside, 0)
+sum_exp = z.exp().sum(dim=-1)
+
+dist.all_reduce(target_z, op=dist.ReduceOp.SUM, group=tp_group)
+dist.all_reduce(sum_exp, op=dist.ReduceOp.SUM, group=tp_group)
+log_prob = target_z - sum_exp.log()               # 等于 -CE
+```
+
+`target` 为全局词表 ID，仅包含该 token 的词表分片提供目标 logit，其余 rank 的贡献为零。`target_z` 已减去全局最大值，再减去 `sum_exp.log()` 即得到目标 log-prob；取负后按式 (39) 的有效位置掩码归约。该计算同样适用于 SFT。
+
+Qwen2.5-7B Base 的 `generation_config.json` 将 `<|endoftext|>` 对应的 `151643` 设为生成停止 ID。**文档边界参与训练，停止配置作用于生成**；拼接训练序列可以跨过文档边界继续计算。
+
+```python Qwen2.5-7B Base · generation_config.json 摘录
+# 来源：Qwen 官方文档与模型仓库。
+# https://qwen.readthedocs.io/en/latest/getting_started/concepts.html
+# https://huggingface.co/Qwen/Qwen2.5-7B/blob/main/generation_config.json
+generation_config = {
+    "eos_token_id": 151643,                       # <|endoftext|>
+}
+```
+
+**监督微调（SFT）。** 仅监督回答时，提示词仍参与前向计算，标签设为 `-100`；回答及其结束标记保留真实 token ID。多轮对话按各段 assistant 回答构造监督掩码。Qwen2.5-Instruct 的聊天模板在每条消息末尾插入 `<|im_end|>`，回答末尾的该标记应参与监督，使模型学习结束回答；用户与系统消息及其结束标记均不计入损失。
+
+Transformers v4.44.2 的 `Qwen2ForCausalLM.forward` 将标签与预测错开一位。`response_mask` 标记回答及结束 token，`attention_mask` 排除填充，两者均与 `input_ids` 同形。**标签掩码应用于原始 token 位置，错位操作在损失分支中执行**：
+
+```python Transformers · Qwen2ForCausalLM.forward
+# 标签准备：仅保留回答及其结束标记，填充位置不参与损失。
+# https://huggingface.co/docs/trl/en/sft_trainer#train-on-assistant-messages-only
+labels = input_ids.clone()
+labels[~response_mask.bool() | ~attention_mask.bool()] = -100
+
+# 模型损失分支：Transformers v4.44.2，省略 Transformer 主干。
+# https://github.com/huggingface/transformers/blob/v4.44.2/src/transformers/models/qwen2/modeling_qwen2.py
+from torch.nn import CrossEntropyLoss
+
+logits = self.lm_head(hidden_states).float()
+shift_logits = logits[..., :-1, :].contiguous()
+shift_labels = labels[..., 1:].contiguous()
+loss_fct = CrossEntropyLoss()
+shift_logits = shift_logits.view(-1, self.config.vocab_size)
+shift_labels = shift_labels.view(-1).to(shift_logits.device)
+loss = loss_fct(shift_logits, shift_labels)
+```
+
+类别索引直接指定 one-hot 向量的非零项，无需构造完整标签向量。`CrossEntropyLoss` 忽略 `-100`，对其余标签的负对数似然求平均。Qwen2.5-Instruct 的填充 ID 与 `<|endoftext|>` 共用 `151643`，因此应依据 `attention_mask` 识别填充，避免同时屏蔽真实文档结束标记。PT 也可使用此损失分支，只需保留全部有效位置的标签。
+
+Qwen2.5-7B-Instruct 的 tokenizer 将 `<|im_end|>` 设为 EOS，而生成配置保留两个停止 ID：`151645` 对应 `<|im_end|>`，`151643` 对应 `<|endoftext|>`。**生成任一停止 token 即满足结束条件**；列表中的两个 ID 是可选停止值，EOS 则是配置中的用途名称。
+
+```python Qwen2.5-7B-Instruct · EOS 与生成停止配置
+# 来源：官方 tokenizer_config.json 与 generation_config.json，相关字段摘录。
+# https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/tokenizer_config.json
+# https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/generation_config.json
+tokenizer_config = {"eos_token": "<|im_end|>"}     # ID 151645
+generation_config = {
+    "eos_token_id": [151645, 151643],             # <|im_end|> 或 <|endoftext|>
+    "pad_token_id": 151643,
+}
+```
+
+训练数据按聊天模板使用 `add_generation_prompt=False`，模板已附加的 `<|im_end|>` 无需重复添加。`generation_config.eos_token_id` 控制生成停止，不决定训练标签或监督掩码；上述单个与两个停止 ID 的区别属于 Qwen2.5 Base 与 Instruct 的具体配置，其他模型应以各自配置为准。
+
 # 🐼 Log-Probability Computation
 
 隐藏状态 $`h_t`$ 经 LM head 投影为 $`z_t=Wh_t+b`$。<strong style="color: #1d5ea6">目标 token 的 log-prob 等于目标 logit 与全词表 log-sum-exp 之差</strong>：
@@ -477,50 +555,11 @@ P_\theta(x_{M+1:T}\mid x_{\le M})
 =p_{t,j}-\mathbf 1\{j=y_t\}.\tag{42}
 ```
 
-Transformers [`LlamaForCausalLM.forward`（v4.44.2）](https://github.com/huggingface/transformers/blob/v4.44.2/src/transformers/models/llama/modeling_llama.py#L1208) 接收与 `input_ids` 位置对齐的 `labels`，并在损失分支中将 logits 与标签错开一位：
-
-```python Transformers · LlamaForCausalLM.forward
-logits = self.lm_head(hidden_states)
-logits = logits.float()
-
-if labels is not None:
-    shift_logits = logits[..., :-1, :].contiguous()
-    shift_labels = labels[..., 1:].contiguous()
-    loss_fct = CrossEntropyLoss()
-    shift_logits = shift_logits.view(-1, self.config.vocab_size)
-    shift_labels = shift_labels.view(-1)
-    shift_labels = shift_labels.to(shift_logits.device)
-    loss = loss_fct(shift_logits, shift_labels)
-```
-
-`labels[..., 1:]` 提供式 (30) 中 one-hot 向量非零项的类别索引，`logits[..., :-1, :]` 提供对应前缀的预测。这一错位使前缀预测与下一 token 对齐；计算时仅需类别索引，无需显式构造 one-hot 张量。`CrossEntropyLoss` 忽略标记为 `-100` 的位置，并对其余标签计算负对数似然。
-
-**Megatron Core**：[词表并行交叉熵](https://github.com/NVIDIA/Megatron-LM/blob/37cb4f261f103a7c882b5e310082fd0b7dbb226f/megatron/core/tensor_parallel/cross_entropy.py#L159)将式 (41) 的计算分配至各张量并行 rank。MAX 归约得到全词表最大值，SUM 归约汇总目标 logit 与指数和。以下前向计算取 `label_smoothing=0`：
-
-```python Megatron Core · vocab_parallel_cross_entropy
-import torch.distributed as dist
-
-z = vocab_parallel_logits.float()                 # [..., V_local]
-m = z.amax(dim=-1)
-dist.all_reduce(m, op=dist.ReduceOp.MAX, group=tp_group)
-z = z - m.unsqueeze(-1)
-
-outside = (target < vocab_start_index) | (target >= vocab_end_index)
-local_id = (target - vocab_start_index).masked_fill(outside, 0)
-target_z = z.gather(-1, local_id.unsqueeze(-1)).squeeze(-1)
-target_z = target_z.masked_fill(outside, 0)
-sum_exp = z.exp().sum(dim=-1)
-
-dist.all_reduce(target_z, op=dist.ReduceOp.SUM, group=tp_group)
-dist.all_reduce(sum_exp, op=dist.ReduceOp.SUM, group=tp_group)
-log_prob = target_z - sum_exp.log()               # 等于 -CE
-```
-
-`target` 为全局词表 ID，仅包含该 token 的词表分片提供目标 logit，其余 rank 的贡献为零。`target_z` 已减去全局最大值 $`m_t`$，再减去 `sum_exp.log()` 即得到 log-prob，也就是逐 token 交叉熵的相反数。
-
-**vLLM**：[指定 token 的 kernel](https://github.com/vllm-project/vllm/blob/dfebb42d096d5c6a04aa5a1722195e37cb8e0b2d/vllm/v1/worker/gpu/sample/logprob.py#L17)在同一计算内核中完成全词表归约与目标 logit 提取。`row_ptr` 指向当前行，`topk_ids` 为待评分 token 的词表 ID：
+**vLLM** 的指定 token 评分内核用于推理，在同一内核中完成全词表归约与目标 logit 提取。`row_ptr` 指向当前行，`topk_ids` 为待评分 token 的词表 ID：
 
 ```python vLLM · _topk_log_softmax_kernel
+# 来源：vLLM 推理阶段的 log-prob 计算，内核节选。
+# https://github.com/vllm-project/vllm/blob/dfebb42d096d5c6a04aa5a1722195e37cb8e0b2d/vllm/v1/worker/gpu/sample/logprob.py
 max_val = float("-inf")
 for i in range(0, vocab_size, BLOCK_SIZE):
     block = i + tl.arange(0, BLOCK_SIZE)
@@ -541,9 +580,11 @@ log_prob = target_z - max_val - tl.log(sum_exp)
 
 两次遍历分别计算整行最大值与 FP32 指数和。由于 `target_z` 保留原始 logit，计算时需同时减去 `max_val` 和 `log(sum_exp)`，<strong>归一化分母覆盖完整词表</strong>。
 
-**Liger-Kernel**：[`_selective_logprob_forward`](https://github.com/linkedin/Liger-Kernel/blob/4dce24bbb70d8bda18e373b5f0f469a51ab77a2c/src/liger_kernel/chunked_loss/fused_linear_ppo.py#L18)分块计算词表投影，并在线更新最大值与指数和。以下代码省略外层的位置分块，取 `bias=None`：
+**Liger-Kernel** 的 `_selective_logprob_forward` 用于 PPO 中的目标 token 评分，分块计算词表投影，并在线更新最大值与指数和。以下代码省略外层的位置分块，取 `bias=None`：
 
 ```python Liger-Kernel · _selective_logprob_forward
+# 来源：Liger-Kernel 的 fused linear PPO，选择性 log-prob 前向计算节选。
+# https://github.com/linkedin/Liger-Kernel/blob/4dce24bbb70d8bda18e373b5f0f469a51ab77a2c/src/liger_kernel/chunked_loss/fused_linear_ppo.py
 # h: 当前块隐藏状态 [C, D]；targets: [C]；weight: [V, D]
 m = torch.full((h.shape[0],), -float("inf"), device=h.device, dtype=torch.float32)
 sum_exp = torch.zeros_like(m)
