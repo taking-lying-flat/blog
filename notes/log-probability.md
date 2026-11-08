@@ -451,11 +451,9 @@ P_\theta(x_{M+1:T}\mid x_{\le M})
 
 **预训练（PT）。** 文档 token 按自回归顺序提供监督，文档结束标记也可以作为下一 token 的预测目标。Qwen 使用 `<|endoftext|>` 表示文档边界；多个文档拼接时，该标记位于相邻文档之间。它作为词表中的一个预测类别，其损失仍为前文的 $`-\ln p_y`$。
 
-Qwen2.5-7B Base 的 `generation_config.json` 将 `<|endoftext|>` 对应的 `151643` 设为生成停止 ID。**文档边界参与训练，停止配置作用于生成**；拼接训练序列可以跨过文档边界继续计算。
+**监督微调（SFT）。** 仅监督回答时，提示词仍参与前向计算，标签设为 `-100`；回答及其结束标记保留真实 token ID。多轮对话按各段 assistant 回答构造监督掩码。
 
-**监督微调（SFT）。** 仅监督回答时，提示词仍参与前向计算，标签设为 `-100`；回答及其结束标记保留真实 token ID。多轮对话按各段 assistant 回答构造监督掩码。Qwen2.5-Instruct 的聊天模板在每条消息末尾插入 `<|im_end|>`，回答末尾的该标记应参与监督，使模型学习结束回答；用户与系统消息及其结束标记均不计入损失。
-
-Transformers v4.44.2 的 `Qwen2ForCausalLM.forward` 将标签与预测错开一位。`response_mask` 标记回答及结束 token，`attention_mask` 排除填充，两者均与 `input_ids` 同形。**标签掩码应用于原始 token 位置，错位操作在损失分支中执行**：
+`Qwen2ForCausalLM.forward` 将标签与预测错开一位。`response_mask` 标记回答及结束 token，`attention_mask` 排除填充，两者均与 `input_ids` 同形。**标签掩码应用于原始 token 位置，错位操作在损失分支中执行**：
 
 ```python Transformers · Qwen2ForCausalLM.forward
 # https://github.com/huggingface/transformers/blob/v4.44.2/src/transformers/models/qwen2/modeling_qwen2.py
