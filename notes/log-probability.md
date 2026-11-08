@@ -127,7 +127,7 @@ f_1(x^{(i)};\theta_1),\ldots,f_C(x^{(i)};\theta_C)
 
 式 (12) 的每一项是 token 在模型分布下的条件自信息，单位为 nat；除以 $`\ln 2`$ 后，可解释为以 bit 计量的[理想码长](https://d2l.smola.org/chapter_mdl-information-theory/mdl-coding-compression.html)。对有效 token 取平均时，损失单位为 nat/token。这里的码长表示概率编码代价。
 
-# Entropy and KL Divergence
+# 🐻 Entropy and cross-entropy view, equivalence of KL-divergence minimization and maximum likelihood
 
 离散随机变量 $`X`$ 的分布记为 $`P_X`$，其 Shannon 熵定义为
 
@@ -231,7 +231,7 @@ H(P_{X,Y},\hat P_{X,Y}).
 \tag{21}
 ```
 
-# Knowledge Distillation
+# 🐰 The special case of model distillation
 
 蒸馏以教师分布 $`P^{\mathrm{teacher}}(y\mid x)`$ 为监督目标，使学生拟合其条件分布。将联合分布分解为输入边缘分布与标签条件分布，可得
 
