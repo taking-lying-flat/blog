@@ -2,13 +2,17 @@
 
 # Cross-Entropy Loss
 
-设二分类数据集为
+交叉熵损失以目标分布为权重，计算模型预测概率的平均负对数值。硬标签监督下，逐样本交叉熵等于观测标签的负对数似然；自回归语言模型按前缀预测下一 token，因此序列负对数似然可分解为逐 token 损失之和：
 
 ```math
-\mathcal D=\{(x^{(i)},y^{(i)})\}_{i=1}^{m},\qquad y^{(i)}\in\{0,1\}.\tag{1}
+\mathcal L_{\mathrm{NLL}}(x_{1:T};\theta)
+=-\ln P_\theta(x_{1:T})
+=-\sum_{t=1}^{T}\ln P_\theta(x_t\mid x_{<t}).\tag{1}
 ```
 
-模型通过 logistic 函数将得分映射为类别概率：
+本文采用以 $`e`$ 为底的自然对数 $`\ln`$，$`\log`$ 亦取同一底数。式 (1) 的每一项是 token 在模型分布下的条件自信息，单位为 nat；除以 $`\ln 2`$ 后，可解释为以 bit 计量的[理想码长](https://d2l.smola.org/chapter_mdl-information-theory/mdl-coding-compression.html)。对有效 token 取平均时，损失单位为 nat/token。这里的码长表示概率编码代价，不等于 token 所对应字符串的字符数或字节数。
+
+设二分类数据集包含 $`m`$ 个样本，第 $`i`$ 个样本的输入为 $`x^{(i)}`$，标签为 $`y^{(i)}\in\{0,1\}`$。模型通过 logistic 函数将得分映射为类别概率：
 
 ```math
 \hat y^{(i)}=h\!\left(f(x^{(i)};\theta)\right)
