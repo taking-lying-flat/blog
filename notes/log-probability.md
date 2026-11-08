@@ -449,11 +449,7 @@ P_\theta(x_{M+1:T}\mid x_{\le M})
 
 <strong>教师强制</strong>（teacher forcing）将真实 token 序列作为 `input_ids`，经嵌入层和带因果掩码的 Transformer 得到隐藏状态。位置 $`t`$ 仅依赖真实前缀 $`x_{\le t}`$，以 $`x_{t+1}`$ 为监督目标，因此<strong>各位置的条件概率可在一次前向传播中并行计算</strong>。预训练与 SFT 均采用真实前缀进行预测。
 
-**预训练（PT）。** 文档 token 按自回归顺序提供监督，文档结束标记也可以作为下一 token 的预测目标。Qwen 使用 `<|endoftext|>` 表示文档边界；多个文档拼接时，该标记位于相邻文档之间。它作为词表中的一个预测类别，其损失仍为前文的 $`-\ln p_y`$。
-
-**监督微调（SFT）。** 仅监督回答时，提示词仍参与前向计算，标签设为 `-100`；回答及其结束标记保留真实 token ID。多轮对话按各段 assistant 回答构造监督掩码。
-
-`Qwen2ForCausalLM.forward` 将标签与预测错开一位。`response_mask` 标记回答及结束 token，`attention_mask` 排除填充，两者均与 `input_ids` 同形。**标签掩码应用于原始 token 位置，错位操作在损失分支中执行**：
+**监督微调（SFT）。** 仅监督回答时，提示词仍参与前向计算，标签设为 `-100`；回答及其结束标记保留真实 token ID。多轮对话按各段 assistant 回答构造监督掩码。`Qwen2ForCausalLM.forward` 将标签与预测错开一位。`response_mask` 标记回答及结束 token，`attention_mask` 排除填充，两者均与 `input_ids` 同形。**标签掩码应用于原始 token 位置，错位操作在损失分支中执行**：
 
 ```python Transformers · Qwen2ForCausalLM.forward
 # https://github.com/huggingface/transformers/blob/v4.44.2/src/transformers/models/qwen2/modeling_qwen2.py
@@ -478,19 +474,32 @@ loss = loss_fct(shift_logits, shift_labels)
 ```math
 \begin{aligned}
 \ln P_\theta(x_{t+1}\mid x_{\le t})
-&=\operatorname{logsoftmax}(z_t)_{x_{t+1}}\\[4pt]
-&=\ln\frac{\exp(z_{t,x_{t+1}})}
+&=\operatorname{logsoftmax}(z_t)_{x_{t+1}}
+=\ln\frac{\exp(z_{t,x_{t+1}})}
 {\sum_{j=0}^{V-1}\exp(z_{t,j})}\\[4pt]
-&=z_{t,x_{t+1}}-\ln\sum_{j=0}^{V-1}\exp(z_{t,j})\\[4pt]
-&=z_{t,x_{t+1}}-\ln\left[
+&=z_{t,x_{t+1}}-\ln\sum_{j=0}^{V-1}\exp(z_{t,j})
+=z_{t,x_{t+1}}-\ln\left[
 \exp(m_t)\sum_{j=0}^{V-1}\exp(z_{t,j}-m_t)\right]\\[4pt]
-&=z_{t,x_{t+1}}-
-\left[m_t+\ln\sum_{j=0}^{V-1}\exp(z_{t,j}-m_t)\right],
+&=(z_{t,x_{t+1}}-m_t)-\ln\sum_{j=0}^{V-1}\exp(z_{t,j}-m_t),
 \qquad m_t=\max_j z_{t,j}.
 \end{aligned}\tag{41}
 ```
 
-式 (41) 将概率比值的对数展开为两项之差，并从指数和中提取 $`\exp(m_t)`$。平移后的指数输入均不大于零，从而避免指数上溢；结果取负即得到式 (34) 的逐 token 损失。
+式 (41) 将分子与分母同时除以 $`\exp(m_t)`$，保持概率比值不变。对有限 logits，平移后的指数输入 $`a=z_{t,j}-m_t\le0`$，各指数项不大于 1，且至少一项等于 1。**最大值平移避免单个指数项上溢，并保证指数和不因所有项同时下溢而变为零；较小的指数项仍可能下溢。**
+
+**上溢与下溢区间。** 以下区间针对 $`\exp(a)`$ 的结果写入相应格式，采用最近偶数舍入并保留次正规数，端点保留两位小数。上溢产生 $`+\infty`$；次正规数位于最小正规正数与零之间，仍可非零；继续减小 $`a`$，结果最终舍入为零。
+
+- **FP16**：$`a\gtrsim11.09`$ 时上溢为 $`+\infty`$；$`-17.33\lesssim a\lesssim-9.70`$ 时为非零次正规数；$`a\lesssim-17.33`$ 时下溢为零。
+- **BF16**：$`a\gtrsim88.72`$ 时上溢为 $`+\infty`$；$`-92.88\lesssim a\lesssim-87.34`$ 时为非零次正规数；$`a\lesssim-92.88`$ 时下溢为零。
+- **FP32**：$`a\gtrsim88.72`$ 时上溢为 $`+\infty`$；$`-103.97\lesssim a\lesssim-87.34`$ 时为非零次正规数；$`a\lesssim-103.97`$ 时下溢为零。
+
+<!-- Format and rounding references: https://docs.nvidia.com/cuda/archive/13.3.0/cuda-programming-guide/05-appendices/mathematical-functions.html ; https://docs.pytorch.org/docs/2.15/type_info.html -->
+
+若执行内核采用 **flush-to-zero（FTZ）**，次正规结果直接归零，下溢到零的边界会提前至最小正规数附近。区间应按指数项实际使用的格式判断，而非模型权重的存储格式；具体临界点还受输入量化与指数函数近似影响。
+
+在式 (41) 中，上述 $`a`$ 是**目标或非目标 logit 与最大 logit 的差**。因此，FP16 下落后最大值约 17.33 以上的指数项可能归零，BF16 与 FP32 的对应间隔约为 92.88 和 103.97。直接计算 log-prob 使用 $`z_{t,x_{t+1}}-m_t`$，无需先求目标概率再取对数，可避免目标概率舍入为零后产生 $`\ln0=-\infty`$。
+
+**指数项不溢出，不代表求和不溢出。** 平移后的指数和介于 1 与词表大小 $`V`$ 之间；若采用 FP16 求和，大词表的累加结果仍可能超过其最大有限值 65504。指数、归约与对数采用 FP32 可扩大计算范围，但仍需最大值平移；已经产生的 `inf` 或零值不能通过后续类型转换恢复。
 
 目标 log-prob 通过归一化项依赖所有词表 logits。由 $`\ell_t=-z_{t,y_t}+\ln\sum_k\exp(z_{t,k})`$ 求导，得到
 
