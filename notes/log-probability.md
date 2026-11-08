@@ -1,6 +1,6 @@
 # Cross-Entropy
 
-# Cross-Entropy Loss
+# 🦊 Binary logistic regression, binary cross-entropy loss
 
 交叉熵损失以目标分布为权重，计算模型预测概率的平均负对数值。硬标签监督下，逐样本交叉熵等于观测标签的负对数似然；自回归语言模型按前缀预测下一 token，因此序列负对数似然可分解为逐 token 损失之和：
 
