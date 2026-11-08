@@ -497,8 +497,6 @@ loss = loss_fct(shift_logits, shift_labels)
 
 若执行内核采用 **flush-to-zero（FTZ）**，次正规结果直接归零，下溢到零的边界会提前至最小正规数附近。区间应按指数项实际使用的格式判断，而非模型权重的存储格式；具体临界点还受输入量化与指数函数近似影响。
 
-在式 (41) 中，上述 $`a`$ 是**目标或非目标 logit 与最大 logit 的差**。因此，FP16 下落后最大值约 17.33 以上的指数项可能归零，BF16 与 FP32 的对应间隔约为 92.88 和 103.97。直接计算 log-prob 使用 $`z_{t,x_{t+1}}-m_t`$，无需先求目标概率再取对数，可避免目标概率舍入为零后产生 $`\ln0=-\infty`$。
-
 **归一化求和需要足够的表示范围。** 若采用 FP16 求和，大词表的累加结果仍可能超过其最大有限值 65504。指数、归约与对数采用 FP32 可扩大计算范围，但仍需最大值平移；已经产生的 `inf` 或零值不能通过后续类型转换恢复。
 
 **反向传播。** 训练通过负对数似然的梯度更新模型。虽然每个位置仅提取目标 token 的 log-prob，式 (41) 的归一化项仍包含全部词表 logits，因此各类别均参与梯度计算。对损失 $`\ell_t=-z_{t,x_{t+1}}+\ln\sum_k\exp(z_{t,k})`$ 求导：
@@ -511,12 +509,9 @@ loss = loss_fct(shift_logits, shift_labels)
 
 目标类别的梯度为 $`p_{t,x_{t+1}}-1`$，每个非目标类别的梯度为 $`p_{t,j}`$。**提取一个目标 log-prob 即可形成逐 token 损失，反向传播仍通过归一化项向其余类别传递梯度。**
 
-**Liger-Kernel** 的 `_selective_logprob_forward` 用于 PPO 中的目标 token 评分，分块计算词表投影，并在线更新最大值与指数和。以下代码省略外层的位置分块，取 `bias=None`：
+**Liger-Kernel** 在损失计算中的核心优化是<strong>融合词表投影与损失计算，减少完整词表中间张量的存储和读写</strong>。其 `_selective_logprob_forward` 用于 PPO 中的目标 token 评分，沿 token 位置与词表两个维度分块，每块完成投影后立即更新归一化统计量，并提取目标 logit。若共有 $`N`$ 个预测位置、词表大小为 $`V`$，每块包含 $`C`$ 个位置与 $`K`$ 个类别，临时 logits 的存储规模由 $`O(NV)`$ 降至 $`O(CK)`$。<strong>归一化覆盖全部类别，最终返回每个位置的目标 log-prob，以及供反向重计算使用的 log-sum-exp。</strong>
 
 ```python Liger-Kernel · _selective_logprob_forward
-# 来源：Liger-Kernel 的 fused linear PPO，选择性 log-prob 前向计算节选。
-# https://github.com/linkedin/Liger-Kernel/blob/4dce24bbb70d8bda18e373b5f0f469a51ab77a2c/src/liger_kernel/chunked_loss/fused_linear_ppo.py
-# h: 当前块隐藏状态 [C, D]；targets: [C]；weight: [V, D]
 m = torch.full((h.shape[0],), -float("inf"), device=h.device, dtype=torch.float32)
 sum_exp = torch.zeros_like(m)
 target_z = torch.zeros_like(m)
@@ -539,4 +534,4 @@ log_z = m + sum_exp.log()
 log_prob = target_z - log_z
 ```
 
-最大值由 `m` 更新为 `m_new` 时，先以 `exp(m - m_new)` 缩放已有指数和，再累加当前块的指数和。目标 token 所在块提供 `target_z`；遍历结束后，`log_z` 为全词表的 log-sum-exp，并保存用于反向传播时的重计算。
+最大值由 `m` 更新为 `m_new` 时，已有指数和与新块采用不同的平移基准；乘以 `exp(m - m_new)` 将历史累积量转换到新基准，随后才能与当前块相加。遍历结束后，`target_z - log_z` 即为目标 log-prob。前向阶段保存每个位置的 `log_z`；反向阶段按块重新生成 logits，并结合上游梯度累加隐藏状态与投影权重的梯度，<strong>以重计算替代完整词表激活的长期保存</strong>。显存节省主要来自中间张量规模与存活时间的缩减。
