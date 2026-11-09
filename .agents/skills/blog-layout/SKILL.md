@@ -7,6 +7,8 @@ description: Apply the repository-wide fixed desktop layout values and formula-p
 
 以下数值适用于所有博客，不得加入单篇文章的名称、选择器或局部例外。除非用户明确给出新数值，否则保持不变。
 
+只按现有固定分辨率和桌面宽度排版、验收，不做手机布局或响应式适配。
+
 | 项目 | 固定值 |
 | --- | --- |
 | 阅读页宽度 | `1072px` |

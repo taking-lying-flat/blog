@@ -1,0 +1,119 @@
+{
+  "author": "taking-lying-flat",
+  "updatedAt": "2026-11-10",
+  "projects": [
+    {
+      "name": "ms-swift",
+      "repo": "modelscope/ms-swift",
+      "count": 62,
+      "icon": "modelscope.png"
+    },
+    {
+      "name": "torchtitan",
+      "repo": "pytorch/torchtitan",
+      "count": 39,
+      "icon": "pytorch.jpg"
+    },
+    {
+      "name": "unsloth",
+      "repo": "unslothai/unsloth",
+      "count": 31,
+      "icon": "unslothai.png"
+    },
+    {
+      "name": "Flash Linear Attention",
+      "repo": "fla-org/flash-linear-attention",
+      "count": 28,
+      "icon": "fla-org.png"
+    },
+    {
+      "name": "unsloth-zoo",
+      "repo": "unslothai/unsloth-zoo",
+      "count": 28,
+      "icon": "unslothai.png"
+    },
+    {
+      "name": "FreeToken",
+      "repo": "FlashML-org/FreeToken",
+      "count": 9,
+      "icon": "flashml-org.png"
+    },
+    {
+      "name": "Liger-Kernel",
+      "repo": "linkedin/Liger-Kernel",
+      "count": 9,
+      "icon": "linkedin.png"
+    },
+    {
+      "name": "AIMET",
+      "repo": "qualcomm/aimet",
+      "count": 8,
+      "icon": "qualcomm.jpg",
+      "internalMerge": true,
+      "acceptedPrs": [
+        4118,
+        4119,
+        4120,
+        4121,
+        4123,
+        4131,
+        4132,
+        4136
+      ]
+    },
+    {
+      "name": "mcore-bridge",
+      "repo": "modelscope/mcore-bridge",
+      "count": 4,
+      "icon": "modelscope.png"
+    },
+    {
+      "name": "vllm",
+      "repo": "vllm-project/vllm",
+      "count": 4,
+      "icon": "vllm-project.png"
+    },
+    {
+      "name": "DeepSpeed",
+      "repo": "deepspeedai/DeepSpeed",
+      "count": 3,
+      "icon": "deepspeedai.png"
+    },
+    {
+      "name": "Transformers",
+      "repo": "huggingface/transformers",
+      "count": 3,
+      "icon": "huggingface.png"
+    },
+    {
+      "name": "Model Optimizer",
+      "repo": "NVIDIA/Model-Optimizer",
+      "count": 1,
+      "icon": "nvidia.png"
+    },
+    {
+      "name": "FlashInfer",
+      "repo": "flashinfer-ai/flashinfer",
+      "count": 1,
+      "icon": "flashinfer-ai.png"
+    },
+    {
+      "name": "DiffSynth-Studio",
+      "repo": "modelscope/DiffSynth-Studio",
+      "count": 1,
+      "icon": "modelscope.png"
+    },
+    {
+      "name": "VLMEvalKit",
+      "repo": "open-compass/VLMEvalKit",
+      "count": 1,
+      "icon": "open-compass.png"
+    },
+    {
+      "name": "TokenRouter",
+      "repo": "thu-nics/TokenRouter",
+      "count": 1,
+      "icon": "thu-nics.png"
+    }
+  ]
+}

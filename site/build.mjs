@@ -812,6 +812,8 @@ const searchIndex = JSON.stringify(readingOrder.map(post => ({
 })));
 
 const template = await readFile(path.join(root, 'template.html'), 'utf8');
+const contributions = JSON.parse(await readFile(path.join(root, 'contributions.json'), 'utf8'));
+const contributionTotal = contributions.projects.reduce((sum, project) => sum + project.count, 0);
 const primer = path.join(root, 'node_modules/@primer/primitives');
 const assets = new Map([
   ...['reader.css', 'reader.js', 'theme.js', 'favicon.svg', 'github-avatar.jpg', 'lake.css', 'lake.js', 'body-serif.css', 'toc.css', 'toc.js'].map((file) => [file, path.join(root, file)]),
@@ -853,6 +855,20 @@ const ambientGutters = (kind) => ['left', 'right'].map((side, sideIndex) => {
   return `<span class="home-sky-gutter home-sky-${side}">${particles}${kind === 'night' ? '<b class="home-meteor"></b>' : ''}</span>`;
 }).join('');
 
+const contributionList = contributions.projects.map((project) => {
+  const repository = `https://github.com/${project.repo}`;
+  const query = `is:pr author:${contributions.author} ${project.internalMerge ? 'is:closed' : 'is:merged'}`;
+  return `<li class="contribution-item">
+    <a class="contribution-project" href="${repository}" target="_blank" rel="noopener noreferrer">
+      <img src="assets/project-icons/${escape(project.icon)}" width="36" height="36" alt="" loading="lazy" decoding="async">
+      <span><strong>${escape(project.name)}</strong><small>${escape(project.repo.split('/')[0])}</small></span>
+    </a>
+    <a class="contribution-count" href="${repository}/pulls?q=${encodeURIComponent(query)}" target="_blank" rel="noopener noreferrer" aria-label="查看 ${escape(project.name)} 的 ${project.count} 项已合入贡献">
+      <strong>${project.count}${project.internalMerge ? '<sup>*</sup>' : ''}</strong><span>PRs</span>
+    </a>
+  </li>`;
+}).join('\n');
+
 const home = page({
   title: 'Blog · 技术笔记', description: '关于模型、论文与源码的技术笔记。', pageClass: 'home-page',
   body: `<div class="home-garden" aria-hidden="true">
@@ -890,6 +906,17 @@ const home = page({
       </footer>
     </article>`).join('\n')}</div></section>`;
     }).join('\n')}
+  </section>
+  <section class="contributions" id="keep-digging" aria-labelledby="contributions-title">
+    <div class="contributions-heading">
+      <h2 id="contributions-title">Keep Digging</h2>
+      <span>${contributions.projects.length} 个项目 · ${contributionTotal} 项已合入</span>
+    </div>
+    <ul class="contribution-list">${contributionList}</ul>
+    <div class="contributions-footnote">
+      <p>* AIMET 的 8 项贡献由维护者内部合并后同步至公开仓库。</p>
+      <time datetime="${escape(contributions.updatedAt)}">更新于 ${escape(contributions.updatedAt)}</time>
+    </div>
   </section>`,
 });
 
@@ -958,6 +985,7 @@ for (const post of readingOrder) {
 
 await writeFile(path.join(output, 'assets/math.css'), adaptor.cssText(svg.styleSheet(document)));
 for (const [name, file] of assets) await copyFile(file, path.join(output, 'assets', name));
+await cp(path.join(root, 'project-icons'), path.join(output, 'assets/project-icons'), { recursive: true });
 const fonts = path.join(root, 'node_modules/@fontsource-variable/jetbrains-mono');
 await cp(path.join(fonts, 'files'), path.join(output, 'assets/fonts/files'), { recursive: true });
 await copyFile(path.join(fonts, 'index.css'), path.join(output, 'assets/fonts/index.css'));

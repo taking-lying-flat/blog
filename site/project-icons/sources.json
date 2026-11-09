@@ -1,0 +1,58 @@
+{
+  "modelscope": {
+    "file": "modelscope.png",
+    "source": "https://avatars.githubusercontent.com/u/109945100?s=96&v=4"
+  },
+  "pytorch": {
+    "file": "pytorch.jpg",
+    "source": "https://avatars.githubusercontent.com/u/21003710?s=96&v=4"
+  },
+  "unslothai": {
+    "file": "unslothai.png",
+    "source": "https://avatars.githubusercontent.com/u/150920049?s=96&v=4"
+  },
+  "fla-org": {
+    "file": "fla-org.png",
+    "source": "https://avatars.githubusercontent.com/u/40835596?s=96&v=4"
+  },
+  "FlashML-org": {
+    "file": "flashml-org.png",
+    "source": "https://avatars.githubusercontent.com/u/286493426?s=96&u=1ebbb1fffd1e24f1dcda0610547f6d10cf10c5f3&v=4"
+  },
+  "linkedin": {
+    "file": "linkedin.png",
+    "source": "https://avatars.githubusercontent.com/u/357098?s=96&v=4"
+  },
+  "qualcomm": {
+    "file": "qualcomm.jpg",
+    "source": "https://avatars.githubusercontent.com/u/55295994?s=96&v=4"
+  },
+  "vllm-project": {
+    "file": "vllm-project.png",
+    "source": "https://avatars.githubusercontent.com/u/136984999?s=96&v=4"
+  },
+  "deepspeedai": {
+    "file": "deepspeedai.png",
+    "source": "https://avatars.githubusercontent.com/u/74068820?s=96&v=4"
+  },
+  "huggingface": {
+    "file": "huggingface.png",
+    "source": "https://avatars.githubusercontent.com/u/25720743?s=96&v=4"
+  },
+  "NVIDIA": {
+    "file": "nvidia.png",
+    "source": "https://avatars.githubusercontent.com/u/1728152?s=96&v=4"
+  },
+  "flashinfer-ai": {
+    "file": "flashinfer-ai.png",
+    "source": "https://avatars.githubusercontent.com/u/145061914?s=96&v=4"
+  },
+  "open-compass": {
+    "file": "open-compass.png",
+    "source": "https://avatars.githubusercontent.com/u/143521324?s=96&v=4"
+  },
+  "thu-nics": {
+    "file": "thu-nics.png",
+    "source": "https://avatars.githubusercontent.com/u/1931386?s=96&v=4"
+  }
+}
