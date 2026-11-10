@@ -2,15 +2,13 @@
 
 # Input Projections and Gating
 
-GDN 的 chunkwise 计算需要两类输入：描述当前内容的 QKV，以及控制状态更新的衰减门与写入门。[Qwen3.5 的实现](https://github.com/huggingface/transformers/blob/fd3cf0140de03f7619ac95b5cfed05b711ff9e22/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L535)先在外层完成投影和短卷积，再进入 chunk 内核完成归一化、分块与累计衰减计算。
+GDN 的 chunkwise 计算需要两类输入：描述当前内容的 QKV，以及控制状态更新的衰减门与写入门。Qwen3.5 的实现先在外层完成投影和短卷积，再进入 chunk 内核完成归一化、分块与累计衰减计算。
 
 <figure class="lake-figure" style="width: 640px;">
-  <a href="https://arxiv.org/html/2412.06464v2#S3.F1" title="Yang et al., Gated Delta Networks, Figure 1 · CC BY 4.0">
-    <img src="../../assets/gdn-architecture.png" alt="Gated DeltaNet 模型与 token mixer 结构，Yang et al., Figure 1，CC BY 4.0" width="2058" height="1122">
-  </a>
+  <img src="../../assets/gdn-architecture.png" alt="Gated DeltaNet 模型与 token mixer 结构，Yang et al., Figure 1，CC BY 4.0" width="2058" height="1122">
 </figure>
 
-设进入 GDN 层的单个 token 表示为 $`\boldsymbol{x}_t`$。Qwen3.8-Flash-Next 技术报告 [§2.1.1](https://arxiv.org/html/2608.30320v1#S2.SS1.SSS1) 将 QKV 的特征生成写为投影、短因果卷积与激活的复合映射；Q/K 还需沿 head 的特征维归一化。用 $`\widehat{\boldsymbol{q}}_t`$ 表示尚未乘 head dimension scaling 的归一化 query：
+设进入 GDN 层的单个 token 表示为 $`\boldsymbol{x}_t`$。Qwen3.8-Flash-Next 技术报告 §2.1.1 将 QKV 的特征生成写为投影、短因果卷积与激活的复合映射；Q/K 还需沿 head 的特征维归一化。用 $`\widehat{\boldsymbol{q}}_t`$ 表示尚未乘 head dimension scaling 的归一化 query：
 
 ```math
 \begin{aligned}
@@ -80,7 +78,7 @@ if self.num_v_heads // self.num_k_heads > 1:
     key = key.repeat_interleave(self.num_v_heads // self.num_k_heads, dim=2)
 ```
 
-单个 head 的 [gated delta rule](https://arxiv.org/html/2412.06464v2#S3.SS1) 为
+单个 head 的 gated delta rule 为
 
 ```math
 \mathbf{S}_t
@@ -94,7 +92,7 @@ if self.num_v_heads // self.num_k_heads > 1:
 
 # Normalization and Chunkwise Decay
 
-进入 [`torch_chunk_gated_delta_rule`](https://github.com/huggingface/transformers/blob/fd3cf0140de03f7619ac95b5cfed05b711ff9e22/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L289) 后，代码先将布局从 $`[B,T,H,d]`$ 转为 $`[B,H,T,d]`$，并在这条 PyTorch 路径中将核心计算转换为 FP32。外层传入 `use_qk_l2norm_in_kernel=True`，因此每个 token、每个 head 的 Q/K 都沿最后一维归一化；batch、head 与 token 之间没有归约。
+进入 `torch_chunk_gated_delta_rule` 后，代码先将布局从 $`[B,T,H,d]`$ 转为 $`[B,H,T,d]`$，并在这条 PyTorch 路径中将核心计算转换为 FP32。外层传入 `use_qk_l2norm_in_kernel=True`，因此每个 token、每个 head 的 Q/K 都沿最后一维归一化；batch、head 与 token 之间没有归约。
 
 ```python
 initial_dtype = query.dtype
@@ -162,7 +160,7 @@ G_i=\sum_{r=1}^{i}g_r=\log\gamma_i,
 \tag{5}
 ```
 
-论文的[衰减因果矩阵](https://arxiv.org/html/2412.06464v2#S2.SS1)在下三角使用前缀衰减的比值，上三角为零。行 $`i`$ 表示当前读出位置，列 $`j`$ 表示历史写入位置；限制到一个 chunk 后，矩阵为
+论文的衰减因果矩阵在下三角使用前缀衰减的比值，上三角为零。行 $`i`$ 表示当前读出位置，列 $`j`$ 表示历史写入位置；限制到一个 chunk 后，矩阵为
 
 ```math
 \boldsymbol{\Gamma}=
