@@ -873,12 +873,10 @@ const chartY = (count) => 220 - count / chartMax * 184;
 const chartPoints = contributions.monthly.map((month, index, months) => ({
   ...month, x: months.length === 1 ? 378 : 56 + index / (months.length - 1) * 644, y: chartY(month.count),
 }));
-const contributionChart = `<figure class="contribution-history" aria-labelledby="contribution-history-heading">
-  <figcaption id="contribution-history-heading">每月合入 PR</figcaption>
+const contributionChart = `<figure class="contribution-history">
   <svg class="contribution-chart" width="730" height="280" viewBox="0 0 730 280" role="img" aria-labelledby="contribution-chart-title contribution-chart-description">
     <title id="contribution-chart-title">每月已合入 PR 数量</title>
     <desc id="contribution-chart-description">${chartPoints.map(month => `${month.month}：${month.count} 个`).join('；')}。</desc>
-    <text class="chart-axis-label" x="56" y="16">PR 数</text>
     ${Array.from({ length: chartMax / 20 + 1 }, (_, index) => index * 20).map(count => `<g class="chart-tick">
       <line x1="56" x2="700" y1="${chartY(count)}" y2="${chartY(count)}"/>
       <text x="42" y="${chartY(count) + 4}" text-anchor="end">${count}</text>
@@ -889,7 +887,6 @@ const contributionChart = `<figure class="contribution-history" aria-labelledby=
       <text class="chart-value" x="${month.x}" y="${month.y - 13}" text-anchor="middle">${month.count}</text>
       <text class="chart-month" x="${month.x}" y="246" text-anchor="middle">${month.month}</text>
     </g>`).join('')}
-    <text class="chart-axis-label" x="700" y="275" text-anchor="end">月份</text>
   </svg>
 </figure>`;
 

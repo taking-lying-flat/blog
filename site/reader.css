@@ -327,8 +327,6 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .contribution-count strong { color: var(--accent); font: 500 20px/1.4 var(--mono); font-variant-numeric: tabular-nums; }
 .contribution-count > span { color: var(--muted); font: 11px var(--mono); }
 .contribution-history { margin: 48px 0 0; }
-.contribution-history figcaption { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; font-size: 16px; font-weight: 600; }
-.contribution-history figcaption::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .contribution-chart { display: block; margin-inline: auto; color: var(--ink); font: 12px var(--mono); }
 .contribution-chart text { fill: currentColor; }
 .contribution-chart .chart-tick { color: var(--muted); }
@@ -336,7 +334,7 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .contribution-chart .chart-line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
 .contribution-chart .chart-point circle { fill: var(--page); stroke: var(--accent); stroke-width: 2; }
 .contribution-chart .chart-value { font-weight: 500; }
-.contribution-chart .chart-month, .contribution-chart .chart-axis-label { fill: var(--muted); }
+.contribution-chart .chart-month { fill: var(--muted); }
 .page-header { margin: 22px 0 40px; }
 .archive-page .page-header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 8px 0 26px; }
 .archive-page .page-header h1 { font-size: 30px; }
