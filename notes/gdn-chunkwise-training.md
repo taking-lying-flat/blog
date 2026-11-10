@@ -80,27 +80,43 @@ if self.num_v_heads // self.num_k_heads > 1:
     key = key.repeat_interleave(self.num_v_heads // self.num_k_heads, dim=2)
 ```
 
-单个 head 的 gated delta rule 为
-
-<div style="padding-left: 2em;">
-
-这里 $`\mathbf{S}_t\in\mathbb{R}^{d_v\times d_k}`$，源码缓存采用其转置布局 $`[d_k,d_v]`$。$`\alpha_t`$ 衰减整个历史状态；$`\beta_t`$ 同时控制沿当前 key 方向的旧关联消除与新关联写入。因此，归一化后的 key 范数直接影响状态更新的尺度。
-
-</div>
+对单个 head，衰减因子 $`\alpha_t`$ 控制历史状态的整体保留比例，更新强度 $`\beta_t`$ 控制沿当前 key 方向的旧关联消除与新关联写入；key 的范数因此直接影响状态更新的尺度。源码缓存采用状态矩阵的转置布局，gated delta rule 及其状态维度为
 
 ```math
+\begin{gathered}
 \mathbf{S}_t
 =\mathbf{S}_{t-1}\left(\alpha_t\left(\mathbf{I}
 -\beta_t\boldsymbol{k}_t\boldsymbol{k}_t^{\intercal}\right)\right)
-+\beta_t\boldsymbol{v}_t\boldsymbol{k}_t^{\intercal}.
-\tag{3}
++\beta_t\boldsymbol{v}_t\boldsymbol{k}_t^{\intercal},\\[4pt]
+\mathbf{S}_t\in\mathbb{R}^{d_v\times d_k},\qquad
+\mathbf{S}_t^{\intercal}\in\mathbb{R}^{d_k\times d_v}.
+\end{gathered}\tag{3}
 ```
 
 # Normalization and Chunkwise Decay
 
-进入 `torch_chunk_gated_delta_rule` 后，代码先将布局从 $`[B,T,H,d]`$ 转为 $`[B,H,T,d]`$，并在这条 PyTorch 路径中将核心计算转换为 FP32。外层传入 `use_qk_l2norm_in_kernel=True`，因此每个 token、每个 head 的 Q/K 都沿最后一维归一化；batch、head 与 token 之间没有归约。
+`torch_chunk_gated_delta_rule` 按 head 独立组织序列计算，并在这条 PyTorch 路径中使用 FP32，以减小归一化、衰减累计与状态更新中的舍入误差。Q/K 的归一化仅作用于各自的特征维，不混合不同 token 或 head 的信息。
+
+`l2norm` 使 Q/K 的相互作用主要由特征方向决定，减少上游投影幅值变化对关联匹配的干扰。对 key，它使沿当前方向的擦除比例主要受写入门控制；对 query，它约束查询向量对记忆读出的放大作用。正则项 $`\varepsilon`$ 则使零向量及极小幅值输入附近的映射保持有定义且连续：
+
+```math
+\operatorname{L2Norm}_{\varepsilon}(\boldsymbol{x})
+=\frac{\boldsymbol{x}}{\sqrt{\sum_{r=1}^{d_k}x_r^2+\varepsilon}},
+\qquad
+\boldsymbol{q}_t=\frac{\widehat{\boldsymbol{q}}_t}{\sqrt{d_k}},
+\qquad \varepsilon=10^{-6}.
+\tag{4}
+```
+
+L2 归一化约束 Q/K 的向量范数，额外的 $`d_k^{-1/2}`$ 只缩放 query 的读出幅度。结合式（3），归一化使 $`\|\boldsymbol{k}_t\|_2\leq1`$，从而 $`\mathbf{I}-\beta_t\boldsymbol{k}_t\boldsymbol{k}_t^\intercal`$ 沿 key 方向的特征值为 $`1-\beta_t\|\boldsymbol{k}_t\|_2^2`$，位于 $`[0,1]`$；它约束历史状态变换的增益，不限制每一步新写入的大小。随后按默认 $`C=64`$ 划分 chunk，并预先计算逐 token 加权的 $`\beta K`$ 与 $`\beta V`$。长度 $`T=128`$ 对应两个完整 chunk；不能整除时，仅在序列末尾补齐计算位置。
+
+`v_beta` 是后续三角求解的右端项；`k_beta` 用于构造三角系统，并在乘累计衰减后构成另一右端项。内部补齐位置的 $`\beta=0`$、$`g=0`$ 分别意味着不写入与不衰减，因此不会继续改变历史状态。
 
 ```python
+def l2norm(x, dim=-1, eps=1e-6):
+    inv_norm = torch.rsqrt((x * x).sum(dim=dim, keepdim=True) + eps)
+    return x * inv_norm
+
 initial_dtype = query.dtype
 batch_size, sequence_length, _, k_head_dim = key.shape
 num_v_heads, v_head_dim = value.shape[-2:]
@@ -116,28 +132,7 @@ if use_qk_l2norm_in_kernel:
     key = l2norm(key, dim=-1, eps=1e-6)
 scaling = query.shape[-1] ** -0.5
 query = query * scaling
-```
 
-其中 `l2norm` 沿每个 head 的特征维累加平方和，再用 `rsqrt` 计算其倒数平方根，将同一归一化系数应用于该向量的全部分量。`keepdim=True` 保留长度为 1 的归约轴，使系数能够沿特征维广播；`eps` 加在平方根内部，避免零向量除零，并限制近零输入的放大倍数。零向量经过该操作后仍为零，具体实现为
-
-```python
-def l2norm(x, dim=-1, eps=1e-6):
-    inv_norm = torch.rsqrt((x * x).sum(dim=dim, keepdim=True) + eps)
-    return x * inv_norm
-```
-
-```math
-\operatorname{L2Norm}_{\varepsilon}(\boldsymbol{x})
-=\frac{\boldsymbol{x}}{\sqrt{\sum_{r=1}^{d_k}x_r^2+\varepsilon}},
-\qquad
-\boldsymbol{q}_t=\frac{\widehat{\boldsymbol{q}}_t}{\sqrt{d_k}},
-\qquad \varepsilon=10^{-6}.
-\tag{4}
-```
-
-L2 归一化约束 Q/K 的向量范数，额外的 $`d_k^{-1/2}`$ 只缩放 query 的读出幅度。结合式（3），归一化使 $`\|\boldsymbol{k}_t\|_2\leq1`$，从而 $`\mathbf{I}-\beta_t\boldsymbol{k}_t\boldsymbol{k}_t^\intercal`$ 沿 key 方向的特征值为 $`1-\beta_t\|\boldsymbol{k}_t\|_2^2`$，位于 $`[0,1]`$；它约束历史状态变换的增益，不限制每一步新写入的大小。随后按默认 $`C=64`$ 划分 chunk，并预先计算逐 token 加权的 $`\beta K`$ 与 $`\beta V`$。长度 $`T=128`$ 对应两个完整 chunk；不能整除时，仅在序列末尾补齐计算位置。
-
-```python
 pad_size = (chunk_size - sequence_length % chunk_size) % chunk_size
 query, key, value = (F.pad(x, (0, 0, 0, pad_size)) for x in (query, key, value))
 beta, decay = (F.pad(x, (0, pad_size)) for x in (beta, decay))
@@ -145,14 +140,15 @@ total_sequence_length = sequence_length + pad_size
 num_chunks = total_sequence_length // chunk_size
 v_beta = value * beta.unsqueeze(-1)
 k_beta = key * beta.unsqueeze(-1)
+# query/key/k_beta: [B, H, num_chunks, chunk_size, d_k]
+# v_beta: [B, H, num_chunks, chunk_size, d_v]
 query, key, k_beta, v_beta = [
     x.reshape(x.shape[0], x.shape[1], -1, chunk_size, x.shape[-1])
     for x in (query, key, k_beta, v_beta)
 ]
+# decay: [B, H, num_chunks, chunk_size]
 decay = decay.reshape(decay.shape[0], decay.shape[1], -1, chunk_size)
 ```
-
-分块后，`query`、`key`、`k_beta` 为 $`[B,H,2,64,d_k]`$，`v_beta` 为 $`[B,H,2,64,d_v]`$，`decay` 为 $`[B,H,2,64]`$。`v_beta` 是后续三角求解的右端项；`k_beta` 用于构造三角系统，并在乘累计衰减后构成另一右端项。内部补齐位置的 $`\beta=0`$、$`g=0`$ 分别意味着不写入与不衰减，因此不会继续改变历史状态。
 
 对固定的 batch、head 和 chunk，使用块内下标 $`i=1,\ldots,C`$。论文的累计衰减 $`\gamma_i`$ 与代码中的累计对数衰减 $`G_i`$ 满足
 
@@ -187,13 +183,14 @@ G_i=\sum_{r=1}^{i}g_r=\log\gamma_i,
 
 **对数空间把累计连乘变成求和，把前缀积相除变成累计和相减。** $`\gamma_i/\gamma_j`$ 消去写入位置及其之前的公共前缀，只保留从 $`j+1`$ 到 $`i`$ 的衰减；当 $`i=j`$ 时，空乘积为 1。实现直接计算 $`G_i-G_j`$，避免分别生成可能已经下溢的两个前缀积，再进行不稳定的相除。
 
+每个 chunk 独立建立累计衰减的参照点，跨块历史仍通过入口 `recurrent_state` 传递。由于 $`g\leq0`$，下三角差值非正；先把上三角置为 $`-\infty`$ 再取指数，可同时实现因果屏蔽并避免未来位置的正指数溢出。最后得到的 `pairwise_decay` 就是式（6）的 $`\boldsymbol{\Gamma}`$，对角线为 1，上三角为 0。
+
 ```python
 strictly_upper_mask = torch.ones(
     chunk_size, chunk_size, dtype=torch.bool, device=query.device).triu(1)
-cum_decay = decay.cumsum(dim=3)
+cum_decay = decay.cumsum(dim=3)  # 在每个 chunk 内累计
+# pairwise_decay: [B, H, num_chunks, chunk_size, chunk_size]
 pairwise_decay = cum_decay.unsqueeze(4) - cum_decay.unsqueeze(3)
 pairwise_decay = pairwise_decay.masked_fill(strictly_upper_mask, float("-inf"))
 pairwise_decay = pairwise_decay.exp()
 ```
-
-`dim=3` 是块内位置轴，故每个 chunk 独立建立累计衰减的参照点；跨块历史仍通过入口 `recurrent_state` 传递。两次 `unsqueeze` 分别形成行、列广播，生成 $`[B,H,2,64,64]`$ 的 $`G_i-G_j`$。由于 $`g\leq0`$，下三角差值非正；先把上三角置为 $`-\infty`$ 再取指数，可同时实现因果屏蔽并避免未来位置的正指数溢出。最后得到的 `pairwise_decay` 就是式（6）的 $`\boldsymbol{\Gamma}`$，对角线为 1，上三角为 0。

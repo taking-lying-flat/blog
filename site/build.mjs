@@ -80,7 +80,6 @@ const escape = markdown.utils.escapeHtml;
 for (const [name, language] of Object.entries({ python, json, cpp, bash, diff })) {
   hljs.registerLanguage(name, language);
 }
-const languageNames = { python: 'Python', json: 'JSON', cpp: 'C++ / CUDA', bash: 'Shell', diff: 'Diff', text: 'Text' };
 
 markdown.inline.ruler.before('backticks', 'math_inline', (state, silent) => {
   if (!state.src.startsWith('$`', state.pos)) return false;
@@ -355,7 +354,6 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
     return `<div class="equation" tabindex="0" role="math" aria-label="${escape(token.content)}">${token.meta.html}</div>\n`;
   }
   const id = token.attrGet('id');
-  const label = languageNames[language] ?? language;
   const [declaredCaption = '', declaredSource = ''] = token.info.trim().replace(/^\S+\s*/, '').split('|').map((part) => part.trim());
   const details = codeCaptions[env.slug]?.[token.map?.[0]];
   const isDiagram = language === 'text' || details?.kind === 'diagram';
@@ -369,8 +367,8 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
     ? (language === 'json' ? 'config.json · text_config' : language === 'text' ? '张量维度'
       : token.content.includes('def rotate_half') ? 'rotate_half / apply_rotary_pos_emb'
       : token.content.includes('base =') && token.content.includes('inv_freq =')
-        ? 'compute_default_rope_parameters' : label)
-    : label);
+        ? 'compute_default_rope_parameters' : '')
+    : '');
   const code = hljs.getLanguage(language)
     ? hljs.highlight(token.content, { language, ignoreIllegals: true }).value : escape(token.content);
   const displayedCode = isDiagram ? code : renderCodeLines(code, token.content);
@@ -378,11 +376,11 @@ markdown.renderer.rules.fence = (items, i, _options, env) => {
     ? `<a href="${escape(sourceUrl)}">${escape(source === 'GitHub' ? source : `${source} · GitHub`)}</a>` : escape(source);
   const sourceLabel = [primarySource, ...(details?.additionalSources ?? []).map((item) =>
     `<a href="${escape(item.url)}">${escape(item.label)}</a>`)].join(' · ');
+  const captionHtml = name || source
+    ? `<figcaption class="code-caption"><span class="code-caption-text">${escape(name)}${source ? `<span class="code-source">${sourceLabel}</span>` : ''}</span></figcaption>`
+    : '';
   return `<figure class="code-block${isDiagram ? ' code-diagram' : ''}"${id ? ` id="${escape(id)}"` : ''}>
-    <figcaption class="code-caption">
-      <span class="code-caption-text">${escape(name)}${source ? `<span class="code-source">${sourceLabel}</span>` : ''}</span>
-      <span class="code-actions"><button type="button" class="copy-button" hidden>复制</button></span>
-    </figcaption>
+    ${captionHtml}
     <pre tabindex="0"><code class="language-${escape(language)}">${displayedCode}</code></pre>
   </figure>\n`;
 };
