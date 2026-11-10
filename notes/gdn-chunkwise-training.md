@@ -195,7 +195,7 @@ pairwise_decay = pairwise_decay.exp()
 
 # 🐨 Mamba2: Linear Attention with Decay
 
-**在不考虑归一化操作以及查询和键的激活函数时，线性 Transformer 可以表述为如下线性递推形式**
+**前面的累计衰减确定历史写入如何传播；接下来需要把入口记忆与块内写入的贡献分开，才能组织 chunkwise 计算。先从加性线性注意力出发，将特征映射吸收到 Q/K 中，其递推形式为**
 
 ```math
 S_t=S_{t-1}+v_tk_t^\top\in\mathbb{R}^{d_v\times d_k}, \quad o_t=S_tq_t\in\mathbb{R}^{d_v}
@@ -269,17 +269,17 @@ S_{[t+1]} =\overrightarrow{S}_{[t]} +V_{[t]}^\top\overrightarrow{K}_{[t]} \in\ma
 \tag{16}
 ```
 
-**首先将线性注意力及其带衰减形式表示为等价的递推与并行矩阵计算，并进一步通过 chunkwise 将逐 token 串行更新改写为块内少量大规模 GEMM、块间仅传递紧凑状态矩阵** $`S_{[t]}`$ **，从而在保持线性复杂度和计算等价性的同时充分利用 GPU Tensor Core**
+**上述分块形式把输出分成入口记忆的读出与块内写入的贡献。Q、K、V 及衰减均由当前块输入确定，因此块内矩阵可并行准备，块间通过** $`S_{[t]}`$ **延续历史。DeltaNet 的困难在于：当前写入还依赖旧状态中的关联预测。**
 
 # 🦌 Delta Networks: Linear Attention with Delta Rule
 
-**Delta 更新规则会动态擦除与当前输入键** $`k_t`$ **相关联的旧值** $`v_t^{\mathrm{old}}`$ **，写入新值** $`v_t^{\mathrm{new}}`$ **。新值由当前输入值与旧值根据写入强度** $`\beta_t\in(0,1)`$ **进行线性组合得到**
+**DeltaNet 先用当前 key 从上一状态读取预测值** $`S_{t-1}k_t`$ **，用当前 value 减去该预测，再将残差乘以写入强度** $`\beta_t\in(0,1)`$ **，沿当前 key 方向修正记忆：**
 
 ```math
 S_t=S_{t-1}+\beta_t(v_t-S_{t-1}k_t)k_t^{\top}=S_{t-1}(I-\beta_t k_t k_t^{\top})+\beta_t v_t k_t^{\top}.\tag{17}
 ```
 
-- **DeltaNet 实现一种以广义 Householder 矩阵** $`I-\beta_tk_tk_t^\top`$ **为状态转移矩阵的一阶线性递推。尽管 DeltaNet 在关联回忆和语言建模任务中表现出色，但由于计算效率较低，其长期以来并未受到广泛关注**
+- **状态转移矩阵** $`I-\beta_tk_tk_t^\top`$ **是广义 Householder 形式。写入残差依赖上一状态，不能直接像式（14）那样由输入独立构造；需要先把这部分状态依赖显式分离。**
 
 **Chunkwise parallel form：分块并行与 WY 表示法**
 
@@ -300,12 +300,14 @@ S_t=S_{t-1}+\beta_t(v_t-S_{t-1}k_t)k_t^{\top}=S_{t-1}(I-\beta_t k_t k_t^{\top})+
 \tag{20}
 ```
 
-- **UT 变换：将 W、U 的递推依赖组织为共享系数的下三角线性系统。** 系统系数由块内 key 的 Gram 矩阵与写入门构成，两个右端项分别为 $`\operatorname{diag}(\beta)K`$ 与 $`\operatorname{diag}(\beta)V`$。式（22）以 $`T`$ 表示同一求解算子，使 W、U 可通过块级三角求解和矩阵乘法共同计算；逆矩阵是代数记号，实现无需显式构造一般矩阵的逆。<strong style="color: var(--fgColor-danger)">WY 给出紧凑表示，UT 给出计算该表示的块级方法</strong>
+- 将各位置的 w、u 分别按行排列为 W、U，并取 $`r=C`$，上述 WY 表示写成块级矩阵形式：
 
 ```math
 \mathbf{P}_{[t]} = \mathbf{I} - \mathbf{W}_{[t]}^\top \mathbf{K}_{[t]} \in \mathbb{R}^{d_k \times d_k}, \qquad \mathbf{H}_{[t]} = \mathbf{U}_{[t]}^\top \mathbf{K}_{[t]} \in \mathbb{R}^{d_v \times d_k}
 \tag{21}
 ```
+
+- **UT 变换：将 W、U 的递推依赖组织为共享系数的下三角线性系统。** 系统系数由块内 key 的 Gram 矩阵与写入门构成，两个右端项分别为 $`\operatorname{diag}(\beta)K`$ 与 $`\operatorname{diag}(\beta)V`$。式（22）以 $`T`$ 表示同一求解算子，使 W、U 可通过块级三角求解和矩阵乘法共同计算；逆矩阵是代数记号，实现无需显式构造一般矩阵的逆。<strong style="color: var(--fgColor-danger)">WY 给出紧凑表示，UT 给出计算该表示的块级方法</strong>
 
 ```math
 \mathbf{T}_{[t]} = \left[ \mathbf{I} + \text{strictLower} \left( \text{diag}(\beta_{[t]}) \mathbf{K}_{[t]} \mathbf{K}_{[t]}^\top \right) \right]^{-1} \text{diag} (\beta_{[t]}) \in \mathbb{R}^{C \times C}
@@ -331,7 +333,7 @@ S_t=S_{t-1}+\beta_t(v_t-S_{t-1}k_t)k_t^{\top}=S_{t-1}(I-\beta_t k_t k_t^{\top})+
 
 # 🐧 WY Representation
 
-*Parallelizing Linear Transformers with the Delta Rule over Sequence Length* 附录 B.1 利用秩一更新证明 WY 表示：<strong style="color: var(--fgColor-danger)">WY 将有序矩阵连乘精确改写为向量外积和，避免逐位置物化二维矩阵。</strong>
+式（19）、（20）的 WY 表示可按 *Parallelizing Linear Transformers with the Delta Rule over Sequence Length* 附录 B.1 作归纳证明。关键在于：<strong style="color: var(--fgColor-danger)">每次右乘新的更新因子，新增项仍以当前 key 为右因子，因此有序连乘可持续表示为向量外积和。</strong>
 
 当 $`r=1`$ 时，$`\mathbf{w}_{[t]}^1=\beta_{[t]}^1\boldsymbol{k}_{[t]}^1`$。假设式（19）对 $`r-1`$ 成立，将第 r 个更新因子右乘到累计变换上：
 
@@ -418,7 +420,7 @@ W、U 均不依赖入口状态，可跨 chunk 并行准备。入口状态到达�
 
 # 🦦 Algorithm: Hardware-Efficient Chunkwise Training
 
-GDN §3.3 将块内递推分解为入口记忆的累计变换 $`\mathbf F_{[t]}^r`$ 与块内累计写入 $`\mathbf G_{[t]}^r`$：
+将衰减因子重新加入式（18），得到 GDN §3.3 的块内展开。入口记忆的累计变换记为 $`\mathbf F_{[t]}^r`$，块内累计写入记为 $`\mathbf G_{[t]}^r`$：
 
 ```math
 \mathbf S_{[t]}^r=\mathbf S_{[t]}\underbrace{\left(\prod_{i=1}^{r}\alpha_{[t]}^i\left(\mathbf I-\beta_{[t]}^i\boldsymbol k_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right)\right)}_{\mathbf F_{[t]}^r}+\underbrace{\sum_{i=1}^{r}\left(\beta_{[t]}^i\boldsymbol v_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\prod_{j=i+1}^{r}\alpha_{[t]}^j\left(\mathbf I-\beta_{[t]}^j\boldsymbol k_{[t]}^j{\boldsymbol k_{[t]}^j}^{\top}\right)\right)}_{\mathbf G_{[t]}^r}.
@@ -548,7 +550,7 @@ for i in range(num_chunks):
     last_recurrent_state = last_recurrent_state * chunk_decay[:, :, i] + key[:, :, i].transpose(-1, -2) @ v_new
 ```
 
-扫描结束后裁去补齐位置，恢复输入布局与精度并返回：
+扫描结束后，从输出中裁去补齐位置并恢复输入布局与精度，按需返回末尾递推状态：
 
 ```python
 last_recurrent_state = None if not output_final_state else last_recurrent_state
