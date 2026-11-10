@@ -439,7 +439,7 @@ $`\widetilde{\mathbf u}_{[t]}^r`$ 从当前 value 中扣除历史写入在当前
 \tag{36}
 ```
 
-移项后，写入门与衰减加权的 key Gram 矩阵构成单位下三角系统，UT 解为
+式（36）定义带衰减的 WY 系数；将历史项移到左侧，建立单位下三角系统，再通过 UT 求解得到系数矩阵：
 
 ```math
 \widetilde{\mathbf U}_{[t]}=\left[\mathbf I+\operatorname{strictLower}\left(\operatorname{diag}(\beta_{[t]})\left(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^{\top}\right)\right)\right]^{-1}\operatorname{diag}(\beta_{[t]})\mathbf V_{[t]}.
@@ -477,7 +477,11 @@ intra_chunk_attn = (query @ key.transpose(-1, -2)) * pairwise_decay
 decayed_k_beta = k_beta * cum_decay.exp().unsqueeze(-1)
 ```
 
-`new_values`、`k_cumdecay` 分别对应 $`\widetilde{\mathbf U}_{[t]}`$、$`\overleftarrow{\mathbf W}_{[t]}`$。`upper=False` 选择下三角，`unitriangular=True` 忽略原对角元素并将其视为 1；导出分支改为先构造系统的逆，再乘两组右端项。
+`new_values` 对应 $`\widetilde{\mathbf U}_{[t]}`$，<strong style="color: var(--fgColor-danger)">负责块内写入及各次写入之间的纠正</strong>。UT 将块内衰减和先前写入对当前 key 的影响计入这些 value 系数；它不依赖入口状态，给出零入口状态下的块内有效写入。
+
+`k_cumdecay` 对应 $`\overleftarrow{\mathbf W}_{[t]}`$，<strong style="color: var(--fgColor-danger)">负责块间历史对本块更新的修正</strong>。它将入口记忆映射为带衰减的旧关联预测，从 $`\widetilde{\mathbf U}_{[t]}`$ 中扣除 $`\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$ 后才得到有效写入。跨块传递的是 $`\mathbf S_{[t]}`$，$`\overleftarrow{\mathbf W}_{[t]}`$ 本身仍可由当前块输入预计算。
+
+`upper=False` 选择下三角，`unitriangular=True` 忽略原对角元素并将其视为 1；导出分支改为先构造系统的逆，再乘两组右端项。
 
 ```python
 if not is_torchdynamo_exporting():
