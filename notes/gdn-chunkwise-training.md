@@ -414,22 +414,58 @@ WY 给出累计变换的紧凑表示，但 w、u 的构造仍依赖先前位置�
 
 U 表示当前块从零状态出发的写入系数，$`\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$ 表示入口记忆中需要消除的分量。<strong style="color: var(--fgColor-danger)">有效写入是两者之差，省去 W 就会遗漏对旧关联的纠正。</strong> W、U 只依赖当前块输入，因此可跨 chunk 并行准备；入口状态到达后，再计算 $`\mathbf U_{[t]}-\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$。若提前将入口状态合入右端项，三角求解便重新依赖前一个 chunk。
 
-# 🦦 UT Construction and Triangular Solves
+# 🦦 Algorithm: Hardware-Efficient Chunkwise Training
 
-GDN 保留 WY 的分解结构，并将累计衰减加入 UT 系统。沿用式（29）的 $`\mathbf B_{[t]}=\operatorname{diag}(\beta_{[t]})`$，将带衰减的严格下三角系数记为
+GDN §3.3 从门控递推的块内展开出发，将状态分为入口记忆的累计变换 $`\mathbf F_{[t]}^r`$ 与当前块的累计写入 $`\mathbf G_{[t]}^r`$：
 
 ```math
-\widetilde{\mathbf L}_{[t]}=\operatorname{strictLower}\left(\mathbf B_{[t]}\left(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^{\top}\right)\right).
+\mathbf S_{[t]}^r=\mathbf S_{[t]}\underbrace{\left(\prod_{i=1}^{r}\alpha_{[t]}^i\left(\mathbf I-\beta_{[t]}^i\boldsymbol k_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right)\right)}_{\mathbf F_{[t]}^r}+\underbrace{\sum_{i=1}^{r}\left(\beta_{[t]}^i\boldsymbol v_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\prod_{j=i+1}^{r}\alpha_{[t]}^j\left(\mathbf I-\beta_{[t]}^j\boldsymbol k_{[t]}^j{\boldsymbol k_{[t]}^j}^{\top}\right)\right)}_{\mathbf G_{[t]}^r}.
 \tag{34}
 ```
 
-源码先准备系统系数、块内读出权重和第二组右端项。$`\operatorname{diag}(\gamma_{[t]})`$ 的对角元素为各位置相对于块入口的累计衰减：
+$`\alpha`$ 是标量，可以从有序矩阵连乘中提出，因此入口变换为 $`\mathbf F_{[t]}^r=\gamma_{[t]}^r\mathbf P_{[t]}^r`$。块内写入发生在不同位置，其衰减区间也不同：<strong style="color: var(--fgColor-danger)">入口记忆经历从块首到当前位置的全部衰减，位置 i 的写入仅经历其后的衰减。</strong> 论文据此将 WY 表示扩展为
 
-| 源码变量 | GDN 矩阵表达 |
-| --- | --- |
-| `ut_system` | $`\mathbf B_{[t]}(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^{\top})`$，求解器仅使用其严格下三角部分 |
-| `intra_chunk_attn` | $`(\mathbf Q_{[t]}\mathbf K_{[t]}^{\top})\odot\Gamma_{[t]}`$ |
-| `decayed_k_beta` | $`\mathbf B_{[t]}\operatorname{diag}(\gamma_{[t]})\mathbf K_{[t]}`$ |
+```math
+\mathbf F_{[t]}^r=\gamma_{[t]}^r\left(\mathbf I-\sum_{i=1}^{r}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right),\qquad \mathbf G_{[t]}^r=\sum_{i=1}^{r}\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}\widetilde{\mathbf u}_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}.
+\tag{35}
+```
+
+$`\widetilde{\mathbf u}_{[t]}^r`$ 扣除先前写入在当前 key 上形成的关联；这些关联到达位置 r 前已经衰减，因此原来的 key 内积必须乘 $`\gamma_{[t]}^r/\gamma_{[t]}^i`$。其递推为下式，归纳证明见论文附录 A：
+
+```math
+\widetilde{\mathbf u}_{[t]}^r=\beta_{[t]}^r\left(\boldsymbol v_{[t]}^r-\sum_{i=1}^{r-1}\widetilde{\mathbf u}_{[t]}^i\left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}{\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right)\right).
+\tag{36}
+```
+
+将历史项移到左侧，衰减比值组成 $`\Gamma_{[t]}`$，当前写入门逐行乘入 key 的 Gram 矩阵。UT 变换因而给出 §3.3 中的矩阵解：
+
+```math
+\widetilde{\mathbf U}_{[t]}=\left[\mathbf I+\operatorname{strictLower}\left(\operatorname{diag}(\beta_{[t]})\left(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^{\top}\right)\right)\right]^{-1}\operatorname{diag}(\beta_{[t]})\mathbf V_{[t]}.
+\tag{37}
+```
+
+入口记忆的修正也必须计入衰减。论文定义 $`\overleftarrow{\mathbf w}_{[t]}^r=\gamma_{[t]}^r\mathbf w_{[t]}^r`$；将式（19）乘以 $`\gamma_{[t]}^r`$，并代入这一定义，得到与式（36）相同的历史依赖：
+
+```math
+\overleftarrow{\mathbf w}_{[t]}^r=\gamma_{[t]}^r\mathbf w_{[t]}^r=\beta_{[t]}^r\gamma_{[t]}^r\boldsymbol k_{[t]}^r-\beta_{[t]}^r\sum_{i=1}^{r-1}\overleftarrow{\mathbf w}_{[t]}^i\left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}{\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right).
+\tag{38}
+```
+
+<strong style="color: var(--fgColor-danger)">同一单位下三角系统的两组右端项，分别是加权 value 与带累计衰减的 key。</strong> 沿用前文 $`\mathbf B_{[t]}=\operatorname{diag}(\beta_{[t]})`$，式（36）、（38）可合写为
+
+```math
+\left[\mathbf I+\operatorname{strictLower}\left(\mathbf B_{[t]}\left(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^{\top}\right)\right)\right]\begin{bmatrix}\widetilde{\mathbf U}_{[t]}&\overleftarrow{\mathbf W}_{[t]}\end{bmatrix}=\mathbf B_{[t]}\begin{bmatrix}\mathbf V_{[t]}&\operatorname{diag}(\gamma_{[t]})\mathbf K_{[t]}\end{bmatrix}.
+\tag{39}
+```
+
+第一组解是式（37），第二组解则为
+
+```math
+\overleftarrow{\mathbf W}_{[t]}=\left[\mathbf I+\operatorname{strictLower}\left(\operatorname{diag}(\beta_{[t]})\left(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^{\top}\right)\right)\right]^{-1}\operatorname{diag}(\beta_{[t]})\operatorname{diag}(\gamma_{[t]})\mathbf K_{[t]}.
+\tag{40}
+```
+
+源码中的 `ut_system` 保存 $`\mathbf B_{[t]}(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^{\top})`$，求解时只取其严格下三角部分；`v_beta` 与 `decayed_k_beta` 分别提供两组右端项。同时准备的 `intra_chunk_attn` 为 $`(\mathbf Q_{[t]}\mathbf K_{[t]}^{\top})\odot\Gamma_{[t]}`$，用于后续读出当前块的写入：
 
 ```python
 # ut_system/intra_chunk_attn: [B, H, num_chunks, chunk_size, chunk_size]
@@ -439,33 +475,7 @@ intra_chunk_attn = (query @ key.transpose(-1, -2)) * pairwise_decay
 decayed_k_beta = k_beta * cum_decay.exp().unsqueeze(-1)
 ```
 
-GDN §3.3 给出的 value 系数递推为式（35）；将式（19）乘以 $`\gamma_{[t]}^r`$，再代入该节定义的 $`\overleftarrow{\mathbf w}_{[t]}^r=\gamma_{[t]}^r\mathbf w_{[t]}^r`$，得到式（36）。两式的历史依赖均包含从位置 i 到 r 的衰减比值：
-
-```math
-\widetilde{\mathbf u}_{[t]}^r=\beta_{[t]}^r\left(\boldsymbol v_{[t]}^r-\sum_{i=1}^{r-1}\widetilde{\mathbf u}_{[t]}^i\left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}{\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right)\right).
-\tag{35}
-```
-
-```math
-\overleftarrow{\mathbf w}_{[t]}^r=\gamma_{[t]}^r\mathbf w_{[t]}^r=\beta_{[t]}^r\gamma_{[t]}^r\boldsymbol k_{[t]}^r-\beta_{[t]}^r\sum_{i=1}^{r-1}\overleftarrow{\mathbf w}_{[t]}^i\left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}{\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right).
-\tag{36}
-```
-
-<strong style="color: var(--fgColor-danger)">衰减同时进入系统系数与入口状态对应的右端项。</strong> 将两式的历史项移到左侧，得到 GDN 共用的单位下三角系统：
-
-```math
-(\mathbf I+\widetilde{\mathbf L}_{[t]})\begin{bmatrix}\widetilde{\mathbf U}_{[t]}&\overleftarrow{\mathbf W}_{[t]}\end{bmatrix}=\mathbf B_{[t]}\begin{bmatrix}\mathbf V_{[t]}&\operatorname{diag}(\gamma_{[t]})\mathbf K_{[t]}\end{bmatrix}.
-\tag{37}
-```
-
-在式（32）的记号上，用 $`\widetilde{\mathbf T}_{[t]}`$ 表示带衰减的 UT 求解算子。两组解分别对应 `new_values` 与 `k_cumdecay`；后者也满足论文中的 $`\overleftarrow{\mathbf W}_{[t]}=\operatorname{diag}(\gamma_{[t]})\mathbf W_{[t]}`$：
-
-```math
-\widetilde{\mathbf T}_{[t]}=(\mathbf I+\widetilde{\mathbf L}_{[t]})^{-1}\mathbf B_{[t]},\qquad \widetilde{\mathbf U}_{[t]}=\widetilde{\mathbf T}_{[t]}\mathbf V_{[t]},\qquad \overleftarrow{\mathbf W}_{[t]}=\widetilde{\mathbf T}_{[t]}\operatorname{diag}(\gamma_{[t]})\mathbf K_{[t]}.
-\tag{38}
-```
-
-`upper=False` 选择下三角，`unitriangular=True` 将对角线视为 1，故实际系数为 $`\mathbf I+\widetilde{\mathbf L}_{[t]}`$。<strong style="color: var(--fgColor-danger)">两次求解共用历史依赖，分别得到块内写入系数与入口记忆的修正系数。</strong> 常规分支直接求解；导出分支通过逐行消去构造同一单位下三角矩阵的逆，再乘两组右端项。
+两次三角求解分别得到 $`\widetilde{\mathbf U}_{[t]}`$ 与 $`\overleftarrow{\mathbf W}_{[t]}`$，对应 `new_values` 和 `k_cumdecay`。`unitriangular=True` 将对角线视为 1，配合 `upper=False` 实现式（39）的单位下三角系统。导出分支逐行构造同一系统的逆，再乘两组右端项，与三角求解在代数上等价。
 
 ```python
 if not is_torchdynamo_exporting():
@@ -506,21 +516,21 @@ chunk_decay = cum_decay[..., -1].exp()[..., None, None]
 
 ```math
 \texttt{v\_new}=\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}.
-\tag{39}
+\tag{41}
 ```
 
 输出包含入口记忆的读出与当前块的写入两部分。GDN §3.3 的输出式在原文中将块内掩码记为 M；这里按衰减递推和源码展开为 $`\Gamma_{[t]}`$，保留每次写入到当前读出位置之间的衰减。其对角线为 1，因此当前 token 能读到本步更新后的状态，上三角为零则排除未来写入：
 
 ```math
 \mathbf O_{[t]}=\overleftarrow{\mathbf Q}_{[t]}\mathbf S_{[t]}^{\top}+\left((\mathbf Q_{[t]}\mathbf K_{[t]}^{\top})\odot\Gamma_{[t]}\right)\left(\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}\right).
-\tag{40}
+\tag{42}
 ```
 
 块末状态采用 GDN §3.3 的更新式：入口记忆经历整块衰减，各位置的有效写入通过 $`\overrightarrow{\mathbf K}_{[t]}`$ 衰减到块尾后累加。这个结果成为下一块的入口：
 
 ```math
 \mathbf S_{[t+1]}=\gamma_{[t]}^C\mathbf S_{[t]}+\left(\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}\right)^{\top}\overrightarrow{\mathbf K}_{[t]}.
-\tag{41}
+\tag{43}
 ```
 
 ```python
@@ -531,7 +541,7 @@ for i in range(num_chunks):
     last_recurrent_state = last_recurrent_state * chunk_decay[:, :, i] + key[:, :, i].transpose(-1, -2) @ v_new
 ```
 
-式（41）在缓存布局下的状态写入为 `key.transpose(-1, -2) @ v_new`。循环结束后合并 chunk、裁去内部补齐位置，并恢复输入的布局和精度。补齐位置不写入也不衰减，最终状态仍对应有效序列末尾；`output_final_state` 仅决定是否返回该状态，不影响前面的块间传递。
+式（43）在缓存布局下的状态写入为 `key.transpose(-1, -2) @ v_new`。循环结束后合并 chunk、裁去内部补齐位置，并恢复输入的布局和精度。补齐位置不写入也不衰减，最终状态仍对应有效序列末尾；`output_final_state` 仅决定是否返回该状态，不影响前面的块间传递。
 
 ```python
 last_recurrent_state = None if not output_final_state else last_recurrent_state
