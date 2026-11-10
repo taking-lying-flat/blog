@@ -40,9 +40,9 @@ b = self.in_proj_b(hidden_states)
 a = self.in_proj_a(hidden_states)
 ```
 
-多 token 分支沿序列轴执行逐通道因果卷积。卷积核宽度记为 $`w`$，每个位置依赖当前输入及前 $`w-1`$ 个位置；`conv_state` 保存卷积与 SiLU 之前的 `mixed_qkv`，常规缓存形状为 `[batch, 2 * key_dim + value_dim, conv_kernel_size]`。续算时，`update_conv_state` 将历史窗口与当前投影结果拼接，返回完整张量供卷积使用，同时只将末尾 $`w`$ 个位置保留为下一次调用的缓存。历史窗口提供调用边界处的左侧上下文，`[:, :, -seq_len:]` 截取本次 token 的输出。单 token 缓存解码则通过 `causal_conv1d_update` 原位推进窗口。下面完成式（1）中的短卷积与 SiLU，L2 归一化由后续内核执行。
+短因果卷积为 QKV 提供局部时序归纳偏置，使当前位置的内容特征在本层显式融合邻近位置的信息。卷积缓存的作用是维持这一局部感受野的连续性：当输入被拆成多次调用时，新输入仍能访问调用边界左侧的投影特征，使分段处理与连续处理具有相同的卷积上下文。它保留有限窗口内的具体特征与相对顺序，保存长度由卷积核宽度决定。
 
-`recurrent_state` 保存每个 value head 的关联记忆矩阵，形状为 $`[B,H_v,d_k,d_v]`$，作为 `initial_state` 进入 GDN 内核；其值由此前所有 token 的写入、纠正与衰减共同决定。启用缓存时，内核返回本次输入结束处的 `last_recurrent_state`，外层通过 `update_recurrent_state` 写回，供下一次调用继续读写。两类缓存分别维持局部卷积与长程递推的边界条件，每层的常规存储量均不随历史序列长度增长。未传外部缓存时，卷积使用当前输入及左侧零填充，GDN 从零状态开始；一次调用内部的 chunk 之间仍传递递推状态，外部缓存负责延续跨调用的历史。
+递推缓存承担更长时间尺度上的关联记忆。每个 head 用固定大小的矩阵汇总历史键值关系，并通过衰减与 delta 更新调整保留内容，使后续 query 能从历史关联中读出信息。这里存在明确的容量取舍：存储量不随历史长度增长，有限状态也无法逐项保存任意长历史中的全部关联。卷积缓存维持局部特征提取所需的时序窗口，递推缓存延续内容相关的历史记忆；续算时只保留其中一种，另一条计算路径就会在调用边界失去历史条件。chunk 划分仅改变递推的计算组织，块边界本身不构成记忆重置点。
 
 ```python
 if cache_params is not None:
@@ -82,6 +82,12 @@ if self.num_v_heads // self.num_k_heads > 1:
 
 单个 head 的 gated delta rule 为
 
+<div style="padding-left: 2em;">
+
+这里 $`\mathbf{S}_t\in\mathbb{R}^{d_v\times d_k}`$，源码缓存采用其转置布局 $`[d_k,d_v]`$。$`\alpha_t`$ 衰减整个历史状态；$`\beta_t`$ 同时控制沿当前 key 方向的旧关联消除与新关联写入。因此，归一化后的 key 范数直接影响状态更新的尺度。
+
+</div>
+
 ```math
 \mathbf{S}_t
 =\mathbf{S}_{t-1}\left(\alpha_t\left(\mathbf{I}
@@ -89,8 +95,6 @@ if self.num_v_heads // self.num_k_heads > 1:
 +\beta_t\boldsymbol{v}_t\boldsymbol{k}_t^{\intercal}.
 \tag{3}
 ```
-
-这里 $`\mathbf{S}_t\in\mathbb{R}^{d_v\times d_k}`$，源码缓存采用其转置布局 $`[d_k,d_v]`$。$`\alpha_t`$ 衰减整个历史状态；$`\beta_t`$ 同时控制沿当前 key 方向的旧关联消除与新关联写入。因此，归一化后的 key 范数直接影响状态更新的尺度。
 
 # Normalization and Chunkwise Decay
 
