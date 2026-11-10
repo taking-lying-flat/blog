@@ -493,11 +493,9 @@ else:
     new_values, k_cumdecay = ut_system @ v_beta, ut_system @ decayed_k_beta
 ```
 
-<strong style="color: var(--fgColor-danger)">WY 分解入口记忆修正与块内写入，UT 求解两者共享的三角系统。</strong>系数构造可跨 chunk 并行，跨块仅传递递推状态。
-
 # 🐬 Chunk State and Output
 
-入口状态到达后，两组系数组成有效写入，<strong style="color: var(--fgColor-danger)">共同决定块末状态与块内输出</strong>：
+`torch_chunk_gated_delta_rule` 接收 Q/K/V、对数衰减 `g`、更新门 `beta` 和可选的入口状态 `initial_state`。返回 <strong style="color: var(--fgColor-danger)">`core_attn_out`：当前序列的逐 token 输出；`last_recurrent_state`：序列末尾的递推状态</strong>，后者仅在 `output_final_state=True` 时返回，否则为 `None`。
 
 ```math
 \mathbf S_{[t+1]}={\color{blue}\overrightarrow{\mathbf S}_{[t]}}+\left(\widetilde{\mathbf U}_{[t]}-{\color{blue}\overleftarrow{\mathbf W}_{[t]}}\mathbf S_{[t]}^{\top}\right)^{\top}{\color{blue}\overrightarrow{\mathbf K}_{[t]}}\in\mathbb R^{d_v\times d_k}.
