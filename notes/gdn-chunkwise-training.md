@@ -88,7 +88,7 @@ if self.num_v_heads // self.num_k_heads > 1:
 
 # Normalization and Chunkwise Decay
 
-`torch_chunk_gated_delta_rule` 按 head 独立组织序列计算，并使用 FP32 减小归一化、衰减累计与状态更新中的舍入误差。
+`torch_chunk_gated_delta_rule` 按 head 独立组织序列计算。这条 PyTorch 实现将核心中间量转换为 FP32，以减小归一化、累计衰减与状态更新中的舍入误差。Q/K 的归一化分别作用于每个 token、每个 head 内的特征向量，归约范围仅限特征维，不引入不同 token 或 head 之间的信息混合。
 
 ```python
 initial_dtype = query.dtype
@@ -103,7 +103,7 @@ query, key, value, beta, decay = [
 ]
 ```
 
-L2 归一化减少投影幅值变化对 Q/K 匹配的干扰。它约束 key 方向上的擦除增益，并限制 query 对记忆读出的放大作用；$`\varepsilon`$ 保证近零输入处的映射有定义且连续，额外的 $`d_k^{-1/2}`$ 仅缩放 query。
+L2 归一化使 Q/K 的关联匹配主要取决于特征方向，从而降低上游投影幅值波动的影响。对 key，范数约束使沿当前方向的擦除比例主要受写入门控制；对 query，它约束查询向量对记忆读出的放大作用。数值稳定项 $`\varepsilon`$ 避免分母在原点退化，使近零输入处的映射保持连续，零向量仍映射为零。归一化后施加的 $`d_k^{-1/2}`$ 用于调整 query 的读出尺度，不参与状态更新：
 
 ```math
 \operatorname{L2Norm}_{\varepsilon}(\boldsymbol{x})
@@ -114,7 +114,7 @@ L2 归一化减少投影幅值变化对 Q/K 匹配的干扰。它约束 key 方�
 \tag{4}
 ```
 
-结合式（3），$`\|\boldsymbol{k}_t\|_2\leq1`$ 使状态变换沿 key 方向的特征值 $`1-\beta_t\|\boldsymbol{k}_t\|_2^2`$ 位于 $`[0,1]`$；这一约束作用于历史状态的保留，不限制当前 value 的写入幅度。
+结合式（3），归一化保证 $`\|\boldsymbol{k}_t\|_2\leq1`$，使秩一修正算子 $`\mathbf{I}-\beta_t\boldsymbol{k}_t\boldsymbol{k}_t^{\intercal}`$ 沿 key 方向的特征值 $`1-\beta_t\|\boldsymbol{k}_t\|_2^2`$ 位于 $`[0,1]`$，在其正交子空间上的特征值为 1。因此，对固定的 key 与门控，该算子不会放大已有状态的扰动；进一步乘以 $`\alpha_t`$ 则施加整体衰减。这一性质约束历史状态的传播增益，不限制每一步新写入的 value 项的幅度。
 
 ```python
 def l2norm(x, dim=-1, eps=1e-6):
@@ -128,7 +128,7 @@ scaling = query.shape[-1] ** -0.5
 query = query * scaling
 ```
 
-随后按 $`C=64`$ 分块，预先生成后续三角系统所需的 $`\beta K`$ 与 $`\beta V`$。序列尾部的补齐位置取 $`\beta=0`$、$`g=0`$，对应不写入与不衰减，保证补齐操作不改变有效序列结束处的状态。
+随后按默认块长 $`C=64`$ 划分序列；长度 $`T=128`$ 对应两个完整 chunk，不能整除时仅在序列尾部补齐。预先计算 $`\beta K`$ 与 $`\beta V`$，使逐 token 的写入权重显式进入后续块内线性系统：`v_beta` 作为第一组三角求解的右端项，`k_beta` 参与构造系统系数，并在乘累计衰减后构成另一右端项。补齐位置取 $`\beta=0`$、$`g=0`$，分别对应零写入强度与单位衰减因子，因此不会改变有效序列结束处的递推状态。
 
 ```python
 pad_size = (chunk_size - sequence_length % chunk_size) % chunk_size
@@ -181,7 +181,7 @@ G_i=\sum_{r=1}^{i}g_r=\log\gamma_i,
 
 **对数空间把累计连乘变成求和，把前缀积相除变成累计和相减。** $`\gamma_i/\gamma_j`$ 消去写入位置及其之前的公共前缀，只保留从 $`j+1`$ 到 $`i`$ 的衰减；当 $`i=j`$ 时，空乘积为 1。实现直接计算 $`G_i-G_j`$，避免分别生成可能已经下溢的两个前缀积，再进行不稳定的相除。
 
-每个 chunk 独立建立累计衰减的参照点，跨块历史仍通过入口 `recurrent_state` 传递。由于 $`g\leq0`$，下三角差值非正；先把上三角置为 $`-\infty`$ 再取指数，可同时实现因果屏蔽并避免未来位置的正指数溢出。最后得到的 `pairwise_decay` 就是式（6）的 $`\boldsymbol{\Gamma}`$，对角线为 1，上三角为 0。
+每个 chunk 独立建立累计衰减的参照点，跨块历史仍通过入口 `recurrent_state` 传递。由于 $`g\leq0`$，下三角差值非正；先把上三角置为 $`-\infty`$ 再取指数，可同时实现因果屏蔽并避免未来位置的正指数溢出。所得 `pairwise_decay` 对应式（6）的 $`\boldsymbol{\Gamma}`$，对角线为 1，上三角为 0。
 
 ```python
 strictly_upper_mask = torch.ones(
