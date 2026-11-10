@@ -333,7 +333,7 @@ S_t=S_{t-1}+\beta_t(v_t-S_{t-1}k_t)k_t^{\top}=S_{t-1}(I-\beta_t k_t k_t^{\top})+
 
 # 🐧 WY Representation
 
-*Parallelizing Linear Transformers with the Delta Rule over Sequence Length* 附录 B.1 利用秩一更新证明 WY 表示：<strong style="color: var(--fgColor-danger)">用向量外积和表示累计变换，避免逐位置物化二维矩阵。</strong>
+*Parallelizing Linear Transformers with the Delta Rule over Sequence Length* 附录 B.1 利用秩一更新证明 WY 表示：<strong style="color: var(--fgColor-danger)">WY 将有序矩阵连乘精确改写为向量外积和，避免逐位置物化二维矩阵。</strong>
 
 当 $`r=1`$ 时，$`\mathbf{w}_{[t]}^1=\beta_{[t]}^1\boldsymbol{k}_{[t]}^1`$。假设式（19）对 $`r-1`$ 成立，将第 r 个更新因子右乘到累计变换上：
 
@@ -346,7 +346,7 @@ S_t=S_{t-1}+\beta_t(v_t-S_{t-1}k_t)k_t^{\top}=S_{t-1}(I-\beta_t k_t k_t^{\top})+
 \tag{26}
 ```
 
-合并以当前 key 为右因子的项，得到式（19）的 w 递推，乘法顺序保持不变。块内写入项同理：从 $`\mathbf u_{[t]}^1=\beta_{[t]}^1\boldsymbol v_{[t]}^1`$ 出发，代入 $`\mathbf H_{[t]}^{r-1}=\sum_{i<r}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}`$，有
+<strong style="color: var(--fgColor-danger)">WY 改变表示形式，保留每一步更新的先后顺序。</strong>合并以当前 key 为右因子的项，得到式（19）的 w 递推。块内写入项同理：从 $`\mathbf u_{[t]}^1=\beta_{[t]}^1\boldsymbol v_{[t]}^1`$ 出发，代入 $`\mathbf H_{[t]}^{r-1}=\sum_{i<r}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}`$，有
 
 ```math
 \begin{aligned}
@@ -359,7 +359,7 @@ S_t=S_{t-1}+\beta_t(v_t-S_{t-1}k_t)k_t^{\top}=S_{t-1}(I-\beta_t k_t k_t^{\top})+
 
 # 🐢 UT Transform
 
-WY 的系数仍按 token 递推，无法直接利用 Tensor Core。<strong style="color: var(--fgColor-danger)">UT 将 W、U 的递推整理为同一个三角系统的两组右端项。</strong> 附录 B.2 从式（19）、（20）的行形式出发：
+WY 给出累计变换的紧凑表示，但 w、u 的构造仍依赖先前位置，尚不能直接转成 Tensor Core 上的块级矩阵计算。<strong style="color: var(--fgColor-danger)">UT 将 W、U 的递推整理为同一个三角系统的两组右端项。</strong> 附录 B.2 从式（19）、（20）的行形式出发：
 
 ```math
 \begin{aligned}
@@ -390,7 +390,7 @@ WY 的系数仍按 token 递推，无法直接利用 Tensor Core。<strong style
 \tag{30}
 ```
 
-移项得到 $`\mathbf W_{[t]}+\mathbf L_{[t]}\mathbf W_{[t]}=\mathbf B_{[t]}\mathbf K_{[t]}`$，U 同理。<strong style="color: var(--fgColor-danger)">两组递推共用单位下三角系数矩阵，差别仅在右端输入 K、V：</strong>
+移项得到 $`\mathbf W_{[t]}+\mathbf L_{[t]}\mathbf W_{[t]}=\mathbf B_{[t]}\mathbf K_{[t]}`$，U 同理。<strong style="color: var(--fgColor-danger)">UT 的核心是共享三角系统：W、U 使用同一单位下三角系数矩阵，差别仅在右端输入 K、V：</strong>
 
 ```math
 (\mathbf I+\mathbf L_{[t]})
@@ -418,25 +418,20 @@ U 表示当前块从零状态出发的写入系数，$`\mathbf W_{[t]}\mathbf S_
 
 # 🦦 UT Construction and Triangular Solves
 
-GDN §3.3 在依赖系数中加入位置 i 到 r 的累计衰减 $`\gamma_{[t]}^r/\gamma_{[t]}^i`$，得到
+GDN 保留 WY 的分解结构，并将累计衰减加入 UT 系统。沿用式（29）的 $`\mathbf B_{[t]}=\operatorname{diag}(\beta_{[t]})`$，将带衰减的严格下三角系数记为
 
 ```math
-\widetilde{\mathbf u}_{[t]}^r
-=\beta_{[t]}^r\left(
-\boldsymbol v_{[t]}^r-\sum_{i=1}^{r-1}\widetilde{\mathbf u}_{[t]}^i
-\left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}
-{\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right)\right).
+\widetilde{\mathbf L}_{[t]}=\operatorname{strictLower}\left(\mathbf B_{[t]}\left(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^{\top}\right)\right).
 \tag{34}
 ```
 
-*Gated Delta Networks: Improving Mamba2 with Delta Rule* 附录 A 沿用上述归纳，并以 $`\alpha_{[t]}^r\gamma_{[t]}^{r-1}=\gamma_{[t]}^r`$ 合并衰减系数。`torch_chunk_gated_delta_rule` 对应的两组解为：
+源码先准备系统系数、块内读出权重和第二组右端项。$`\operatorname{diag}(\gamma_{[t]})`$ 的对角元素为各位置相对于块入口的累计衰减：
 
-| 源码结果 | 对应的量 | 在状态更新中的作用 |
-| --- | --- | --- |
-| `new_values` | $`\widetilde{\mathbf U}_{[t]}`$ | 表示已计入块内纠正与衰减关系的 value 系数 |
-| `k_cumdecay` | $`\overleftarrow{\mathbf W}_{[t]}`$ | 作用于入口状态，计算需要扣除的历史关联分量 |
-
-`ut_system` 的严格下三角部分编码式（34）的历史依赖；`intra_chunk_attn` 保存带衰减的因果读出权重；`decayed_k_beta` 将入口状态到各位置的累计衰减乘入第二组右端项。
+| 源码变量 | GDN 矩阵表达 |
+| --- | --- |
+| `ut_system` | $`\mathbf B_{[t]}(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^{\top})`$，求解器仅使用其严格下三角部分 |
+| `intra_chunk_attn` | $`(\mathbf Q_{[t]}\mathbf K_{[t]}^{\top})\odot\Gamma_{[t]}`$ |
+| `decayed_k_beta` | $`\mathbf B_{[t]}\operatorname{diag}(\gamma_{[t]})\mathbf K_{[t]}`$ |
 
 ```python
 # ut_system/intra_chunk_attn: [B, H, num_chunks, chunk_size, chunk_size]
@@ -446,34 +441,105 @@ intra_chunk_attn = (query @ key.transpose(-1, -2)) * pairwise_decay
 decayed_k_beta = k_beta * cum_decay.exp().unsqueeze(-1)
 ```
 
-第一组右端项为 `v_beta`，式（34）的矩阵解为
+GDN §3.3 给出的 value 系数递推为式（35）；将式（19）乘以 $`\gamma_{[t]}^r`$，再代入该节定义的 $`\overleftarrow{\mathbf w}_{[t]}^r=\gamma_{[t]}^r\mathbf w_{[t]}^r`$，得到式（36）。两式的历史依赖均包含从位置 i 到 r 的衰减比值：
 
 ```math
-\widetilde{\mathbf U}_{[t]}
-=\left[\mathbf I+\operatorname{strictLower}\left(
-\operatorname{diag}(\beta_{[t]})
-\left(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^{\top}\right)\right)\right]^{-1}
-\operatorname{diag}(\beta_{[t]})\mathbf V_{[t]}.
+\widetilde{\mathbf u}_{[t]}^r=\beta_{[t]}^r\left(\boldsymbol v_{[t]}^r-\sum_{i=1}^{r-1}\widetilde{\mathbf u}_{[t]}^i\left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}{\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right)\right).
 \tag{35}
 ```
 
-`upper=False` 选择下三角，`unitriangular=True` 忽略原对角元素并将其视为 1，故实际系数矩阵为 $`\mathbf I+\operatorname{strictLower}(\texttt{ut\_system})`$。求解直接得到 `new_values`，无需显式构造逆矩阵。
-
-```python
-new_values = torch.linalg.solve_triangular(ut_system, v_beta, upper=False, unitriangular=True)
-```
-
-第二组解使用 GDN §3.3 的定义 $`\overleftarrow{\mathbf w}_{[t]}^r=\gamma_{[t]}^r\mathbf w_{[t]}^r`$。将式（19）乘以 $`\gamma_{[t]}^r`$ 并代入该定义：
-
 ```math
-\overleftarrow{\mathbf w}_{[t]}^r =\gamma_{[t]}^r\mathbf w_{[t]}^r =\beta_{[t]}^r\gamma_{[t]}^r\boldsymbol k_{[t]}^r -\beta_{[t]}^r\sum_{i=1}^{r-1}\overleftarrow{\mathbf w}_{[t]}^i \left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i} {\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right).
+\overleftarrow{\mathbf w}_{[t]}^r=\gamma_{[t]}^r\mathbf w_{[t]}^r=\beta_{[t]}^r\gamma_{[t]}^r\boldsymbol k_{[t]}^r-\beta_{[t]}^r\sum_{i=1}^{r-1}\overleftarrow{\mathbf w}_{[t]}^i\left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}{\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right).
 \tag{36}
 ```
 
-<strong style="color: var(--fgColor-danger)">式（34）、（36）共用系数矩阵</strong>，右端分别为 $`\beta_{[t]}^r\boldsymbol v_{[t]}^r`$ 与 $`\beta_{[t]}^r\gamma_{[t]}^r\boldsymbol k_{[t]}^r`$。第二次求解因此复用 `ut_system`，并以 `decayed_k_beta` 为右端项；其中的累计衰减描述入口记忆传播到当前位置时的影响。
+<strong style="color: var(--fgColor-danger)">衰减同时进入系统系数与入口状态对应的右端项。</strong> 将两式的历史项移到左侧，得到 GDN 共用的单位下三角系统：
 
-```python
-k_cumdecay = torch.linalg.solve_triangular(ut_system, decayed_k_beta, upper=False, unitriangular=True)
+```math
+(\mathbf I+\widetilde{\mathbf L}_{[t]})\begin{bmatrix}\widetilde{\mathbf U}_{[t]}&\overleftarrow{\mathbf W}_{[t]}\end{bmatrix}=\mathbf B_{[t]}\begin{bmatrix}\mathbf V_{[t]}&\operatorname{diag}(\gamma_{[t]})\mathbf K_{[t]}\end{bmatrix}.
+\tag{37}
 ```
 
-两组解均不依赖入口状态；后续以 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$ 形成 `v_new`，用于输出和状态更新。
+在式（32）的记号上，用 $`\widetilde{\mathbf T}_{[t]}`$ 表示带衰减的 UT 求解算子。两组解分别对应 `new_values` 与 `k_cumdecay`；后者也满足论文中的 $`\overleftarrow{\mathbf W}_{[t]}=\operatorname{diag}(\gamma_{[t]})\mathbf W_{[t]}`$：
+
+```math
+\widetilde{\mathbf T}_{[t]}=(\mathbf I+\widetilde{\mathbf L}_{[t]})^{-1}\mathbf B_{[t]},\qquad \widetilde{\mathbf U}_{[t]}=\widetilde{\mathbf T}_{[t]}\mathbf V_{[t]},\qquad \overleftarrow{\mathbf W}_{[t]}=\widetilde{\mathbf T}_{[t]}\operatorname{diag}(\gamma_{[t]})\mathbf K_{[t]}.
+\tag{38}
+```
+
+`upper=False` 选择下三角，`unitriangular=True` 将对角线视为 1，故实际系数为 $`\mathbf I+\widetilde{\mathbf L}_{[t]}`$。<strong style="color: var(--fgColor-danger)">两次求解共用历史依赖，分别得到块内写入系数与入口记忆的修正系数。</strong> 常规分支直接求解；导出分支通过逐行消去构造同一单位下三角矩阵的逆，再乘两组右端项。
+
+```python
+if not is_torchdynamo_exporting():
+    new_values = torch.linalg.solve_triangular(ut_system, v_beta, upper=False, unitriangular=True)
+    k_cumdecay = torch.linalg.solve_triangular(ut_system, decayed_k_beta, upper=False, unitriangular=True)
+else:
+    ut_system = -ut_system.tril(-1)
+    for i in range(1, chunk_size):
+        row = ut_system[..., i, :i].clone()
+        sub = ut_system[..., :i, :i].clone()
+        ut_system[..., i, :i] = row + (row.unsqueeze(-1) * sub).sum(-2)
+    ut_system = ut_system + torch.eye(chunk_size, dtype=ut_system.dtype, device=ut_system.device)
+    new_values, k_cumdecay = ut_system @ v_beta, ut_system @ decayed_k_beta
+```
+
+# 🐬 Chunk State and Output
+
+两组 WY 系数准备完毕后，才引入块入口状态。未传 `initial_state` 时从零状态开始；否则接续已有记忆。`last_recurrent_state` 保存论文中 $`\mathbf S_{[t]}^{\top}`$ 的布局，并在每个 chunk 结束后更新，而非为每个 token 保存一份状态。
+
+```python
+# last_recurrent_state: [B, H, d_k, d_v]
+if initial_state is None:
+    last_recurrent_state = torch.zeros(recurrent_state_shape, dtype=new_values.dtype, device=new_values.device)
+else:
+    last_recurrent_state = initial_state.to(new_values)
+core_attn_out = torch.zeros_like(new_values)
+```
+
+随后落实式（16）的三个衰减方向：`query` 变为 $`\overleftarrow{\mathbf Q}_{[t]}`$，使入口记忆衰减到各读出位置；`key` 变为 $`\overrightarrow{\mathbf K}_{[t]}`$，使每次写入衰减到块尾；`chunk_decay` 为 $`\gamma_{[t]}^C`$，作用于整个入口状态。块内读出矩阵 `intra_chunk_attn` 已由衰减前的 Q/K 与 $`\Gamma_{[t]}`$ 计算，不受下面重新赋值影响。
+
+```python
+query = query * cum_decay.exp().unsqueeze(-1)
+key = key * (cum_decay[..., -1:] - cum_decay).exp().unsqueeze(-1)
+chunk_decay = cum_decay[..., -1].exp()[..., None, None]
+```
+
+<strong style="color: var(--fgColor-danger)">块内的两组系数可以并行准备，真正依赖前一块的是入口状态及其对应的有效写入。</strong> 每轮先从 `new_values` 中扣除入口记忆的预测，得到 `v_new`；它是供状态更新和输出计算共用的块内纠正量：
+
+```math
+\texttt{v\_new}=\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}.
+\tag{39}
+```
+
+输出包含入口记忆的读出与当前块的写入两部分。GDN §3.3 的输出式在原文中将块内掩码记为 M；这里按衰减递推和源码展开为 $`\Gamma_{[t]}`$，保留每次写入到当前读出位置之间的衰减。其对角线为 1，因此当前 token 能读到本步更新后的状态，上三角为零则排除未来写入：
+
+```math
+\mathbf O_{[t]}=\overleftarrow{\mathbf Q}_{[t]}\mathbf S_{[t]}^{\top}+\left((\mathbf Q_{[t]}\mathbf K_{[t]}^{\top})\odot\Gamma_{[t]}\right)\left(\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}\right).
+\tag{40}
+```
+
+块末状态采用 GDN §3.3 的更新式：入口记忆经历整块衰减，各位置的有效写入通过 $`\overrightarrow{\mathbf K}_{[t]}`$ 衰减到块尾后累加。这个结果成为下一块的入口：
+
+```math
+\mathbf S_{[t+1]}=\gamma_{[t]}^C\mathbf S_{[t]}+\left(\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}\right)^{\top}\overrightarrow{\mathbf K}_{[t]}.
+\tag{41}
+```
+
+```python
+for i in range(num_chunks):
+    v_new = new_values[:, :, i] - k_cumdecay[:, :, i] @ last_recurrent_state
+    inter_chunk_attn = query[:, :, i] @ last_recurrent_state
+    core_attn_out[:, :, i] = inter_chunk_attn + intra_chunk_attn[:, :, i] @ v_new
+    last_recurrent_state = last_recurrent_state * chunk_decay[:, :, i] + key[:, :, i].transpose(-1, -2) @ v_new
+```
+
+式（41）在缓存布局下的状态写入为 `key.transpose(-1, -2) @ v_new`。循环结束后合并 chunk、裁去内部补齐位置，并恢复输入的布局和精度。补齐位置不写入也不衰减，最终状态仍对应有效序列末尾；`output_final_state` 仅决定是否返回该状态，不影响前面的块间传递。
+
+```python
+last_recurrent_state = None if not output_final_state else last_recurrent_state
+core_attn_out = core_attn_out.reshape(padded_output_shape)
+core_attn_out = core_attn_out[:, :, :sequence_length]
+# core_attn_out: [B, sequence_length, H, d_v]
+core_attn_out = core_attn_out.transpose(1, 2).to(initial_dtype, memory_format=torch.contiguous_format)
+return core_attn_out, last_recurrent_state
+```
