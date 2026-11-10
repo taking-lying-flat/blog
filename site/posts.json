@@ -631,7 +631,6 @@
     "slug": "gdn-chunkwise-training",
     "category": "code",
     "layout": "paper",
-    "tocDepth": 2,
     "date": "2026-11-10",
     "tags": ["Gated DeltaNet", "Chunkwise Training", "Qwen3.5"]
   },
