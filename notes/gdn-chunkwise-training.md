@@ -412,7 +412,7 @@ WY 给出累计变换的紧凑表示，但 w、u 的构造仍依赖先前位置�
 \tag{33}
 ```
 
-<strong style="color: var(--fgColor-danger)">W 编码入口记忆的累计修正，U 汇集块内写入的纠正系数。</strong> W 由 K 与写入门决定，$`\mathbf W_{[t]}^{\top}\mathbf K_{[t]}`$ 描述本块对入口状态的方向性修改；U 还依赖 V，$`\mathbf U_{[t]}^{\top}\mathbf K_{[t]}`$ 是零初态下本块的累计写入。存在历史记忆时，必须扣除 $`\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$，以 $`\mathbf U_{[t]}-\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$ 作为有效写入。
+<strong style="color: var(--fgColor-danger)">W 编码对已有键值关联的纠正，U 汇集本块的写入系数</strong>：W 由 K 与写入门决定，U 还依赖 V。零初态下，$`\mathbf U_{[t]}^{\top}\mathbf K_{[t]}`$ 即为块末记忆；存在历史状态时，则以 $`\mathbf U_{[t]}-\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$ 作为有效写入。
 
 W、U 均不依赖入口状态，可跨 chunk 并行准备。入口状态到达后只需计算上述修正；若提前将状态合入三角系统的右端项，系数求解就会重新依赖前一个 chunk。
 
@@ -493,11 +493,11 @@ else:
     new_values, k_cumdecay = ut_system @ v_beta, ut_system @ decayed_k_beta
 ```
 
-<strong style="color: var(--fgColor-danger)">WY 分开表示入口记忆修正与块内写入，UT 求出两组系数。</strong>各块系数并行准备，状态逐块传递；有效写入通过矩阵乘法生成输出并更新状态。
+<strong style="color: var(--fgColor-danger)">WY 分解入口记忆修正与块内写入，UT 求解两者共享的三角系统。</strong>系数构造可跨 chunk 并行，跨块仅传递递推状态。
 
 # 🐬 Chunk State and Output
 
-<strong style="color: var(--fgColor-danger)">同一有效写入决定块末状态与块内输出：</strong>
+入口状态到达后，两组系数组成有效写入，<strong style="color: var(--fgColor-danger)">共同决定块末状态与块内输出</strong>：
 
 ```math
 \mathbf S_{[t+1]}={\color{blue}\overrightarrow{\mathbf S}_{[t]}}+\left(\widetilde{\mathbf U}_{[t]}-{\color{blue}\overleftarrow{\mathbf W}_{[t]}}\mathbf S_{[t]}^{\top}\right)^{\top}{\color{blue}\overrightarrow{\mathbf K}_{[t]}}\in\mathbb R^{d_v\times d_k}.
@@ -509,14 +509,14 @@ else:
 \tag{42}
 ```
 
-蓝色箭头表示累计衰减：
+蓝色箭头由累计衰减定义：
 
 ```math
 {\color{blue}\overleftarrow{\boldsymbol q}_{[t]}^r}=\gamma_{[t]}^r\boldsymbol q_{[t]}^r,\qquad {\color{blue}\overleftarrow{\mathbf w}_{[t]}^r}=\gamma_{[t]}^r\mathbf w_{[t]}^r,\qquad {\color{blue}\overrightarrow{\boldsymbol k}_{[t]}^r}=\frac{\gamma_{[t]}^C}{\gamma_{[t]}^r}\boldsymbol k_{[t]}^r,\qquad {\color{blue}\overrightarrow{\mathbf S}_{[t]}}=\gamma_{[t]}^C\mathbf S_{[t]}.
 \tag{43}
 ```
 
-式（42）按源码使用衰减因果权重 $`\Gamma_{[t]}`$，论文此处记为 M。入口状态由缓存给出，无缓存时置零：
+式（42）按源码使用衰减因果权重 $`\Gamma_{[t]}`$，论文此处记为 M。实现先接续缓存状态，无缓存时从零状态开始：
 
 ```python
 # last_recurrent_state: [B, H, d_k, d_v]
@@ -527,7 +527,7 @@ else:
 core_attn_out = torch.zeros_like(new_values)
 ```
 
-读出、写入及入口状态分别施加式（43）的衰减：
+随后将式（43）的累计衰减作用于 Q、K 与入口状态：
 
 ```python
 query = query * cum_decay.exp().unsqueeze(-1)
@@ -535,7 +535,7 @@ key = key * (cum_decay[..., -1:] - cum_decay).exp().unsqueeze(-1)
 chunk_decay = cum_decay[..., -1].exp()[..., None, None]
 ```
 
-`v_new` 对应两式中的 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$，每轮依此计算输出和下一块状态：
+`v_new` 即两式括号内的有效写入；扫描依次计算当前块输出，再更新下一块入口：
 
 ```python
 for i in range(num_chunks):
@@ -545,7 +545,7 @@ for i in range(num_chunks):
     last_recurrent_state = last_recurrent_state * chunk_decay[:, :, i] + key[:, :, i].transpose(-1, -2) @ v_new
 ```
 
-最后裁去补齐位置，恢复布局与精度并返回：
+扫描结束后裁去补齐位置，恢复输入布局与精度并返回：
 
 ```python
 last_recurrent_state = None if not output_final_state else last_recurrent_state
