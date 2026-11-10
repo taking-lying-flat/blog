@@ -158,7 +158,7 @@ G_i=\sum_{r=1}^{i}g_r=\log\gamma_i,
 \tag{5}
 ```
 
-衰减因果矩阵在下三角使用前缀衰减的比值，上三角为零。行 $`i`$ 表示当前读出位置，列 $`j`$ 表示历史写入位置；限制到一个 chunk 后，矩阵为
+衰减因果矩阵在下三角使用前缀衰减的比值，上三角为零；行 $`i`$ 表示当前读出位置，列 $`j`$ 表示历史写入位置。
 
 每个 chunk 独立建立累计衰减的参照点，跨块历史仍通过入口 `recurrent_state` 传递。由于 $`g\leq0`$，下三角差值非正；先把上三角置为 $`-\infty`$ 再取指数，可同时实现因果屏蔽并避免未来位置的正指数溢出。所得 `pairwise_decay` 对应式（6）的 $`\boldsymbol{\Gamma}`$，对角线为 1，上三角为 0。
 
@@ -202,7 +202,7 @@ S_t=S_{t-1}+v_tk_t^\top\in\mathbb{R}^{d_v\times d_k}, \quad o_t=S_tq_t\in\mathbb
 \tag{7}
 ```
 
-- 其中 $`d_k`$ 和 $`d_v`$ 分别表示查询/键和值的注意力头维度。通过展开上述递推关系，分别得到向量形式和矩阵形式
+- 其中 $`d_k`$ 和 $`d_v`$ 分别表示查询/键和值的注意力头维度。以下全序列展开取初态 $`S_0=0`$，分别得到向量形式和矩阵形式
 
 ```math
 o_t=\sum_{i=1}^{t}(v_ik_i^\top)q_t =\sum_{i=1}^{t}v_i(k_i^\top q_t)\in\mathbb{R}^{d_v}, \quad O=(QK^\top\odot M)V\in\mathbb{R}^{L\times d_v}
@@ -467,19 +467,20 @@ $`\widetilde{\mathbf u}_{[t]}^r`$ 从当前 value 中扣除历史写入在当前
 \tag{40}
 ```
 
-`ut_system` 的严格下三角部分提供共享系数，`v_beta` 与 `decayed_k_beta` 提供两组右端项；`intra_chunk_attn` 预存 $`(\mathbf Q_{[t]}\mathbf K_{[t]}^{\top})\odot\Gamma_{[t]}`$，用于块内读出：
+`ut_system` 的严格下三角部分给出式（39）的非对角系数，`v_beta` 与 `decayed_k_beta` 是两组右端项。同时预计算块内读出权重 `intra_chunk_attn`，供式（42）使用：
 
 ```python
 # ut_system/intra_chunk_attn: [B, H, num_chunks, chunk_size, chunk_size]
 ut_system = (k_beta @ key.transpose(-1, -2)) * pairwise_decay
+# 预存 (Q K^T) ⊙ Γ；此时 Q/K 尚未按式（43）重加权
 intra_chunk_attn = (query @ key.transpose(-1, -2)) * pairwise_decay
 # decayed_k_beta: [B, H, num_chunks, chunk_size, d_k]
 decayed_k_beta = k_beta * cum_decay.exp().unsqueeze(-1)
 ```
 
-- `new_values` 对应 $`\widetilde{\mathbf U}_{[t]}`$，<strong style="color: var(--fgColor-danger)">负责块内写入及各次写入之间的纠正</strong>。UT 将块内衰减和先前写入对当前 key 的影响计入这些 value 系数；它不依赖入口状态，给出零入口状态下的块内有效写入。
+- `new_values` 对应 $`\widetilde{\mathbf U}_{[t]}`$，<strong style="color: var(--fgColor-danger)">负责块内写入及各次写入之间的纠正</strong>。它从当前 value 中扣除先前写入经衰减后在当前 key 上的预测，给出零入口状态下的有效写入。
 
-- `k_cumdecay` 对应 $`\overleftarrow{\mathbf W}_{[t]}`$，<strong style="color: var(--fgColor-danger)">负责块间历史对本块更新的修正</strong>。它将入口记忆映射为带衰减的旧关联预测，从 $`\widetilde{\mathbf U}_{[t]}`$ 中扣除 $`\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$ 后才得到有效写入。跨块传递的是 $`\mathbf S_{[t]}`$，$`\overleftarrow{\mathbf W}_{[t]}`$ 本身仍可由当前块输入预计算。
+- `k_cumdecay` 对应 $`\overleftarrow{\mathbf W}_{[t]}`$，<strong style="color: var(--fgColor-danger)">负责块间历史对本块更新的修正</strong>。$`\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$ 汇集入口记忆的预测及其引起的块内后续纠正，从 $`\widetilde{\mathbf U}_{[t]}`$ 中扣除这一项，才得到实际有效写入。两组系数均可由当前块输入预计算；跨块传递的是 $`\mathbf S_{[t]}`$。
 
 `upper=False` 选择下三角，`unitriangular=True` 忽略原对角元素并将其视为 1；导出分支改为先构造系统的逆，再乘两组右端项。
 
@@ -518,7 +519,7 @@ else:
 \tag{43}
 ```
 
-式（42）按源码使用衰减因果权重 $`\Gamma_{[t]}`$，论文此处记为 M。实现先接续缓存状态，无缓存时从零状态开始：
+GDN §3.3 的输出原式此处写作 $`M`$；式（42）按递推关系与源码使用 $`\Gamma_{[t]}`$，因为仅用二值因果掩码会漏掉块内写入的传播衰减。实现先接续缓存状态，无缓存时从零状态开始：
 
 ```python
 # last_recurrent_state: [B, H, d_k, d_v]
@@ -529,7 +530,7 @@ else:
 core_attn_out = torch.zeros_like(new_values)
 ```
 
-随后将式（43）的累计衰减作用于 Q、K 与入口状态：
+随后按式（43）重加权 Q、K，并准备入口状态的整块衰减因子。此前计算的 `intra_chunk_attn` 保持不变：
 
 ```python
 query = query * cum_decay.exp().unsqueeze(-1)
@@ -537,7 +538,7 @@ key = key * (cum_decay[..., -1:] - cum_decay).exp().unsqueeze(-1)
 chunk_decay = cum_decay[..., -1].exp()[..., None, None]
 ```
 
-对照式（42），`v_new` 对应 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$。循环中的 `query` 已乘累计衰减，对应 $`\overleftarrow{\mathbf Q}_{[t]}`$，`last_recurrent_state` 则采用 $`\mathbf S_{[t]}^{\top}`$ 的布局，因此 `inter_chunk_attn` 计算第一项：入口记忆的读出。`intra_chunk_attn` 预存 $`(\mathbf Q_{[t]}\mathbf K_{[t]}^{\top})\odot\Gamma_{[t]}`$，与 `v_new` 相乘得到第二项：块内有效写入对各位置输出的贡献。<strong style="color: var(--fgColor-danger)">`core_attn_out[:, :, i]` 将这两项相加，得到当前 chunk 的输出</strong> $`\mathbf O_{[t]}`$：
+`v_new` 对应有效写入 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$，缓存按 $`\mathbf S_{[t]}^{\top}`$ 存储。式（42）的第一项由 `inter_chunk_attn` 计算，即 $`\overleftarrow{\mathbf Q}_{[t]}\mathbf S_{[t]}^{\top}`$；第二项由预存的 `intra_chunk_attn` 乘 `v_new` 得到。<strong style="color: var(--fgColor-danger)">入口记忆的读出与块内有效写入的贡献相加，构成当前 chunk 的输出</strong>。循环末行按式（41）的转置形式更新缓存：
 
 ```python
 for i in range(num_chunks):
