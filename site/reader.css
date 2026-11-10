@@ -312,6 +312,18 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
   .post-entry:hover .entry-arrow { transform: translateX(3px); }
 }
 .home-page-shell .site-footer { max-width: 828px; font-size: 11px; }
+.contributions-page-shell { isolation: isolate; }
+.contributions-page-shell::before, .contributions-page-shell::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+.contributions-page-shell::before {
+  background:
+    radial-gradient(ellipse at 4% 16%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 43%),
+    radial-gradient(ellipse at 96% 76%, color-mix(in srgb, #36b8a0 14%, transparent), transparent 42%),
+    linear-gradient(135deg, var(--surface), var(--page) 38%, var(--page) 62%, var(--surface));
+}
+.contributions-page-shell::after {
+  background: radial-gradient(color-mix(in srgb, var(--ink) 18%, transparent) .7px, transparent .9px) 0 0 / 24px 24px;
+  mask-image: linear-gradient(to right, #000, transparent 27%, transparent 73%, #000);
+}
 .contributions { margin-top: 18px; }
 .contributions-heading { margin-bottom: 30px; }
 .contributions-heading h1 { margin: 0; font-size: 28px; font-weight: 700; line-height: 38px; }
