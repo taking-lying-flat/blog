@@ -412,7 +412,9 @@ WY 给出累计变换的紧凑表示，但 w、u 的构造仍依赖先前位置�
 \tag{33}
 ```
 
-U 表示当前块从零状态出发的写入系数，$`\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$ 表示入口记忆中需要消除的分量。<strong style="color: var(--fgColor-danger)">有效写入是两者之差，省去 W 就会遗漏对旧关联的纠正。</strong> W、U 只依赖当前块输入，因此可跨 chunk 并行准备；入口状态到达后，再计算 $`\mathbf U_{[t]}-\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$。若提前将入口状态合入右端项，三角求解便重新依赖前一个 chunk。
+<strong style="color: var(--fgColor-danger)">W 编码入口记忆的累计修正，U 汇集块内写入的纠正系数。</strong> W 由 K 与写入门决定，$`\mathbf W_{[t]}^{\top}\mathbf K_{[t]}`$ 描述本块对入口状态的方向性修改；U 还依赖 V，$`\mathbf U_{[t]}^{\top}\mathbf K_{[t]}`$ 是零初态下本块的累计写入。存在历史记忆时，必须扣除 $`\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$，以 $`\mathbf U_{[t]}-\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$ 作为有效写入。
+
+W、U 均不依赖入口状态，可跨 chunk 并行准备。入口状态到达后只需计算上述修正；若提前将状态合入三角系统的右端项，系数求解就会重新依赖前一个 chunk。
 
 # 🦦 Algorithm: Hardware-Efficient Chunkwise Training
 
@@ -491,9 +493,30 @@ else:
     new_values, k_cumdecay = ut_system @ v_beta, ut_system @ decayed_k_beta
 ```
 
+<strong style="color: var(--fgColor-danger)">WY 分开表示入口记忆修正与块内写入，UT 求出两组系数。</strong>各块系数并行准备，状态逐块传递；有效写入通过矩阵乘法生成输出并更新状态。
+
 # 🐬 Chunk State and Output
 
-块扫描通过 `initial_state` 接续记忆，未提供时从零状态开始。`last_recurrent_state` 按 $`\mathbf S_{[t]}^{\top}`$ 的布局保存块入口状态：
+<strong style="color: var(--fgColor-danger)">同一有效写入决定块末状态与块内输出：</strong>
+
+```math
+\mathbf S_{[t+1]}={\color{blue}\overrightarrow{\mathbf S}_{[t]}}+\left(\widetilde{\mathbf U}_{[t]}-{\color{blue}\overleftarrow{\mathbf W}_{[t]}}\mathbf S_{[t]}^{\top}\right)^{\top}{\color{blue}\overrightarrow{\mathbf K}_{[t]}}\in\mathbb R^{d_v\times d_k}.
+\tag{41}
+```
+
+```math
+\mathbf O_{[t]}={\color{blue}\overleftarrow{\mathbf Q}_{[t]}}\mathbf S_{[t]}^{\top}+\left((\mathbf Q_{[t]}\mathbf K_{[t]}^{\top})\odot\Gamma_{[t]}\right)\left(\widetilde{\mathbf U}_{[t]}-{\color{blue}\overleftarrow{\mathbf W}_{[t]}}\mathbf S_{[t]}^{\top}\right)\in\mathbb R^{C\times d_v}.
+\tag{42}
+```
+
+蓝色箭头表示累计衰减：
+
+```math
+{\color{blue}\overleftarrow{\boldsymbol q}_{[t]}^r}=\gamma_{[t]}^r\boldsymbol q_{[t]}^r,\qquad {\color{blue}\overleftarrow{\mathbf w}_{[t]}^r}=\gamma_{[t]}^r\mathbf w_{[t]}^r,\qquad {\color{blue}\overrightarrow{\boldsymbol k}_{[t]}^r}=\frac{\gamma_{[t]}^C}{\gamma_{[t]}^r}\boldsymbol k_{[t]}^r,\qquad {\color{blue}\overrightarrow{\mathbf S}_{[t]}}=\gamma_{[t]}^C\mathbf S_{[t]}.
+\tag{43}
+```
+
+式（42）按源码使用衰减因果权重 $`\Gamma_{[t]}`$，论文此处记为 M。入口状态由缓存给出，无缓存时置零：
 
 ```python
 # last_recurrent_state: [B, H, d_k, d_v]
@@ -504,7 +527,7 @@ else:
 core_attn_out = torch.zeros_like(new_values)
 ```
 
-按式（16），$`\overleftarrow{\mathbf Q}_{[t]}`$ 使入口记忆衰减至各读出位置，$`\overrightarrow{\mathbf K}_{[t]}`$ 使各次写入衰减至块尾，`chunk_decay` 则作用于整个入口状态。`intra_chunk_attn` 已提前计算，不受 Q/K 重新赋值影响。
+读出、写入及入口状态分别施加式（43）的衰减：
 
 ```python
 query = query * cum_decay.exp().unsqueeze(-1)
@@ -512,26 +535,7 @@ key = key * (cum_decay[..., -1:] - cum_decay).exp().unsqueeze(-1)
 chunk_decay = cum_decay[..., -1].exp()[..., None, None]
 ```
 
-<strong style="color: var(--fgColor-danger)">系数可跨 chunk 并行准备，状态仍逐块传递。</strong>每轮扣除入口记忆的预测，得到输出和状态更新共用的有效写入：
-
-```math
-\texttt{v\_new}=\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}.
-\tag{41}
-```
-
-输出叠加入口记忆读出与块内有效写入。式（42）按衰减递推和源码使用 $`\Gamma_{[t]}`$，原文 §3.3 此处记为 M。其对角线为 1，允许读出本步更新；上三角为零，排除未来写入：
-
-```math
-\mathbf O_{[t]}=\overleftarrow{\mathbf Q}_{[t]}\mathbf S_{[t]}^{\top}+\left((\mathbf Q_{[t]}\mathbf K_{[t]}^{\top})\odot\Gamma_{[t]}\right)\left(\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}\right).
-\tag{42}
-```
-
-入口状态经整块衰减，再累加通过 $`\overrightarrow{\mathbf K}_{[t]}`$ 传播到块尾的有效写入，得到下一块的入口状态：
-
-```math
-\mathbf S_{[t+1]}=\gamma_{[t]}^C\mathbf S_{[t]}+\left(\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}\right)^{\top}\overrightarrow{\mathbf K}_{[t]}.
-\tag{43}
-```
+`v_new` 对应两式中的 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$，每轮依此计算输出和下一块状态：
 
 ```python
 for i in range(num_chunks):
@@ -541,7 +545,7 @@ for i in range(num_chunks):
     last_recurrent_state = last_recurrent_state * chunk_decay[:, :, i] + key[:, :, i].transpose(-1, -2) @ v_new
 ```
 
-循环结束后合并 chunk、裁去补齐位置，并恢复输入布局与精度。补齐位置不写入也不衰减，最终状态仍对应有效序列末尾；`output_final_state` 仅控制是否返回状态。
+最后裁去补齐位置，恢复布局与精度并返回：
 
 ```python
 last_recurrent_state = None if not output_final_state else last_recurrent_state
