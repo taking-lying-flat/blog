@@ -1,4 +1,4 @@
-# GDN Chunkwise Training：源码解读
+# GDN Chunkwise Training
 
 # 一、输入与投影：生成后续计算需要的变量
 
