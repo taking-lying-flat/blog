@@ -40,7 +40,9 @@ b = self.in_proj_b(hidden_states)
 a = self.in_proj_a(hidden_states)
 ```
 
-多 token 分支在序列轴上执行逐通道因果卷积，使 QKV 包含局部时序信息。存在缓存时，`update_conv_state` 接入历史输入并更新卷积窗口，卷积后截取本次输入对应的位置。下面完成式（1）中的短卷积与 SiLU；L2 归一化由后续内核执行。
+多 token 分支沿序列轴执行逐通道因果卷积。卷积核宽度记为 $`w`$，每个位置依赖当前输入及前 $`w-1`$ 个位置；`conv_state` 保存卷积与 SiLU 之前的 `mixed_qkv`，常规缓存形状为 `[batch, 2 * key_dim + value_dim, conv_kernel_size]`。续算时，`update_conv_state` 将历史窗口与当前投影结果拼接，返回完整张量供卷积使用，同时只将末尾 $`w`$ 个位置保留为下一次调用的缓存。历史窗口提供调用边界处的左侧上下文，`[:, :, -seq_len:]` 截取本次 token 的输出。单 token 缓存解码则通过 `causal_conv1d_update` 原位推进窗口。下面完成式（1）中的短卷积与 SiLU，L2 归一化由后续内核执行。
+
+`recurrent_state` 保存每个 value head 的关联记忆矩阵，形状为 $`[B,H_v,d_k,d_v]`$，作为 `initial_state` 进入 GDN 内核；其值由此前所有 token 的写入、纠正与衰减共同决定。启用缓存时，内核返回本次输入结束处的 `last_recurrent_state`，外层通过 `update_recurrent_state` 写回，供下一次调用继续读写。两类缓存分别维持局部卷积与长程递推的边界条件，每层的常规存储量均不随历史序列长度增长。未传外部缓存时，卷积使用当前输入及左侧零填充，GDN 从零状态开始；一次调用内部的 chunk 之间仍传递递推状态，外部缓存负责延续跨调用的历史。
 
 ```python
 if cache_params is not None:
@@ -112,7 +114,7 @@ scaling = query.shape[-1] ** -0.5
 query = query * scaling
 ```
 
-其中 `l2norm` 的具体计算为
+其中 `l2norm` 沿每个 head 的特征维累加平方和，再用 `rsqrt` 计算其倒数平方根，将同一归一化系数应用于该向量的全部分量。`keepdim=True` 保留长度为 1 的归约轴，使系数能够沿特征维广播；`eps` 加在平方根内部，避免零向量除零，并限制近零输入的放大倍数。零向量经过该操作后仍为零，具体实现为
 
 ```python
 def l2norm(x, dim=-1, eps=1e-6):
@@ -129,9 +131,7 @@ def l2norm(x, dim=-1, eps=1e-6):
 \tag{4}
 ```
 
-L2 归一化约束 Q/K 的向量范数，额外的 $`d_k^{-1/2}`$ 只缩放 query 的读出幅度。结合式（3），归一化使 $`\|\boldsymbol{k}_t\|_2\leq1`$，从而 $`\mathbf{I}-\beta_t\boldsymbol{k}_t\boldsymbol{k}_t^\intercal`$ 沿 key 方向的特征值为 $`1-\beta_t\|\boldsymbol{k}_t\|_2^2`$，位于 $`[0,1]`$；它约束了历史状态变换的增益，不限制每一步新写入的大小。
-
-随后按默认 $`C=64`$ 划分 chunk，并预先计算逐 token 加权的 $`\beta K`$ 与 $`\beta V`$。长度 $`T=128`$ 对应两个完整 chunk；不能整除时，仅在序列末尾补齐计算位置。
+L2 归一化约束 Q/K 的向量范数，额外的 $`d_k^{-1/2}`$ 只缩放 query 的读出幅度。结合式（3），归一化使 $`\|\boldsymbol{k}_t\|_2\leq1`$，从而 $`\mathbf{I}-\beta_t\boldsymbol{k}_t\boldsymbol{k}_t^\intercal`$ 沿 key 方向的特征值为 $`1-\beta_t\|\boldsymbol{k}_t\|_2^2`$，位于 $`[0,1]`$；它约束历史状态变换的增益，不限制每一步新写入的大小。随后按默认 $`C=64`$ 划分 chunk，并预先计算逐 token 加权的 $`\beta K`$ 与 $`\beta V`$。长度 $`T=128`$ 对应两个完整 chunk；不能整除时，仅在序列末尾补齐计算位置。
 
 ```python
 pad_size = (chunk_size - sequence_length % chunk_size) % chunk_size
@@ -181,7 +181,7 @@ G_i=\sum_{r=1}^{i}g_r=\log\gamma_i,
 \tag{6}
 ```
 
-**对数空间把累计连乘变成求和，把前缀积相除变成累计和相减。** $`\gamma_i/\gamma_j`$ 消去了写入位置及其之前的公共前缀，只保留从 $`j+1`$ 到 $`i`$ 的衰减；当 $`i=j`$ 时，空乘积为 1。实现直接计算 $`G_i-G_j`$，避免分别生成可能已经下溢的两个前缀积，再进行不稳定的相除。
+**对数空间把累计连乘变成求和，把前缀积相除变成累计和相减。** $`\gamma_i/\gamma_j`$ 消去写入位置及其之前的公共前缀，只保留从 $`j+1`$ 到 $`i`$ 的衰减；当 $`i=j`$ 时，空乘积为 1。实现直接计算 $`G_i-G_j`$，避免分别生成可能已经下溢的两个前缀积，再进行不稳定的相除。
 
 ```python
 strictly_upper_mask = torch.ones(
