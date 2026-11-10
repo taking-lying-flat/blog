@@ -537,7 +537,7 @@ key = key * (cum_decay[..., -1:] - cum_decay).exp().unsqueeze(-1)
 chunk_decay = cum_decay[..., -1].exp()[..., None, None]
 ```
 
-`v_new` 即两式括号内的有效写入；扫描依次计算当前块输出，再更新下一块入口：
+对照式（42），`v_new` 对应 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$。循环中的 `query` 已乘累计衰减，对应 $`\overleftarrow{\mathbf Q}_{[t]}`$，`last_recurrent_state` 则采用 $`\mathbf S_{[t]}^{\top}`$ 的布局，因此 `inter_chunk_attn` 计算第一项：入口记忆的读出。`intra_chunk_attn` 预存 $`(\mathbf Q_{[t]}\mathbf K_{[t]}^{\top})\odot\Gamma_{[t]}`$，与 `v_new` 相乘得到第二项：块内有效写入对各位置输出的贡献。<strong style="color: var(--fgColor-danger)">`core_attn_out[:, :, i]` 将这两项相加，得到当前 chunk 的输出</strong> $`\mathbf O_{[t]}`$：
 
 ```python
 for i in range(num_chunks):
