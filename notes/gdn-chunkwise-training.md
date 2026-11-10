@@ -310,103 +310,229 @@ S_t=S_{t-1}+\beta_t(v_t-S_{t-1}k_t)k_t^{\top}=S_{t-1}(I-\beta_t k_t k_t^{\top})+
 ```
 
 ```math
-\begin{aligned}
-\mathbf{T}_{[t]} &= \left[ \mathbf{I} + \text{strictLower} \left( \text{diag}(\beta_{[t]}) \mathbf{K}_{[t]} \mathbf{K}_{[t]}^\top \right) \right]^{-1} \text{diag} (\beta_{[t]}) \in \mathbb{R}^{C \times C} \\
-\mathbf{W}_{[t]} &= \mathbf{T}_{[t]} \mathbf{K}_{[t]} \in \mathbb{R}^{C \times d_k}, \qquad \mathbf{U}_{[t]} = \mathbf{T}_{[t]} \mathbf{V}_{[t]} \in \mathbb{R}^{C \times d_v}
-\end{aligned}
+\mathbf{T}_{[t]} = \left[ \mathbf{I} + \text{strictLower} \left( \text{diag}(\beta_{[t]}) \mathbf{K}_{[t]} \mathbf{K}_{[t]}^\top \right) \right]^{-1} \text{diag} (\beta_{[t]}) \in \mathbb{R}^{C \times C}
 \tag{22}
+```
+
+```math
+\mathbf{W}_{[t]} = \mathbf{T}_{[t]} \mathbf{K}_{[t]} \in \mathbb{R}^{C \times d_k}, \qquad \mathbf{U}_{[t]} = \mathbf{T}_{[t]} \mathbf{V}_{[t]} \in \mathbb{R}^{C \times d_v}
+\tag{23}
 ```
 
 - 将 WY 表示与 UT 变换得到的 $`W`$、$`U`$ 代回后，$`U-WS_{[t]}^{\top}`$ 表示当前块相对于入口状态的有效写入。块内输出和块末状态更新由矩阵乘法完成，从而利用 Tensor Core；块间仍通过 $`S_{[t]}`$ 传递历史状态
 
 ```math
-\begin{aligned}
-\mathbf{S}_{[t+1]} &= \mathbf{S}_{[t]}\mathbf{P}_{[t]} + \mathbf{H}_{[t]} = \mathbf{S}_{[t]} + \left(\mathbf{U}_{[t]} - \mathbf{W}_{[t]}\mathbf{S}_{[t]}^\top \right)^\top \mathbf{K}_{[t]} &&\in \mathbb{R}^{d_v \times d_k} \\
-\mathbf{O}_{[t]} &= \mathbf{Q}_{[t]}\mathbf{S}_{[t]}^\top + \left(\mathbf{Q}_{[t]}\mathbf{K}_{[t]}^\top \odot \mathbf{M} \right) \left(\mathbf{U}_{[t]} - \mathbf{W}_{[t]}\mathbf{S}_{[t]}^\top \right) &&\in \mathbb{R}^{C \times d_v}
-\end{aligned}
-\tag{23}
-```
-
-# 🐧 WY Representation and the UT Transform
-
-Songlin Yang 等人的 *Parallelizing Linear Transformers with the Delta Rule over Sequence Length*（NeurIPS 2024）§3.1–3.2 从一个具体障碍出发：**DeltaNet 的当前写入需要先从上一状态读取旧 value，因此不能像普通线性注意力一样，直接由输入独立生成全部写入向量。** 逐 token 执行会形成串行依赖；直接保存各位置的二维状态或累计变换矩阵，又会增加并行训练的显存与 I/O 开销。论文先用 WY 表示避免逐位置物化这些矩阵，再用 UT 变换处理 W、U 本身的递推依赖。
-
-**为什么使用 WY：每个更新都是恒等矩阵加秩一修正，其有序连乘可以精确表示为外积和。** 论文 §3.1 与附录 A 利用这一结构，用每个位置的 w、u 向量表示累计变换和累计写入，无需显式生成全部 $`\mathbf{P}_{[t]}^{r}`$、$`\mathbf{H}_{[t]}^{r}`$。这减少逐位置保存二维矩阵的开销，并让后续状态更新具有矩阵乘法形式；chunk 边界的递推状态仍需保留。在这里，WY 中的第二组向量由 key 承担，$`\mathbf{P}_{[t]}^{r}`$ 作用于入口状态，$`\mathbf{H}_{[t]}^{r}`$ 汇总当前块的写入：
-
-```math
-\mathbf{P}_{[t]}^{r}=\mathbf{I}-\sum_{i=1}^{r}\mathbf{w}_{[t]}^{i} {\boldsymbol{k}_{[t]}^{i}}^{\top},\qquad \mathbf{H}_{[t]}^{r}=\sum_{i=1}^{r}\mathbf{u}_{[t]}^{i} {\boldsymbol{k}_{[t]}^{i}}^{\top},\qquad \mathbf{P}_{[t]}=\mathbf{I}-\mathbf{W}_{[t]}^{\top}\mathbf{K}_{[t]},\quad \mathbf{H}_{[t]}=\mathbf{U}_{[t]}^{\top}\mathbf{K}_{[t]}.
+\mathbf{S}_{[t+1]} = \mathbf{S}_{[t]}\mathbf{P}_{[t]} + \mathbf{H}_{[t]} = \mathbf{S}_{[t]} + \left(\mathbf{U}_{[t]} - \mathbf{W}_{[t]}\mathbf{S}_{[t]}^\top \right)^\top \mathbf{K}_{[t]} \in \mathbb{R}^{d_v \times d_k}
 \tag{24}
 ```
 
-- **W 编码历史状态经历的方向性修正，U 编码当前块内部的新增写入。** 这两个表示由归纳直接得到：初始条件为 $`\mathbf{P}_{[t]}^{0}=\mathbf{I}`$、$`\mathbf{H}_{[t]}^{0}=0`$，将第 r 个更新因子乘入后，新增项仍是以 $`{\boldsymbol{k}_{[t]}^{r}}^{\top}`$ 为右因子的秩一矩阵，其左因子恰好定义 $`\mathbf{w}_{[t]}^{r}`$ 与 $`\mathbf{u}_{[t]}^{r}`$：
-
 ```math
-\begin{aligned}
-\mathbf{P}_{[t]}^{r}&=\mathbf{P}_{[t]}^{r-1}(\mathbf{I}-\beta_{[t]}^r \boldsymbol{k}_{[t]}^{r} {\boldsymbol{k}_{[t]}^{r}}^{\top})=\mathbf{P}_{[t]}^{r-1}-\underbrace{\beta_{[t]}^r \mathbf{P}_{[t]}^{r-1}\boldsymbol{k}_{[t]}^{r}}_{\mathbf{w}_{[t]}^{r}}{\boldsymbol{k}_{[t]}^{r}}^{\top},\\
-\mathbf{H}_{[t]}^{r}&=\mathbf{H}_{[t]}^{r-1}(\mathbf{I}-\beta_{[t]}^r \boldsymbol{k}_{[t]}^{r} {\boldsymbol{k}_{[t]}^{r}}^{\top})+\beta_{[t]}^r \boldsymbol{v}_{[t]}^{r} {\boldsymbol{k}_{[t]}^{r}}^{\top}=\mathbf{H}_{[t]}^{r-1}+\underbrace{\beta_{[t]}^r(\boldsymbol{v}_{[t]}^{r}-\mathbf{H}_{[t]}^{r-1}\boldsymbol{k}_{[t]}^{r})}_{\mathbf{u}_{[t]}^{r}}{\boldsymbol{k}_{[t]}^{r}}^{\top}.
-\end{aligned}
+\mathbf{O}_{[t]} = \mathbf{Q}_{[t]}\mathbf{S}_{[t]}^\top + \left(\mathbf{Q}_{[t]}\mathbf{K}_{[t]}^\top \odot \mathbf{M} \right) \left(\mathbf{U}_{[t]} - \mathbf{W}_{[t]}\mathbf{S}_{[t]}^\top \right) \in \mathbb{R}^{C \times d_v}
 \tag{25}
 ```
 
-**为什么还需要 UT：WY 给出紧凑表示，但构造这些向量仍然是逐 token 递推。** 论文 §3.2 明确指出，原形式中的 W、U 计算无法直接利用 Tensor Core；当前位置仍需等待前面各位置的 w、u。UT 将这些相同的依赖系数集中到一个三角矩阵中，通过三角求解与矩阵乘法构造 W、U，使主要计算转向 GPU 擅长的块级矩阵运算。
+# 🐧 WY Representation: Appendix B.1
 
-- 将式（24）代入式（25），$`\mathbf{w}_{[t]}^{r}`$ 与 $`\mathbf{u}_{[t]}^{r}`$ 对先前位置 j 的依赖系数均为 $`-\beta_{[t]}^r {\boldsymbol{k}_{[t]}^{r}}^{\top}\boldsymbol{k}_{[t]}^{j}`$；两条递推仅右端输入不同，分别使用 $`\beta_{[t]}^r \boldsymbol{k}_{[t]}^{r}`$ 与 $`\beta_{[t]}^r \boldsymbol{v}_{[t]}^{r}`$。**把先前位置的项移到左侧，就得到同一个单位下三角系统的两组右端项。** 记 $`\mathbf{L}_{[t]}=\operatorname{tril}(\operatorname{diag}(\beta_{[t]})\mathbf{K}_{[t]}\mathbf{K}_{[t]}^{\top},-1)`$，则
+*Parallelizing Linear Transformers with the Delta Rule over Sequence Length* 的完整会议版在附录 **B Method Continued** 中分别证明 WY 表示与 UT 变换。B.1 处理的障碍是：DeltaNet 的写入依赖此前状态，直接沿序列并行展开会产生逐位置的二维中间矩阵。WY 利用每次更新的秩一结构，将这些累计变换表示为向量外积之和，使分块计算只需传递块边界状态，并保存各位置的向量系数。
 
-```math
-\underbrace{\begin{pmatrix}
-1&0&\cdots&0\\
-\beta_{[t]}^2 {\boldsymbol{k}_{[t]}^{2}}^{\top}\boldsymbol{k}_{[t]}^{1}&1&\cdots&0\\
-\vdots&\vdots&\ddots&\vdots\\
-\beta_{[t]}^C {\boldsymbol{k}_{[t]}^{C}}^{\top}\boldsymbol{k}_{[t]}^{1}&\beta_{[t]}^C {\boldsymbol{k}_{[t]}^{C}}^{\top}\boldsymbol{k}_{[t]}^{2}&\cdots&1
-\end{pmatrix}}_{\mathbf{I}+\mathbf{L}_{[t]}}
-\underbrace{\begin{pmatrix}
-{\mathbf{w}_{[t]}^{1}}^{\top}&{\mathbf{u}_{[t]}^{1}}^{\top}\\
-{\mathbf{w}_{[t]}^{2}}^{\top}&{\mathbf{u}_{[t]}^{2}}^{\top}\\
-\vdots&\vdots\\
-{\mathbf{w}_{[t]}^{C}}^{\top}&{\mathbf{u}_{[t]}^{C}}^{\top}
-\end{pmatrix}}_{[\,\mathbf{W}_{[t]}\;\mathbf{U}_{[t]}\,]}
-=
-\underbrace{\begin{pmatrix}
-\beta_{[t]}^1 {\boldsymbol{k}_{[t]}^{1}}^{\top}&\beta_{[t]}^1 {\boldsymbol{v}_{[t]}^{1}}^{\top}\\
-\beta_{[t]}^2 {\boldsymbol{k}_{[t]}^{2}}^{\top}&\beta_{[t]}^2 {\boldsymbol{v}_{[t]}^{2}}^{\top}\\
-\vdots&\vdots\\
-\beta_{[t]}^C {\boldsymbol{k}_{[t]}^{C}}^{\top}&\beta_{[t]}^C {\boldsymbol{v}_{[t]}^{C}}^{\top}
-\end{pmatrix}}_{\operatorname{diag}(\beta_{[t]})[\,\mathbf{K}_{[t]}\;\mathbf{V}_{[t]}\,]}.
-\tag{26}
-```
-
-**UT 变换与逐 token 递推等价，因为它求解的正是同一组方程。** 式（26）的第 r 行只依赖前 $`r-1`$ 行，对角线恒为 1，因而逐行递推与三角求解给出唯一且相同的解。这里 $`\mathbf{L}_{[t]}`$ 不含负号，移项后的系数矩阵因此是 $`\mathbf{I}+\mathbf{L}_{[t]}`$。进一步，由严格下三角性可知 $`\mathbf{L}_{[t]}^C=0`$，逆算子可精确写为有限和：
+**先证明入口状态的累计变换。** 当 $`r=1`$ 时，取 $`\mathbf{w}_{[t]}^1=\beta_{[t]}^1\boldsymbol{k}_{[t]}^1`$，式（19）成立。假设它对 $`r-1`$ 成立，按附录 B.1 依次代入归纳假设、展开乘积，再合并以当前 key 为右因子的项：
 
 ```math
 \begin{aligned}
-[\,\mathbf{W}_{[t]}\;\mathbf{U}_{[t]}\,]&=(\mathbf{I}+\mathbf{L}_{[t]})^{-1}\operatorname{diag}(\beta_{[t]})[\,\mathbf{K}_{[t]}\;\mathbf{V}_{[t]}\,]=\mathbf{T}_{[t]}[\,\mathbf{K}_{[t]}\;\mathbf{V}_{[t]}\,],\\
-\mathbf{T}_{[t]}&=(\mathbf{I}+\mathbf{L}_{[t]})^{-1}\operatorname{diag}(\beta_{[t]})=\left(\mathbf{I}-\mathbf{L}_{[t]}+\mathbf{L}_{[t]}^2-\cdots+(-\mathbf{L}_{[t]})^{C-1}\right)\operatorname{diag}(\beta_{[t]}).
+\mathbf{P}_{[t]}^r
+&=\mathbf{P}_{[t]}^{r-1}\left(\mathbf I-\beta_{[t]}^r\boldsymbol{k}_{[t]}^r{\boldsymbol{k}_{[t]}^r}^{\top}\right)\\
+&=\left(\mathbf I-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right)
+  \left(\mathbf I-\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\right)\\
+&=\mathbf I-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}
+  -\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\\
+&\quad+\beta_{[t]}^r\sum_{i=1}^{r-1}\mathbf w_{[t]}^i
+  \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right){\boldsymbol k_{[t]}^r}^{\top}\\
+&=\mathbf I-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}
+  -\underbrace{\beta_{[t]}^r\left(\boldsymbol k_{[t]}^r-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i
+  \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right)\right)}_{\mathbf w_{[t]}^r}{\boldsymbol k_{[t]}^r}^{\top}\\
+&=\mathbf I-\sum_{i=1}^{r}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}.
+\end{aligned}
+\tag{26}
+```
+
+- 归纳过程中没有交换矩阵乘法的顺序。此前所有更新对当前 key 的影响进入 $`\mathbf w_{[t]}^r`$，因此外积和仍保留原有序乘积的结果。这正是式（19）中 w 递推的来源。
+
+**块内写入项使用相同的归纳方法。** B.1 对零初态状态的证明，对应前文式（18）的 $`\mathbf H_{[t]}^r`$。从 $`\mathbf u_{[t]}^1=\beta_{[t]}^1\boldsymbol v_{[t]}^1`$ 出发，假设 $`\mathbf H_{[t]}^{r-1}=\sum_{i<r}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}`$，则
+
+```math
+\begin{aligned}
+\mathbf H_{[t]}^r
+&=\mathbf H_{[t]}^{r-1}\left(\mathbf I-\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\right)
+  +\beta_{[t]}^r\boldsymbol v_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\\
+&=\left(\sum_{i=1}^{r-1}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right)
+  \left(\mathbf I-\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\right)
+  +\beta_{[t]}^r\boldsymbol v_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\\
+&=\sum_{i=1}^{r-1}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}
+  -\beta_{[t]}^r\sum_{i=1}^{r-1}\mathbf u_{[t]}^i
+  \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right){\boldsymbol k_{[t]}^r}^{\top}
+  +\beta_{[t]}^r\boldsymbol v_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\\
+&=\sum_{i=1}^{r-1}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}
+  +\underbrace{\beta_{[t]}^r\left(\boldsymbol v_{[t]}^r-\sum_{i=1}^{r-1}\mathbf u_{[t]}^i
+  \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right)\right)}_{\mathbf u_{[t]}^r}{\boldsymbol k_{[t]}^r}^{\top}\\
+&=\sum_{i=1}^{r}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}.
 \end{aligned}
 \tag{27}
 ```
 
-- 在作者配套文章 *DeltaNet Explained (Part II)* 的路径解释中，$`-\mathbf{L}_{[t]}`$ 记录位置之间的直接依赖，$`(-\mathbf{L}_{[t]})^m`$ 汇总经过 m 条依赖边的贡献。因果关系只允许位置索引递增，最长路径包含 $`C-1`$ 条边，因此有限和已经包含全部间接影响，**不需要截断近似，也不要求 $`\mathbf{L}_{[t]}`$ 的范数小于 1**。实现可对同一系数矩阵求解 $`\operatorname{diag}(\beta_{[t]})\mathbf{K}_{[t]}`$、$`\operatorname{diag}(\beta_{[t]})\mathbf{V}_{[t]}`$，或先构造三角逆再做矩阵乘法。三角求解仍需处理块内依赖，但不同 chunk 的系数与右端项可以并行准备，随后状态传递和输出计算主要由矩阵乘法完成；这里的 $`\mathbf{T}_{[t]}`$ 已包含 $`\operatorname{diag}(\beta_{[t]})`$，使用 $`\mathbf{W}_{[t]}=\mathbf{T}_{[t]}\mathbf{K}_{[t]}`$、$`\mathbf{U}_{[t]}=\mathbf{T}_{[t]}\mathbf{V}_{[t]}`$ 时不再重复乘写入门。
+- 两个归纳证明同时给出式（19）、（20）的表示与构造方法：$`\mathbf W_{[t]}`$ 表示本块对入口状态的累计修改，$`\mathbf U_{[t]}`$ 表示本块自身的累计写入。它们使式（24）、（25）可以使用矩阵乘法，但系数向量的构造仍依赖先前位置，尚未解决块内计算的串行性。
 
-**回到状态更新时，真正替代线性注意力中 V 的是有效写入 $`\mathbf{U}_{[t]}-\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}`$。** U 给出当前块从零状态出发的写入，$`\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}`$ 扣除入口记忆对这些 key 的已有预测；W 因而负责入口状态修正，K 继续承担写入地址和查询匹配。利用三角求解对右端项的线性性，可以将两组解合并为
+# 🐢 UT Transform: Appendix B.2
+
+**UT 处理的是 W、U 的构造依赖。** 正文 §3.2 指出，WY 的向量递推按原形式执行时无法直接利用 Tensor Core。附录 B.2 因而从同一递推逐行整理出下三角系统，使系数构造能够使用三角求解与矩阵乘法。以下保留附录的逐行表达、系数定义和移项步骤。
+
+W、U 的第 r 行分别是 $`{\mathbf w_{[t]}^r}^{\top}`$、$`{\mathbf u_{[t]}^r}^{\top}`$。将式（19）、（20）的向量递推写成行形式，得到 B.2 的起点：
 
 ```math
 \begin{aligned}
-\mathbf{U}_{[t]}-\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}&=(\mathbf{I}+\mathbf{L}_{[t]})^{-1}\operatorname{diag}(\beta_{[t]})\left(\mathbf{V}_{[t]}-\mathbf{K}_{[t]}\mathbf{S}_{[t]}^{\top}\right),\\
-\mathbf{S}_{[t+1]}&=\mathbf{S}_{[t]}+\left(\mathbf{U}_{[t]}-\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}\right)^{\top}\mathbf{K}_{[t]},\\
-\mathbf{O}_{[t]}&=\mathbf{Q}_{[t]}\mathbf{S}_{[t]}^{\top}+(\mathbf{Q}_{[t]}\mathbf{K}_{[t]}^{\top}\odot \mathbf{M})\left(\mathbf{U}_{[t]}-\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}\right).
+\mathbf W_{[t]}[r,:]
+&=\beta_{[t]}^r\mathbf K_{[t]}[r,:]
+ -\beta_{[t]}^r\sum_{i=1}^{r-1}\mathbf W_{[t]}[i,:]
+ \left(\mathbf K_{[t]}[i,:]\mathbf K_{[t]}[r,:]^{\top}\right),\\
+\mathbf U_{[t]}[r,:]
+&=\beta_{[t]}^r\mathbf V_{[t]}[r,:]
+ -\beta_{[t]}^r\sum_{i=1}^{r-1}\mathbf U_{[t]}[i,:]
+ \left(\mathbf K_{[t]}[i,:]\mathbf K_{[t]}[r,:]^{\top}\right).
 \end{aligned}
 \tag{28}
 ```
 
-- 当入口状态为零时，有效写入就是 U；存在历史状态时，两者之间的修正必须保留。**分别预计算 W、U 的价值在于它们只依赖当前块的 K、V 与写入门，可以在不同 chunk 上并行准备。** 等入口状态到达后，只需计算 $`\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}`$ 即可得到有效写入。若直接求解式（28）的合并右端项，则需要先获得入口状态，跨块依赖会进入准备阶段。
-
-**GDN 沿用同一三角系统结构，并将衰减加入依赖系数与入口状态项。** 用式（6）的 $`\Gamma_{[t]}`$ 加权块内 key 的相互作用，将块内累计衰减排成对角矩阵 $`\operatorname{diag}(\gamma_{[t]}^1,\ldots,\gamma_{[t]}^C)`$，前文准备的 `v_beta`、`k_beta` 与 `pairwise_decay` 对应
+附录定义的两个矩阵为
 
 ```math
-\left[\mathbf{I}+\operatorname{tril}\left((\operatorname{diag}(\beta_{[t]})\mathbf{K}_{[t]}\mathbf{K}_{[t]}^{\top})\odot\Gamma_{[t]},-1\right)\right]
-\begin{bmatrix}\overleftarrow{\mathbf{W}}_{[t]}&\widetilde{\mathbf{U}}_{[t]}\end{bmatrix}
-=\begin{bmatrix}\operatorname{diag}(\gamma_{[t]}^1,\ldots,\gamma_{[t]}^C)\operatorname{diag}(\beta_{[t]})\mathbf{K}_{[t]}&\operatorname{diag}(\beta_{[t]})\mathbf{V}_{[t]}\end{bmatrix}.
+\mathbf B_{[t]}=\operatorname{diag}(\beta_{[t]}),\qquad
+\mathbf L_{[t]}=\operatorname{tril}\left(\mathbf B_{[t]}\mathbf K_{[t]}\mathbf K_{[t]}^{\top},-1\right).
 \tag{29}
 ```
 
-- 两组解分别对应源码中的 `k_cumdecay` 与 `new_values`。块内历史写入传播到位置 i 时需要乘 $`(\Gamma_{[t]})_{ij}`$，入口状态传播到该位置则需要乘 $`\gamma_{[t]}^i`$，因此衰减同时出现在系统系数和 W 的右端项中。**前面的累计衰减准备最终服务于这一共享三角系统**；得到两组解之后，再减去入口状态的预测，才形成当前块的有效写入。
+**下三角矩阵恰好收集递推中每个先前位置的系数。** 它的第 r 行、第 i 列在 $`i<r`$ 时为 $`\beta_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\boldsymbol k_{[t]}^i`$，其余位置为零。内积为标量，可以交换两个 key 的次序，因此
+
+```math
+\begin{aligned}
+(\mathbf L_{[t]}\mathbf W_{[t]})[r,:]
+&=\sum_{i=1}^{r-1}\beta_{[t]}^r
+ \left(\mathbf K_{[t]}[r,:]\mathbf K_{[t]}[i,:]^{\top}\right)\mathbf W_{[t]}[i,:]\\
+&=\beta_{[t]}^r\sum_{i=1}^{r-1}\mathbf W_{[t]}[i,:]
+ \left(\mathbf K_{[t]}[i,:]\mathbf K_{[t]}[r,:]^{\top}\right).
+\end{aligned}
+\tag{30}
+```
+
+- 式（30）就是式（28）右侧被减去的求和项。将它移到左侧，并将所有行同时写出，得到附录中的 $`\mathbf W_{[t]}+\mathbf L_{[t]}\mathbf W_{[t]}=\mathbf B_{[t]}\mathbf K_{[t]}`$；对 U 完全相同。两组方程可并列写为
+
+```math
+(\mathbf I+\mathbf L_{[t]})
+\begin{bmatrix}\mathbf W_{[t]}&\mathbf U_{[t]}\end{bmatrix}
+=\mathbf B_{[t]}
+\begin{bmatrix}\mathbf K_{[t]}&\mathbf V_{[t]}\end{bmatrix}.
+\tag{31}
+```
+
+**三角求解与递推等价，关键是每一行的方程完全相同。** $`\mathbf I+\mathbf L_{[t]}`$ 的对角线均为 1，第 r 行只依赖此前已经确定的行，因而前向代入得到唯一解。B.2 随后左乘该系数矩阵的逆，得到前文式（22）中的 $`\mathbf T_{[t]}`$：
+
+```math
+\begin{aligned}
+\mathbf T_{[t]}&=(\mathbf I+\mathbf L_{[t]})^{-1}\mathbf B_{[t]},\\
+\mathbf W_{[t]}&=(\mathbf I+\mathbf L_{[t]})^{-1}\mathbf B_{[t]}\mathbf K_{[t]}
+ =\mathbf T_{[t]}\mathbf K_{[t]},\\
+\mathbf U_{[t]}&=(\mathbf I+\mathbf L_{[t]})^{-1}\mathbf B_{[t]}\mathbf V_{[t]}
+ =\mathbf T_{[t]}\mathbf V_{[t]}.
+\end{aligned}
+\tag{32}
+```
+
+- 附录最后一步所说的以 V 替换 K，作用于**右端输入**；系数矩阵仍由 K 与写入门决定。求解 W 是计算入口状态如何被本块修改，求解 U 是计算当前 value 如何形成块内写入。二者共用一个系数矩阵，属于两组右端项；可以分别求解，也可以拼接右端项后一起求解。逆矩阵写法表达其代数解，实际实现可使用前向代入。
+
+**W、U 的作用在代回状态更新时才合在一起。** 正文 §3.2 将 WY 表示代入式（18），逐项整理为
+
+```math
+\begin{aligned}
+\mathbf S_{[t]}^r
+&=\mathbf S_{[t]}\left(\mathbf I-\sum_{i=1}^{r}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right)
+ +\sum_{i=1}^{r}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\\
+&=\mathbf S_{[t]}+\sum_{i=1}^{r}
+ \left(\mathbf u_{[t]}^i-\mathbf S_{[t]}\mathbf w_{[t]}^i\right){\boldsymbol k_{[t]}^i}^{\top}.
+\end{aligned}
+\tag{33}
+```
+
+- $`\mathbf u_{[t]}^i`$ 表示当前块从零状态出发的写入系数，$`\mathbf S_{[t]}\mathbf w_{[t]}^i`$ 表示本块从入口记忆中消除的对应分量。两者之差才是实际叠加到状态中的增量。按行堆叠后，它正是式（24）、（25）共同使用的 $`\mathbf U_{[t]}-\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$，既决定块末状态，也决定块内输出。
+
+- 分别准备 W、U，使两组系数都只依赖当前块的 K、V 与写入门，可以在不同 chunk 上并行计算。入口状态到达后，再计算上述修正。如果只保留 U，非零入口状态中的旧关联就不会经历本块应有的消除；若将入口状态提前合并到右端项，系数准备又会依赖前一个 chunk。**两组求解将块内系数计算与跨块状态传递分开。**
+
+# 🦦 UT Construction and Triangular Solves
+
+接下来进入 `torch_chunk_gated_delta_rule` 的块内求解。GDN §3.3 将 WY 系数扩展到带衰减的更新：历史写入从位置 i 传播到位置 r 时乘 $`\gamma_{[t]}^r/\gamma_{[t]}^i`$。该节给出的 value 系数递推为
+
+```math
+\widetilde{\mathbf u}_{[t]}^r
+=\beta_{[t]}^r\left(
+\boldsymbol v_{[t]}^r-\sum_{i=1}^{r-1}\widetilde{\mathbf u}_{[t]}^i
+\left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}
+{\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right)\right).
+\tag{34}
+```
+
+- 这一递推的归纳证明见 *Gated Delta Networks: Improving Mamba2 with Delta Rule* 附录 A：将此前的衰减外积和代入单步更新，再用 $`\alpha_{[t]}^r\gamma_{[t]}^{r-1}=\gamma_{[t]}^r`$ 合并系数，即可得到当前的 $`\widetilde{\mathbf u}_{[t]}^r`$。相较式（28），变化在于先前位置的系数增加累计衰减比值，因此三角系统的严格下三角部分相应加入 $`\Gamma_{[t]}`$。
+
+本段源码需要得到两组系数，入口状态留到下一步使用：
+
+| 源码结果 | 对应的量 | 在状态更新中的作用 |
+| --- | --- | --- |
+| `new_values` | $`\widetilde{\mathbf U}_{[t]}`$ | 表示已计入块内纠正与衰减关系的 value 系数 |
+| `k_cumdecay` | $`\overleftarrow{\mathbf W}_{[t]}`$ | 作用于入口状态，计算需要扣除的历史关联分量 |
+
+**系统系数、块内读出权重与入口衰减分别准备。** `ut_system` 的严格下三角部分编码式（34）的历史依赖；`intra_chunk_attn` 保存当前 Q/K 之间带衰减的因果读出权重，留供后续输出计算；`decayed_k_beta` 则将入口状态传播到各位置所需的累计衰减乘入第二组右端项。`intra_chunk_attn` 在此处已经生成，后面对 `query`、`key` 的重新赋值不会改变它。
+
+```python
+# ut_system/intra_chunk_attn: [B, H, num_chunks, chunk_size, chunk_size]
+ut_system = (k_beta @ key.transpose(-1, -2)) * pairwise_decay
+intra_chunk_attn = (query @ key.transpose(-1, -2)) * pairwise_decay
+# decayed_k_beta: [B, H, num_chunks, chunk_size, d_k]
+decayed_k_beta = k_beta * cum_decay.exp().unsqueeze(-1)
+```
+
+**第一组右端项是 `v_beta`。** 对式（34）移项并堆叠各行，GDN §3.3 给出的 UT 形式为
+
+```math
+\widetilde{\mathbf U}_{[t]}
+=\left[\mathbf I+\operatorname{strictLower}\left(
+\operatorname{diag}(\beta_{[t]})
+\left(\Gamma_{[t]}\odot\mathbf K_{[t]}\mathbf K_{[t]}^{\top}\right)\right)\right]^{-1}
+\operatorname{diag}(\beta_{[t]})\mathbf V_{[t]}.
+\tag{35}
+```
+
+- 常规执行分支直接求解该系统。`upper=False` 选择下三角，`unitriangular=True` 将对角线视为 1，并忽略 `ut_system` 中原有的对角元素。因此实际系数矩阵是 $`\mathbf I+\operatorname{strictLower}(\texttt{ut\_system})`$，无需显式加单位矩阵或构造一般矩阵的逆。所得 `new_values` 已处理当前块内部的更新依赖，尚未使用入口递推状态。
+
+```python
+new_values = torch.linalg.solve_triangular(
+    ut_system, v_beta, upper=False, unitriangular=True)
+```
+
+**第二组右端项是 `decayed_k_beta`，使用相同的系统系数。** GDN §3.3 定义 $`\overleftarrow{\mathbf w}_{[t]}^r=\gamma_{[t]}^r\mathbf w_{[t]}^r`$。将前文式（19）的 w 递推乘以 $`\gamma_{[t]}^r`$，并把历史项写回带箭头的系数，得到
+
+```math
+\begin{aligned}
+\overleftarrow{\mathbf w}_{[t]}^r
+&=\gamma_{[t]}^r\mathbf w_{[t]}^r\\
+&=\beta_{[t]}^r\gamma_{[t]}^r\boldsymbol k_{[t]}^r
+-\beta_{[t]}^r\sum_{i=1}^{r-1}\overleftarrow{\mathbf w}_{[t]}^i
+\left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}
+{\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right).
+\end{aligned}
+\tag{36}
+```
+
+- 式（34）、（36）对历史位置的依赖系数相同，区别仅在右端：前者是 $`\beta_{[t]}^r\boldsymbol v_{[t]}^r`$，后者是 $`\beta_{[t]}^r\gamma_{[t]}^r\boldsymbol k_{[t]}^r`$。这说明第二次调用可以复用 `ut_system`，而 `k_cumdecay` 的额外累计衰减必须保留：它描述入口记忆传播到当前写入位置时的影响。
+
+```python
+k_cumdecay = torch.linalg.solve_triangular(
+    ut_system, decayed_k_beta, upper=False, unitriangular=True)
+```
+
+两次求解完成后，各 chunk 的 $`\widetilde{\mathbf U}_{[t]}`$ 与 $`\overleftarrow{\mathbf W}_{[t]}`$ 均已准备好。下一步才引入入口状态，以 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$ 形成 `v_new`，用于块内输出和块末状态更新。
