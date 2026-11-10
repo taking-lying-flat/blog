@@ -166,7 +166,7 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .copy-button { border: 1px solid var(--line); border-radius: 5px; background: var(--button-default-bgColor-rest); font: 12px var(--sans); padding: 5px 10px; min-height: 28px; white-space: nowrap; color: var(--ink); }
 .copy-button:hover { background: var(--button-default-bgColor-hover); }
 .code-block :focus-visible { outline-color: var(--accent); outline-offset: -3px; }
-.code-block pre { margin: 0; padding: 18px 20px 20px; overflow-x: auto; font: 15px/1.65 var(--mono); font-variant-ligatures: none; scrollbar-width: thin; scrollbar-color: var(--line) transparent; white-space: normal; }
+.code-block pre { margin: 0; padding: 18px 20px 20px; overflow-x: auto; font: 14px/1.65 var(--mono); font-variant-ligatures: none; scrollbar-width: thin; scrollbar-color: var(--line) transparent; white-space: normal; }
 .code-block code { display: block; min-width: 0; padding-left: 4.5ch; font: inherit; color: var(--code-ink); tab-size: 4; white-space: normal; }
 .code-line { position: relative; display: block; min-height: 1lh; padding-left: var(--wrap-indent); text-indent: calc(-1 * var(--wrap-indent)); white-space: pre; overflow-wrap: normal; word-break: normal; }
 .code-line::before { content: attr(data-line); position: absolute; right: calc(100% + 1.5ch); width: 3ch; color: var(--code-muted); text-align: right; text-indent: 0; user-select: none; -webkit-user-select: none; }
