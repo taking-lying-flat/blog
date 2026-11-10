@@ -329,84 +329,84 @@ S_t=S_{t-1}+\beta_t(v_t-S_{t-1}k_t)k_t^{\top}=S_{t-1}(I-\beta_t k_t k_t^{\top})+
 
 # 🐧 WY Representation and the UT Transform
 
-Songlin Yang 等人的 *Parallelizing Linear Transformers with the Delta Rule over Sequence Length*（NeurIPS 2024）§3.1–3.2 从一个具体障碍出发：**DeltaNet 的当前写入需要先从上一状态读取旧 value，因此不能像普通线性注意力一样，直接由输入独立生成全部写入向量。** 逐 token 执行会形成串行依赖；直接保存各位置的二维状态或累计变换矩阵，又会增加并行训练的显存与 I/O 开销。论文先用 WY 表示避免逐位置物化这些矩阵，再用 UT 变换处理 W、U 本身的递推依赖。下面固定一个 chunk，省略下标 $`[t]`$，用 $`S_{\mathrm{in}}`$ 表示入口状态；K、V、W、U 均按 token 排成行。
+Songlin Yang 等人的 *Parallelizing Linear Transformers with the Delta Rule over Sequence Length*（NeurIPS 2024）§3.1–3.2 从一个具体障碍出发：**DeltaNet 的当前写入需要先从上一状态读取旧 value，因此不能像普通线性注意力一样，直接由输入独立生成全部写入向量。** 逐 token 执行会形成串行依赖；直接保存各位置的二维状态或累计变换矩阵，又会增加并行训练的显存与 I/O 开销。论文先用 WY 表示避免逐位置物化这些矩阵，再用 UT 变换处理 W、U 本身的递推依赖。
 
-**为什么使用 WY：每个更新都是恒等矩阵加秩一修正，其有序连乘可以精确表示为外积和。** 论文 §3.1 与附录 A 利用这一结构，用每个位置的 w、u 向量表示累计变换和累计写入，无需显式生成全部 $`P_r`$、$`H_r`$。这减少逐位置保存二维矩阵的开销，并让后续状态更新具有矩阵乘法形式；chunk 边界的递推状态仍需保留。在这里，WY 中的第二组向量由 key 承担，$`P_r`$ 作用于入口状态，$`H_r`$ 汇总当前块的写入：
+**为什么使用 WY：每个更新都是恒等矩阵加秩一修正，其有序连乘可以精确表示为外积和。** 论文 §3.1 与附录 A 利用这一结构，用每个位置的 w、u 向量表示累计变换和累计写入，无需显式生成全部 $`\mathbf{P}_{[t]}^{r}`$、$`\mathbf{H}_{[t]}^{r}`$。这减少逐位置保存二维矩阵的开销，并让后续状态更新具有矩阵乘法形式；chunk 边界的递推状态仍需保留。在这里，WY 中的第二组向量由 key 承担，$`\mathbf{P}_{[t]}^{r}`$ 作用于入口状态，$`\mathbf{H}_{[t]}^{r}`$ 汇总当前块的写入：
 
 ```math
-P_r=I-\sum_{i=1}^{r}w_i k_i^{\top},\qquad H_r=\sum_{i=1}^{r}u_i k_i^{\top},\qquad P_C=I-W^{\top}K,\quad H_C=U^{\top}K.
+\mathbf{P}_{[t]}^{r}=\mathbf{I}-\sum_{i=1}^{r}\mathbf{w}_{[t]}^{i} {\boldsymbol{k}_{[t]}^{i}}^{\top},\qquad \mathbf{H}_{[t]}^{r}=\sum_{i=1}^{r}\mathbf{u}_{[t]}^{i} {\boldsymbol{k}_{[t]}^{i}}^{\top},\qquad \mathbf{P}_{[t]}=\mathbf{I}-\mathbf{W}_{[t]}^{\top}\mathbf{K}_{[t]},\quad \mathbf{H}_{[t]}=\mathbf{U}_{[t]}^{\top}\mathbf{K}_{[t]}.
 \tag{24}
 ```
 
-- **W 编码历史状态经历的方向性修正，U 编码当前块内部的新增写入。** 这两个表示由归纳直接得到：初始条件为 $`P_0=I`$、$`H_0=0`$，将第 r 个更新因子乘入后，新增项仍是以 $`k_r^{\top}`$ 为右因子的秩一矩阵，其左因子恰好定义 $`w_r`$ 与 $`u_r`$：
+- **W 编码历史状态经历的方向性修正，U 编码当前块内部的新增写入。** 这两个表示由归纳直接得到：初始条件为 $`\mathbf{P}_{[t]}^{0}=\mathbf{I}`$、$`\mathbf{H}_{[t]}^{0}=0`$，将第 r 个更新因子乘入后，新增项仍是以 $`{\boldsymbol{k}_{[t]}^{r}}^{\top}`$ 为右因子的秩一矩阵，其左因子恰好定义 $`\mathbf{w}_{[t]}^{r}`$ 与 $`\mathbf{u}_{[t]}^{r}`$：
 
 ```math
 \begin{aligned}
-P_r&=P_{r-1}(I-\beta_r k_r k_r^{\top})=P_{r-1}-\underbrace{\beta_r P_{r-1}k_r}_{w_r}k_r^{\top},\\
-H_r&=H_{r-1}(I-\beta_r k_r k_r^{\top})+\beta_r v_r k_r^{\top}=H_{r-1}+\underbrace{\beta_r(v_r-H_{r-1}k_r)}_{u_r}k_r^{\top}.
+\mathbf{P}_{[t]}^{r}&=\mathbf{P}_{[t]}^{r-1}(\mathbf{I}-\beta_{[t]}^r \boldsymbol{k}_{[t]}^{r} {\boldsymbol{k}_{[t]}^{r}}^{\top})=\mathbf{P}_{[t]}^{r-1}-\underbrace{\beta_{[t]}^r \mathbf{P}_{[t]}^{r-1}\boldsymbol{k}_{[t]}^{r}}_{\mathbf{w}_{[t]}^{r}}{\boldsymbol{k}_{[t]}^{r}}^{\top},\\
+\mathbf{H}_{[t]}^{r}&=\mathbf{H}_{[t]}^{r-1}(\mathbf{I}-\beta_{[t]}^r \boldsymbol{k}_{[t]}^{r} {\boldsymbol{k}_{[t]}^{r}}^{\top})+\beta_{[t]}^r \boldsymbol{v}_{[t]}^{r} {\boldsymbol{k}_{[t]}^{r}}^{\top}=\mathbf{H}_{[t]}^{r-1}+\underbrace{\beta_{[t]}^r(\boldsymbol{v}_{[t]}^{r}-\mathbf{H}_{[t]}^{r-1}\boldsymbol{k}_{[t]}^{r})}_{\mathbf{u}_{[t]}^{r}}{\boldsymbol{k}_{[t]}^{r}}^{\top}.
 \end{aligned}
 \tag{25}
 ```
 
 **为什么还需要 UT：WY 给出紧凑表示，但构造这些向量仍然是逐 token 递推。** 论文 §3.2 明确指出，原形式中的 W、U 计算无法直接利用 Tensor Core；当前位置仍需等待前面各位置的 w、u。UT 将这些相同的依赖系数集中到一个三角矩阵中，通过三角求解与矩阵乘法构造 W、U，使主要计算转向 GPU 擅长的块级矩阵运算。
 
-- 将式（24）代入式（25），$`w_r`$ 与 $`u_r`$ 对先前位置 j 的依赖系数均为 $`-\beta_r k_r^{\top}k_j`$；两条递推仅右端输入不同，分别使用 $`\beta_r k_r`$ 与 $`\beta_r v_r`$。**把先前位置的项移到左侧，就得到同一个单位下三角系统的两组右端项。** 记 $`B=\operatorname{diag}(\beta_1,\ldots,\beta_C)`$、$`L=\operatorname{tril}(BKK^{\top},-1)`$，则
+- 将式（24）代入式（25），$`\mathbf{w}_{[t]}^{r}`$ 与 $`\mathbf{u}_{[t]}^{r}`$ 对先前位置 j 的依赖系数均为 $`-\beta_{[t]}^r {\boldsymbol{k}_{[t]}^{r}}^{\top}\boldsymbol{k}_{[t]}^{j}`$；两条递推仅右端输入不同，分别使用 $`\beta_{[t]}^r \boldsymbol{k}_{[t]}^{r}`$ 与 $`\beta_{[t]}^r \boldsymbol{v}_{[t]}^{r}`$。**把先前位置的项移到左侧，就得到同一个单位下三角系统的两组右端项。** 记 $`\mathbf{L}_{[t]}=\operatorname{tril}(\operatorname{diag}(\beta_{[t]})\mathbf{K}_{[t]}\mathbf{K}_{[t]}^{\top},-1)`$，则
 
 ```math
 \underbrace{\begin{pmatrix}
 1&0&\cdots&0\\
-\beta_2 k_2^{\top}k_1&1&\cdots&0\\
+\beta_{[t]}^2 {\boldsymbol{k}_{[t]}^{2}}^{\top}\boldsymbol{k}_{[t]}^{1}&1&\cdots&0\\
 \vdots&\vdots&\ddots&\vdots\\
-\beta_C k_C^{\top}k_1&\beta_C k_C^{\top}k_2&\cdots&1
-\end{pmatrix}}_{I+L}
+\beta_{[t]}^C {\boldsymbol{k}_{[t]}^{C}}^{\top}\boldsymbol{k}_{[t]}^{1}&\beta_{[t]}^C {\boldsymbol{k}_{[t]}^{C}}^{\top}\boldsymbol{k}_{[t]}^{2}&\cdots&1
+\end{pmatrix}}_{\mathbf{I}+\mathbf{L}_{[t]}}
 \underbrace{\begin{pmatrix}
-w_1^{\top}&u_1^{\top}\\
-w_2^{\top}&u_2^{\top}\\
+{\mathbf{w}_{[t]}^{1}}^{\top}&{\mathbf{u}_{[t]}^{1}}^{\top}\\
+{\mathbf{w}_{[t]}^{2}}^{\top}&{\mathbf{u}_{[t]}^{2}}^{\top}\\
 \vdots&\vdots\\
-w_C^{\top}&u_C^{\top}
-\end{pmatrix}}_{[\,W\;U\,]}
+{\mathbf{w}_{[t]}^{C}}^{\top}&{\mathbf{u}_{[t]}^{C}}^{\top}
+\end{pmatrix}}_{[\,\mathbf{W}_{[t]}\;\mathbf{U}_{[t]}\,]}
 =
 \underbrace{\begin{pmatrix}
-\beta_1 k_1^{\top}&\beta_1 v_1^{\top}\\
-\beta_2 k_2^{\top}&\beta_2 v_2^{\top}\\
+\beta_{[t]}^1 {\boldsymbol{k}_{[t]}^{1}}^{\top}&\beta_{[t]}^1 {\boldsymbol{v}_{[t]}^{1}}^{\top}\\
+\beta_{[t]}^2 {\boldsymbol{k}_{[t]}^{2}}^{\top}&\beta_{[t]}^2 {\boldsymbol{v}_{[t]}^{2}}^{\top}\\
 \vdots&\vdots\\
-\beta_C k_C^{\top}&\beta_C v_C^{\top}
-\end{pmatrix}}_{B[\,K\;V\,]}.
+\beta_{[t]}^C {\boldsymbol{k}_{[t]}^{C}}^{\top}&\beta_{[t]}^C {\boldsymbol{v}_{[t]}^{C}}^{\top}
+\end{pmatrix}}_{\operatorname{diag}(\beta_{[t]})[\,\mathbf{K}_{[t]}\;\mathbf{V}_{[t]}\,]}.
 \tag{26}
 ```
 
-**UT 变换与逐 token 递推等价，因为它求解的正是同一组方程。** 式（26）的第 r 行只依赖前 $`r-1`$ 行，对角线恒为 1，因而逐行递推与三角求解给出唯一且相同的解。这里 L 不含负号，移项后的系数矩阵因此是 $`I+L`$。进一步，由严格下三角性可知 $`L^C=0`$，逆算子可精确写为有限和：
+**UT 变换与逐 token 递推等价，因为它求解的正是同一组方程。** 式（26）的第 r 行只依赖前 $`r-1`$ 行，对角线恒为 1，因而逐行递推与三角求解给出唯一且相同的解。这里 $`\mathbf{L}_{[t]}`$ 不含负号，移项后的系数矩阵因此是 $`\mathbf{I}+\mathbf{L}_{[t]}`$。进一步，由严格下三角性可知 $`\mathbf{L}_{[t]}^C=0`$，逆算子可精确写为有限和：
 
 ```math
 \begin{aligned}
-[\,W\;U\,]&=(I+L)^{-1}B[\,K\;V\,]=T[\,K\;V\,],\\
-T&=(I+L)^{-1}B=\left(I-L+L^2-\cdots+(-L)^{C-1}\right)B.
+[\,\mathbf{W}_{[t]}\;\mathbf{U}_{[t]}\,]&=(\mathbf{I}+\mathbf{L}_{[t]})^{-1}\operatorname{diag}(\beta_{[t]})[\,\mathbf{K}_{[t]}\;\mathbf{V}_{[t]}\,]=\mathbf{T}_{[t]}[\,\mathbf{K}_{[t]}\;\mathbf{V}_{[t]}\,],\\
+\mathbf{T}_{[t]}&=(\mathbf{I}+\mathbf{L}_{[t]})^{-1}\operatorname{diag}(\beta_{[t]})=\left(\mathbf{I}-\mathbf{L}_{[t]}+\mathbf{L}_{[t]}^2-\cdots+(-\mathbf{L}_{[t]})^{C-1}\right)\operatorname{diag}(\beta_{[t]}).
 \end{aligned}
 \tag{27}
 ```
 
-- 在作者配套文章 *DeltaNet Explained (Part II)* 的路径解释中，$`-L`$ 记录位置之间的直接依赖，$`(-L)^m`$ 汇总经过 m 条依赖边的贡献。因果关系只允许位置索引递增，最长路径包含 $`C-1`$ 条边，因此有限和已经包含全部间接影响，**不需要截断近似，也不要求 L 的范数小于 1**。实现可对同一系数矩阵求解 BK、BV，或先构造三角逆再做矩阵乘法。三角求解仍需处理块内依赖，但不同 chunk 的系数与右端项可以并行准备，随后状态传递和输出计算主要由矩阵乘法完成；这里的 $`T`$ 已包含 B，使用 $`W=TK`$、$`U=TV`$ 时不再重复乘写入门。
+- 在作者配套文章 *DeltaNet Explained (Part II)* 的路径解释中，$`-\mathbf{L}_{[t]}`$ 记录位置之间的直接依赖，$`(-\mathbf{L}_{[t]})^m`$ 汇总经过 m 条依赖边的贡献。因果关系只允许位置索引递增，最长路径包含 $`C-1`$ 条边，因此有限和已经包含全部间接影响，**不需要截断近似，也不要求 $`\mathbf{L}_{[t]}`$ 的范数小于 1**。实现可对同一系数矩阵求解 $`\operatorname{diag}(\beta_{[t]})\mathbf{K}_{[t]}`$、$`\operatorname{diag}(\beta_{[t]})\mathbf{V}_{[t]}`$，或先构造三角逆再做矩阵乘法。三角求解仍需处理块内依赖，但不同 chunk 的系数与右端项可以并行准备，随后状态传递和输出计算主要由矩阵乘法完成；这里的 $`\mathbf{T}_{[t]}`$ 已包含 $`\operatorname{diag}(\beta_{[t]})`$，使用 $`\mathbf{W}_{[t]}=\mathbf{T}_{[t]}\mathbf{K}_{[t]}`$、$`\mathbf{U}_{[t]}=\mathbf{T}_{[t]}\mathbf{V}_{[t]}`$ 时不再重复乘写入门。
 
-**回到状态更新时，真正替代线性注意力中 V 的是有效写入 $`E=U-WS_{\mathrm{in}}^{\top}`$。** U 给出当前块从零状态出发的写入，$`WS_{\mathrm{in}}^{\top}`$ 扣除入口记忆对这些 key 的已有预测；W 因而负责入口状态修正，K 继续承担写入地址和查询匹配。利用三角求解对右端项的线性性，可以将两组解合并为
+**回到状态更新时，真正替代线性注意力中 V 的是有效写入 $`\mathbf{U}_{[t]}-\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}`$。** U 给出当前块从零状态出发的写入，$`\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}`$ 扣除入口记忆对这些 key 的已有预测；W 因而负责入口状态修正，K 继续承担写入地址和查询匹配。利用三角求解对右端项的线性性，可以将两组解合并为
 
 ```math
 \begin{aligned}
-E&=U-WS_{\mathrm{in}}^{\top}=(I+L)^{-1}B\left(V-KS_{\mathrm{in}}^{\top}\right),\\
-S_{\mathrm{out}}&=S_{\mathrm{in}}+E^{\top}K,\\
-O&=QS_{\mathrm{in}}^{\top}+(QK^{\top}\odot M)E.
+\mathbf{U}_{[t]}-\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}&=(\mathbf{I}+\mathbf{L}_{[t]})^{-1}\operatorname{diag}(\beta_{[t]})\left(\mathbf{V}_{[t]}-\mathbf{K}_{[t]}\mathbf{S}_{[t]}^{\top}\right),\\
+\mathbf{S}_{[t+1]}&=\mathbf{S}_{[t]}+\left(\mathbf{U}_{[t]}-\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}\right)^{\top}\mathbf{K}_{[t]},\\
+\mathbf{O}_{[t]}&=\mathbf{Q}_{[t]}\mathbf{S}_{[t]}^{\top}+(\mathbf{Q}_{[t]}\mathbf{K}_{[t]}^{\top}\odot \mathbf{M})\left(\mathbf{U}_{[t]}-\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}\right).
 \end{aligned}
 \tag{28}
 ```
 
-- 当入口状态为零时，E 就是 U；存在历史状态时，两者之间的修正必须保留。**分别预计算 W、U 的价值在于它们只依赖当前块的 K、V 与写入门，可以在不同 chunk 上并行准备。** 等入口状态到达后，只需计算 $`WS_{\mathrm{in}}^{\top}`$ 即可得到 E。若直接求解式（28）的合并右端项，则需要先获得入口状态，跨块依赖会进入准备阶段。
+- 当入口状态为零时，有效写入就是 U；存在历史状态时，两者之间的修正必须保留。**分别预计算 W、U 的价值在于它们只依赖当前块的 K、V 与写入门，可以在不同 chunk 上并行准备。** 等入口状态到达后，只需计算 $`\mathbf{W}_{[t]}\mathbf{S}_{[t]}^{\top}`$ 即可得到有效写入。若直接求解式（28）的合并右端项，则需要先获得入口状态，跨块依赖会进入准备阶段。
 
-**GDN 沿用同一三角系统结构，并将衰减加入依赖系数与入口状态项。** 用式（6）的 $`\Gamma`$ 加权块内 key 的相互作用，并记 $`D_{\gamma}=\operatorname{diag}(\gamma_1,\ldots,\gamma_C)`$，前文准备的 `v_beta`、`k_beta` 与 `pairwise_decay` 对应
+**GDN 沿用同一三角系统结构，并将衰减加入依赖系数与入口状态项。** 用式（6）的 $`\Gamma_{[t]}`$ 加权块内 key 的相互作用，将块内累计衰减排成对角矩阵 $`\operatorname{diag}(\gamma_{[t]}^1,\ldots,\gamma_{[t]}^C)`$，前文准备的 `v_beta`、`k_beta` 与 `pairwise_decay` 对应
 
 ```math
-\left[I+\operatorname{tril}\left((BKK^{\top})\odot\Gamma,-1\right)\right]
-\begin{bmatrix}\overleftarrow W&\widetilde U\end{bmatrix}
-=\begin{bmatrix}D_{\gamma}BK&BV\end{bmatrix}.
+\left[\mathbf{I}+\operatorname{tril}\left((\operatorname{diag}(\beta_{[t]})\mathbf{K}_{[t]}\mathbf{K}_{[t]}^{\top})\odot\Gamma_{[t]},-1\right)\right]
+\begin{bmatrix}\overleftarrow{\mathbf{W}}_{[t]}&\widetilde{\mathbf{U}}_{[t]}\end{bmatrix}
+=\begin{bmatrix}\operatorname{diag}(\gamma_{[t]}^1,\ldots,\gamma_{[t]}^C)\operatorname{diag}(\beta_{[t]})\mathbf{K}_{[t]}&\operatorname{diag}(\beta_{[t]})\mathbf{V}_{[t]}\end{bmatrix}.
 \tag{29}
 ```
 
-- 两组解分别对应源码中的 `k_cumdecay` 与 `new_values`。块内历史写入传播到位置 i 时需要乘 $`\Gamma_{ij}`$，入口状态传播到该位置则需要乘 $`\gamma_i`$，因此衰减同时出现在系统系数和 W 的右端项中。**前面的累计衰减准备最终服务于这一共享三角系统**；得到两组解之后，再减去入口状态的预测，才形成当前块的有效写入。
+- 两组解分别对应源码中的 `k_cumdecay` 与 `new_values`。块内历史写入传播到位置 i 时需要乘 $`(\Gamma_{[t]})_{ij}`$，入口状态传播到该位置则需要乘 $`\gamma_{[t]}^i`$，因此衰减同时出现在系统系数和 W 的右端项中。**前面的累计衰减准备最终服务于这一共享三角系统**；得到两组解之后，再减去入口状态的预测，才形成当前块的有效写入。
