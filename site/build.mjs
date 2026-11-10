@@ -835,6 +835,7 @@ function page({ title, description, route = '', body, type = 'website', pageClas
     URL: `${siteUrl}${route}`, ROOT: '../'.repeat(route.split('/').filter(Boolean).length) || './',
     POSTS_CURRENT: route === '' ? ' aria-current="page"' : '',
     ARCHIVES_CURRENT: route === 'archives/' ? ' aria-current="page"' : '',
+    CONTRIBUTIONS_CURRENT: route === 'keep-digging/' ? ' aria-current="page"' : '',
     PAGE_CLASS: pageClass, TOC_CLASS: hasToc ? 'has-paper-toc' : '', BODY: body,
   };
   let html = template.replace(/\{\{([A-Z_]+)\}\}/g, (_, key) => {
@@ -860,14 +861,42 @@ const contributionList = contributions.projects.map((project) => {
   const query = `is:pr author:${contributions.author} ${project.internalMerge ? 'is:closed' : 'is:merged'}`;
   return `<li class="contribution-item">
     <a class="contribution-project" href="${repository}" target="_blank" rel="noopener noreferrer">
-      <img src="assets/project-icons/${escape(project.icon)}" width="36" height="36" alt="" loading="lazy" decoding="async">
+      <img src="../assets/project-icons/${escape(project.icon)}" width="36" height="36" alt="" loading="lazy" decoding="async">
       <span><strong>${escape(project.name)}</strong><small>${escape(project.repo.split('/')[0])}</small></span>
     </a>
     <a class="contribution-count" href="${repository}/pulls?q=${encodeURIComponent(query)}" target="_blank" rel="noopener noreferrer" aria-label="查看 ${escape(project.name)} 的 ${project.count} 项已合入贡献">
-      <strong>${project.count}${project.internalMerge ? '<sup>*</sup>' : ''}</strong><span>PRs</span>
+      <strong>${project.count}</strong><span>PRs</span>
     </a>
   </li>`;
 }).join('\n');
+
+if (contributions.monthly.reduce((sum, month) => sum + month.count, 0) !== contributionTotal) {
+  throw new Error('Monthly contribution counts do not match the project totals.');
+}
+const chartMax = Math.max(20, Math.ceil(Math.max(...contributions.monthly.map(month => month.count)) / 20) * 20);
+const chartY = (count) => 220 - count / chartMax * 184;
+const chartPoints = contributions.monthly.map((month, index, months) => ({
+  ...month, x: months.length === 1 ? 378 : 56 + index / (months.length - 1) * 644, y: chartY(month.count),
+}));
+const contributionChart = `<figure class="contribution-history" aria-labelledby="contribution-history-heading">
+  <figcaption id="contribution-history-heading">每月合入 PR</figcaption>
+  <svg class="contribution-chart" width="730" height="280" viewBox="0 0 730 280" role="img" aria-labelledby="contribution-chart-title contribution-chart-description">
+    <title id="contribution-chart-title">每月已合入 PR 数量</title>
+    <desc id="contribution-chart-description">${chartPoints.map(month => `${month.month}：${month.count} 个`).join('；')}。</desc>
+    <text class="chart-axis-label" x="56" y="16">PR 数</text>
+    ${Array.from({ length: chartMax / 20 + 1 }, (_, index) => index * 20).map(count => `<g class="chart-tick">
+      <line x1="56" x2="700" y1="${chartY(count)}" y2="${chartY(count)}"/>
+      <text x="42" y="${chartY(count) + 4}" text-anchor="end">${count}</text>
+    </g>`).join('')}
+    <polyline class="chart-line" points="${chartPoints.map(month => `${month.x},${month.y}`).join(' ')}"/>
+    ${chartPoints.map(month => `<g class="chart-point" data-month="${month.month}" data-count="${month.count}">
+      <circle cx="${month.x}" cy="${month.y}" r="4.5"/>
+      <text class="chart-value" x="${month.x}" y="${month.y - 13}" text-anchor="middle">${month.count}</text>
+      <text class="chart-month" x="${month.x}" y="246" text-anchor="middle">${month.month}</text>
+    </g>`).join('')}
+    <text class="chart-axis-label" x="700" y="275" text-anchor="end">月份</text>
+  </svg>
+</figure>`;
 
 const home = page({
   title: 'Blog · 技术笔记', description: '关于模型、论文与源码的技术笔记。', pageClass: 'home-page',
@@ -906,17 +935,15 @@ const home = page({
       </footer>
     </article>`).join('\n')}</div></section>`;
     }).join('\n')}
-  </section>
-  <section class="contributions" id="keep-digging" aria-labelledby="contributions-title">
-    <div class="contributions-heading">
-      <h2 id="contributions-title">Keep Digging</h2>
-      <span>${contributions.projects.length} 个项目 · ${contributionTotal} 项已合入</span>
-    </div>
+  </section>`,
+});
+
+const contributionPage = page({
+  title: 'Keep Digging · Blog', description: '开源项目贡献与每月已合入 PR 统计。', route: 'keep-digging/', pageClass: 'contributions-page',
+  body: `<section class="contributions" aria-labelledby="contributions-title">
+    <div class="contributions-heading"><h1 id="contributions-title">Keep Digging</h1></div>
     <ul class="contribution-list">${contributionList}</ul>
-    <div class="contributions-footnote">
-      <p>* AIMET 的 8 项贡献由维护者内部合并后同步至公开仓库。</p>
-      <time datetime="${escape(contributions.updatedAt)}">更新于 ${escape(contributions.updatedAt)}</time>
-    </div>
+    ${contributionChart}
   </section>`,
 });
 
@@ -942,10 +969,12 @@ const archives = page({
 
 await rm(output, { recursive: true, force: true });
 await mkdir(path.join(output, 'archives'), { recursive: true });
+await mkdir(path.join(output, 'keep-digging'), { recursive: true });
 await mkdir(path.join(output, 'assets'), { recursive: true });
 await writeFile(path.join(output, 'index.html'), home);
 await writeFile(path.join(output, 'assets/search-index.json'), searchIndex);
 await writeFile(path.join(output, 'archives/index.html'), archives);
+await writeFile(path.join(output, 'keep-digging/index.html'), contributionPage);
 for (const post of readingOrder) {
   const categoryPosts = categoryReadingOrders.get(post.category);
   const index = categoryPosts.indexOf(post);
@@ -1016,7 +1045,7 @@ await writeFile(path.join(output, 'assets/licenses/NewCM.txt'),
 await copyFile(path.join(root, 'node_modules/highlight.js/LICENSE'), path.join(output, 'assets/licenses/highlight.js.txt'));
 await writeFile(path.join(output, '.nojekyll'), '');
 await writeFile(path.join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['', 'archives/', ...posts.map((post) => post.route)].map((route) => `<url><loc>${siteUrl}${route}</loc></url>`).join('')}</urlset>\n`);
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['', 'archives/', 'keep-digging/', ...posts.map((post) => post.route)].map((route) => `<url><loc>${siteUrl}${route}</loc></url>`).join('')}</urlset>\n`);
 const rope = posts.find((post) => post.slug === 'rope');
 await mkdir(path.join(output, 'rope'), { recursive: true });
 await copyFile(path.join(root, rope.file), path.join(output, rope.route, 'rope.md'));
