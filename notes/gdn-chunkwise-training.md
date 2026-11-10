@@ -1,6 +1,13 @@
 # GDN Chunkwise Training
 
-Gated DeltaNet 在进入 chunk 计算之前，需要先把 `hidden_states` 转换为读写记忆的 QKV，以及控制记忆更新与衰减的门控量。这一部分沿着 Qwen3.5 的输入处理流程，说明这些变量如何生成；代码取自 Transformers [2026-11-04 版本的 `Qwen3_5GatedDeltaNet.forward`](https://github.com/huggingface/transformers/blob/fd3cf0140de03f7619ac95b5cfed05b711ff9e22/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L535)，以 128-token 输入对应的多 token 分支为例。
+# Input Projections and Gating
+
+Gated DeltaNet 在进入 chunk 计算之前，需要先把 `hidden_states` 转换为读写记忆的 QKV，以及控制记忆更新与衰减的门控量。这一部分沿着 [Qwen3.5 的输入处理流程](https://github.com/huggingface/transformers/blob/fd3cf0140de03f7619ac95b5cfed05b711ff9e22/src/transformers/models/qwen3_5/modeling_qwen3_5.py#L535)，说明这些变量如何生成。
+
+<figure class="lake-figure">
+  <img src="../../assets/gdn-architecture.png" alt="Gated DeltaNet 论文 Figure 1：左侧为 H1、H2 混合模型结构，右侧为本节对应的 token mixer，展示 QKV、衰减门、更新门和输出门" width="2058" height="1122">
+  <figcaption>Gated DeltaNet 模型结构，右侧为本节对应的 token mixer。来源：Yang et al., <a href="https://arxiv.org/html/2412.06464v2#S3.F1">Figure 1</a>（<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>）。</figcaption>
+</figure>
 
 输入先按 mask 将 padding 位置置零，再经过四个独立投影：`mixed_qkv` 用于构造 QKV，`z` 控制最终输出，`b`、`a` 分别生成更新强度和衰减。若传入缓存，还会读取短卷积的历史输入 `conv_state`，以及保存历史记忆矩阵的 `recurrent_state`。
 
