@@ -514,7 +514,7 @@ else:
 蓝色箭头由累计衰减定义：
 
 ```math
-{\color{blue}\overleftarrow{\boldsymbol q}_{[t]}^r}=\gamma_{[t]}^r\boldsymbol q_{[t]}^r,\qquad {\color{blue}\overleftarrow{\mathbf w}_{[t]}^r}=\gamma_{[t]}^r\mathbf w_{[t]}^r,\qquad {\color{blue}\overrightarrow{\boldsymbol k}_{[t]}^r}=\frac{\gamma_{[t]}^C}{\gamma_{[t]}^r}\boldsymbol k_{[t]}^r,\qquad {\color{blue}\overrightarrow{\mathbf S}_{[t]}}=\gamma_{[t]}^C\mathbf S_{[t]}.
+{\color{blue}\overleftarrow{\boldsymbol q}_{[t]}^r}=\gamma_{[t]}^r\boldsymbol q_{[t]}^r,\qquad {\color{blue}\overleftarrow{\mathbf W}_{[t]}}=\operatorname{diag}(\gamma_{[t]})\mathbf W_{[t]},\qquad {\color{blue}\overrightarrow{\boldsymbol k}_{[t]}^r}=\frac{\gamma_{[t]}^C}{\gamma_{[t]}^r}\boldsymbol k_{[t]}^r,\qquad {\color{blue}\overrightarrow{\mathbf S}_{[t]}}=\gamma_{[t]}^C\mathbf S_{[t]}.
 \tag{43}
 ```
 
