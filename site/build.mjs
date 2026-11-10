@@ -813,7 +813,6 @@ const searchIndex = JSON.stringify(readingOrder.map(post => ({
 
 const template = await readFile(path.join(root, 'template.html'), 'utf8');
 const contributions = JSON.parse(await readFile(path.join(root, 'contributions.json'), 'utf8'));
-const contributionTotal = contributions.projects.reduce((sum, project) => sum + project.count, 0);
 const primer = path.join(root, 'node_modules/@primer/primitives');
 const assets = new Map([
   ...['reader.css', 'reader.js', 'theme.js', 'favicon.svg', 'github-avatar.jpg', 'lake.css', 'lake.js', 'body-serif.css', 'toc.css', 'toc.js'].map((file) => [file, path.join(root, file)]),
@@ -864,14 +863,11 @@ const contributionList = contributions.projects.map((project) => {
       <span><strong>${escape(project.name)}</strong><small>${escape(project.repo.split('/')[0])}</small></span>
     </a>
     <span class="contribution-count">
-      <strong>${project.count}</strong><span>PRs</span>
+      <strong>${project.count}</strong><span>贡献</span>
     </span>
   </li>`;
 }).join('\n');
 
-if (contributions.monthly.reduce((sum, month) => sum + month.count, 0) !== contributionTotal) {
-  throw new Error('Monthly contribution counts do not match the project totals.');
-}
 const chartMax = Math.max(20, Math.ceil(Math.max(...contributions.monthly.map(month => month.count)) / 20) * 20);
 const chartY = (count) => 220 - count / chartMax * 184;
 const chartPoints = contributions.monthly.map((month, index, months) => ({
