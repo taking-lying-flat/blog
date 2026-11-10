@@ -80,43 +80,17 @@ if self.num_v_heads // self.num_k_heads > 1:
     key = key.repeat_interleave(self.num_v_heads // self.num_k_heads, dim=2)
 ```
 
-对单个 head，衰减因子 $`\alpha_t`$ 控制历史状态的整体保留比例，更新强度 $`\beta_t`$ 控制沿当前 key 方向的旧关联消除与新关联写入；key 的范数因此直接影响状态更新的尺度。源码缓存采用状态矩阵的转置布局，gated delta rule 及其状态维度为
+对单个 head，衰减因子 $`\alpha_t`$ 控制历史状态的整体保留比例，更新强度 $`\beta_t`$ 控制沿当前 key 方向的旧关联消除与新关联写入；key 的范数因此直接影响状态更新的尺度。其状态更新为
 
 ```math
-\begin{gathered}
-\mathbf{S}_t
-=\mathbf{S}_{t-1}\left(\alpha_t\left(\mathbf{I}
--\beta_t\boldsymbol{k}_t\boldsymbol{k}_t^{\intercal}\right)\right)
-+\beta_t\boldsymbol{v}_t\boldsymbol{k}_t^{\intercal},\\[4pt]
-\mathbf{S}_t\in\mathbb{R}^{d_v\times d_k},\qquad
-\mathbf{S}_t^{\intercal}\in\mathbb{R}^{d_k\times d_v}.
-\end{gathered}\tag{3}
+\mathbf{S}_t=\mathbf{S}_{t-1}\left(\alpha_t\left(\mathbf{I}-\beta_t\boldsymbol{k}_t\boldsymbol{k}_t^{\intercal}\right)\right)+\beta_t\boldsymbol{v}_t\boldsymbol{k}_t^{\intercal}\in\mathbb{R}^{d_v\times d_k}.\tag{3}
 ```
 
 # Normalization and Chunkwise Decay
 
-`torch_chunk_gated_delta_rule` 按 head 独立组织序列计算，并在这条 PyTorch 路径中使用 FP32，以减小归一化、衰减累计与状态更新中的舍入误差。Q/K 的归一化仅作用于各自的特征维，不混合不同 token 或 head 的信息。
-
-`l2norm` 使 Q/K 的相互作用主要由特征方向决定，减少上游投影幅值变化对关联匹配的干扰。对 key，它使沿当前方向的擦除比例主要受写入门控制；对 query，它约束查询向量对记忆读出的放大作用。正则项 $`\varepsilon`$ 则使零向量及极小幅值输入附近的映射保持有定义且连续：
-
-```math
-\operatorname{L2Norm}_{\varepsilon}(\boldsymbol{x})
-=\frac{\boldsymbol{x}}{\sqrt{\sum_{r=1}^{d_k}x_r^2+\varepsilon}},
-\qquad
-\boldsymbol{q}_t=\frac{\widehat{\boldsymbol{q}}_t}{\sqrt{d_k}},
-\qquad \varepsilon=10^{-6}.
-\tag{4}
-```
-
-L2 归一化约束 Q/K 的向量范数，额外的 $`d_k^{-1/2}`$ 只缩放 query 的读出幅度。结合式（3），归一化使 $`\|\boldsymbol{k}_t\|_2\leq1`$，从而 $`\mathbf{I}-\beta_t\boldsymbol{k}_t\boldsymbol{k}_t^\intercal`$ 沿 key 方向的特征值为 $`1-\beta_t\|\boldsymbol{k}_t\|_2^2`$，位于 $`[0,1]`$；它约束历史状态变换的增益，不限制每一步新写入的大小。随后按默认 $`C=64`$ 划分 chunk，并预先计算逐 token 加权的 $`\beta K`$ 与 $`\beta V`$。长度 $`T=128`$ 对应两个完整 chunk；不能整除时，仅在序列末尾补齐计算位置。
-
-`v_beta` 是后续三角求解的右端项；`k_beta` 用于构造三角系统，并在乘累计衰减后构成另一右端项。内部补齐位置的 $`\beta=0`$、$`g=0`$ 分别意味着不写入与不衰减，因此不会继续改变历史状态。
+`torch_chunk_gated_delta_rule` 按 head 独立组织序列计算，并使用 FP32 减小归一化、衰减累计与状态更新中的舍入误差。
 
 ```python
-def l2norm(x, dim=-1, eps=1e-6):
-    inv_norm = torch.rsqrt((x * x).sum(dim=dim, keepdim=True) + eps)
-    return x * inv_norm
-
 initial_dtype = query.dtype
 batch_size, sequence_length, _, k_head_dim = key.shape
 num_v_heads, v_head_dim = value.shape[-2:]
@@ -127,12 +101,36 @@ query, key, value, beta, decay = [
     x.transpose(1, 2).to(torch.float32, memory_format=torch.contiguous_format)
     for x in (query, key, value, beta, decay)
 ]
+```
+
+L2 归一化减少投影幅值变化对 Q/K 匹配的干扰。它约束 key 方向上的擦除增益，并限制 query 对记忆读出的放大作用；$`\varepsilon`$ 保证近零输入处的映射有定义且连续，额外的 $`d_k^{-1/2}`$ 仅缩放 query。
+
+```math
+\operatorname{L2Norm}_{\varepsilon}(\boldsymbol{x})
+=\frac{\boldsymbol{x}}{\sqrt{\sum_{r=1}^{d_k}x_r^2+\varepsilon}},
+\qquad
+\boldsymbol{q}_t=\frac{\widehat{\boldsymbol{q}}_t}{\sqrt{d_k}},
+\qquad \varepsilon=10^{-6}.
+\tag{4}
+```
+
+结合式（3），$`\|\boldsymbol{k}_t\|_2\leq1`$ 使状态变换沿 key 方向的特征值 $`1-\beta_t\|\boldsymbol{k}_t\|_2^2`$ 位于 $`[0,1]`$；这一约束作用于历史状态的保留，不限制当前 value 的写入幅度。
+
+```python
+def l2norm(x, dim=-1, eps=1e-6):
+    inv_norm = torch.rsqrt((x * x).sum(dim=dim, keepdim=True) + eps)
+    return x * inv_norm
+
 if use_qk_l2norm_in_kernel:
     query = l2norm(query, dim=-1, eps=1e-6)
     key = l2norm(key, dim=-1, eps=1e-6)
 scaling = query.shape[-1] ** -0.5
 query = query * scaling
+```
 
+随后按 $`C=64`$ 分块，预先生成后续三角系统所需的 $`\beta K`$ 与 $`\beta V`$。序列尾部的补齐位置取 $`\beta=0`$、$`g=0`$，对应不写入与不衰减，保证补齐操作不改变有效序列结束处的状态。
+
+```python
 pad_size = (chunk_size - sequence_length % chunk_size) % chunk_size
 query, key, value = (F.pad(x, (0, 0, 0, pad_size)) for x in (query, key, value))
 beta, decay = (F.pad(x, (0, pad_size)) for x in (beta, decay))
@@ -150,7 +148,7 @@ query, key, k_beta, v_beta = [
 decay = decay.reshape(decay.shape[0], decay.shape[1], -1, chunk_size)
 ```
 
-对固定的 batch、head 和 chunk，使用块内下标 $`i=1,\ldots,C`$。论文的累计衰减 $`\gamma_i`$ 与代码中的累计对数衰减 $`G_i`$ 满足
+对固定的 batch、head 和 chunk，使用块内下标 $`i=1,\ldots,C`$。累计衰减 $`\gamma_i`$ 与代码中的累计对数衰减 $`G_i`$ 满足
 
 ```math
 \gamma_i=\prod_{r=1}^{i}\alpha_r,
@@ -160,7 +158,7 @@ G_i=\sum_{r=1}^{i}g_r=\log\gamma_i,
 \tag{5}
 ```
 
-论文的衰减因果矩阵在下三角使用前缀衰减的比值，上三角为零。行 $`i`$ 表示当前读出位置，列 $`j`$ 表示历史写入位置；限制到一个 chunk 后，矩阵为
+衰减因果矩阵在下三角使用前缀衰减的比值，上三角为零。行 $`i`$ 表示当前读出位置，列 $`j`$ 表示历史写入位置；限制到一个 chunk 后，矩阵为
 
 ```math
 \boldsymbol{\Gamma}=
