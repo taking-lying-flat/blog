@@ -160,6 +160,8 @@ G_i=\sum_{r=1}^{i}g_r=\log\gamma_i,
 
 衰减因果矩阵在下三角使用前缀衰减的比值，上三角为零。行 $`i`$ 表示当前读出位置，列 $`j`$ 表示历史写入位置；限制到一个 chunk 后，矩阵为
 
+每个 chunk 独立建立累计衰减的参照点，跨块历史仍通过入口 `recurrent_state` 传递。由于 $`g\leq0`$，下三角差值非正；先把上三角置为 $`-\infty`$ 再取指数，可同时实现因果屏蔽并避免未来位置的正指数溢出。所得 `pairwise_decay` 对应式（6）的 $`\boldsymbol{\Gamma}`$，对角线为 1，上三角为 0。
+
 ```math
 \boldsymbol{\Gamma}=
 \begin{pmatrix}
@@ -181,8 +183,6 @@ G_i=\sum_{r=1}^{i}g_r=\log\gamma_i,
 
 **对数空间把累计连乘变成求和，把前缀积相除变成累计和相减。** $`\gamma_i/\gamma_j`$ 消去写入位置及其之前的公共前缀，只保留从 $`j+1`$ 到 $`i`$ 的衰减；当 $`i=j`$ 时，空乘积为 1。实现直接计算 $`G_i-G_j`$，避免分别生成可能已经下溢的两个前缀积，再进行不稳定的相除。
 
-每个 chunk 独立建立累计衰减的参照点，跨块历史仍通过入口 `recurrent_state` 传递。由于 $`g\leq0`$，下三角差值非正；先把上三角置为 $`-\infty`$ 再取指数，可同时实现因果屏蔽并避免未来位置的正指数溢出。所得 `pairwise_decay` 对应式（6）的 $`\boldsymbol{\Gamma}`$，对角线为 1，上三角为 0。
-
 ```python
 strictly_upper_mask = torch.ones(
     chunk_size, chunk_size, dtype=torch.bool, device=query.device).triu(1)
@@ -191,4 +191,167 @@ cum_decay = decay.cumsum(dim=3)  # 在每个 chunk 内累计
 pairwise_decay = cum_decay.unsqueeze(4) - cum_decay.unsqueeze(3)
 pairwise_decay = pairwise_decay.masked_fill(strictly_upper_mask, float("-inf"))
 pairwise_decay = pairwise_decay.exp()
+```
+
+# Mamba2: Linear Attention with Decay
+
+在不考虑归一化操作以及查询和键的激活函数时，线性 Transformer 可以表述为如下线性递推形式
+
+```math
+S_t=S_{t-1}+v_tk_t^\top\in\mathbb{R}^{d_v\times d_k}, \quad o_t=S_tq_t\in\mathbb{R}^{d_v}
+\tag{7}
+```
+
+其中 $`d_k`$ 和 $`d_v`$ 分别表示查询/键和值的注意力头维度。通过展开上述递推关系，分别得到向量形式和矩阵形式
+
+```math
+\begin{aligned}
+o_t&=\sum_{i=1}^{t}(v_ik_i^\top)q_t =\sum_{i=1}^{t}v_i(k_i^\top q_t)\in\mathbb{R}^{d_v}\\
+O&=(QK^\top\odot M)V\in\mathbb{R}^{L\times d_v}
+\end{aligned}
+\tag{8}
+```
+
+其中 $`L`$ 表示序列长度，$`M`$ 为因果掩码：当 $`i<j`$ 时 $`M_{ij}=0`$；否则 $`M_{ij}=1`$
+
+基础的线性注意力在语言建模任务上的性能远逊于标准 Transformer。为解决这一问题，一种常见做法是引入衰减项，以遗忘历史信息。以 Mamba2 为例，其可以表示为如下线性递推形式
+
+```math
+S_t=\alpha_tS_{t-1}+v_tk_t^\top, \quad o_t=S_tq_t
+\tag{9}
+```
+
+其中 $`\alpha_t\in(0,1)`$ 是一个随时间步 $`t`$ 变化、依赖于输入数据的标量衰减项。定义累积衰减乘积 $`\gamma_j=\prod_{i=1}^{j}\alpha_i`$。通过展开上述递推关系，可以分别得到如下向量形式和矩阵并行形式
+
+```math
+\begin{aligned}
+o_t&=\sum_{i=1}^{t}\frac{\gamma_t}{\gamma_i}v_ik_i^\top q_t =\sum_{i=1}^{t}v_i\left(\frac{\gamma_t}{\gamma_i}k_i^\top q_t\right)\\
+O&=\bigl((QK^\top)\odot\Gamma\bigr)V.
+\end{aligned}
+\tag{10}
+```
+
+```math
+\Gamma_{ij}= \begin{cases} \frac{\gamma_i}{\gamma_j}, & i\ge j\\ 0, & i<j \end{cases}
+\tag{11}
+```
+
+$`\Gamma`$ 是一个考虑衰减效应的因果掩码。上述并行形式与递推形式之间的等价关系也被称为状态空间对偶性
+
+类似的递推结构还出现在 Gated RFA、xLSTM 和 Gated RetNet 等多种架构中。当 $`\gamma_t`$ 与输入数据无关时，该形式可退化为 RetNet 和 Lightning Attention
+
+为实现硬件友好的线性时间训练，通常采用分块并行形式。分块并行方法将输入和输出划分为若干大小为 $`C`$ 的分块，并依据前一个分块的最终状态以及当前分块的查询、键和值矩阵计算当前分块的输出
+
+定义 $`Q_{[t]}=[q_{tC+1},\ldots,q_{(t+1)C}]^\top`$ 为第 $`t`$ 个分块的查询矩阵，并定义 $`q_{[t]}^r:=q_{tC+r}`$ 为第 $`t`$ 个分块内的第 $`r`$ 个查询向量。第 $`t`$ 个分块的初始状态定义为 $`S_{[t]}:=S_{[t]}^0=S_{[t-1]}^C`$。先对无衰减的线性注意力递推进行部分展开，可以得到
+
+```math
+\begin{aligned}
+S_{[t]}^r &=S_{[t]}+\sum_{i=1}^{r}v_{[t]}^i{k_{[t]}^i}^{\top} \in\mathbb{R}^{d_v\times d_k}\\
+o_{[t]}^r &=S_{[t]}^rq_{[t]}^r =S_{[t]}q_{[t]}^r +\sum_{i=1}^{r}v_{[t]}^i \left({k_{[t]}^i}^{\top}q_{[t]}^r\right) \in\mathbb{R}^{d_v}
+\end{aligned}
+\tag{12}
+```
+
+```math
+\begin{aligned}
+S_{[t+1]} &=S_{[t]}+V_{[t]}^\top K_{[t]} \in\mathbb{R}^{d_v\times d_k}\\
+O_{[t]} &=Q_{[t]}S_{[t]}^\top +\bigl(Q_{[t]}K_{[t]}^\top\odot M\bigr)V_{[t]} \in\mathbb{R}^{C\times d_v}
+\end{aligned}
+\tag{13}
+```
+
+其中 $`M`$ 是分块内部的因果掩码。上述方程主要由矩阵乘法运算构成，因此可以充分利用张量核心进行硬件层面的优化。这种分块算法也可以方便地扩展至包含衰减项的线性注意力
+
+```math
+\begin{aligned}
+S_{[t+1]} &=\overrightarrow{S}_{[t]} +V_{[t]}^\top\overrightarrow{K}_{[t]} \in\mathbb{R}^{d_v\times d_k}\\
+O_{[t]} &=\overleftarrow{Q}_{[t]}S_{[t]}^\top +\bigl(Q_{[t]}K_{[t]}^\top\odot\Gamma_{[t]}\bigr)V_{[t]} \in\mathbb{R}^{C\times d_v}.
+\end{aligned}
+\tag{14}
+```
+
+```math
+(\Gamma_{[t]})_{ij} = \begin{cases}\gamma_{[t]}^i/\gamma_{[t]}^j,&i\ge j,\\0,&i<j,\end{cases}\qquad \gamma_{[t]}^j = \prod_{\ell=tC+1}^{tC+j}\alpha_\ell.
+\tag{15}
+```
+
+使用左箭头 $`\overleftarrow{(\,\cdot\,)}`$ 和右箭头 $`\overrightarrow{(\,\cdot\,)}`$，分别表示将变量衰减至每个分块的首位置和末位置
+
+```math
+\begin{aligned}
+{\color{blue}\overleftarrow{\boldsymbol{q}_{[t]}^r}} &= {\color{blue}\gamma_{[t]}^r} \boldsymbol{q}_{[t]}^r && \text{decaying each vector to the first position of chunk } t \\
+{\color{blue}\overrightarrow{\boldsymbol{k}_{[t]}^r}} &= \frac{{\color{blue}\gamma_{[t]}^C}}{{\color{blue}\gamma_{[t]}^r}} \boldsymbol{k}_{[t]}^r && \text{decaying each vector to the last position of chunk } t \\
+{\color{blue}\overrightarrow{\mathbf{S}_{[t]}}} &= {\color{blue}\gamma_{[t]}^C} \mathbf{S}_{[t]} && \text{decaying the state matrix over the entire chunk } t
+\end{aligned}
+\tag{16}
+```
+
+首先将线性注意力及其带衰减形式表示为等价的递推与并行矩阵计算，并进一步通过 chunkwise 将逐 token 串行更新改写为块内少量大规模 GEMM、块间仅传递紧凑状态矩阵 $`S_{[t]}`$，从而在保持线性复杂度和计算等价性的同时充分利用 GPU Tensor Core
+
+# Delta Networks: Linear Attention with Delta Rule
+
+Delta 更新规则会动态擦除与当前输入键 $`k_t`$ 相关联的旧值 $`v_t^{\mathrm{old}}`$，写入新值 $`v_t^{\mathrm{new}}`$。新值由当前输入值与旧值根据写入强度 $`\beta_t\in(0,1)`$ 进行线性组合得到
+
+```math
+\begin{aligned} S_t &=S_{t-1} -\underbrace{(S_{t-1}k_t)}_{v_t^{\mathrm{old}}}k_t^\top +\underbrace{\left(\beta_t v_t+(1-\beta_t)S_{t-1}k_t\right)}_{v_t^{\mathrm{new}}}k_t^\top \\ &=S_{t-1}\left(I-\beta_tk_tk_t^\top\right)+\beta_tv_tk_t^\top . \end{aligned}
+\tag{17}
+```
+
+DeltaNet 实现一种以广义 Householder 矩阵 $`I-\beta_tk_tk_t^\top`$ 为状态转移矩阵的一阶线性递推。尽管 DeltaNet 在关联回忆和语言建模任务中表现出色，但由于计算效率较低，其长期以来并未受到广泛关注
+
+将 delta rule 在块内展开，历史状态的传播与当前块的写入分别对应下式中的 $`\mathbf{P}_{[t]}^r`$ 与 $`\mathbf{H}_{[t]}^r`$：
+
+```math
+\begin{aligned}
+\mathbf{S}_{[t]}^r &= \mathbf{S}_{[t]}\mathbf{P}_{[t]}^r+\mathbf{H}_{[t]}^r,\\
+\mathbf{P}_{[t]}^r &= \prod_{i=1}^r\left(\mathbf{I}-\beta_{[t]}^i\boldsymbol{k}_{[t]}^i{\boldsymbol{k}_{[t]}^i}^{\top}\right),\\
+\mathbf{H}_{[t]}^r &= \sum_{i=1}^r\beta_{[t]}^i\boldsymbol{v}_{[t]}^i{\boldsymbol{k}_{[t]}^i}^{\top}\prod_{j=i+1}^r\left(\mathbf{I}-\beta_{[t]}^j\boldsymbol{k}_{[t]}^j{\boldsymbol{k}_{[t]}^j}^{\top}\right).
+\end{aligned}
+\tag{18}
+```
+
+其中 $`P_{[t]}^r`$ 涉及广义 Householder 矩阵的累积乘积，这可以通过经典的 WY 表示法进行优化
+
+```math
+\begin{aligned}
+\mathbf{P}_{[t]}^r &= \mathbf{I} - \sum_{i=1}^r \mathbf{w}_{[t]}^i {\boldsymbol{k}_{[t]}^i}^\top \in \mathbb{R}^{d_k \times d_k}\\
+\mathbf{w}_{[t]}^r &= \beta_{[t]}^r \left( \boldsymbol{k}_{[t]}^r - \sum_{i=1}^{r-1} \left( \mathbf{w}_{[t]}^i ({\boldsymbol{k}_{[t]}^i}^\top \boldsymbol{k}_{[t]}^r) \right) \right) \in \mathbb{R}^{d_k}
+\end{aligned}
+\tag{19}
+```
+
+```math
+\begin{aligned}
+\mathbf{H}_{[t]}^r &= \sum_{i=1}^r \mathbf{u}_{[t]}^i {\boldsymbol{k}_{[t]}^i}^\top \in \mathbb{R}^{d_v \times d_k}\\
+\mathbf{u}_{[t]}^r &= \beta_{[t]}^r \left( \boldsymbol{v}_{[t]}^r - \sum_{i=1}^{r-1} \left( \mathbf{u}_{[t]}^i ({\boldsymbol{k}_{[t]}^i}^\top \boldsymbol{k}_{[t]}^r) \right) \right) \in \mathbb{R}^{d_v}
+\end{aligned}
+\tag{20}
+```
+
+UT 变换将上述向量递推组织为下三角线性系统，从而以矩阵运算共同求出 $`\mathbf W`$ 与 $`\mathbf U`$：
+
+```math
+\begin{aligned}
+\mathbf{P}_{[t]} &= \mathbf{I} - \mathbf{W}_{[t]}^\top \mathbf{K}_{[t]} \in \mathbb{R}^{d_k \times d_k}\\
+\mathbf{H}_{[t]} &= \mathbf{U}_{[t]}^\top \mathbf{K}_{[t]} \in \mathbb{R}^{d_v \times d_k}
+\end{aligned}
+\tag{21}
+```
+
+```math
+\begin{aligned}
+\mathbf{T}_{[t]} &= \left[ \mathbf{I} + \text{strictLower} \left( \text{diag}(\beta_{[t]}) \mathbf{K}_{[t]} \mathbf{K}_{[t]}^\top \right) \right]^{-1} \text{diag} (\beta_{[t]}) \in \mathbb{R}^{C \times C} \\
+\mathbf{W}_{[t]} &= \mathbf{T}_{[t]} \mathbf{K}_{[t]} \in \mathbb{R}^{C \times d_k}, \qquad \mathbf{U}_{[t]} = \mathbf{T}_{[t]} \mathbf{V}_{[t]} \in \mathbb{R}^{C \times d_v}
+\end{aligned}
+\tag{22}
+```
+
+将 WY 表示代回状态更新与读出式，可得以矩阵乘法为主的 DeltaNet 分块算法：
+
+```math
+\begin{aligned}
+\mathbf{S}_{[t+1]} &= \mathbf{S}_{[t]}\mathbf{P}_{[t]} + \mathbf{H}_{[t]} = \mathbf{S}_{[t]} + \left(\mathbf{U}_{[t]} - \mathbf{W}_{[t]}\mathbf{S}_{[t]}^\top \right)^\top \mathbf{K}_{[t]} &&\in \mathbb{R}^{d_v \times d_k} \\
+\mathbf{O}_{[t]} &= \mathbf{Q}_{[t]}\mathbf{S}_{[t]}^\top + \left(\mathbf{Q}_{[t]}\mathbf{K}_{[t]}^\top \odot \mathbf{M} \right) \left(\mathbf{U}_{[t]} - \mathbf{W}_{[t]}\mathbf{S}_{[t]}^\top \right) &&\in \mathbb{R}^{C \times d_v}
+\end{aligned}
+\tag{23}
 ```

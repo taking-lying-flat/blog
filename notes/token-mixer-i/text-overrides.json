@@ -27,5 +27,25 @@
   "u72ce59e8": {
     "from": "1.4 万亿 token",
     "to": "1.4T token"
+  },
+  "ue050ad92": {
+    "from": "𝐆𝐀𝐓𝐄𝐃 𝐃𝐄𝐋𝐓𝐀 𝐍𝐄𝐓𝐖𝐎𝐑𝐊𝐒",
+    "to": "Gated Delta Networks",
+    "reason": "统一 GDN 原文标题大小写"
+  },
+  "u60b0435c": {
+    "from": " 𝐌𝐀𝐌𝐁𝐀𝟐: 𝐋𝐈𝐍𝐄𝐀𝐑 𝐀𝐓𝐓𝐄𝐍𝐓𝐈𝐎𝐍 𝐖𝐈𝐓𝐇 𝐃𝐄𝐂𝐀𝐘",
+    "to": " Mamba2: Linear Attention with Decay",
+    "reason": "统一 GDN 原文标题大小写"
+  },
+  "u599f93ed": {
+    "from": " 𝐃𝐄𝐋𝐓𝐀 𝐍𝐄𝐓𝐖𝐎𝐑𝐊𝐒: 𝐋𝐈𝐍𝐄𝐀𝐑 𝐀𝐓𝐓𝐄𝐍𝐓𝐈𝐎𝐍 𝐖𝐈𝐓𝐇 𝐃𝐄𝐋𝐓𝐀 𝐑𝐔𝐋𝐄",
+    "to": " Delta Networks: Linear Attention with Delta Rule",
+    "reason": "统一 GDN 原文标题大小写"
+  },
+  "u853cc558": {
+    "from": " 𝐆𝐀𝐓𝐄𝐃 𝐃𝐄𝐋𝐓𝐀 𝐍𝐄𝐓𝐖𝐎𝐑𝐊𝐒",
+    "to": " Gated Delta Networks",
+    "reason": "统一 GDN 原文标题大小写"
   }
 }
