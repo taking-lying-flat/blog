@@ -302,7 +302,7 @@ S_t=S_{t-1}+\beta_t(v_t-S_{t-1}k_t)k_t^{\top}=S_{t-1}(I-\beta_t k_t k_t^{\top})+
 \tag{20}
 ```
 
-- **UT 变换：将 W、U 的递推依赖组织为共享系数的下三角线性系统。** 系统系数由块内 key 的 Gram 矩阵与写入门构成，两个右端项分别为 $`\operatorname{diag}(\beta)K`$ 与 $`\operatorname{diag}(\beta)V`$。式（22）以 $`T`$ 表示同一求解算子，使 W、U 可通过块级三角求解和矩阵乘法共同计算；逆矩阵是代数记号，实现无需显式构造一般矩阵的逆。**WY 给出紧凑表示，UT 给出计算该表示的块级方法**
+- **UT 变换：将 W、U 的递推依赖组织为共享系数的下三角线性系统。** 系统系数由块内 key 的 Gram 矩阵与写入门构成，两个右端项分别为 $`\operatorname{diag}(\beta)K`$ 与 $`\operatorname{diag}(\beta)V`$。式（22）以 $`T`$ 表示同一求解算子，使 W、U 可通过块级三角求解和矩阵乘法共同计算；逆矩阵是代数记号，实现无需显式构造一般矩阵的逆。<strong style="color: var(--fgColor-danger)">WY 给出紧凑表示，UT 给出计算该表示的块级方法</strong>
 
 ```math
 \mathbf{P}_{[t]} = \mathbf{I} - \mathbf{W}_{[t]}^\top \mathbf{K}_{[t]} \in \mathbb{R}^{d_k \times d_k}, \qquad \mathbf{H}_{[t]} = \mathbf{U}_{[t]}^\top \mathbf{K}_{[t]} \in \mathbb{R}^{d_v \times d_k}
@@ -331,61 +331,35 @@ S_t=S_{t-1}+\beta_t(v_t-S_{t-1}k_t)k_t^{\top}=S_{t-1}(I-\beta_t k_t k_t^{\top})+
 \tag{25}
 ```
 
-# 🐧 WY Representation: Appendix B.1
+# 🐧 WY Representation
 
-*Parallelizing Linear Transformers with the Delta Rule over Sequence Length* 的完整会议版在附录 **B Method Continued** 中分别证明 WY 表示与 UT 变换。B.1 处理的障碍是：DeltaNet 的写入依赖此前状态，直接沿序列并行展开会产生逐位置的二维中间矩阵。WY 利用每次更新的秩一结构，将这些累计变换表示为向量外积之和，使分块计算只需传递块边界状态，并保存各位置的向量系数。
+*Parallelizing Linear Transformers with the Delta Rule over Sequence Length* 附录 B.1 利用秩一更新证明 WY 表示：<strong style="color: var(--fgColor-danger)">用向量外积和表示累计变换，避免逐位置物化二维矩阵。</strong>
 
-**先证明入口状态的累计变换。** 当 $`r=1`$ 时，取 $`\mathbf{w}_{[t]}^1=\beta_{[t]}^1\boldsymbol{k}_{[t]}^1`$，式（19）成立。假设它对 $`r-1`$ 成立，按附录 B.1 依次代入归纳假设、展开乘积，再合并以当前 key 为右因子的项：
+当 $`r=1`$ 时，$`\mathbf{w}_{[t]}^1=\beta_{[t]}^1\boldsymbol{k}_{[t]}^1`$。假设式（19）对 $`r-1`$ 成立，将第 r 个更新因子右乘到累计变换上：
 
 ```math
 \begin{aligned}
-\mathbf{P}_{[t]}^r
-&=\mathbf{P}_{[t]}^{r-1}\left(\mathbf I-\beta_{[t]}^r\boldsymbol{k}_{[t]}^r{\boldsymbol{k}_{[t]}^r}^{\top}\right)\\
-&=\left(\mathbf I-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right)
-  \left(\mathbf I-\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\right)\\
-&=\mathbf I-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}
-  -\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\\
-&\quad+\beta_{[t]}^r\sum_{i=1}^{r-1}\mathbf w_{[t]}^i
-  \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right){\boldsymbol k_{[t]}^r}^{\top}\\
-&=\mathbf I-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}
-  -\underbrace{\beta_{[t]}^r\left(\boldsymbol k_{[t]}^r-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i
-  \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right)\right)}_{\mathbf w_{[t]}^r}{\boldsymbol k_{[t]}^r}^{\top}\\
-&=\mathbf I-\sum_{i=1}^{r}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}.
+\mathbf{P}_{[t]}^r &=\mathbf{P}_{[t]}^{r-1}\left(\mathbf I-\beta_{[t]}^r\boldsymbol{k}_{[t]}^r{\boldsymbol{k}_{[t]}^r}^{\top}\right) =\left(\mathbf I-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right) \left(\mathbf I-\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\right)\\
+&=\mathbf I-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top} -\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top} +\beta_{[t]}^r\sum_{i=1}^{r-1}\mathbf w_{[t]}^i \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right){\boldsymbol k_{[t]}^r}^{\top}\\
+&=\mathbf I-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top} -\underbrace{\beta_{[t]}^r\left(\boldsymbol k_{[t]}^r-\sum_{i=1}^{r-1}\mathbf w_{[t]}^i \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right)\right)}_{\mathbf w_{[t]}^r}{\boldsymbol k_{[t]}^r}^{\top} =\mathbf I-\sum_{i=1}^{r}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}.
 \end{aligned}
 \tag{26}
 ```
 
-- 归纳过程中没有交换矩阵乘法的顺序。此前所有更新对当前 key 的影响进入 $`\mathbf w_{[t]}^r`$，因此外积和仍保留原有序乘积的结果。这正是式（19）中 w 递推的来源。
-
-**块内写入项使用相同的归纳方法。** B.1 对零初态状态的证明，对应前文式（18）的 $`\mathbf H_{[t]}^r`$。从 $`\mathbf u_{[t]}^1=\beta_{[t]}^1\boldsymbol v_{[t]}^1`$ 出发，假设 $`\mathbf H_{[t]}^{r-1}=\sum_{i<r}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}`$，则
+合并以当前 key 为右因子的项，得到式（19）的 w 递推，乘法顺序保持不变。块内写入项同理：从 $`\mathbf u_{[t]}^1=\beta_{[t]}^1\boldsymbol v_{[t]}^1`$ 出发，代入 $`\mathbf H_{[t]}^{r-1}=\sum_{i<r}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}`$，有
 
 ```math
 \begin{aligned}
-\mathbf H_{[t]}^r
-&=\mathbf H_{[t]}^{r-1}\left(\mathbf I-\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\right)
-  +\beta_{[t]}^r\boldsymbol v_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\\
-&=\left(\sum_{i=1}^{r-1}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right)
-  \left(\mathbf I-\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\right)
-  +\beta_{[t]}^r\boldsymbol v_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\\
-&=\sum_{i=1}^{r-1}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}
-  -\beta_{[t]}^r\sum_{i=1}^{r-1}\mathbf u_{[t]}^i
-  \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right){\boldsymbol k_{[t]}^r}^{\top}
-  +\beta_{[t]}^r\boldsymbol v_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\\
-&=\sum_{i=1}^{r-1}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}
-  +\underbrace{\beta_{[t]}^r\left(\boldsymbol v_{[t]}^r-\sum_{i=1}^{r-1}\mathbf u_{[t]}^i
-  \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right)\right)}_{\mathbf u_{[t]}^r}{\boldsymbol k_{[t]}^r}^{\top}\\
-&=\sum_{i=1}^{r}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}.
+\mathbf H_{[t]}^r &=\mathbf H_{[t]}^{r-1}\left(\mathbf I-\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\right) +\beta_{[t]}^r\boldsymbol v_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top} =\left(\sum_{i=1}^{r-1}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right) \left(\mathbf I-\beta_{[t]}^r\boldsymbol k_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\right) +\beta_{[t]}^r\boldsymbol v_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\\
+&=\sum_{i=1}^{r-1}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top} -\beta_{[t]}^r\sum_{i=1}^{r-1}\mathbf u_{[t]}^i \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right){\boldsymbol k_{[t]}^r}^{\top} +\beta_{[t]}^r\boldsymbol v_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\\
+&=\sum_{i=1}^{r-1}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top} +\underbrace{\beta_{[t]}^r\left(\boldsymbol v_{[t]}^r-\sum_{i=1}^{r-1}\mathbf u_{[t]}^i \left({\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right)\right)}_{\mathbf u_{[t]}^r}{\boldsymbol k_{[t]}^r}^{\top} =\sum_{i=1}^{r}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}.
 \end{aligned}
 \tag{27}
 ```
 
-- 两个归纳证明同时给出式（19）、（20）的表示与构造方法：$`\mathbf W_{[t]}`$ 表示本块对入口状态的累计修改，$`\mathbf U_{[t]}`$ 表示本块自身的累计写入。它们使式（24）、（25）可以使用矩阵乘法，但系数向量的构造仍依赖先前位置，尚未解决块内计算的串行性。
+# 🐢 UT Transform
 
-# 🐢 UT Transform: Appendix B.2
-
-**UT 处理的是 W、U 的构造依赖。** 正文 §3.2 指出，WY 的向量递推按原形式执行时无法直接利用 Tensor Core。附录 B.2 因而从同一递推逐行整理出下三角系统，使系数构造能够使用三角求解与矩阵乘法。以下保留附录的逐行表达、系数定义和移项步骤。
-
-W、U 的第 r 行分别是 $`{\mathbf w_{[t]}^r}^{\top}`$、$`{\mathbf u_{[t]}^r}^{\top}`$。将式（19）、（20）的向量递推写成行形式，得到 B.2 的起点：
+WY 的系数仍按 token 递推，无法直接利用 Tensor Core。<strong style="color: var(--fgColor-danger)">UT 将 W、U 的递推整理为同一个三角系统的两组右端项。</strong> 附录 B.2 从式（19）、（20）的行形式出发：
 
 ```math
 \begin{aligned}
@@ -401,7 +375,7 @@ W、U 的第 r 行分别是 $`{\mathbf w_{[t]}^r}^{\top}`$、$`{\mathbf u_{[t]}^
 \tag{28}
 ```
 
-附录定义的两个矩阵为
+令 $`\mathbf B_{[t]}`$ 收集写入门，$`\mathbf L_{[t]}`$ 收集对先前位置的依赖系数：
 
 ```math
 \mathbf B_{[t]}=\operatorname{diag}(\beta_{[t]}),\qquad
@@ -409,20 +383,14 @@ W、U 的第 r 行分别是 $`{\mathbf w_{[t]}^r}^{\top}`$、$`{\mathbf u_{[t]}^
 \tag{29}
 ```
 
-**下三角矩阵恰好收集递推中每个先前位置的系数。** 它的第 r 行、第 i 列在 $`i<r`$ 时为 $`\beta_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\boldsymbol k_{[t]}^i`$，其余位置为零。内积为标量，可以交换两个 key 的次序，因此
+当 $`i<r`$ 时，$`(\mathbf L_{[t]})_{ri}=\beta_{[t]}^r{\boldsymbol k_{[t]}^r}^{\top}\boldsymbol k_{[t]}^i`$，其余元素为零。利用内积的对称性，矩阵乘积的第 r 行恰好还原递推中的求和项：
 
 ```math
-\begin{aligned}
-(\mathbf L_{[t]}\mathbf W_{[t]})[r,:]
-&=\sum_{i=1}^{r-1}\beta_{[t]}^r
- \left(\mathbf K_{[t]}[r,:]\mathbf K_{[t]}[i,:]^{\top}\right)\mathbf W_{[t]}[i,:]\\
-&=\beta_{[t]}^r\sum_{i=1}^{r-1}\mathbf W_{[t]}[i,:]
- \left(\mathbf K_{[t]}[i,:]\mathbf K_{[t]}[r,:]^{\top}\right).
-\end{aligned}
+(\mathbf L_{[t]}\mathbf W_{[t]})[r,:] =\sum_{i=1}^{r-1}\beta_{[t]}^r \left(\mathbf K_{[t]}[r,:]\mathbf K_{[t]}[i,:]^{\top}\right)\mathbf W_{[t]}[i,:] =\beta_{[t]}^r\sum_{i=1}^{r-1}\mathbf W_{[t]}[i,:] \left(\mathbf K_{[t]}[i,:]\mathbf K_{[t]}[r,:]^{\top}\right).
 \tag{30}
 ```
 
-- 式（30）就是式（28）右侧被减去的求和项。将它移到左侧，并将所有行同时写出，得到附录中的 $`\mathbf W_{[t]}+\mathbf L_{[t]}\mathbf W_{[t]}=\mathbf B_{[t]}\mathbf K_{[t]}`$；对 U 完全相同。两组方程可并列写为
+移项得到 $`\mathbf W_{[t]}+\mathbf L_{[t]}\mathbf W_{[t]}=\mathbf B_{[t]}\mathbf K_{[t]}`$，U 同理。<strong style="color: var(--fgColor-danger)">两组递推共用单位下三角系数矩阵，差别仅在右端输入 K、V：</strong>
 
 ```math
 (\mathbf I+\mathbf L_{[t]})
@@ -432,41 +400,25 @@ W、U 的第 r 行分别是 $`{\mathbf w_{[t]}^r}^{\top}`$、$`{\mathbf u_{[t]}^
 \tag{31}
 ```
 
-**三角求解与递推等价，关键是每一行的方程完全相同。** $`\mathbf I+\mathbf L_{[t]}`$ 的对角线均为 1，第 r 行只依赖此前已经确定的行，因而前向代入得到唯一解。B.2 随后左乘该系数矩阵的逆，得到前文式（22）中的 $`\mathbf T_{[t]}`$：
+<strong style="color: var(--fgColor-danger)">三角求解与递推等价，因为它们逐行求解同一组方程。</strong> $`\mathbf I+\mathbf L_{[t]}`$ 的对角线恒为 1，因而可逆；第 r 行仅依赖前 r−1 行，前向代入给出唯一解。附录 B.2 将共享的求解算子记为 $`\mathbf T_{[t]}`$：
 
 ```math
-\begin{aligned}
-\mathbf T_{[t]}&=(\mathbf I+\mathbf L_{[t]})^{-1}\mathbf B_{[t]},\\
-\mathbf W_{[t]}&=(\mathbf I+\mathbf L_{[t]})^{-1}\mathbf B_{[t]}\mathbf K_{[t]}
- =\mathbf T_{[t]}\mathbf K_{[t]},\\
-\mathbf U_{[t]}&=(\mathbf I+\mathbf L_{[t]})^{-1}\mathbf B_{[t]}\mathbf V_{[t]}
- =\mathbf T_{[t]}\mathbf V_{[t]}.
-\end{aligned}
+\mathbf T_{[t]}=(\mathbf I+\mathbf L_{[t]})^{-1}\mathbf B_{[t]},\qquad \mathbf W_{[t]}=(\mathbf I+\mathbf L_{[t]})^{-1}\mathbf B_{[t]}\mathbf K_{[t]} =\mathbf T_{[t]}\mathbf K_{[t]},\qquad \mathbf U_{[t]}=(\mathbf I+\mathbf L_{[t]})^{-1}\mathbf B_{[t]}\mathbf V_{[t]} =\mathbf T_{[t]}\mathbf V_{[t]}.
 \tag{32}
 ```
 
-- 附录最后一步所说的以 V 替换 K，作用于**右端输入**；系数矩阵仍由 K 与写入门决定。求解 W 是计算入口状态如何被本块修改，求解 U 是计算当前 value 如何形成块内写入。二者共用一个系数矩阵，属于两组右端项；可以分别求解，也可以拼接右端项后一起求解。逆矩阵写法表达其代数解，实际实现可使用前向代入。
-
-**W、U 的作用在代回状态更新时才合在一起。** 正文 §3.2 将 WY 表示代入式（18），逐项整理为
+以 V 替换 K 只改变右端项，系数矩阵仍由 K 与写入门决定。两组右端项可分别或拼接求解，逆矩阵记号不要求实现中显式求逆。将两组解代回式（18）：
 
 ```math
-\begin{aligned}
-\mathbf S_{[t]}^r
-&=\mathbf S_{[t]}\left(\mathbf I-\sum_{i=1}^{r}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right)
- +\sum_{i=1}^{r}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\\
-&=\mathbf S_{[t]}+\sum_{i=1}^{r}
- \left(\mathbf u_{[t]}^i-\mathbf S_{[t]}\mathbf w_{[t]}^i\right){\boldsymbol k_{[t]}^i}^{\top}.
-\end{aligned}
+\mathbf S_{[t]}^r =\mathbf S_{[t]}\left(\mathbf I-\sum_{i=1}^{r}\mathbf w_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top}\right) +\sum_{i=1}^{r}\mathbf u_{[t]}^i{\boldsymbol k_{[t]}^i}^{\top} =\mathbf S_{[t]}+\sum_{i=1}^{r} \left(\mathbf u_{[t]}^i-\mathbf S_{[t]}\mathbf w_{[t]}^i\right){\boldsymbol k_{[t]}^i}^{\top}.
 \tag{33}
 ```
 
-- $`\mathbf u_{[t]}^i`$ 表示当前块从零状态出发的写入系数，$`\mathbf S_{[t]}\mathbf w_{[t]}^i`$ 表示本块从入口记忆中消除的对应分量。两者之差才是实际叠加到状态中的增量。按行堆叠后，它正是式（24）、（25）共同使用的 $`\mathbf U_{[t]}-\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$，既决定块末状态，也决定块内输出。
-
-- 分别准备 W、U，使两组系数都只依赖当前块的 K、V 与写入门，可以在不同 chunk 上并行计算。入口状态到达后，再计算上述修正。如果只保留 U，非零入口状态中的旧关联就不会经历本块应有的消除；若将入口状态提前合并到右端项，系数准备又会依赖前一个 chunk。**两组求解将块内系数计算与跨块状态传递分开。**
+U 表示当前块从零状态出发的写入系数，$`\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$ 表示入口记忆中需要消除的分量。<strong style="color: var(--fgColor-danger)">有效写入是两者之差，省去 W 就会遗漏对旧关联的纠正。</strong> W、U 只依赖当前块输入，因此可跨 chunk 并行准备；入口状态到达后，再计算 $`\mathbf U_{[t]}-\mathbf W_{[t]}\mathbf S_{[t]}^{\top}`$。若提前将入口状态合入右端项，三角求解便重新依赖前一个 chunk。
 
 # 🦦 UT Construction and Triangular Solves
 
-接下来进入 `torch_chunk_gated_delta_rule` 的块内求解。GDN §3.3 将 WY 系数扩展到带衰减的更新：历史写入从位置 i 传播到位置 r 时乘 $`\gamma_{[t]}^r/\gamma_{[t]}^i`$。该节给出的 value 系数递推为
+GDN §3.3 在依赖系数中加入位置 i 到 r 的累计衰减 $`\gamma_{[t]}^r/\gamma_{[t]}^i`$，得到
 
 ```math
 \widetilde{\mathbf u}_{[t]}^r
@@ -477,16 +429,14 @@ W、U 的第 r 行分别是 $`{\mathbf w_{[t]}^r}^{\top}`$、$`{\mathbf u_{[t]}^
 \tag{34}
 ```
 
-- 这一递推的归纳证明见 *Gated Delta Networks: Improving Mamba2 with Delta Rule* 附录 A：将此前的衰减外积和代入单步更新，再用 $`\alpha_{[t]}^r\gamma_{[t]}^{r-1}=\gamma_{[t]}^r`$ 合并系数，即可得到当前的 $`\widetilde{\mathbf u}_{[t]}^r`$。相较式（28），变化在于先前位置的系数增加累计衰减比值，因此三角系统的严格下三角部分相应加入 $`\Gamma_{[t]}`$。
-
-本段源码需要得到两组系数，入口状态留到下一步使用：
+*Gated Delta Networks: Improving Mamba2 with Delta Rule* 附录 A 沿用上述归纳，并以 $`\alpha_{[t]}^r\gamma_{[t]}^{r-1}=\gamma_{[t]}^r`$ 合并衰减系数。`torch_chunk_gated_delta_rule` 对应的两组解为：
 
 | 源码结果 | 对应的量 | 在状态更新中的作用 |
 | --- | --- | --- |
 | `new_values` | $`\widetilde{\mathbf U}_{[t]}`$ | 表示已计入块内纠正与衰减关系的 value 系数 |
 | `k_cumdecay` | $`\overleftarrow{\mathbf W}_{[t]}`$ | 作用于入口状态，计算需要扣除的历史关联分量 |
 
-**系统系数、块内读出权重与入口衰减分别准备。** `ut_system` 的严格下三角部分编码式（34）的历史依赖；`intra_chunk_attn` 保存当前 Q/K 之间带衰减的因果读出权重，留供后续输出计算；`decayed_k_beta` 则将入口状态传播到各位置所需的累计衰减乘入第二组右端项。`intra_chunk_attn` 在此处已经生成，后面对 `query`、`key` 的重新赋值不会改变它。
+`ut_system` 的严格下三角部分编码式（34）的历史依赖；`intra_chunk_attn` 保存带衰减的因果读出权重；`decayed_k_beta` 将入口状态到各位置的累计衰减乘入第二组右端项。
 
 ```python
 # ut_system/intra_chunk_attn: [B, H, num_chunks, chunk_size, chunk_size]
@@ -496,7 +446,7 @@ intra_chunk_attn = (query @ key.transpose(-1, -2)) * pairwise_decay
 decayed_k_beta = k_beta * cum_decay.exp().unsqueeze(-1)
 ```
 
-**第一组右端项是 `v_beta`。** 对式（34）移项并堆叠各行，GDN §3.3 给出的 UT 形式为
+第一组右端项为 `v_beta`，式（34）的矩阵解为
 
 ```math
 \widetilde{\mathbf U}_{[t]}
@@ -507,32 +457,23 @@ decayed_k_beta = k_beta * cum_decay.exp().unsqueeze(-1)
 \tag{35}
 ```
 
-- 常规执行分支直接求解该系统。`upper=False` 选择下三角，`unitriangular=True` 将对角线视为 1，并忽略 `ut_system` 中原有的对角元素。因此实际系数矩阵是 $`\mathbf I+\operatorname{strictLower}(\texttt{ut\_system})`$，无需显式加单位矩阵或构造一般矩阵的逆。所得 `new_values` 已处理当前块内部的更新依赖，尚未使用入口递推状态。
+`upper=False` 选择下三角，`unitriangular=True` 忽略原对角元素并将其视为 1，故实际系数矩阵为 $`\mathbf I+\operatorname{strictLower}(\texttt{ut\_system})`$。求解直接得到 `new_values`，无需显式构造逆矩阵。
 
 ```python
-new_values = torch.linalg.solve_triangular(
-    ut_system, v_beta, upper=False, unitriangular=True)
+new_values = torch.linalg.solve_triangular(ut_system, v_beta, upper=False, unitriangular=True)
 ```
 
-**第二组右端项是 `decayed_k_beta`，使用相同的系统系数。** GDN §3.3 定义 $`\overleftarrow{\mathbf w}_{[t]}^r=\gamma_{[t]}^r\mathbf w_{[t]}^r`$。将前文式（19）的 w 递推乘以 $`\gamma_{[t]}^r`$，并把历史项写回带箭头的系数，得到
+第二组解使用 GDN §3.3 的定义 $`\overleftarrow{\mathbf w}_{[t]}^r=\gamma_{[t]}^r\mathbf w_{[t]}^r`$。将式（19）乘以 $`\gamma_{[t]}^r`$ 并代入该定义：
 
 ```math
-\begin{aligned}
-\overleftarrow{\mathbf w}_{[t]}^r
-&=\gamma_{[t]}^r\mathbf w_{[t]}^r\\
-&=\beta_{[t]}^r\gamma_{[t]}^r\boldsymbol k_{[t]}^r
--\beta_{[t]}^r\sum_{i=1}^{r-1}\overleftarrow{\mathbf w}_{[t]}^i
-\left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i}
-{\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right).
-\end{aligned}
+\overleftarrow{\mathbf w}_{[t]}^r =\gamma_{[t]}^r\mathbf w_{[t]}^r =\beta_{[t]}^r\gamma_{[t]}^r\boldsymbol k_{[t]}^r -\beta_{[t]}^r\sum_{i=1}^{r-1}\overleftarrow{\mathbf w}_{[t]}^i \left(\frac{\gamma_{[t]}^r}{\gamma_{[t]}^i} {\boldsymbol k_{[t]}^i}^{\top}\boldsymbol k_{[t]}^r\right).
 \tag{36}
 ```
 
-- 式（34）、（36）对历史位置的依赖系数相同，区别仅在右端：前者是 $`\beta_{[t]}^r\boldsymbol v_{[t]}^r`$，后者是 $`\beta_{[t]}^r\gamma_{[t]}^r\boldsymbol k_{[t]}^r`$。这说明第二次调用可以复用 `ut_system`，而 `k_cumdecay` 的额外累计衰减必须保留：它描述入口记忆传播到当前写入位置时的影响。
+<strong style="color: var(--fgColor-danger)">式（34）、（36）共用系数矩阵</strong>，右端分别为 $`\beta_{[t]}^r\boldsymbol v_{[t]}^r`$ 与 $`\beta_{[t]}^r\gamma_{[t]}^r\boldsymbol k_{[t]}^r`$。第二次求解因此复用 `ut_system`，并以 `decayed_k_beta` 为右端项；其中的累计衰减描述入口记忆传播到当前位置时的影响。
 
 ```python
-k_cumdecay = torch.linalg.solve_triangular(
-    ut_system, decayed_k_beta, upper=False, unitriangular=True)
+k_cumdecay = torch.linalg.solve_triangular(ut_system, decayed_k_beta, upper=False, unitriangular=True)
 ```
 
-两次求解完成后，各 chunk 的 $`\widetilde{\mathbf U}_{[t]}`$ 与 $`\overleftarrow{\mathbf W}_{[t]}`$ 均已准备好。下一步才引入入口状态，以 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$ 形成 `v_new`，用于块内输出和块末状态更新。
+两组解均不依赖入口状态；后续以 $`\widetilde{\mathbf U}_{[t]}-\overleftarrow{\mathbf W}_{[t]}\mathbf S_{[t]}^{\top}`$ 形成 `v_new`，用于输出和状态更新。
