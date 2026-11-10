@@ -17,20 +17,61 @@
     {
       "name": "unsloth",
       "repo": "unslothai/unsloth",
-      "count": 31,
-      "icon": "unslothai.png"
+      "count": 36,
+      "icon": "unslothai.png",
+      "coauthoredPrs": [
+        {
+          "number": 11016,
+          "mergedAt": "2026-10-02T14:27:46Z",
+          "commit": "9f85f534e1b7af8827cbf67b63847dc880f9840e"
+        },
+        {
+          "number": 12112,
+          "mergedAt": "2026-09-28T05:54:22Z",
+          "commit": "379f14a8d8311bebf92d59ecbdcb807788f18fca"
+        },
+        {
+          "number": 15308,
+          "mergedAt": "2026-10-26T04:33:46Z",
+          "commit": "553c7e4f460c601ce2046ac1ec90d19e5abed2e5"
+        },
+        {
+          "number": 15328,
+          "mergedAt": "2026-10-26T07:01:19Z",
+          "commit": "6176ae627492fcd47e2dfc6e3cf203633214b40c"
+        },
+        {
+          "number": 15704,
+          "mergedAt": "2026-10-28T09:16:22Z",
+          "commit": "4b97780c21f5284825a20acebe77d779c05d8a86"
+        }
+      ]
     },
     {
       "name": "Flash Linear Attention",
       "repo": "fla-org/flash-linear-attention",
-      "count": 28,
-      "icon": "fla-org.png"
+      "count": 29,
+      "icon": "fla-org.png",
+      "coauthoredPrs": [
+        {
+          "number": 1435,
+          "mergedAt": "2026-10-16T13:54:11Z",
+          "commit": "c12db31575ad9e5d80214bfe3938671321e60c47"
+        }
+      ]
     },
     {
       "name": "unsloth-zoo",
       "repo": "unslothai/unsloth-zoo",
-      "count": 28,
-      "icon": "unslothai.png"
+      "count": 29,
+      "icon": "unslothai.png",
+      "coauthoredPrs": [
+        {
+          "number": 2059,
+          "mergedAt": "2026-10-24T14:15:52Z",
+          "commit": "fe3075487dd1fcbdffecaa4f432fb409fcdc42a6"
+        }
+      ]
     },
     {
       "name": "FreeToken",
@@ -127,11 +168,11 @@
     },
     {
       "month": "2026-09",
-      "count": 82
+      "count": 83
     },
     {
       "month": "2026-10",
-      "count": 78
+      "count": 84
     },
     {
       "month": "2026-11",

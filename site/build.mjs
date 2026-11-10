@@ -858,15 +858,14 @@ const ambientGutters = (kind) => ['left', 'right'].map((side, sideIndex) => {
 
 const contributionList = contributions.projects.map((project) => {
   const repository = `https://github.com/${project.repo}`;
-  const query = `is:pr author:${contributions.author} ${project.internalMerge ? 'is:closed' : 'is:merged'}`;
   return `<li class="contribution-item">
     <a class="contribution-project" href="${repository}" target="_blank" rel="noopener noreferrer">
       <img src="../assets/project-icons/${escape(project.icon)}" width="36" height="36" alt="" loading="lazy" decoding="async">
       <span><strong>${escape(project.name)}</strong><small>${escape(project.repo.split('/')[0])}</small></span>
     </a>
-    <a class="contribution-count" href="${repository}/pulls?q=${encodeURIComponent(query)}" target="_blank" rel="noopener noreferrer" aria-label="查看 ${escape(project.name)} 的 ${project.count} 项已合入贡献">
+    <span class="contribution-count">
       <strong>${project.count}</strong><span>PRs</span>
-    </a>
+    </span>
   </li>`;
 }).join('\n');
 

@@ -326,7 +326,6 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
 .contribution-count { display: flex; flex: none; align-items: baseline; gap: 5px; padding: 6px 0 6px 6px; text-decoration: none; }
 .contribution-count strong { font: 500 19px/1.4 var(--mono); font-variant-numeric: tabular-nums; }
 .contribution-count > span { color: var(--muted); font: 11px var(--mono); }
-.contribution-count:hover { color: var(--accent); }
 .contribution-history { margin: 30px 0 0; }
 .contribution-history figcaption { margin-bottom: 18px; font-size: 16px; font-weight: 600; }
 .contribution-chart { display: block; color: var(--ink); font: 12px var(--mono); }
