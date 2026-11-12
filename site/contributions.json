@@ -105,7 +105,8 @@
     {
       "name": "Transformers",
       "repo": "huggingface/transformers",
-      "count": 6,
+      "count": 7,
+      "countSource": "merged-pull-requests",
       "icon": "huggingface.png"
     },
     {
