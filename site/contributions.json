@@ -1,6 +1,6 @@
 {
   "author": "taking-lying-flat",
-  "updatedAt": "2026-11-10",
+  "updatedAt": "2026-11-12",
   "projects": [
     {
       "name": "ms-swift",
@@ -103,6 +103,12 @@
       ]
     },
     {
+      "name": "Transformers",
+      "repo": "huggingface/transformers",
+      "count": 6,
+      "icon": "huggingface.png"
+    },
+    {
       "name": "mcore-bridge",
       "repo": "modelscope/mcore-bridge",
       "count": 4,
@@ -119,12 +125,6 @@
       "repo": "deepspeedai/DeepSpeed",
       "count": 3,
       "icon": "deepspeedai.png"
-    },
-    {
-      "name": "Transformers",
-      "repo": "huggingface/transformers",
-      "count": 3,
-      "icon": "huggingface.png"
     },
     {
       "name": "Model Optimizer",
@@ -176,7 +176,7 @@
     },
     {
       "month": "2026-11",
-      "count": 9
+      "count": 10
     }
   ],
   "projectCountSource": "github-contributors",
