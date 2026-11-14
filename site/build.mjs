@@ -816,6 +816,7 @@ const assets = new Map([
   ...['reader.css', 'reader.js', 'theme.js', 'favicon.svg', 'github-avatar.jpg', 'lake.css', 'lake.js', 'body-serif.css', 'toc.css', 'toc.js'].map((file) => [file, path.join(root, file)]),
   ['garden-background.png', path.join(root, 'illustrations/garden-background.png')],
   ['starry-background.png', path.join(root, 'illustrations/starry-background.png')],
+  ['keep-digging-landscape.png', path.join(root, 'illustrations/keep-digging-landscape.png')],
   ['anime-readers.png', path.join(root, 'illustrations/anime-readers.png')],
   ['gdn-architecture.png', path.join(root, 'illustrations/gdn-architecture.png')],
   ['gdn-chunk-parallel.png', path.join(root, 'illustrations/gdn-chunk-parallel.png')],
@@ -931,7 +932,10 @@ const home = page({
 const contributionPage = page({
   title: 'Keep Digging · Blog', description: '开源项目贡献与每月已合入 PR 统计。', route: 'keep-digging/', pageClass: 'contributions-page',
   body: `<section class="contributions" aria-labelledby="contributions-title">
-    <div class="contributions-heading"><h1 id="contributions-title">Keep Digging</h1></div>
+    <div class="contributions-heading">
+      <svg class="contributions-branch" viewBox="0 0 44 44" aria-hidden="true"><path d="M12 32V12m0 12c12 0 20-3 20-12"/><circle cx="12" cy="9" r="4"/><circle cx="12" cy="35" r="4"/><circle cx="32" cy="9" r="4"/></svg>
+      <h1 id="contributions-title">Keep Digging</h1>
+    </div>
     <ul class="contribution-list">${contributionList}</ul>
     ${contributionChart}
   </section>`,

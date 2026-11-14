@@ -313,39 +313,32 @@ h1 { margin: 0; font-size: 36px; font-weight: 700; letter-spacing: -.02em; }
   .post-entry:hover .entry-arrow { transform: translateX(3px); }
 }
 .home-page-shell .site-footer { max-width: 828px; font-size: 11px; }
-.contributions-page-shell { isolation: isolate; }
-.contributions-page-shell::before, .contributions-page-shell::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; }
-.contributions-page-shell::before {
-  background:
-    radial-gradient(ellipse at 4% 16%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 43%),
-    radial-gradient(ellipse at 96% 76%, color-mix(in srgb, #36b8a0 14%, transparent), transparent 42%),
-    linear-gradient(135deg, var(--surface), var(--page) 38%, var(--page) 62%, var(--surface));
-}
-.contributions-page-shell::after {
-  background: radial-gradient(color-mix(in srgb, var(--ink) 18%, transparent) .7px, transparent .9px) 0 0 / 24px 24px;
-  mask-image: linear-gradient(to right, #000, transparent 27%, transparent 73%, #000);
-}
-.contributions { margin-top: 18px; }
-.contributions-heading { margin-bottom: 30px; }
-.contributions-heading h1 { margin: 0; font-size: 28px; font-weight: 700; line-height: 38px; }
+.contributions-page-shell { isolation: isolate; --contribution-accent: color-mix(in srgb, var(--accent) 38%, #5a815e); background: color-mix(in srgb, var(--page) 94%, #d3bd8b); }
+.contributions-page-shell::before { content: ""; position: fixed; inset: 76px 0 0; z-index: -1; pointer-events: none; background: url("keep-digging-landscape.png") center / 100% 100% no-repeat; opacity: .8; mask-image: linear-gradient(to right, #000, #000 9%, transparent 24%, transparent 76%, #000 91%, #000); }
+.contributions-page-shell .site-header { background: color-mix(in srgb, var(--page) 90%, #d3bd8b); }
+.contributions { margin-top: 20px; }
+.contributions-heading { display: flex; align-items: center; gap: 18px; margin-bottom: 36px; }
+.contributions-heading h1 { margin: 0; font-size: 28px; font-weight: 700; line-height: 38px; letter-spacing: -.025em; }
+.contributions-branch { width: 44px; height: 44px; flex: none; color: var(--contribution-accent); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.contributions-branch circle { fill: var(--page); }
 .contribution-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 52px; margin: 0; padding: 0; list-style: none; }
-.contribution-item { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-width: 0; padding: 18px 0; border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent); }
+.contribution-item { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-width: 0; padding: 18px 0; border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
 .contribution-project { display: flex; align-items: center; gap: 14px; min-width: 0; text-decoration: none; }
 .contribution-project img { flex: none; width: 40px; height: 40px; border-radius: 10px; object-fit: contain; background: #fff; }
 .contribution-project > span { min-width: 0; }
 .contribution-project strong { display: block; font-size: 14px; font-weight: 600; }
 .contribution-project small { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
-.contribution-project:hover strong { color: var(--accent); text-decoration: underline; }
+.contribution-project:hover strong { color: var(--contribution-accent); text-decoration: underline; }
 .contribution-count { display: flex; flex: none; align-items: baseline; gap: 5px; padding: 6px 0 6px 6px; text-decoration: none; }
-.contribution-count strong { color: var(--accent); font: 500 20px/1.4 var(--mono); font-variant-numeric: tabular-nums; }
+.contribution-count strong { color: var(--contribution-accent); font: 500 20px/1.4 var(--mono); font-variant-numeric: tabular-nums; }
 .contribution-count > span { color: var(--muted); font: 11px var(--mono); }
 .contribution-history { margin: 48px 0 0; }
 .contribution-chart { display: block; margin-inline: auto; color: var(--ink); font: 12px var(--mono); }
 .contribution-chart text { fill: currentColor; }
 .contribution-chart .chart-tick { color: var(--muted); }
 .contribution-chart .chart-tick line { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 5; }
-.contribution-chart .chart-line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
-.contribution-chart .chart-point circle { fill: var(--page); stroke: var(--accent); stroke-width: 2; }
+.contribution-chart .chart-line { fill: none; stroke: var(--contribution-accent); stroke-width: 2.5; stroke-linejoin: round; }
+.contribution-chart .chart-point circle { fill: var(--page); stroke: var(--contribution-accent); stroke-width: 2; }
 .contribution-chart .chart-value { font-weight: 500; }
 .contribution-chart .chart-month { fill: var(--muted); }
 .page-header { margin: 22px 0 40px; }
