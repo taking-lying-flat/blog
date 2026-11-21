@@ -2,6 +2,15 @@ import type { ArticleEntry } from './src/catalog.ts';
 
 const posts: ArticleEntry[] = [
   {
+    file: "../papers/deterministic-inference/lakes/0a7e80609f5e7703ef550e7fa9176684.lake",
+    slug: "deterministic-inference",
+    category: "infra",
+    categoryOrder: 10,
+    date: "2026-11-21",
+    description: "确定性推理笔记：浮点归约顺序、批次不变性与张量并行规模，以及通过树形矩阵乘法和集合通信对齐训练与推理",
+    tags: ["Deterministic Inference", "Tensor Parallelism", "TBIK"],
+  },
+  {
     file: "../papers/policy-optimization/lakes/e739c38b834bf72d8025d5e577c63b3a.lake",
     slug: "policy-insights",
     category: "policy",
