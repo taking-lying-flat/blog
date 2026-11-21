@@ -2,7 +2,7 @@ import type { ArticleEntry } from './src/catalog.ts';
 
 const posts: ArticleEntry[] = [
   {
-    file: "../papers/deterministic-inference/lakes/cd2abd0082dde94cffc3e870d3b6e0d3.lake",
+    file: "../papers/deterministic-inference/lakes/1c8643fa4ad166a717b86616e8f4c709.lake",
     slug: "deterministic-inference",
     category: "infra",
     categoryOrder: 10,
