@@ -1,0 +1,359 @@
+<!doctype lake><title>Cross-Entropy</title><meta name="reading-minutes" content="27"><section class="lake-revised-section">
+<h1 id="-binary-logistic-regression-binary-cross-entropy-loss">🦊 Binary logistic regression, binary cross-entropy loss</h1>
+<p>考虑包含 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-404%22%2C%22code%22%3A%22m%22%7D"></card> 个样本的二分类数据集，第 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-405%22%2C%22code%22%3A%22i%22%7D"></card> 个样本的输入为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-406%22%2C%22code%22%3A%22x%5E%7B(i)%7D%22%7D"></card>，标签为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-407%22%2C%22code%22%3A%22y%5E%7B(i)%7D%5C%5Cin%5C%5C%7B0%2C1%5C%5C%7D%22%7D"></card>。模型通过 logistic 函数将得分映射为类别概率</p>
+<div class="equation" tabindex="0" role="math" aria-label="\hat y^{(i)}=h\!\left(f(x^{(i)};\theta)\right)
+=\frac{1}{1+e^{-f(x^{(i)};\theta)}}.\tag{1}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-408%22%2C%22code%22%3A%22%5C%5Chat%20y%5E%7B(i)%7D%3Dh%5C%5C!%5C%5Cleft(f(x%5E%7B(i)%7D%3B%5C%5Ctheta)%5C%5Cright)%5Cn%3D%5C%5Cfrac%7B1%7D%7B1%2Be%5E%7B-f(x%5E%7B(i)%7D%3B%5C%5Ctheta)%7D%7D.%5C%5Ctag%7B1%7D%5Cn%22%7D"></card></div>
+<p>其中，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-409%22%2C%22code%22%3A%22f(x%3B%5C%5Ctheta)%22%7D"></card> 为参数化得分函数，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-410%22%2C%22code%22%3A%22%5C%5Ctheta%22%7D"></card> 为模型参数，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-411%22%2C%22code%22%3A%22h%22%7D"></card> 为 logistic 函数；式 (1) 对应 PyTorch 的 <code>torch.sigmoid(model(x))</code>。输出 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-412%22%2C%22code%22%3A%22%5C%5Chat%20y%5E%7B(i)%7D%22%7D"></card> 表示给定输入时标签取 1 的概率，相应的伯努利条件分布为</p>
+<div class="equation" tabindex="0" role="math" aria-label="P(y^{(i)}=1\mid x^{(i)};\theta)=\hat y^{(i)},\qquad P(y^{(i)}=0\mid x^{(i)};\theta)=1-\hat y^{(i)}.\tag{2}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-413%22%2C%22code%22%3A%22P(y%5E%7B(i)%7D%3D1%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%3D%5C%5Chat%20y%5E%7B(i)%7D%2C%5C%5Cqquad%20P(y%5E%7B(i)%7D%3D0%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%3D1-%5C%5Chat%20y%5E%7B(i)%7D.%5C%5Ctag%7B2%7D%5Cn%22%7D"></card></div>
+<div class="equation" tabindex="0" role="math" aria-label="P(y^{(i)}\mid x^{(i)};\theta)
+=\bigl(\hat y^{(i)}\bigr)^{y^{(i)}}
+\bigl(1-\hat y^{(i)}\bigr)^{1-y^{(i)}}
+=\begin{cases}
+\hat y^{(i)},&amp;y^{(i)}=1,\\
+1-\hat y^{(i)},&amp;y^{(i)}=0.
+\end{cases}
+\tag{3}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-414%22%2C%22code%22%3A%22P(y%5E%7B(i)%7D%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%5Cn%3D%5C%5Cbigl(%5C%5Chat%20y%5E%7B(i)%7D%5C%5Cbigr)%5E%7By%5E%7B(i)%7D%7D%5Cn%5C%5Cbigl(1-%5C%5Chat%20y%5E%7B(i)%7D%5C%5Cbigr)%5E%7B1-y%5E%7B(i)%7D%7D%5Cn%3D%5C%5Cbegin%7Bcases%7D%5Cn%5C%5Chat%20y%5E%7B(i)%7D%2C%26y%5E%7B(i)%7D%3D1%2C%5C%5C%5C%5C%5Cn1-%5C%5Chat%20y%5E%7B(i)%7D%2C%26y%5E%7B(i)%7D%3D0.%5Cn%5C%5Cend%7Bcases%7D%5Cn%5C%5Ctag%7B3%7D%5Cn%22%7D"></card></div>
+<p>最大似然估计通过最大化观测标签的联合条件概率确定参数 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-415%22%2C%22code%22%3A%22%5C%5Ctheta%22%7D"></card>。给定输入后，若各样本的标签条件独立，则数据集 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-416%22%2C%22code%22%3A%22X%2Cy%22%7D"></card> 的似然函数为</p>
+<div class="equation" tabindex="0" role="math" aria-label="\mathcal L(\theta;X,y)
+=\prod_{i=1}^{m}P(y^{(i)}\mid x^{(i)};\theta)=\prod_{i=1}^{m}
+\bigl(\hat y^{(i)}\bigr)^{y^{(i)}}
+\bigl(1-\hat y^{(i)}\bigr)^{1-y^{(i)}}.
+\tag{4}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-417%22%2C%22code%22%3A%22%5C%5Cmathcal%20L(%5C%5Ctheta%3BX%2Cy)%5Cn%3D%5C%5Cprod_%7Bi%3D1%7D%5E%7Bm%7DP(y%5E%7B(i)%7D%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%3D%5C%5Cprod_%7Bi%3D1%7D%5E%7Bm%7D%5Cn%5C%5Cbigl(%5C%5Chat%20y%5E%7B(i)%7D%5C%5Cbigr)%5E%7By%5E%7B(i)%7D%7D%5Cn%5C%5Cbigl(1-%5C%5Chat%20y%5E%7B(i)%7D%5C%5Cbigr)%5E%7B1-y%5E%7B(i)%7D%7D.%5Cn%5C%5Ctag%7B4%7D%5Cn%22%7D"></card></div>
+<div class="equation" tabindex="0" role="math" aria-label="\theta_{\mathrm{MLE}}
+=\underset{\theta}{\operatorname{argmax}}\,
+\mathcal L(\theta;X,y).\tag{5}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-418%22%2C%22code%22%3A%22%5C%5Ctheta_%7B%5C%5Cmathrm%7BMLE%7D%7D%5Cn%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmax%7D%7D%5C%5C%2C%5Cn%5C%5Cmathcal%20L(%5C%5Ctheta%3BX%2Cy).%5C%5Ctag%7B5%7D%5Cn%22%7D"></card></div>
+<p>对数函数在正数域上严格递增，因此<strong>最大化似然与最大化对数似然具有相同的最优解</strong></p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+\ell(\theta)
+&amp;=\log\mathcal L(\theta)
+=\log\prod_{i=1}^{m}
+\bigl(\hat y^{(i)}\bigr)^{y^{(i)}}
+\bigl(1-\hat y^{(i)}\bigr)^{1-y^{(i)}} =\sum_{i=1}^{m}\log\left[
+\bigl(\hat y^{(i)}\bigr)^{y^{(i)}}
+\bigl(1-\hat y^{(i)}\bigr)^{1-y^{(i)}}\right]\\[4pt]
+&amp;=\sum_{i=1}^{m}\left[
+y^{(i)}\log\hat y^{(i)}
++(1-y^{(i)})\log(1-\hat y^{(i)})\right].
+\end{aligned}\tag{6}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-419%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%5C%5Cell(%5C%5Ctheta)%5Cn%26%3D%5C%5Clog%5C%5Cmathcal%20L(%5C%5Ctheta)%5Cn%3D%5C%5Clog%5C%5Cprod_%7Bi%3D1%7D%5E%7Bm%7D%5Cn%5C%5Cbigl(%5C%5Chat%20y%5E%7B(i)%7D%5C%5Cbigr)%5E%7By%5E%7B(i)%7D%7D%5Cn%5C%5Cbigl(1-%5C%5Chat%20y%5E%7B(i)%7D%5C%5Cbigr)%5E%7B1-y%5E%7B(i)%7D%7D%20%3D%5C%5Csum_%7Bi%3D1%7D%5E%7Bm%7D%5C%5Clog%5C%5Cleft%5B%5Cn%5C%5Cbigl(%5C%5Chat%20y%5E%7B(i)%7D%5C%5Cbigr)%5E%7By%5E%7B(i)%7D%7D%5Cn%5C%5Cbigl(1-%5C%5Chat%20y%5E%7B(i)%7D%5C%5Cbigr)%5E%7B1-y%5E%7B(i)%7D%7D%5C%5Cright%5D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%3D%5C%5Csum_%7Bi%3D1%7D%5E%7Bm%7D%5C%5Cleft%5B%5Cny%5E%7B(i)%7D%5C%5Clog%5C%5Chat%20y%5E%7B(i)%7D%5Cn%2B(1-y%5E%7B(i)%7D)%5C%5Clog(1-%5C%5Chat%20y%5E%7B(i)%7D)%5C%5Cright%5D.%5Cn%5C%5Cend%7Baligned%7D%5C%5Ctag%7B6%7D%5Cn%22%7D"></card></div>
+<p><strong style="color: #1d5ea6">负对数似然即为按样本求和的二元交叉熵损失</strong></p>
+<div class="equation" tabindex="0" role="math" aria-label="J(\theta)=-\ell(\theta)
+=-\sum_{i=1}^{m}\left[
+y^{(i)}\log\hat y^{(i)}
++(1-y^{(i)})\log(1-\hat y^{(i)})\right].\tag{7}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-420%22%2C%22code%22%3A%22J(%5C%5Ctheta)%3D-%5C%5Cell(%5C%5Ctheta)%5Cn%3D-%5C%5Csum_%7Bi%3D1%7D%5E%7Bm%7D%5C%5Cleft%5B%5Cny%5E%7B(i)%7D%5C%5Clog%5C%5Chat%20y%5E%7B(i)%7D%5Cn%2B(1-y%5E%7B(i)%7D)%5C%5Clog(1-%5C%5Chat%20y%5E%7B(i)%7D)%5C%5Cright%5D.%5C%5Ctag%7B7%7D%5Cn%22%7D"></card></div>
+<p>多分类任务的标签空间包含 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-421%22%2C%22code%22%3A%22C%22%7D"></card> 个类别，自回归语言建模则在词表 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-422%22%2C%22code%22%3A%22V%22%7D"></card> 上估计下一 token 的条件概率 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-423%22%2C%22code%22%3A%22P(w_i%5C%5Cmid%20x)%22%7D"></card>。记各类别得分为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-424%22%2C%22code%22%3A%22f_j(x%3B%5C%5Ctheta_j)%22%7D"></card>。类别概率之和必须为 1，对各类别独立应用 sigmoid 无法保证这一约束；softmax 将得分向量 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-425%22%2C%22code%22%3A%22t%3D(t_1%2C%5C%5Cldots%2Ct_C)%22%7D"></card> 归一化为概率向量</p>
+<div class="equation" tabindex="0" role="math" aria-label="\operatorname{softmax}(t_1,\ldots,t_C)
+=\left[
+\frac{e^{t_1}}{\sum_{j=1}^{C}e^{t_j}},\ldots,
+\frac{e^{t_C}}{\sum_{j=1}^{C}e^{t_j}}
+\right]^{\mathsf T}.\tag{8}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-426%22%2C%22code%22%3A%22%5C%5Coperatorname%7Bsoftmax%7D(t_1%2C%5C%5Cldots%2Ct_C)%5Cn%3D%5C%5Cleft%5B%5Cn%5C%5Cfrac%7Be%5E%7Bt_1%7D%7D%7B%5C%5Csum_%7Bj%3D1%7D%5E%7BC%7De%5E%7Bt_j%7D%7D%2C%5C%5Cldots%2C%5Cn%5C%5Cfrac%7Be%5E%7Bt_C%7D%7D%7B%5C%5Csum_%7Bj%3D1%7D%5E%7BC%7De%5E%7Bt_j%7D%7D%5Cn%5C%5Cright%5D%5E%7B%5C%5Cmathsf%20T%7D.%5C%5Ctag%7B8%7D%5Cn%22%7D"></card></div>
+<p>当得分均为有限值时，softmax 的各分量严格为正且总和为 1。多分类概率模型及其负对数似然为</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{gathered}
+\hat y^{(i)}
+=\left[\hat P(y^{(i)}=1\mid x^{(i)};\theta),\ldots,
+\hat P(y^{(i)}=C\mid x^{(i)};\theta)\right]^{\mathsf T} =\operatorname{softmax}\!\left(f_1(x^{(i)};\theta_1),\ldots,f_C(x^{(i)};\theta_C)\right)\\[4pt]
+=\left[
+\frac{\exp(f_1(x^{(i)};\theta_1))}{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))},\ldots,
+\frac{\exp(f_C(x^{(i)};\theta_C))}{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))}
+\right]^{\mathsf T}.
+\end{gathered}\tag{9}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-427%22%2C%22code%22%3A%22%5C%5Cbegin%7Bgathered%7D%5Cn%5C%5Chat%20y%5E%7B(i)%7D%5Cn%3D%5C%5Cleft%5B%5C%5Chat%20P(y%5E%7B(i)%7D%3D1%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%2C%5C%5Cldots%2C%5Cn%5C%5Chat%20P(y%5E%7B(i)%7D%3DC%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%5C%5Cright%5D%5E%7B%5C%5Cmathsf%20T%7D%20%3D%5C%5Coperatorname%7Bsoftmax%7D%5C%5C!%5C%5Cleft(f_1(x%5E%7B(i)%7D%3B%5C%5Ctheta_1)%2C%5C%5Cldots%2Cf_C(x%5E%7B(i)%7D%3B%5C%5Ctheta_C)%5C%5Cright)%5C%5C%5C%5C%5B4pt%5D%5Cn%3D%5C%5Cleft%5B%5Cn%5C%5Cfrac%7B%5C%5Cexp(f_1(x%5E%7B(i)%7D%3B%5C%5Ctheta_1))%7D%7B%5C%5Csum_%7Bj%3D1%7D%5E%7BC%7D%5C%5Cexp(f_j(x%5E%7B(i)%7D%3B%5C%5Ctheta_j))%7D%2C%5C%5Cldots%2C%5Cn%5C%5Cfrac%7B%5C%5Cexp(f_C(x%5E%7B(i)%7D%3B%5C%5Ctheta_C))%7D%7B%5C%5Csum_%7Bj%3D1%7D%5E%7BC%7D%5C%5Cexp(f_j(x%5E%7B(i)%7D%3B%5C%5Ctheta_j))%7D%5Cn%5C%5Cright%5D%5E%7B%5C%5Cmathsf%20T%7D.%5Cn%5C%5Cend%7Bgathered%7D%5C%5Ctag%7B9%7D%5Cn%22%7D"></card></div>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+J(\theta)=-\ell(\theta)
+&amp;=-\log\prod_{i=1}^{m}\hat P(y^{(i)}\mid x^{(i)};\theta)
+=-\log\prod_{i=1}^{m}\hat y^{(i)}_{y^{(i)}}\\[4pt]
+&amp;=-\log\prod_{i=1}^{m}
+\operatorname{softmax}\!\left(
+f_1(x^{(i)};\theta_1),\ldots,f_C(x^{(i)};\theta_C)
+\right)_{y^{(i)}} =-\sum_{i=1}^{m}\log
+\frac{\exp(f_{y^{(i)}}(x^{(i)};\theta_{y^{(i)}}))}
+{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))}.
+\end{aligned}\tag{10}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-428%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5CnJ(%5C%5Ctheta)%3D-%5C%5Cell(%5C%5Ctheta)%5Cn%26%3D-%5C%5Clog%5C%5Cprod_%7Bi%3D1%7D%5E%7Bm%7D%5C%5Chat%20P(y%5E%7B(i)%7D%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%5Cn%3D-%5C%5Clog%5C%5Cprod_%7Bi%3D1%7D%5E%7Bm%7D%5C%5Chat%20y%5E%7B(i)%7D_%7By%5E%7B(i)%7D%7D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%3D-%5C%5Clog%5C%5Cprod_%7Bi%3D1%7D%5E%7Bm%7D%5Cn%5C%5Coperatorname%7Bsoftmax%7D%5C%5C!%5C%5Cleft(%5Cnf_1(x%5E%7B(i)%7D%3B%5C%5Ctheta_1)%2C%5C%5Cldots%2Cf_C(x%5E%7B(i)%7D%3B%5C%5Ctheta_C)%5Cn%5C%5Cright)_%7By%5E%7B(i)%7D%7D%20%3D-%5C%5Csum_%7Bi%3D1%7D%5E%7Bm%7D%5C%5Clog%5Cn%5C%5Cfrac%7B%5C%5Cexp(f_%7By%5E%7B(i)%7D%7D(x%5E%7B(i)%7D%3B%5C%5Ctheta_%7By%5E%7B(i)%7D%7D))%7D%5Cn%7B%5C%5Csum_%7Bj%3D1%7D%5E%7BC%7D%5C%5Cexp(f_j(x%5E%7B(i)%7D%3B%5C%5Ctheta_j))%7D.%5Cn%5C%5Cend%7Baligned%7D%5C%5Ctag%7B10%7D%5Cn%22%7D"></card></div>
+<p>神经网络的分类头通常为输出维度等于类别数 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-429%22%2C%22code%22%3A%22C%22%7D"></card> 的线性层，其输出称为 logits，经 softmax 归一化后得到类别概率。式 (10) 给出多分类交叉熵损失。<strong>交叉熵是模型预测概率的负对数在目标分布下的期望</strong>。<strong style="color: #1d5ea6">硬标签监督下，逐样本交叉熵等于观测标签的负对数似然</strong>；自回归语言模型根据前缀预测下一 token，序列负对数似然因而分解为逐 token 损失之和</p>
+<div class="equation" tabindex="0" role="math" aria-label="\mathcal L_{\mathrm{NLL}}(x_{1:T};\theta)
+=-\ln P_\theta(x_{1:T})
+=-\sum_{t=1}^{T}\ln P_\theta(x_t\mid x_{&lt;t}).\tag{11}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-430%22%2C%22code%22%3A%22%5C%5Cmathcal%20L_%7B%5C%5Cmathrm%7BNLL%7D%7D(x_%7B1%3AT%7D%3B%5C%5Ctheta)%5Cn%3D-%5C%5Cln%20P_%5C%5Ctheta(x_%7B1%3AT%7D)%5Cn%3D-%5C%5Csum_%7Bt%3D1%7D%5E%7BT%7D%5C%5Cln%20P_%5C%5Ctheta(x_t%5C%5Cmid%20x_%7B%3Ct%7D).%5C%5Ctag%7B11%7D%5Cn%22%7D"></card></div>
+<p>式 (11) 的每一项是 token 在模型分布下的条件自信息，单位为 nat；除以 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-431%22%2C%22code%22%3A%22%5C%5Cln%202%22%7D"></card> 后，可解释为以 bit 计量的<a href="https://d2l.smola.org/chapter_mdl-information-theory/mdl-coding-compression.html">理想码长</a>。对有效 token 取平均时，损失单位为 nat/token。该码长刻画概率编码代价</p>
+</section><section class="lake-revised-section">
+<h1 id="-entropy-and-cross-entropy-view-equivalence-of-kl-divergence-minimization-and-maximum-likelihood">🐻 Entropy and cross-entropy view, equivalence of KL-divergence minimization and maximum likelihood</h1>
+<p>设离散随机变量 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-432%22%2C%22code%22%3A%22X%22%7D"></card> 服从分布 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-433%22%2C%22code%22%3A%22P_X%22%7D"></card>，其 Shannon 熵定义为</p>
+<div class="equation" tabindex="0" role="math" aria-label="H(P_X)=-\sum_{x\in\mathcal X}P_X(x)\log P_X(x).
+\tag{12}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-434%22%2C%22code%22%3A%22H(P_X)%3D-%5C%5Csum_%7Bx%5C%5Cin%5C%5Cmathcal%20X%7DP_X(x)%5C%5Clog%20P_X(x).%5Cn%5C%5Ctag%7B12%7D%5Cn%22%7D"></card></div>
+<p>事件的自信息 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-435%22%2C%22code%22%3A%22-%5C%5Clog%20P_X(x)%22%7D"></card> 随概率降低而增大，独立事件的联合自信息等于各事件自信息之和。自信息在 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-436%22%2C%22code%22%3A%22P_X%22%7D"></card> 下的期望即为熵，用于度量分布的不确定性；若采用模型分布 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-437%22%2C%22code%22%3A%22Q_X%22%7D"></card> 计算信息量，并在真实分布 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-438%22%2C%22code%22%3A%22P_X%22%7D"></card> 下取期望，则得到交叉熵</p>
+<div class="equation" tabindex="0" role="math" aria-label="H(P_X,Q_X)=-\sum_{x\in\mathcal X}P_X(x)\log Q_X(x).
+\tag{13}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-439%22%2C%22code%22%3A%22H(P_X%2CQ_X)%3D-%5C%5Csum_%7Bx%5C%5Cin%5C%5Cmathcal%20X%7DP_X(x)%5C%5Clog%20Q_X(x).%5Cn%5C%5Ctag%7B13%7D%5Cn%22%7D"></card></div>
+<p>交叉熵一般不满足对称性，其与目标分布自身的熵之差为 KL 散度</p>
+<div class="equation" tabindex="0" role="math" aria-label="D_{\mathrm{KL}}(P\Vert Q)
+=\left[-\sum_{x\in\mathcal X}P(x)\log Q(x)\right]
+-\left[-\sum_{x\in\mathcal X}P(x)\log P(x)\right] =H(P,Q)-H(P)
+=\sum_{x\in\mathcal X}P(x)\log\frac{P(x)}{Q(x)}.
+\tag{14}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-440%22%2C%22code%22%3A%22D_%7B%5C%5Cmathrm%7BKL%7D%7D(P%5C%5CVert%20Q)%5Cn%3D%5C%5Cleft%5B-%5C%5Csum_%7Bx%5C%5Cin%5C%5Cmathcal%20X%7DP(x)%5C%5Clog%20Q(x)%5C%5Cright%5D%5Cn-%5C%5Cleft%5B-%5C%5Csum_%7Bx%5C%5Cin%5C%5Cmathcal%20X%7DP(x)%5C%5Clog%20P(x)%5C%5Cright%5D%20%3DH(P%2CQ)-H(P)%5Cn%3D%5C%5Csum_%7Bx%5C%5Cin%5C%5Cmathcal%20X%7DP(x)%5C%5Clog%5C%5Cfrac%7BP(x)%7D%7BQ(x)%7D.%5Cn%5C%5Ctag%7B14%7D%5Cn%22%7D"></card></div>
+<p>KL 散度衡量按 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-441%22%2C%22code%22%3A%22Q%22%7D"></card> 编码来自 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-442%22%2C%22code%22%3A%22P%22%7D"></card> 的样本时增加的期望编码代价，其值非负，且仅在两分布相同时为零。对于 softmax 分类模型，记真实条件分布为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-443%22%2C%22code%22%3A%22P_%7BY%5C%5Cmid%20X%7D%22%7D"></card>、模型分布为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-444%22%2C%22code%22%3A%22%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D%22%7D"></card>，固定输入 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-445%22%2C%22code%22%3A%22x%22%7D"></card> 后有</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+D_{\mathrm{KL}}\!\left(P_{Y\mid X=x}\Vert\hat P_{Y\mid X=x};\theta\right)
+&amp;=-\sum_{j=1}^{C}P(y=j\mid x)\log\hat P(y=j\mid x;\theta) +\sum_{j=1}^{C}P(y=j\mid x)\log P(y=j\mid x)\\[4pt]
+&amp;=\sum_{j=1}^{C}P(y=j\mid x)
+\log\frac{P(y=j\mid x)}{\hat P(y=j\mid x;\theta)}.
+\end{aligned}\tag{15}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-446%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5CnD_%7B%5C%5Cmathrm%7BKL%7D%7D%5C%5C!%5C%5Cleft(P_%7BY%5C%5Cmid%20X%3Dx%7D%5C%5CVert%5C%5Chat%20P_%7BY%5C%5Cmid%20X%3Dx%7D%3B%5C%5Ctheta%5C%5Cright)%5Cn%26%3D-%5C%5Csum_%7Bj%3D1%7D%5E%7BC%7DP(y%3Dj%5C%5Cmid%20x)%5C%5Clog%5C%5Chat%20P(y%3Dj%5C%5Cmid%20x%3B%5C%5Ctheta)%20%2B%5C%5Csum_%7Bj%3D1%7D%5E%7BC%7DP(y%3Dj%5C%5Cmid%20x)%5C%5Clog%20P(y%3Dj%5C%5Cmid%20x)%5C%5C%5C%5C%5B4pt%5D%5Cn%26%3D%5C%5Csum_%7Bj%3D1%7D%5E%7BC%7DP(y%3Dj%5C%5Cmid%20x)%5Cn%5C%5Clog%5C%5Cfrac%7BP(y%3Dj%5C%5Cmid%20x)%7D%7B%5C%5Chat%20P(y%3Dj%5C%5Cmid%20x%3B%5C%5Ctheta)%7D.%5Cn%5C%5Cend%7Baligned%7D%5C%5Ctag%7B15%7D%5Cn%22%7D"></card></div>
+<p>若保持输入边缘分布 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-447%22%2C%22code%22%3A%22P_X%22%7D"></card> 不变，仅对标签条件分布建模，则 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-448%22%2C%22code%22%3A%22%5C%5Chat%20P_%7BX%2CY%7D(x%2Cy%3B%5C%5Ctheta)%3DP_X(x)%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x%3B%5C%5Ctheta)%22%7D"></card>。由联合分布计算 KL 散度时，概率比值中的 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-449%22%2C%22code%22%3A%22P_X(x)%22%7D"></card> 因子相消</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta)
+&amp;=\sum_{x,y}P_{X,Y}(x,y)
+\log\frac{P_{X,Y}(x,y)}{\hat P_{X,Y}(x,y;\theta)} =\sum_{x,y}P_{X,Y}(x,y)
+\log\frac{P(y\mid x)\cancel{P_X(x)}}
+{\hat P(y\mid x;\theta)\cancel{P_X(x)}}\\[4pt]
+&amp;=\mathbb E_{X,Y}\!\left[
+\log\frac{P(Y\mid X)}{\hat P(Y\mid X;\theta)}\right].
+\end{aligned}\tag{16}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-450%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5CnD_%7B%5C%5Cmathrm%7BKL%7D%7D(P_%7BX%2CY%7D%5C%5CVert%5C%5Chat%20P_%7BX%2CY%7D%3B%5C%5Ctheta)%5Cn%26%3D%5C%5Csum_%7Bx%2Cy%7DP_%7BX%2CY%7D(x%2Cy)%5Cn%5C%5Clog%5C%5Cfrac%7BP_%7BX%2CY%7D(x%2Cy)%7D%7B%5C%5Chat%20P_%7BX%2CY%7D(x%2Cy%3B%5C%5Ctheta)%7D%20%3D%5C%5Csum_%7Bx%2Cy%7DP_%7BX%2CY%7D(x%2Cy)%5Cn%5C%5Clog%5C%5Cfrac%7BP(y%5C%5Cmid%20x)%5C%5Ccancel%7BP_X(x)%7D%7D%5Cn%7B%5C%5Chat%20P(y%5C%5Cmid%20x%3B%5C%5Ctheta)%5C%5Ccancel%7BP_X(x)%7D%7D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%3D%5C%5Cmathbb%20E_%7BX%2CY%7D%5C%5C!%5C%5Cleft%5B%5Cn%5C%5Clog%5C%5Cfrac%7BP(Y%5C%5Cmid%20X)%7D%7B%5C%5Chat%20P(Y%5C%5Cmid%20X%3B%5C%5Ctheta)%7D%5C%5Cright%5D.%5Cn%5C%5Cend%7Baligned%7D%5C%5Ctag%7B16%7D%5Cn%22%7D"></card></div>
+<p>给定 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-451%22%2C%22code%22%3A%22n%22%7D"></card> 个独立同分布样本 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-452%22%2C%22code%22%3A%22(x%5E%7B(i)%7D%2Cy%5E%7B(i)%7D)%22%7D"></card>，若对数概率比可积，则对固定参数 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-453%22%2C%22code%22%3A%22%5C%5Ctheta%22%7D"></card>，大数定律给出</p>
+<div class="equation" tabindex="0" role="math" aria-label="\frac{1}{n}\sum_{i=1}^{n}
+\log\frac{P(y^{(i)}\mid x^{(i)})}
+{\hat P(y^{(i)}\mid x^{(i)};\theta)}
+\xrightarrow[n\to\infty]{}
+\mathbb E_{X,Y}\!\left[
+\log\frac{P(Y\mid X)}{\hat P(Y\mid X;\theta)}\right] =D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta).
+\tag{17}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-454%22%2C%22code%22%3A%22%5C%5Cfrac%7B1%7D%7Bn%7D%5C%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%5Cn%5C%5Clog%5C%5Cfrac%7BP(y%5E%7B(i)%7D%5C%5Cmid%20x%5E%7B(i)%7D)%7D%5Cn%7B%5C%5Chat%20P(y%5E%7B(i)%7D%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%7D%5Cn%5C%5Cxrightarrow%5Bn%5C%5Cto%5C%5Cinfty%5D%7B%7D%5Cn%5C%5Cmathbb%20E_%7BX%2CY%7D%5C%5C!%5C%5Cleft%5B%5Cn%5C%5Clog%5C%5Cfrac%7BP(Y%5C%5Cmid%20X)%7D%7B%5C%5Chat%20P(Y%5C%5Cmid%20X%3B%5C%5Ctheta)%7D%5C%5Cright%5D%20%3DD_%7B%5C%5Cmathrm%7BKL%7D%7D(P_%7BX%2CY%7D%5C%5CVert%5C%5Chat%20P_%7BX%2CY%7D%3B%5C%5Ctheta).%5Cn%5C%5Ctag%7B17%7D%5Cn%22%7D"></card></div>
+<p>式 (17) 以样本均值近似总体 KL 目标。若进一步满足<strong>最优解唯一、经验目标一致收敛及极小值稳定性</strong>等正则条件，经验最优参数可收敛至总体最优参数</p>
+<div class="equation" tabindex="0" role="math" aria-label="\underset{\theta}{\operatorname{argmin}}
+\left\{\frac{1}{n}\sum_{i=1}^{n}
+\log\frac{P(y^{(i)}\mid x^{(i)})}
+{\hat P(y^{(i)}\mid x^{(i)};\theta)}\right\}\;\xrightarrow[n\to\infty]{}
+\underset{\theta}{\operatorname{argmin}}
+D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta).
+\tag{18}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-455%22%2C%22code%22%3A%22%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5Cn%5C%5Cleft%5C%5C%7B%5C%5Cfrac%7B1%7D%7Bn%7D%5C%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%5Cn%5C%5Clog%5C%5Cfrac%7BP(y%5E%7B(i)%7D%5C%5Cmid%20x%5E%7B(i)%7D)%7D%5Cn%7B%5C%5Chat%20P(y%5E%7B(i)%7D%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%7D%5C%5Cright%5C%5C%7D%5C%5C%3B%5C%5Cxrightarrow%5Bn%5C%5Cto%5C%5Cinfty%5D%7B%7D%5Cn%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5CnD_%7B%5C%5Cmathrm%7BKL%7D%7D(P_%7BX%2CY%7D%5C%5CVert%5C%5Chat%20P_%7BX%2CY%7D%3B%5C%5Ctheta).%5Cn%5C%5Ctag%7B18%7D%5Cn%22%7D"></card></div>
+<p>对于固定数据集，真实分布项与 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-456%22%2C%22code%22%3A%22%5C%5Ctheta%22%7D"></card> 无关，<strong style="color: #1d5ea6">经验目标的最小化等价于最大似然估计</strong></p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+&amp;\underset{\theta}{\operatorname{argmin}}
+\left\{\frac{1}{n}\sum_{i=1}^{n}
+\log\frac{P(y^{(i)}\mid x^{(i)})}
+{\hat P(y^{(i)}\mid x^{(i)};\theta)}\right\} =\underset{\theta}{\operatorname{argmax}}
+\left\{\frac{1}{n}\sum_{i=1}^{n}
+\log\hat P(y^{(i)}\mid x^{(i)};\theta)\right\}\\[4pt]
+&amp;\quad=\underset{\theta}{\operatorname{argmax}}
+\left\{\frac{1}{n}\log\prod_{i=1}^{n}
+\hat P(y^{(i)}\mid x^{(i)};\theta)\right\} =\underset{\theta}{\operatorname{argmax}}
+\left\{\frac{1}{n}\ell(\theta)\right\}.
+\end{aligned}\tag{19}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-457%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%26%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5Cn%5C%5Cleft%5C%5C%7B%5C%5Cfrac%7B1%7D%7Bn%7D%5C%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%5Cn%5C%5Clog%5C%5Cfrac%7BP(y%5E%7B(i)%7D%5C%5Cmid%20x%5E%7B(i)%7D)%7D%5Cn%7B%5C%5Chat%20P(y%5E%7B(i)%7D%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%7D%5C%5Cright%5C%5C%7D%20%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmax%7D%7D%5Cn%5C%5Cleft%5C%5C%7B%5C%5Cfrac%7B1%7D%7Bn%7D%5C%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%5Cn%5C%5Clog%5C%5Chat%20P(y%5E%7B(i)%7D%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%5C%5Cright%5C%5C%7D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%5C%5Cquad%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmax%7D%7D%5Cn%5C%5Cleft%5C%5C%7B%5C%5Cfrac%7B1%7D%7Bn%7D%5C%5Clog%5C%5Cprod_%7Bi%3D1%7D%5E%7Bn%7D%5Cn%5C%5Chat%20P(y%5E%7B(i)%7D%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%5C%5Cright%5C%5C%7D%20%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmax%7D%7D%5Cn%5C%5Cleft%5C%5C%7B%5C%5Cfrac%7B1%7D%7Bn%7D%5C%5Cell(%5C%5Ctheta)%5C%5Cright%5C%5C%7D.%5Cn%5C%5Cend%7Baligned%7D%5C%5Ctag%7B19%7D%5Cn%22%7D"></card></div>
+<p>经验 KL 目标与最大似然估计由此对应同一优化问题。在总体层面，真实分布的熵不依赖 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-458%22%2C%22code%22%3A%22%5C%5Ctheta%22%7D"></card>，因此<strong style="color: #1d5ea6">最小化 KL 散度等价于最小化交叉熵</strong></p>
+<div class="equation" tabindex="0" role="math" aria-label="\underset{\theta}{\operatorname{argmin}}
+D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta)
+=\underset{\theta}{\operatorname{argmin}}
+\left\{\underbrace{H(P_{X,Y},\hat P_{X,Y})}_{\text{cross-entropy}}
+-\underbrace{H(P_{X,Y})}_{\text{entropy}}\right\} =\underset{\theta}{\operatorname{argmin}}
+H(P_{X,Y},\hat P_{X,Y}).
+\tag{20}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-459%22%2C%22code%22%3A%22%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5CnD_%7B%5C%5Cmathrm%7BKL%7D%7D(P_%7BX%2CY%7D%5C%5CVert%5C%5Chat%20P_%7BX%2CY%7D%3B%5C%5Ctheta)%5Cn%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5Cn%5C%5Cleft%5C%5C%7B%5C%5Cunderbrace%7BH(P_%7BX%2CY%7D%2C%5C%5Chat%20P_%7BX%2CY%7D)%7D_%7B%5C%5Ctext%7Bcross-entropy%7D%7D%5Cn-%5C%5Cunderbrace%7BH(P_%7BX%2CY%7D)%7D_%7B%5C%5Ctext%7Bentropy%7D%7D%5C%5Cright%5C%5C%7D%20%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5CnH(P_%7BX%2CY%7D%2C%5C%5Chat%20P_%7BX%2CY%7D).%5Cn%5C%5Ctag%7B20%7D%5Cn%22%7D"></card></div>
+</section><section class="lake-revised-section">
+<h1 id="-the-special-case-of-model-distillation">🐰 The special case of model distillation</h1>
+<p>模型蒸馏以教师分布 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-460%22%2C%22code%22%3A%22P%5E%7B%5C%5Cmathrm%7Bteacher%7D%7D(y%5C%5Cmid%20x)%22%7D"></card> 为监督目标，使学生模型拟合教师的预测分布。下文以 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-461%22%2C%22code%22%3A%22P_%7BY%5C%5Cmid%20X%7D%22%7D"></card> 表示教师分布，以 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-462%22%2C%22code%22%3A%22%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D%22%7D"></card> 表示学生分布；保持输入边缘分布不变，将联合分布分解为边缘分布与条件分布，可得</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+&amp;\underset{\theta}{\operatorname{argmin}}
+D_{\mathrm{KL}}(P_{X,Y}\Vert\hat P_{X,Y};\theta)
+=\underset{\theta}{\operatorname{argmin}}H(P_{X,Y},\hat P_{X,Y})\\[4pt]
+&amp;\quad=\underset{\theta}{\operatorname{argmin}}
+\left\{-\sum_{x,y}P_{X,Y}(x,y)\log\hat P_{X,Y}(x,y;\theta)\right\}\\[4pt]
+&amp;\quad=\underset{\theta}{\operatorname{argmin}}
+\left\{-\sum_x P_X(x)\sum_y P_{Y\mid X}(y\mid x)
+\log\!\left[\hat P_{Y\mid X}(y\mid x;\theta)P_X(x)\right]\right\}\\[4pt]
+&amp;\quad=\underset{\theta}{\operatorname{argmin}}
+\left\{-\sum_x P_X(x)\sum_y P_{Y\mid X}(y\mid x)
+\left[\log\hat P_{Y\mid X}(y\mid x;\theta)+\log P_X(x)\right]\right\}\\[4pt]
+&amp;\quad=\underset{\theta}{\operatorname{argmin}}\left\{
+-\sum_x P_X(x)\sum_y P_{Y\mid X}(y\mid x)
+\log\hat P_{Y\mid X}(y\mid x;\theta)-\underbrace{\sum_x P_X(x)\sum_y P_{Y\mid X}(y\mid x)\log P_X(x)}
+_{-H(P_X),\;\text{independent of }\theta}
+\right\}\\[4pt]
+&amp;\quad=\underset{\theta}{\operatorname{argmin}}
+\left\{-\sum_x P_X(x)\sum_y P_{Y\mid X}(y\mid x)
+\log\hat P_{Y\mid X}(y\mid x;\theta)\right\}\\[4pt]
+&amp;\quad=\underset{\theta}{\operatorname{argmin}}\left\{-\mathbb E_X\!\left[
+\sum_y P_{Y\mid X}(y\mid X)
+\log\hat P_{Y\mid X}(y\mid X;\theta)\right]\right\}.
+\end{aligned}\tag{21}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-463%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%26%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5CnD_%7B%5C%5Cmathrm%7BKL%7D%7D(P_%7BX%2CY%7D%5C%5CVert%5C%5Chat%20P_%7BX%2CY%7D%3B%5C%5Ctheta)%5Cn%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7DH(P_%7BX%2CY%7D%2C%5C%5Chat%20P_%7BX%2CY%7D)%5C%5C%5C%5C%5B4pt%5D%5Cn%26%5C%5Cquad%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5Cn%5C%5Cleft%5C%5C%7B-%5C%5Csum_%7Bx%2Cy%7DP_%7BX%2CY%7D(x%2Cy)%5C%5Clog%5C%5Chat%20P_%7BX%2CY%7D(x%2Cy%3B%5C%5Ctheta)%5C%5Cright%5C%5C%7D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%5C%5Cquad%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5Cn%5C%5Cleft%5C%5C%7B-%5C%5Csum_x%20P_X(x)%5C%5Csum_y%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x)%5Cn%5C%5Clog%5C%5C!%5C%5Cleft%5B%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x%3B%5C%5Ctheta)P_X(x)%5C%5Cright%5D%5C%5Cright%5C%5C%7D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%5C%5Cquad%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5Cn%5C%5Cleft%5C%5C%7B-%5C%5Csum_x%20P_X(x)%5C%5Csum_y%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x)%5Cn%5C%5Cleft%5B%5C%5Clog%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x%3B%5C%5Ctheta)%2B%5C%5Clog%20P_X(x)%5C%5Cright%5D%5C%5Cright%5C%5C%7D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%5C%5Cquad%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5C%5Cleft%5C%5C%7B%5Cn-%5C%5Csum_x%20P_X(x)%5C%5Csum_y%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x)%5Cn%5C%5Clog%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x%3B%5C%5Ctheta)-%5C%5Cunderbrace%7B%5C%5Csum_x%20P_X(x)%5C%5Csum_y%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x)%5C%5Clog%20P_X(x)%7D%5Cn_%7B-H(P_X)%2C%5C%5C%3B%5C%5Ctext%7Bindependent%20of%20%7D%5C%5Ctheta%7D%5Cn%5C%5Cright%5C%5C%7D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%5C%5Cquad%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5Cn%5C%5Cleft%5C%5C%7B-%5C%5Csum_x%20P_X(x)%5C%5Csum_y%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x)%5Cn%5C%5Clog%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x%3B%5C%5Ctheta)%5C%5Cright%5C%5C%7D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%5C%5Cquad%3D%5C%5Cunderset%7B%5C%5Ctheta%7D%7B%5C%5Coperatorname%7Bargmin%7D%7D%5C%5Cleft%5C%5C%7B-%5C%5Cmathbb%20E_X%5C%5C!%5C%5Cleft%5B%5Cn%5C%5Csum_y%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20X)%5Cn%5C%5Clog%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20X%3B%5C%5Ctheta)%5C%5Cright%5D%5C%5Cright%5C%5C%7D.%5Cn%5C%5Cend%7Baligned%7D%5C%5Ctag%7B21%7D%5Cn%22%7D"></card></div>
+<p>输入边缘分布固定，因此 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-464%22%2C%22code%22%3A%22H(P_X)%22%7D"></card> 不依赖 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-465%22%2C%22code%22%3A%22%5C%5Ctheta%22%7D"></card>，可从优化目标中略去。<strong style="color: #1d5ea6">教师为每个输入提供完整的条件分布</strong>，类别维度可直接求和，只需以样本均值估计对 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-466%22%2C%22code%22%3A%22X%22%7D"></card> 的期望。当输入样本独立同分布且相应期望存在时，对固定参数 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-467%22%2C%22code%22%3A%22%5C%5Ctheta%22%7D"></card> 有</p>
+<div class="equation" tabindex="0" role="math" aria-label="R_n(\theta)
+=-\frac{1}{n}\sum_{i=1}^{n}\sum_{y\in\mathcal Y}
+P_{Y\mid X}(y\mid x^{(i)})
+\log\hat P_{Y\mid X}(y\mid x^{(i)};\theta) \xrightarrow[n\to\infty]{}
+-\mathbb E_X\!\left[\sum_{y\in\mathcal Y}
+P_{Y\mid X}(y\mid X)
+\log\hat P_{Y\mid X}(y\mid X;\theta)\right].
+\tag{22}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-468%22%2C%22code%22%3A%22R_n(%5C%5Ctheta)%5Cn%3D-%5C%5Cfrac%7B1%7D%7Bn%7D%5C%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%5C%5Csum_%7By%5C%5Cin%5C%5Cmathcal%20Y%7D%5CnP_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x%5E%7B(i)%7D)%5Cn%5C%5Clog%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%20%5C%5Cxrightarrow%5Bn%5C%5Cto%5C%5Cinfty%5D%7B%7D%5Cn-%5C%5Cmathbb%20E_X%5C%5C!%5C%5Cleft%5B%5C%5Csum_%7By%5C%5Cin%5C%5Cmathcal%20Y%7D%5CnP_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20X)%5Cn%5C%5Clog%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20X%3B%5C%5Ctheta)%5C%5Cright%5D.%5Cn%5C%5Ctag%7B22%7D%5Cn%22%7D"></card></div>
+<p>在式 (18) 所述的一致性条件下，经验最优参数可收敛至总体最优参数。采用 softmax 参数化时，预测条件概率为</p>
+<div class="equation" tabindex="0" role="math" aria-label="\hat P_{Y\mid X}(y\mid x;\theta)
+=\frac{\exp(f_y(x;\theta_y))}
+{\sum_{j=1}^{C}\exp(f_j(x;\theta_j))}.
+\tag{23}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-469%22%2C%22code%22%3A%22%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x%3B%5C%5Ctheta)%5Cn%3D%5C%5Cfrac%7B%5C%5Cexp(f_y(x%3B%5C%5Ctheta_y))%7D%5Cn%7B%5C%5Csum_%7Bj%3D1%7D%5E%7BC%7D%5C%5Cexp(f_j(x%3B%5C%5Ctheta_j))%7D.%5Cn%5C%5Ctag%7B23%7D%5Cn%22%7D"></card></div>
+<p>将式 (23) 代入经验目标，得到<strong>概率标签下的平均交叉熵损失</strong></p>
+<div class="equation" tabindex="0" role="math" aria-label="J(\theta)
+=-\frac{1}{n}\sum_{i=1}^{n}\sum_{y\in\mathcal Y}
+P_{Y\mid X}(y\mid x^{(i)})
+\log\hat P_{Y\mid X}(y\mid x^{(i)};\theta) =-\frac{1}{n}\sum_{i=1}^{n}\sum_{y\in\mathcal Y}
+P_{Y\mid X}(y\mid x^{(i)})
+\log\frac{\exp(f_y(x^{(i)};\theta_y))}
+{\sum_{j=1}^{C}\exp(f_j(x^{(i)};\theta_j))}.
+\tag{24}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-470%22%2C%22code%22%3A%22J(%5C%5Ctheta)%5Cn%3D-%5C%5Cfrac%7B1%7D%7Bn%7D%5C%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%5C%5Csum_%7By%5C%5Cin%5C%5Cmathcal%20Y%7D%5CnP_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x%5E%7B(i)%7D)%5Cn%5C%5Clog%5C%5Chat%20P_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x%5E%7B(i)%7D%3B%5C%5Ctheta)%20%3D-%5C%5Cfrac%7B1%7D%7Bn%7D%5C%5Csum_%7Bi%3D1%7D%5E%7Bn%7D%5C%5Csum_%7By%5C%5Cin%5C%5Cmathcal%20Y%7D%5CnP_%7BY%5C%5Cmid%20X%7D(y%5C%5Cmid%20x%5E%7B(i)%7D)%5Cn%5C%5Clog%5C%5Cfrac%7B%5C%5Cexp(f_y(x%5E%7B(i)%7D%3B%5C%5Ctheta_y))%7D%5Cn%7B%5C%5Csum_%7Bj%3D1%7D%5E%7BC%7D%5C%5Cexp(f_j(x%5E%7B(i)%7D%3B%5C%5Ctheta_j))%7D.%5Cn%5C%5Ctag%7B24%7D%5Cn%22%7D"></card></div>
+<p>式 (24) 对应 PyTorch 在概率标签、类别权重均为 1 时的平均交叉熵。<a href="https://docs.pytorch.org/docs/2.15/generated/torch.nn.CrossEntropyLoss.html"><code>CrossEntropyLoss</code></a> 支持类别索引与概率标签，后者适用于混合标签与分布蒸馏。沿用其记号，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-471%22%2C%22code%22%3A%22x_%7Bn%2Cc%7D%22%7D"></card> 为 logit，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-472%22%2C%22code%22%3A%22y_%7Bn%2Cc%7D%22%7D"></card> 为目标概率，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-473%22%2C%22code%22%3A%22w_c%22%7D"></card> 为类别权重，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-474%22%2C%22code%22%3A%22C%22%7D"></card> 为类别数，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-475%22%2C%22code%22%3A%22N%22%7D"></card> 为批量及额外位置维度上的位置总数。逐位置损失为</p>
+<div class="equation" tabindex="0" role="math" aria-label="\ell(x,y)=L=(\ell_1,\ldots,\ell_N)^{\mathsf T},
+\qquad
+\ell_n=-\sum_{c=1}^{C}w_c y_{n,c}
+\log\frac{\exp(x_{n,c})}{\sum_{i=1}^{C}\exp(x_{n,i})}.
+\tag{25}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-476%22%2C%22code%22%3A%22%5C%5Cell(x%2Cy)%3DL%3D(%5C%5Cell_1%2C%5C%5Cldots%2C%5C%5Cell_N)%5E%7B%5C%5Cmathsf%20T%7D%2C%5Cn%5C%5Cqquad%5Cn%5C%5Cell_n%3D-%5C%5Csum_%7Bc%3D1%7D%5E%7BC%7Dw_c%20y_%7Bn%2Cc%7D%5Cn%5C%5Clog%5C%5Cfrac%7B%5C%5Cexp(x_%7Bn%2Cc%7D)%7D%7B%5C%5Csum_%7Bi%3D1%7D%5E%7BC%7D%5C%5Cexp(x_%7Bn%2Ci%7D)%7D.%5Cn%5C%5Ctag%7B25%7D%5Cn%22%7D"></card></div>
+<p>对于概率标签，<code>mean</code> 与 <code>sum</code> 两种归约方式分别为</p>
+<div class="equation" tabindex="0" role="math" aria-label="\ell(x,y)=\begin{cases}
+\dfrac{1}{N}\displaystyle\sum_{n=1}^{N}\ell_n,
+&amp;\text{reduction}=\texttt{mean},\\[8pt]
+\displaystyle\sum_{n=1}^{N}\ell_n,
+&amp;\text{reduction}=\texttt{sum}.
+\end{cases}\tag{26}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-477%22%2C%22code%22%3A%22%5C%5Cell(x%2Cy)%3D%5C%5Cbegin%7Bcases%7D%5Cn%5C%5Cdfrac%7B1%7D%7BN%7D%5C%5Cdisplaystyle%5C%5Csum_%7Bn%3D1%7D%5E%7BN%7D%5C%5Cell_n%2C%5Cn%26%5C%5Ctext%7Breduction%7D%3D%5C%5Ctexttt%7Bmean%7D%2C%5C%5C%5C%5C%5B8pt%5D%5Cn%5C%5Cdisplaystyle%5C%5Csum_%7Bn%3D1%7D%5E%7BN%7D%5C%5Cell_n%2C%5Cn%26%5C%5Ctext%7Breduction%7D%3D%5C%5Ctexttt%7Bsum%7D.%5Cn%5C%5Cend%7Bcases%7D%5C%5Ctag%7B26%7D%5Cn%22%7D"></card></div>
+</section><section class="lake-revised-section">
+<h1 id="-from-vocabulary-probabilities-to-binary-cross-entropy">🐯 From Vocabulary Probabilities to Binary Cross-Entropy</h1>
+<p>给定前缀 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-478%22%2C%22code%22%3A%22h%22%7D"></card>，设下一 token 为随机变量 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-479%22%2C%22code%22%3A%22X%22%7D"></card>，观测目标为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-480%22%2C%22code%22%3A%22y%22%7D"></card>。词表大小为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-481%22%2C%22code%22%3A%22V%5C%5Cge2%22%7D"></card>，模型输出 logits <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-482%22%2C%22code%22%3A%22z%5C%5Cin%5C%5Cmathbb%20R%5EV%22%7D"></card>，对应的概率分布为</p>
+<div class="equation" tabindex="0" role="math" aria-label="p_j=P_\theta(X=j\mid h)=\frac{e^{z_j}}{Z},\qquad
+Z=\sum_{k=0}^{V-1}e^{z_k},\qquad j=0,\ldots,V-1.\tag{27}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-483%22%2C%22code%22%3A%22p_j%3DP_%5C%5Ctheta(X%3Dj%5C%5Cmid%20h)%3D%5C%5Cfrac%7Be%5E%7Bz_j%7D%7D%7BZ%7D%2C%5C%5Cqquad%5CnZ%3D%5C%5Csum_%7Bk%3D0%7D%5E%7BV-1%7De%5E%7Bz_k%7D%2C%5C%5Cqquad%20j%3D0%2C%5C%5Cldots%2CV-1.%5C%5Ctag%7B27%7D%5Cn%22%7D"></card></div>
+<p>有限 logits 保证 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-484%22%2C%22code%22%3A%220%3Cp_j%3C1%22%7D"></card> 且 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-485%22%2C%22code%22%3A%22%5C%5Csum_jp_j%3D1%22%7D"></card>。令 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-486%22%2C%22code%22%3A%22B%3D%5C%5Cmathbf1%5C%5C%7BX%3Dy%5C%5C%7D%22%7D"></card>，以 1 和 0 分别表示目标事件及其补事件。由于 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-487%22%2C%22code%22%3A%22%5C%5C%7BX%5C%5Cne%20y%5C%5C%7D%22%7D"></card> 是所有非目标事件 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-488%22%2C%22code%22%3A%22%5C%5C%7BX%3Dj%5C%5C%7D%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-489%22%2C%22code%22%3A%22j%5C%5Cne%20y%22%7D"></card> 的互斥并集，概率可加性给出</p>
+<div class="equation" tabindex="0" role="math" aria-label="P_\theta(B=1\mid h)=p_y,\qquad
+P_\theta(B=0\mid h)=\sum_{j\ne y}P_\theta(X=j\mid h)
+=\sum_{j\ne y}p_j=1-p_y.\tag{28}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-490%22%2C%22code%22%3A%22P_%5C%5Ctheta(B%3D1%5C%5Cmid%20h)%3Dp_y%2C%5C%5Cqquad%5CnP_%5C%5Ctheta(B%3D0%5C%5Cmid%20h)%3D%5C%5Csum_%7Bj%5C%5Cne%20y%7DP_%5C%5Ctheta(X%3Dj%5C%5Cmid%20h)%5Cn%3D%5C%5Csum_%7Bj%5C%5Cne%20y%7Dp_j%3D1-p_y.%5C%5Ctag%7B28%7D%5Cn%22%7D"></card></div>
+<p>因此 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-491%22%2C%22code%22%3A%22B%5C%5Cmid%20h%5C%5Csim%5C%5Coperatorname%7BBernoulli%7D(p_y)%22%7D"></card>，按目标／其余的顺序，合并分布为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-492%22%2C%22code%22%3A%22%5C%5Cbar%20p%3D(p_y%2C1-p_y)%22%7D"></card>，总概率仍为 1。任意目标分布 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-493%22%2C%22code%22%3A%22q%3D(q_0%2C%5C%5Cldots%2Cq_%7BV-1%7D)%22%7D"></card> 满足 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-494%22%2C%22code%22%3A%22q_j%5C%5Cge0%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-495%22%2C%22code%22%3A%22%5C%5Csum_jq_j%3D1%22%7D"></card>，同样合并为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-496%22%2C%22code%22%3A%22%5C%5Cbar%20q%3D(q_y%2C1-q_y)%22%7D"></card>。交叉熵按 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-497%22%2C%22code%22%3A%22q_j%22%7D"></card> 对整个词表加权；对非目标类作分解 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-498%22%2C%22code%22%3A%22p_j%3D(1-p_y)%5C%5Cfrac%7Bp_j%7D%7B1-p_y%7D%22%7D"></card>，代入交叉熵定义可得</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+H(q,p)
+&amp;=-\sum_{j=0}^{V-1}q_j\ln p_j\\[4pt]
+&amp;=-q_y\ln p_y-\sum_{j\ne y}q_j\ln p_j\\[4pt]
+&amp;=-q_y\ln p_y-\sum_{j\ne y}q_j
+\left[\ln(1-p_y)+\ln\frac{p_j}{1-p_y}\right]\\[4pt]
+&amp;=-q_y\ln p_y-(1-q_y)\ln(1-p_y)
+-\sum_{j\ne y}q_j\ln\frac{p_j}{1-p_y}\\[4pt]
+&amp;=H(\bar q,\bar p)-\sum_{j\ne y}q_j\ln\frac{p_j}{1-p_y}.
+\end{aligned}\tag{29}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-499%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5CnH(q%2Cp)%5Cn%26%3D-%5C%5Csum_%7Bj%3D0%7D%5E%7BV-1%7Dq_j%5C%5Cln%20p_j%5C%5C%5C%5C%5B4pt%5D%5Cn%26%3D-q_y%5C%5Cln%20p_y-%5C%5Csum_%7Bj%5C%5Cne%20y%7Dq_j%5C%5Cln%20p_j%5C%5C%5C%5C%5B4pt%5D%5Cn%26%3D-q_y%5C%5Cln%20p_y-%5C%5Csum_%7Bj%5C%5Cne%20y%7Dq_j%5Cn%5C%5Cleft%5B%5C%5Cln(1-p_y)%2B%5C%5Cln%5C%5Cfrac%7Bp_j%7D%7B1-p_y%7D%5C%5Cright%5D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%3D-q_y%5C%5Cln%20p_y-(1-q_y)%5C%5Cln(1-p_y)%5Cn-%5C%5Csum_%7Bj%5C%5Cne%20y%7Dq_j%5C%5Cln%5C%5Cfrac%7Bp_j%7D%7B1-p_y%7D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%3DH(%5C%5Cbar%20q%2C%5C%5Cbar%20p)-%5C%5Csum_%7Bj%5C%5Cne%20y%7Dq_j%5C%5Cln%5C%5Cfrac%7Bp_j%7D%7B1-p_y%7D.%5Cn%5C%5Cend%7Baligned%7D%5C%5Ctag%7B29%7D%5Cn%22%7D"></card></div>
+<p>其中 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-500%22%2C%22code%22%3A%22H(%5C%5Cbar%20q%2C%5C%5Cbar%20p)%3D-q_y%5C%5Cln%20p_y-(1-q_y)%5C%5Cln(1-p_y)%22%7D"></card> 为二元交叉熵；剩余项 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-501%22%2C%22code%22%3A%22-%5C%5Csum_%7Bj%5C%5Cne%20y%7Dq_j%5C%5Cln%5C%5Cfrac%7Bp_j%7D%7B1-p_y%7D%22%7D"></card> 保留非目标类内部的监督信息，一般不为零，因此概率合并不能直接推出损失相等。当以确定的 token <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-502%22%2C%22code%22%3A%22y%22%7D"></card> 作硬标签时，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-503%22%2C%22code%22%3A%22q_y%3D1%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-504%22%2C%22code%22%3A%22q_j%3D0%5C%5C%20(j%5C%5Cne%20y)%22%7D"></card>，相应地 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-505%22%2C%22code%22%3A%22%5C%5Cbar%20q%3D(1%2C0)%22%7D"></card>。代入交叉熵可得</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+H(q,p)
+&amp;=-1\cdot\ln p_y-\sum_{j\ne y}0\cdot\ln p_j=-\ln p_y,\\[6pt]
+H(\bar q,\bar p)
+&amp;=-1\cdot\ln p_y-0\cdot\ln(1-p_y)=-\ln p_y.
+\end{aligned}\tag{30}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-506%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5CnH(q%2Cp)%5Cn%26%3D-1%5C%5Ccdot%5C%5Cln%20p_y-%5C%5Csum_%7Bj%5C%5Cne%20y%7D0%5C%5Ccdot%5C%5Cln%20p_j%3D-%5C%5Cln%20p_y%2C%5C%5C%5C%5C%5B6pt%5D%5CnH(%5C%5Cbar%20q%2C%5C%5Cbar%20p)%5Cn%26%3D-1%5C%5Ccdot%5C%5Cln%20p_y-0%5C%5Ccdot%5C%5Cln(1-p_y)%3D-%5C%5Cln%20p_y.%5Cn%5C%5Cend%7Baligned%7D%5C%5Ctag%7B30%7D%5Cn%22%7D"></card></div>
+<p><strong style="color: #1d5ea6">在 one-hot 监督下，非目标类内部的损失项为零，合并前后的交叉熵相等。</strong>这一结论针对不带类别权重的硬标签损失。该伯努利分布的二元 logit 为其对数几率；代入式 (27) 与式 (28)，公共归一化因子 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-507%22%2C%22code%22%3A%22Z%22%7D"></card> 相消</p>
+<div class="equation" tabindex="0" role="math" aria-label="\Delta=\ln\frac{p_y}{1-p_y}
+=\ln\frac{e^{z_y}/Z}{\left(\sum_{j\ne y}e^{z_j}\right)/Z}
+=\ln\frac{e^{z_y}}{\sum_{j\ne y}e^{z_j}}
+=z_y-\ln\sum_{j\ne y}e^{z_j}.\tag{31}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-508%22%2C%22code%22%3A%22%5C%5CDelta%3D%5C%5Cln%5C%5Cfrac%7Bp_y%7D%7B1-p_y%7D%5Cn%3D%5C%5Cln%5C%5Cfrac%7Be%5E%7Bz_y%7D%2FZ%7D%7B%5C%5Cleft(%5C%5Csum_%7Bj%5C%5Cne%20y%7De%5E%7Bz_j%7D%5C%5Cright)%2FZ%7D%5Cn%3D%5C%5Cln%5C%5Cfrac%7Be%5E%7Bz_y%7D%7D%7B%5C%5Csum_%7Bj%5C%5Cne%20y%7De%5E%7Bz_j%7D%7D%5Cn%3Dz_y-%5C%5Cln%5C%5Csum_%7Bj%5C%5Cne%20y%7De%5E%7Bz_j%7D.%5C%5Ctag%7B31%7D%5Cn%22%7D"></card></div>
+<p>令 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-509%22%2C%22code%22%3A%22s%3D%5C%5Cln%5C%5Csum_%7Bj%5C%5Cne%20y%7De%5E%7Bz_j%7D%22%7D"></card>，则 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-510%22%2C%22code%22%3A%22%5C%5CDelta%3Dz_y-s%22%7D"></card>。由 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-511%22%2C%22code%22%3A%22e%5Es%3D%5C%5Csum_%7Bj%5C%5Cne%20y%7De%5E%7Bz_j%7D%22%7D"></card>，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-512%22%2C%22code%22%3A%22s%22%7D"></card> 对应非目标类合并后的指数权重。以 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-513%22%2C%22code%22%3A%22(z_y%2Cs)%22%7D"></card> 为二分类 logits，得到</p>
+<div class="equation" tabindex="0" role="math" aria-label="\operatorname{softmax}(z_y,s)
+=\left(\frac{e^{z_y}}{e^{z_y}+e^s},\frac{e^s}{e^{z_y}+e^s}\right)
+=\left(p_y,1-p_y\right)=\bar p.\tag{32}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-514%22%2C%22code%22%3A%22%5C%5Coperatorname%7Bsoftmax%7D(z_y%2Cs)%5Cn%3D%5C%5Cleft(%5C%5Cfrac%7Be%5E%7Bz_y%7D%7D%7Be%5E%7Bz_y%7D%2Be%5Es%7D%2C%5C%5Cfrac%7Be%5Es%7D%7Be%5E%7Bz_y%7D%2Be%5Es%7D%5C%5Cright)%5Cn%3D%5C%5Cleft(p_y%2C1-p_y%5C%5Cright)%3D%5C%5Cbar%20p.%5C%5Ctag%7B32%7D%5Cn%22%7D"></card></div>
+<p>二分类概率由得分差 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-515%22%2C%22code%22%3A%22%5C%5CDelta%3Dz_y-s%22%7D"></card> 确定。由 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-516%22%2C%22code%22%3A%22p_y%2F(1-p_y)%3De%5E%5C%5CDelta%22%7D"></card> 可得</p>
+<div class="equation" tabindex="0" role="math" aria-label="p_y=\frac{e^\Delta}{1+e^\Delta}
+=\frac{1}{1+e^{-\Delta}}=\sigma(\Delta),\qquad
+1-p_y=\sigma(-\Delta).\tag{33}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-517%22%2C%22code%22%3A%22p_y%3D%5C%5Cfrac%7Be%5E%5C%5CDelta%7D%7B1%2Be%5E%5C%5CDelta%7D%5Cn%3D%5C%5Cfrac%7B1%7D%7B1%2Be%5E%7B-%5C%5CDelta%7D%7D%3D%5C%5Csigma(%5C%5CDelta)%2C%5C%5Cqquad%5Cn1-p_y%3D%5C%5Csigma(-%5C%5CDelta).%5C%5Ctag%7B33%7D%5Cn%22%7D"></card></div>
+<p>合并针对当前目标，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-518%22%2C%22code%22%3A%22%5C%5CDelta%22%7D"></card> 仍依赖全部词表得分。在上述硬标签条件下，将式 (31)、(33) 代入式 (30)，多分类交叉熵等价于二元 logistic 损失</p>
+<div class="equation" tabindex="0" role="math" aria-label="\ell=H(q,p)=H(\bar q,\bar p)
+=-\ln p_y
+=\ln\left(1+\sum_{j\ne y}e^{z_j-z_y}\right)
+=\ln(1+e^{-\Delta})
+=\operatorname{softplus}(-\Delta).\tag{34}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-519%22%2C%22code%22%3A%22%5C%5Cell%3DH(q%2Cp)%3DH(%5C%5Cbar%20q%2C%5C%5Cbar%20p)%5Cn%3D-%5C%5Cln%20p_y%5Cn%3D%5C%5Cln%5C%5Cleft(1%2B%5C%5Csum_%7Bj%5C%5Cne%20y%7De%5E%7Bz_j-z_y%7D%5C%5Cright)%5Cn%3D%5C%5Cln(1%2Be%5E%7B-%5C%5CDelta%7D)%5Cn%3D%5C%5Coperatorname%7Bsoftplus%7D(-%5C%5CDelta).%5C%5Ctag%7B34%7D%5Cn%22%7D"></card></div>
+<p>上述合并项 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-520%22%2C%22code%22%3A%22s%3D%5C%5Cln%5C%5Csum_%7Bj%5C%5Cne%20y%7De%5E%7Bz_j%7D%22%7D"></card> 称为 log-sum-exp。它将概率质量的求和表示为 logits 的合并，也可通过最大值平移稳定求值</p>
+<div class="equation" tabindex="0" role="math" aria-label="s=\operatorname{LSE}_{j\ne y}(z_j)
+=\ln\left(e^m\sum_{j\ne y}e^{z_j-m}\right)
+=m+\ln\sum_{j\ne y}e^{z_j-m},\qquad
+m=\max_{j\ne y}z_j.\tag{35}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-521%22%2C%22code%22%3A%22s%3D%5C%5Coperatorname%7BLSE%7D_%7Bj%5C%5Cne%20y%7D(z_j)%5Cn%3D%5C%5Cln%5C%5Cleft(e%5Em%5C%5Csum_%7Bj%5C%5Cne%20y%7De%5E%7Bz_j-m%7D%5C%5Cright)%5Cn%3Dm%2B%5C%5Cln%5C%5Csum_%7Bj%5C%5Cne%20y%7De%5E%7Bz_j-m%7D%2C%5C%5Cqquad%5Cnm%3D%5C%5Cmax_%7Bj%5C%5Cne%20y%7Dz_j.%5C%5Ctag%7B35%7D%5Cn%22%7D"></card></div>
+<p><strong style="color: #1d5ea6">采用最大值平移的 log-sum-exp 计算，可避免指数上溢</strong></p>
+</section><section class="lake-revised-section">
+<h1 id="-autoregressive-pretraining-and-sft">🐨 Autoregressive Pretraining and SFT</h1>
+<p>设序列为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-522%22%2C%22code%22%3A%22x%3D(x_0%2C%5C%5Cldots%2Cx_T)%22%7D"></card>，以首 token <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-523%22%2C%22code%22%3A%22x_0%22%7D"></card> 为初始上下文。由条件概率定义 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-524%22%2C%22code%22%3A%22P(A%2CB%5C%5Cmid%20C)%3DP(A%5C%5Cmid%20C)P(B%5C%5Cmid%20A%2CC)%22%7D"></card>，递归展开得到概率链式法则</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+P_\theta(x_{1:T}\mid x_0)
+&amp;=P_\theta(x_1\mid x_0)P_\theta(x_{2:T}\mid x_{\le 1})\\[4pt]
+&amp;=P_\theta(x_1\mid x_0)P_\theta(x_2\mid x_{\le 1})\cdots P_\theta(x_T\mid x_{\le T-1})
+=\prod_{t=0}^{T-1}P_\theta(x_{t+1}\mid x_{\le t}).
+\end{aligned}\tag{36}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-525%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5CnP_%5C%5Ctheta(x_%7B1%3AT%7D%5C%5Cmid%20x_0)%5Cn%26%3DP_%5C%5Ctheta(x_1%5C%5Cmid%20x_0)P_%5C%5Ctheta(x_%7B2%3AT%7D%5C%5Cmid%20x_%7B%5C%5Cle%201%7D)%5C%5C%5C%5C%5B4pt%5D%5Cn%26%3DP_%5C%5Ctheta(x_1%5C%5Cmid%20x_0)P_%5C%5Ctheta(x_2%5C%5Cmid%20x_%7B%5C%5Cle%201%7D)%5C%5Ccdots%20P_%5C%5Ctheta(x_T%5C%5Cmid%20x_%7B%5C%5Cle%20T-1%7D)%5Cn%3D%5C%5Cprod_%7Bt%3D0%7D%5E%7BT-1%7DP_%5C%5Ctheta(x_%7Bt%2B1%7D%5C%5Cmid%20x_%7B%5C%5Cle%20t%7D).%5Cn%5C%5Cend%7Baligned%7D%5C%5Ctag%7B36%7D%5Cn%22%7D"></card></div>
+<p>链式分解在每一步保留完整前缀，无需假设 token 相互独立。对乘积取负对数，序列损失就是逐 token 损失之和</p>
+<div class="equation" tabindex="0" role="math" aria-label="-\ln P_\theta(x_{1:T}\mid x_0)
+=-\sum_{t=0}^{T-1}\ln P_\theta(x_{t+1}\mid x_{\le t})
+=\sum_{t=0}^{T-1}\ell_t,\qquad
+\text{where}\quad \ell_t=-\ln P_\theta(x_{t+1}\mid x_{\le t}).\tag{37}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-526%22%2C%22code%22%3A%22-%5C%5Cln%20P_%5C%5Ctheta(x_%7B1%3AT%7D%5C%5Cmid%20x_0)%5Cn%3D-%5C%5Csum_%7Bt%3D0%7D%5E%7BT-1%7D%5C%5Cln%20P_%5C%5Ctheta(x_%7Bt%2B1%7D%5C%5Cmid%20x_%7B%5C%5Cle%20t%7D)%5Cn%3D%5C%5Csum_%7Bt%3D0%7D%5E%7BT-1%7D%5C%5Cell_t%2C%5C%5Cqquad%5Cn%5C%5Ctext%7Bwhere%7D%5C%5Cquad%20%5C%5Cell_t%3D-%5C%5Cln%20P_%5C%5Ctheta(x_%7Bt%2B1%7D%5C%5Cmid%20x_%7B%5C%5Cle%20t%7D).%5C%5Ctag%7B37%7D%5Cn%22%7D"></card></div>
+<p>若 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-527%22%2C%22code%22%3A%22x_%7B1%3AM%7D%22%7D"></card> 为提示词、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-528%22%2C%22code%22%3A%22x_%7BM%2B1%3AT%7D%22%7D"></card> 为回答，仅监督回答的 SFT 最大化回答的条件似然。链式分解使提示词的概率因子相消</p>
+<div class="equation" tabindex="0" role="math" aria-label="P_\theta(x_{M+1:T}\mid x_{\le M})
+=\frac{P_\theta(x_{1:T}\mid x_0)}{P_\theta(x_{1:M}\mid x_0)}
+=\prod_{t=M}^{T-1}P_\theta(x_{t+1}\mid x_{\le t}).\tag{38}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-529%22%2C%22code%22%3A%22P_%5C%5Ctheta(x_%7BM%2B1%3AT%7D%5C%5Cmid%20x_%7B%5C%5Cle%20M%7D)%5Cn%3D%5C%5Cfrac%7BP_%5C%5Ctheta(x_%7B1%3AT%7D%5C%5Cmid%20x_0)%7D%7BP_%5C%5Ctheta(x_%7B1%3AM%7D%5C%5Cmid%20x_0)%7D%5Cn%3D%5C%5Cprod_%7Bt%3DM%7D%5E%7BT-1%7DP_%5C%5Ctheta(x_%7Bt%2B1%7D%5C%5Cmid%20x_%7B%5C%5Cle%20t%7D).%5C%5Ctag%7B38%7D%5Cn%22%7D"></card></div>
+<p>令 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-530%22%2C%22code%22%3A%22a_t%5C%5Cin%5C%5C%7B0%2C1%5C%5C%7D%22%7D"></card> 表示是否监督位置 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-531%22%2C%22code%22%3A%22t%22%7D"></card> 对下一 token 的预测，且至少有一个有效监督位置。将掩码应用于逐 token 损失，并按有效位置数归约</p>
+<div class="equation" tabindex="0" role="math" aria-label="\mathcal L(a;\theta)
+=\frac{\sum_{t=0}^{T-1}a_t\ell_t}{\sum_{t=0}^{T-1}a_t}
+=-\frac{\sum_{t=0}^{T-1}a_t\ln P_\theta(x_{t+1}\mid x_{\le t})}{\sum_{t=0}^{T-1}a_t}.\tag{39}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-532%22%2C%22code%22%3A%22%5C%5Cmathcal%20L(a%3B%5C%5Ctheta)%5Cn%3D%5C%5Cfrac%7B%5C%5Csum_%7Bt%3D0%7D%5E%7BT-1%7Da_t%5C%5Cell_t%7D%7B%5C%5Csum_%7Bt%3D0%7D%5E%7BT-1%7Da_t%7D%5Cn%3D-%5C%5Cfrac%7B%5C%5Csum_%7Bt%3D0%7D%5E%7BT-1%7Da_t%5C%5Cln%20P_%5C%5Ctheta(x_%7Bt%2B1%7D%5C%5Cmid%20x_%7B%5C%5Cle%20t%7D)%7D%7B%5C%5Csum_%7Bt%3D0%7D%5E%7BT-1%7Da_t%7D.%5C%5Ctag%7B39%7D%5Cn%22%7D"></card></div>
+<p>不含填充时，PT 取所有 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-533%22%2C%22code%22%3A%22a_t%3D1%22%7D"></card>；仅监督回答的 SFT 取 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-534%22%2C%22code%22%3A%22a_t%3D%5C%5Cmathbf1%5C%5C%7Bt%5C%5Cge%20M%5C%5C%7D%22%7D"></card>，得到</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+\mathcal L_{\mathrm{PT}}(\theta)
+&amp;=-\frac{1}{T}\sum_{t=0}^{T-1}\ln P_\theta(x_{t+1}\mid x_{\le t}),\\[4pt]
+\mathcal L_{\mathrm{SFT}}(\theta)
+&amp;=-\frac{1}{T-M}\sum_{t=M}^{T-1}\ln P_\theta(x_{t+1}\mid x_{\le t}).
+\end{aligned}\tag{40}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-535%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%5C%5Cmathcal%20L_%7B%5C%5Cmathrm%7BPT%7D%7D(%5C%5Ctheta)%5Cn%26%3D-%5C%5Cfrac%7B1%7D%7BT%7D%5C%5Csum_%7Bt%3D0%7D%5E%7BT-1%7D%5C%5Cln%20P_%5C%5Ctheta(x_%7Bt%2B1%7D%5C%5Cmid%20x_%7B%5C%5Cle%20t%7D)%2C%5C%5C%5C%5C%5B4pt%5D%5Cn%5C%5Cmathcal%20L_%7B%5C%5Cmathrm%7BSFT%7D%7D(%5C%5Ctheta)%5Cn%26%3D-%5C%5Cfrac%7B1%7D%7BT-M%7D%5C%5Csum_%7Bt%3DM%7D%5E%7BT-1%7D%5C%5Cln%20P_%5C%5Ctheta(x_%7Bt%2B1%7D%5C%5Cmid%20x_%7B%5C%5Cle%20t%7D).%5Cn%5C%5Cend%7Baligned%7D%5C%5Ctag%7B40%7D%5Cn%22%7D"></card></div>
+<p><strong style="color: #1d5ea6">PT 与 SFT 使用相同的逐 token 负对数似然；上述损失形式的差异来自监督位置和平均时的分母。</strong>批量数据可按全部有效监督位置累加分子与分母，多轮对话则通过掩码选择回答片段</p>
+<p><strong>教师强制</strong>（teacher forcing）将真实 token 序列作为 <code>input_ids</code>，经嵌入层和带因果掩码的 Transformer 得到隐藏状态。位置 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-536%22%2C%22code%22%3A%22t%22%7D"></card> 仅依赖真实前缀 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-537%22%2C%22code%22%3A%22x_%7B%5C%5Cle%20t%7D%22%7D"></card>，以 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-538%22%2C%22code%22%3A%22x_%7Bt%2B1%7D%22%7D"></card> 为监督目标，因此<strong>各位置的条件概率可在一次前向传播中并行计算</strong>。预训练与 SFT 均采用真实前缀进行预测</p>
+<p><strong>监督微调（SFT）。</strong> 仅监督回答时，提示词仍参与前向计算，标签设为 <code>-100</code>；回答及其结束标记保留真实 token ID。多轮对话按各段 assistant 回答构造监督掩码。<code>Qwen2ForCausalLM.forward</code> 将标签与预测错开一位。<code>response_mask</code> 标记回答及结束 token，<code>attention_mask</code> 排除填充，两者均与 <code>input_ids</code> 同形。<strong>标签掩码应用于原始 token 位置，错位操作在损失分支中执行</strong></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-539%22%2C%22code%22%3A%22labels%20%3D%20input_ids.clone()%5Cnlabels%5B~response_mask.bool()%20%7C%20~attention_mask.bool()%5D%20%3D%20-100%5Cn%5Cnfrom%20torch.nn%20import%20CrossEntropyLoss%5Cn%5Cnlogits%20%3D%20self.lm_head(hidden_states).float()%5Cnshift_logits%20%3D%20logits%5B...%2C%20%3A-1%2C%20%3A%5D.contiguous()%5Cnshift_labels%20%3D%20labels%5B...%2C%201%3A%5D.contiguous()%5Cnloss_fct%20%3D%20CrossEntropyLoss()%5Cnshift_logits%20%3D%20shift_logits.view(-1%2C%20self.config.vocab_size)%5Cnshift_labels%20%3D%20shift_labels.view(-1).to(shift_logits.device)%5Cnloss%20%3D%20loss_fct(shift_logits%2C%20shift_labels)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22Transformers%20%C2%B7%20Qwen2ForCausalLM.forward%22%7D"></card>
+</section><section class="lake-revised-section">
+<h1 id="-log-probability-computation">🐼 Log-Probability Computation</h1>
+<p>隐藏状态 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-540%22%2C%22code%22%3A%22h_t%22%7D"></card> 经 LM head 投影为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-541%22%2C%22code%22%3A%22z_t%3DWh_t%2Bb%22%7D"></card>。<strong style="color: #1d5ea6">目标 token 的 log-prob 等于目标 logit 与全词表 log-sum-exp 之差</strong></p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+\ln P_\theta(x_{t+1}\mid x_{\le t})
+&amp;=\operatorname{logsoftmax}(z_t)_{x_{t+1}}
+=\ln\frac{\exp(z_{t,x_{t+1}})}
+{\sum_{j=0}^{V-1}\exp(z_{t,j})}\\[4pt]
+&amp;=z_{t,x_{t+1}}-\ln\sum_{j=0}^{V-1}\exp(z_{t,j})
+=z_{t,x_{t+1}}-\ln\left[
+\exp(m_t)\sum_{j=0}^{V-1}\exp(z_{t,j}-m_t)\right]\\[4pt]
+&amp;=(z_{t,x_{t+1}}-m_t)-\ln\sum_{j=0}^{V-1}\exp(z_{t,j}-m_t),
+\qquad m_t=\max_j z_{t,j}.
+\end{aligned}\tag{41}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-542%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%5C%5Cln%20P_%5C%5Ctheta(x_%7Bt%2B1%7D%5C%5Cmid%20x_%7B%5C%5Cle%20t%7D)%5Cn%26%3D%5C%5Coperatorname%7Blogsoftmax%7D(z_t)_%7Bx_%7Bt%2B1%7D%7D%5Cn%3D%5C%5Cln%5C%5Cfrac%7B%5C%5Cexp(z_%7Bt%2Cx_%7Bt%2B1%7D%7D)%7D%5Cn%7B%5C%5Csum_%7Bj%3D0%7D%5E%7BV-1%7D%5C%5Cexp(z_%7Bt%2Cj%7D)%7D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%3Dz_%7Bt%2Cx_%7Bt%2B1%7D%7D-%5C%5Cln%5C%5Csum_%7Bj%3D0%7D%5E%7BV-1%7D%5C%5Cexp(z_%7Bt%2Cj%7D)%5Cn%3Dz_%7Bt%2Cx_%7Bt%2B1%7D%7D-%5C%5Cln%5C%5Cleft%5B%5Cn%5C%5Cexp(m_t)%5C%5Csum_%7Bj%3D0%7D%5E%7BV-1%7D%5C%5Cexp(z_%7Bt%2Cj%7D-m_t)%5C%5Cright%5D%5C%5C%5C%5C%5B4pt%5D%5Cn%26%3D(z_%7Bt%2Cx_%7Bt%2B1%7D%7D-m_t)-%5C%5Cln%5C%5Csum_%7Bj%3D0%7D%5E%7BV-1%7D%5C%5Cexp(z_%7Bt%2Cj%7D-m_t)%2C%5Cn%5C%5Cqquad%20m_t%3D%5C%5Cmax_j%20z_%7Bt%2Cj%7D.%5Cn%5C%5Cend%7Baligned%7D%5C%5Ctag%7B41%7D%5Cn%22%7D"></card></div>
+<p>式 (41) 将分子与分母同时除以 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-543%22%2C%22code%22%3A%22%5C%5Cexp(m_t)%22%7D"></card>，保持概率比值不变。对有限 logits，取 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-544%22%2C%22code%22%3A%22m_t%3D%5C%5Cmax_j%20z_%7Bt%2Cj%7D%22%7D"></card> 后，最大 logit 对应的指数项为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-545%22%2C%22code%22%3A%22%5C%5Cexp(0)%3D1%22%7D"></card>，其余指数项介于 0 与 1 之间，因此 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-546%22%2C%22code%22%3A%221%5C%5Cle%5C%5Csum_j%5C%5Cexp(z_%7Bt%2Cj%7D-m_t)%5C%5Cle%20V%22%7D"></card>。<strong>指数项不超过 1，避免单项指数上溢；指数和至少为 1，保证取对数时输入不为零。</strong>较小的指数项仍可能下溢，累加结果能否表示则取决于计算精度与词表大小</p>
+<p><strong>上溢与下溢区间。</strong> 以下区间针对 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-547%22%2C%22code%22%3A%22%5C%5Cexp(a)%22%7D"></card> 的结果写入相应格式，采用最近偶数舍入并保留次正规数，端点保留两位小数。上溢产生 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-548%22%2C%22code%22%3A%22%2B%5C%5Cinfty%22%7D"></card>；次正规数位于最小正规正数与零之间，仍可非零；继续减小 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-549%22%2C%22code%22%3A%22a%22%7D"></card>，结果最终舍入为零</p>
+<ul>
+<li><strong>FP16</strong>：<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-550%22%2C%22code%22%3A%22a%5C%5Cgtrsim11.09%22%7D"></card> 时上溢为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-551%22%2C%22code%22%3A%22%2B%5C%5Cinfty%22%7D"></card>；<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-552%22%2C%22code%22%3A%22-17.33%5C%5Clesssim%20a%5C%5Clesssim-9.70%22%7D"></card> 时为非零次正规数；<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-553%22%2C%22code%22%3A%22a%5C%5Clesssim-17.33%22%7D"></card> 时下溢为零</li>
+<li><strong>BF16</strong>：<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-554%22%2C%22code%22%3A%22a%5C%5Cgtrsim88.72%22%7D"></card> 时上溢为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-555%22%2C%22code%22%3A%22%2B%5C%5Cinfty%22%7D"></card>；<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-556%22%2C%22code%22%3A%22-92.88%5C%5Clesssim%20a%5C%5Clesssim-87.34%22%7D"></card> 时为非零次正规数；<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-557%22%2C%22code%22%3A%22a%5C%5Clesssim-92.88%22%7D"></card> 时下溢为零</li>
+<li><strong>FP32</strong>：<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-558%22%2C%22code%22%3A%22a%5C%5Cgtrsim88.72%22%7D"></card> 时上溢为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-559%22%2C%22code%22%3A%22%2B%5C%5Cinfty%22%7D"></card>；<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-560%22%2C%22code%22%3A%22-103.97%5C%5Clesssim%20a%5C%5Clesssim-87.34%22%7D"></card> 时为非零次正规数；<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-561%22%2C%22code%22%3A%22a%5C%5Clesssim-103.97%22%7D"></card> 时下溢为零</li>
+</ul>
+<!-- Format and rounding references: https://docs.nvidia.com/cuda/archive/13.3.0/cuda-programming-guide/05-appendices/mathematical-functions.html ; https://docs.pytorch.org/docs/2.15/type_info.html -->
+<p>若执行内核采用 <strong>flush-to-zero（FTZ）</strong>，次正规结果直接归零，下溢到零的边界会提前至最小正规数附近。区间应按指数项实际使用的格式判断，而非模型权重的存储格式；具体临界点还受输入量化与指数函数近似影响</p>
+<p><strong>归一化求和需要足够的表示范围。</strong> 若采用 FP16 求和，大词表的累加结果仍可能超过其最大有限值 65504。指数、归约与对数采用 FP32 可扩大计算范围，但仍需最大值平移；已经产生的 <code>inf</code> 或零值不能通过后续类型转换恢复</p>
+<p><strong>Liger-Kernel</strong> 将词表投影与损失计算融合，按 token 位置和词表两个维度分块。每次仅生成当前块的 logits，并立即更新归一化统计量、提取目标 logit；临时 logits 的存储规模由位置块与词表块的大小决定，从而避免保存完整的全序列词表矩阵。<strong>归一化仍覆盖全部类别，每个位置仅返回目标 log-prob 与供反向重计算使用的 log-sum-exp</strong></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-562%22%2C%22code%22%3A%22m%20%3D%20torch.full((h.shape%5B0%5D%2C)%2C%20-float(%5C%22inf%5C%22)%2C%20device%3Dh.device%2C%20dtype%3Dtorch.float32)%5Cnsum_exp%20%3D%20torch.zeros_like(m)%5Cntarget_z%20%3D%20torch.zeros_like(m)%5Cn%5Cnfor%20start%20in%20range(0%2C%20weight.shape%5B0%5D%2C%20vocab_chunk_size)%3A%5Cn%20%20%20%20end%20%3D%20min(start%20%2B%20vocab_chunk_size%2C%20weight.shape%5B0%5D)%5Cn%20%20%20%20z%20%3D%20(h%20%40%20weight%5Bstart%3Aend%5D.to(h.dtype).T).float()%5Cn%5Cn%20%20%20%20m_new%20%3D%20torch.maximum(m%2C%20z.amax(dim%3D-1))%5Cn%20%20%20%20sum_exp%20%3D%20sum_exp%20*%20torch.exp(m%20-%20m_new)%20%2B%20(%5Cn%20%20%20%20%20%20%20%20z%20-%20m_new.unsqueeze(-1)%5Cn%20%20%20%20).exp().sum(dim%3D-1)%5Cn%20%20%20%20m%20%3D%20m_new%5Cn%5Cn%20%20%20%20in_chunk%20%3D%20(targets%20%3E%3D%20start)%20%26%20(targets%20%3C%20end)%5Cn%20%20%20%20local_id%20%3D%20(targets%20-%20start).clamp(0%2C%20end%20-%20start%20-%201)%5Cn%20%20%20%20target_z%20%2B%3D%20z.gather(-1%2C%20local_id.unsqueeze(-1)).squeeze(-1)%20*%20in_chunk%5Cn%5Cnlog_z%20%3D%20m%20%2B%20sum_exp.log()%5Cnlog_prob%20%3D%20target_z%20-%20log_z%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22Liger-Kernel%20%C2%B7%20_selective_logprob_forward%22%7D"></card>
+<p>最大值由 <code>m</code> 更新为 <code>m_new</code> 时，已有指数和与新块采用不同的平移基准；乘以 <code>exp(m - m_new)</code> 将历史累积量转换到新基准，随后才能与当前块相加。遍历结束后，<code>target_z - log_z</code> 即为目标 log-prob。前向阶段保存每个位置的 <code>log_z</code>；反向阶段按块重新生成 logits，并结合上游梯度累加隐藏状态与投影权重的梯度，<strong>以重计算替代完整词表激活的长期保存</strong>。显存节省主要来自中间张量规模与存活时间的缩减</p>
+</section>

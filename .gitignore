@@ -1,0 +1,12 @@
+# Dependencies and generated output
+node_modules/
+dist/
+.cache/
+
+# Local logs and editor files
+*.log
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

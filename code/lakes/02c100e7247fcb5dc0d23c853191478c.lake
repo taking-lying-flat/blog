@@ -1,0 +1,450 @@
+<!doctype lake><title>Interleaved Rotary Position Embedding</title><meta name="reading-minutes" content="26"><section class="lake-revised-section">
+<h1 id="rope旋转位置编码">RoPE：旋转位置编码</h1>
+<p id="frequency"><code>RoPE</code>（<code>Rotary Position Embedding</code>）通过旋转 <code>Q/K</code> 特征，使 <code>attention</code> 内积包含相对位置信息。设旋转维度为偶数 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-563%22%2C%22code%22%3A%22d_r%22%7D"></card>，频率底数为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-564%22%2C%22code%22%3A%22%5C%5Cbeta%22%7D"></card>，位置为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-565%22%2C%22code%22%3A%22p%22%7D"></card>；第 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-566%22%2C%22code%22%3A%22i%22%7D"></card> 个二维子空间的角频率与旋转角为</p>
+<div class="equation" tabindex="0" role="math" aria-label="\omega_i=\beta^{-2i/d_r},\qquad
+\phi_{p,i}=p\omega_i,\qquad
+i=0,\ldots,\frac{d_r}{2}-1.
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-567%22%2C%22code%22%3A%22%5C%5Comega_i%3D%5C%5Cbeta%5E%7B-2i%2Fd_r%7D%2C%5C%5Cqquad%5Cn%5C%5Cphi_%7Bp%2Ci%7D%3Dp%5C%5Comega_i%2C%5C%5Cqquad%5Cni%3D0%2C%5C%5Cldots%2C%5C%5Cfrac%7Bd_r%7D%7B2%7D-1.%5Cn%22%7D"></card></div>
+<ul>
+<li><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-568%22%2C%22code%22%3A%22%5C%5Cbeta%22%7D"></card> 对应 <code>rope_theta</code>，源码变量名为 <code>base</code>，是生成频率序列的底数</li>
+<li>当 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-569%22%2C%22code%22%3A%22%5C%5Cbeta%3E1%22%7D"></card> 时，频率以公比 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-570%22%2C%22code%22%3A%22%5C%5Cbeta%5E%7B-2%2Fd_r%7D%22%7D"></card> 递减：<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-571%22%2C%22code%22%3A%22%5C%5Comega_0%3D1%22%7D"></card>，后续频率逐渐降低。增大 <code>base</code> 会拉长 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-572%22%2C%22code%22%3A%22i%3E0%22%7D"></card> 各分量的周期 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-573%22%2C%22code%22%3A%222%5C%5Cpi%2F%5C%5Comega_i%22%7D"></card></li>
+<li><code>inv_freq[i]</code> 表示第 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-574%22%2C%22code%22%3A%22i%22%7D"></card> 对旋转特征每单位位置的相位增量，实际旋转角为 <code>position_id * inv_freq[i]</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22configuration%22%2C%22code%22%3A%22%7B%5Cn%20%20%5C%22text_config%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22hidden_size%5C%22%3A%205120%2C%5Cn%20%20%20%20%5C%22num_attention_heads%5C%22%3A%2024%2C%5Cn%20%20%20%20%5C%22num_key_value_heads%5C%22%3A%204%2C%5Cn%20%20%20%20%5C%22head_dim%5C%22%3A%20256%2C%5Cn%20%20%20%20%5C%22max_position_embeddings%5C%22%3A%20262144%2C%5Cn%20%20%20%20%5C%22rope_parameters%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22rope_type%5C%22%3A%20%5C%22default%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22rope_theta%5C%22%3A%2010000000%2C%5Cn%20%20%20%20%20%20%5C%22partial_rotary_factor%5C%22%3A%200.25%2C%5Cn%20%20%20%20%20%20%5C%22mrope_interleaved%5C%22%3A%20true%2C%5Cn%20%20%20%20%20%20%5C%22mrope_section%5C%22%3A%20%5B11%2C%2011%2C%2010%5D%5Cn%20%20%20%20%7D%5Cn%20%20%7D%5Cn%7D%5Cn%22%2C%22language%22%3A%22json%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22RoPE%20%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fconfiguration_qwen3_5.py%23L29-L121%22%2C%22sourceLabel%22%3A%22Transformers%20%C2%B7%20%E9%85%8D%E7%BD%AE%E5%AE%9A%E4%B9%89%22%7D%7D"></card>
+<p>源码采用 <code>[B,H,T,d_h]</code> 布局：<code>B</code> 为 <code>batch size</code>，<code>T</code> 为当前输入长度，<code>Q/K</code> 的 <code>head</code> 数分别为 <code>24/4</code>；<code>head_dim</code> 为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-576%22%2C%22code%22%3A%22d_h%3D256%22%7D"></card>，旋转比例 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-577%22%2C%22code%22%3A%22r%3D0.25%22%7D"></card>，故 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-578%22%2C%22code%22%3A%22d_r%3D%5C%5Clfloor%20d_h%20r%5C%5Crfloor%3D64%22%7D"></card></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-579%22%2C%22code%22%3A%22Q%20%2F%20K%20%20%20%20%20%20%20%20%20%20%20%20%5BB%2C%2024%2C%20T%2C%20256%5D%20%2F%20%5BB%2C%204%2C%20T%2C%20256%5D%5Cnposition_ids%20%20%20%20%20%5BB%2C%20T%5D%5Cninv_freq%20%20%20%20%20%20%20%20%20%5B32%5D%5Cn%E7%9B%B8%E4%BD%8D%20%CE%A6%20%20%20%20%20%20%20%20%20%20%20%5BB%2C%20T%2C%2032%5D%5Cncos%20%2F%20sin%20%20%20%20%20%20%20%20%5BB%2C%20T%2C%2064%5D%20%E2%86%92%20unsqueeze(1)%20%E2%86%92%20%5BB%2C%201%2C%20T%2C%2064%5D%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22Q%2FK%20%E4%B8%8E%E6%97%8B%E8%BD%AC%E9%A2%91%E7%8E%87%E7%BB%B4%E5%BA%A6%22%7D%7D"></card>
+<p>先由 <code>Qwen3_5TextRotaryEmbedding.compute_default_rope_parameters()</code> 计算 32 个频率</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-580%22%2C%22code%22%3A%22base%20%3D%20config.rope_parameters%5B%5C%22rope_theta%5C%22%5D%5Cnpartial_rotary_factor%20%3D%20config.rope_parameters.get(%5C%22partial_rotary_factor%5C%22%2C%201.0)%5Cnhead_dim%20%3D%20(%5Cn%20%20%20%20getattr(config%2C%20%5C%22head_dim%5C%22%2C%20None)%5Cn%20%20%20%20or%20config.hidden_size%20%2F%2F%20config.num_attention_heads%5Cn)%5Cndim%20%3D%20int(head_dim%20*%20partial_rotary_factor)%5Cn%5Cnattention_factor%20%3D%201.0%5Cninv_freq%20%3D%201.0%20%2F%20(base%20**%20(torch.arange(0%2C%20dim%2C%202%2C%20dtype%3Dtorch.float)%20%2F%20dim))%5Cnreturn%20inv_freq.to(device)%2C%20attention_factor%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E7%94%9F%E6%88%90%E6%97%8B%E8%BD%AC%E9%A2%91%E7%8E%87%22%2C%22sourceLabel%22%3A%22Transformers%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L164-L184%22%7D%7D"></card>
+<ul>
+<li><code>arange(0,64,2)/64</code> 生成指数 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-581%22%2C%22code%22%3A%22%5B0%2C1%2F32%2C%5C%5Cldots%2C31%2F32%5D%22%7D"></card>，得到 <code>inv_freq</code> 为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-582%22%2C%22code%22%3A%22%5B1%2C10%5E%7B-7%2F32%7D%2C%5C%5Cldots%2C10%5E%7B-217%2F32%7D%5D%22%7D"></card></li>
+<li>频率按旋转维度 <code>64</code> 直接计算，而非从全维 <code>RoPE</code> 中截取</li>
+</ul>
+<p id="rotation"><code>RoFormer</code> §3.2.1 式（13）先给出二维形式。只写 <code>Q</code> 分支，以 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-583%22%2C%22code%22%3A%22%5C%5Cmathbf%20q_m%22%7D"></card> 表示旋转前的 <code>Q</code>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-584%22%2C%22code%22%3A%22%5C%5Cwidetilde%7B%5C%5Cmathbf%20q%7D_m%22%7D"></card> 表示旋转后的 <code>Q</code></p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+\widetilde{\mathbf q}_m&amp;=f_q(\mathbf x_m,m)\\
+&amp;=
+\begin{bmatrix}
+\cos(m\omega)&amp;-\sin(m\omega)\\
+\sin(m\omega)&amp;\cos(m\omega)
+\end{bmatrix}
+\begin{bmatrix}
+W_q^{(11)}&amp;W_q^{(12)}\\
+W_q^{(21)}&amp;W_q^{(22)}
+\end{bmatrix}
+\begin{bmatrix}x_m^{(1)}\\x_m^{(2)}\end{bmatrix}\\
+&amp;=R(m\omega)\mathbf q_m,
+\qquad \mathbf q_m=W_q\mathbf x_m.
+\end{aligned}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-585%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%5C%5Cwidetilde%7B%5C%5Cmathbf%20q%7D_m%26%3Df_q(%5C%5Cmathbf%20x_m%2Cm)%5C%5C%5C%5C%5Cn%26%3D%5Cn%5C%5Cbegin%7Bbmatrix%7D%5Cn%5C%5Ccos(m%5C%5Comega)%26-%5C%5Csin(m%5C%5Comega)%5C%5C%5C%5C%5Cn%5C%5Csin(m%5C%5Comega)%26%5C%5Ccos(m%5C%5Comega)%5Cn%5C%5Cend%7Bbmatrix%7D%5Cn%5C%5Cbegin%7Bbmatrix%7D%5CnW_q%5E%7B(11)%7D%26W_q%5E%7B(12)%7D%5C%5C%5C%5C%5CnW_q%5E%7B(21)%7D%26W_q%5E%7B(22)%7D%5Cn%5C%5Cend%7Bbmatrix%7D%5Cn%5C%5Cbegin%7Bbmatrix%7Dx_m%5E%7B(1)%7D%5C%5C%5C%5Cx_m%5E%7B(2)%7D%5C%5Cend%7Bbmatrix%7D%5C%5C%5C%5C%5Cn%26%3DR(m%5C%5Comega)%5C%5Cmathbf%20q_m%2C%5Cn%5C%5Cqquad%20%5C%5Cmathbf%20q_m%3DW_q%5C%5Cmathbf%20x_m.%5Cn%5C%5Cend%7Baligned%7D%5Cn%22%7D"></card></div>
+<ul>
+<li>从右向左计算：输入 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-586%22%2C%22code%22%3A%22%5C%5Cmathbf%20x_m%22%7D"></card> 先经 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-587%22%2C%22code%22%3A%22W_q%22%7D"></card> 投影得到 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-588%22%2C%22code%22%3A%22%5C%5Cmathbf%20q_m%22%7D"></card>，再乘旋转矩阵得到 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-589%22%2C%22code%22%3A%22%5C%5Cwidetilde%7B%5C%5Cmathbf%20q%7D_m%22%7D"></card>。角频率统一记为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-590%22%2C%22code%22%3A%22%5C%5Comega%22%7D"></card>，对应某一通道对的 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-591%22%2C%22code%22%3A%22%5C%5Comega_i%22%7D"></card>；<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-592%22%2C%22code%22%3A%22m%5C%5Comega%22%7D"></card> 是位置乘频率</li>
+<li>对应到 <code>Qwen3.5</code>，取一个 <code>token</code>、一个 <code>head</code> 传入 <code>RoPE</code> 的 <code>Q</code> 向量 <code>q</code>（已完成投影和 <code>Q norm</code>）。设位置 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-593%22%2C%22code%22%3A%22p%3D1%22%7D"></card>，<code>q[0]=1</code>、<code>q[32]=2</code>；这对通道的频率 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-594%22%2C%22code%22%3A%22%5C%5Comega_0%3D1%22%7D"></card>，因此</li>
+</ul>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{bmatrix}\widetilde q_0\\\widetilde q_{32}\end{bmatrix}
+=
+\begin{bmatrix}\cos 1&amp;-\sin 1\\\sin 1&amp;\cos 1\end{bmatrix}
+\begin{bmatrix}1\\2\end{bmatrix}
+\approx
+\begin{bmatrix}-1.142640\\1.922076\end{bmatrix}.
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-595%22%2C%22code%22%3A%22%5C%5Cbegin%7Bbmatrix%7D%5C%5Cwidetilde%20q_0%5C%5C%5C%5C%5C%5Cwidetilde%20q_%7B32%7D%5C%5Cend%7Bbmatrix%7D%5Cn%3D%5Cn%5C%5Cbegin%7Bbmatrix%7D%5C%5Ccos%201%26-%5C%5Csin%201%5C%5C%5C%5C%5C%5Csin%201%26%5C%5Ccos%201%5C%5Cend%7Bbmatrix%7D%5Cn%5C%5Cbegin%7Bbmatrix%7D1%5C%5C%5C%5C2%5C%5Cend%7Bbmatrix%7D%5Cn%5C%5Capprox%5Cn%5C%5Cbegin%7Bbmatrix%7D-1.142640%5C%5C%5C%5C1.922076%5C%5Cend%7Bbmatrix%7D.%5Cn%22%7D"></card></div>
+<ul>
+<li>结果已经是旋转后 <code>Q</code> 的第 0、32 维。其余 31 对同样计算，再接回未旋转的后 192 维，得到完整的 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-596%22%2C%22code%22%3A%22%5C%5Cwidetilde%7B%5C%5Cmathbf%20q%7D_p%3D%5C%5Cwidehat%20R_p%5C%5Cmathbf%20q_p%5C%5Cin%5C%5Cmathbb%20R%5E%7B256%7D%22%7D"></card>；<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-597%22%2C%22code%22%3A%22%5C%5Cwidehat%20R_p%22%7D"></card> 的完整矩阵见下文。<code>K</code> 同理，随后用旋转后的 <code>Q/K</code> 计算 <code>attention</code> 内积。同一 <code>token</code> 的各 <code>head</code> 复用 <code>cos/sin</code>，分别旋转各自的 <code>Q/K</code> 数值</li>
+</ul>
+<p id="relative-position"><code>RoFormer</code> 式（15）对全部 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-598%22%2C%22code%22%3A%22d%22%7D"></card> 维旋转。令 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-599%22%2C%22code%22%3A%22F%3Dd%2F2%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-600%22%2C%22code%22%3A%22%5C%5Cphi_i%3Dp%5C%5Cbeta%5E%7B-2i%2Fd%7D%22%7D"></card>，以从 0 开始的索引写为</p>
+<div class="equation" tabindex="0" role="math" aria-label="R_p^{(d)}=
+\begin{pmatrix}
+\cos\phi_0&amp;-\sin\phi_0&amp;0&amp;0&amp;\cdots&amp;0&amp;0\\
+\sin\phi_0&amp; \cos\phi_0&amp;0&amp;0&amp;\cdots&amp;0&amp;0\\
+0&amp;0&amp;\cos\phi_1&amp;-\sin\phi_1&amp;\cdots&amp;0&amp;0\\
+0&amp;0&amp;\sin\phi_1&amp; \cos\phi_1&amp;\cdots&amp;0&amp;0\\
+\vdots&amp;\vdots&amp;\vdots&amp;\vdots&amp;\ddots&amp;\vdots&amp;\vdots\\
+0&amp;0&amp;0&amp;0&amp;\cdots&amp;\cos\phi_{F-1}&amp;-\sin\phi_{F-1}\\
+0&amp;0&amp;0&amp;0&amp;\cdots&amp;\sin\phi_{F-1}&amp; \cos\phi_{F-1}
+\end{pmatrix}
+\in\mathbb R^{d\times d}.
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-601%22%2C%22code%22%3A%22R_p%5E%7B(d)%7D%3D%5Cn%5C%5Cbegin%7Bpmatrix%7D%5Cn%5C%5Ccos%5C%5Cphi_0%26-%5C%5Csin%5C%5Cphi_0%260%260%26%5C%5Ccdots%260%260%5C%5C%5C%5C%5Cn%5C%5Csin%5C%5Cphi_0%26%20%5C%5Ccos%5C%5Cphi_0%260%260%26%5C%5Ccdots%260%260%5C%5C%5C%5C%5Cn0%260%26%5C%5Ccos%5C%5Cphi_1%26-%5C%5Csin%5C%5Cphi_1%26%5C%5Ccdots%260%260%5C%5C%5C%5C%5Cn0%260%26%5C%5Csin%5C%5Cphi_1%26%20%5C%5Ccos%5C%5Cphi_1%26%5C%5Ccdots%260%260%5C%5C%5C%5C%5Cn%5C%5Cvdots%26%5C%5Cvdots%26%5C%5Cvdots%26%5C%5Cvdots%26%5C%5Cddots%26%5C%5Cvdots%26%5C%5Cvdots%5C%5C%5C%5C%5Cn0%260%260%260%26%5C%5Ccdots%26%5C%5Ccos%5C%5Cphi_%7BF-1%7D%26-%5C%5Csin%5C%5Cphi_%7BF-1%7D%5C%5C%5C%5C%5Cn0%260%260%260%26%5C%5Ccdots%26%5C%5Csin%5C%5Cphi_%7BF-1%7D%26%20%5C%5Ccos%5C%5Cphi_%7BF-1%7D%5Cn%5C%5Cend%7Bpmatrix%7D%5Cn%5C%5Cin%5C%5Cmathbb%20R%5E%7Bd%5C%5Ctimes%20d%7D.%5Cn%22%7D"></card></div>
+<ul>
+<li>每个 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-602%22%2C%22code%22%3A%222%5C%5Ctimes2%22%7D"></card> 块作用于 <code>Q</code> 的相邻分量 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-603%22%2C%22code%22%3A%22(q_%7B2i%7D%2Cq_%7B2i%2B1%7D)%22%7D"></card>，<code>K</code> 同理；整体为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-604%22%2C%22code%22%3A%22%5C%5Coperatorname%7Bdiag%7D(R(%5C%5Cphi_0)%2C%5C%5Cldots%2CR(%5C%5Cphi_%7BF-1%7D))%22%7D"></card>。式（14）定义 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-605%22%2C%22code%22%3A%22%5C%5Cwidetilde%7B%5C%5Cmathbf%20q%7D_m%3DR_m%5E%7B(d)%7DW_q%5C%5Cmathbf%20x_m%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-606%22%2C%22code%22%3A%22%5C%5Cwidetilde%7B%5C%5Cmathbf%20k%7D_n%3DR_n%5E%7B(d)%7DW_k%5C%5Cmathbf%20x_n%22%7D"></card>；记投影结果为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-607%22%2C%22code%22%3A%22%5C%5Cmathbf%20q_m%2C%5C%5Cmathbf%20k_n%22%7D"></card>，由 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-608%22%2C%22code%22%3A%22R_m%5E%5C%5Ctop%20R_n%3DR_%7Bn-m%7D%22%7D"></card> 得到相对位置内积</li>
+</ul>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+\widetilde{\mathbf q}_m^\top\widetilde{\mathbf k}_n
+&amp;=(R_m\mathbf q_m)^\top(R_n\mathbf k_n)\\
+&amp;=\mathbf q_m^\top R_m^\top R_n\mathbf k_n\\
+&amp;=\mathbf q_m^\top R_{n-m}\mathbf k_n.
+\end{aligned}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-609%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%5C%5Cwidetilde%7B%5C%5Cmathbf%20q%7D_m%5E%5C%5Ctop%5C%5Cwidetilde%7B%5C%5Cmathbf%20k%7D_n%5Cn%26%3D(R_m%5C%5Cmathbf%20q_m)%5E%5C%5Ctop(R_n%5C%5Cmathbf%20k_n)%5C%5C%5C%5C%5Cn%26%3D%5C%5Cmathbf%20q_m%5E%5C%5Ctop%20R_m%5E%5C%5Ctop%20R_n%5C%5Cmathbf%20k_n%5C%5C%5C%5C%5Cn%26%3D%5C%5Cmathbf%20q_m%5E%5C%5Ctop%20R_%7Bn-m%7D%5C%5Cmathbf%20k_n.%5Cn%5C%5Cend%7Baligned%7D%5Cn%22%7D"></card></div>
+<p id="partial-rope"><code>Qwen3.5</code> 的 <code>partial RoPE</code> 是分块正交变换：前 64 维参与旋转，后 192 维由单位映射保留</p>
+<ul>
+<li>令 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-610%22%2C%22code%22%3A%22D_c(p)%3D%5C%5Coperatorname%7Bdiag%7D(%5C%5Ccos%5C%5Cphi_%7Bp%2C0%7D%2C%5C%5Cldots%2C%5C%5Ccos%5C%5Cphi_%7Bp%2C31%7D)%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-611%22%2C%22code%22%3A%22D_s(p)%3D%5C%5Coperatorname%7Bdiag%7D(%5C%5Csin%5C%5Cphi_%7Bp%2C0%7D%2C%5C%5Cldots%2C%5C%5Csin%5C%5Cphi_%7Bp%2C31%7D)%22%7D"></card>，其中 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-612%22%2C%22code%22%3A%22%5C%5Cphi_%7Bp%2Ci%7D%3Dp%5C%5Cbeta%5E%7B-2i%2F64%7D%22%7D"></card>，则</li>
+</ul>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{gathered}
+\widehat R_p=
+\left(
+\begin{array}{cc|c}
+D_c(p)&amp;-D_s(p)&amp;0\\
+D_s(p)&amp; D_c(p)&amp;0\\\hline
+0&amp;0&amp;I_{192}
+\end{array}
+\right),\\[6pt]
+\widetilde{\mathbf q}_p=\widehat R_p\mathbf q_p,
+\qquad
+\widetilde{\mathbf k}_p=\widehat R_p\mathbf k_p.
+\end{gathered}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-613%22%2C%22code%22%3A%22%5C%5Cbegin%7Bgathered%7D%5Cn%5C%5Cwidehat%20R_p%3D%5Cn%5C%5Cleft(%5Cn%5C%5Cbegin%7Barray%7D%7Bcc%7Cc%7D%5CnD_c(p)%26-D_s(p)%260%5C%5C%5C%5C%5CnD_s(p)%26%20D_c(p)%260%5C%5C%5C%5C%5C%5Chline%5Cn0%260%26I_%7B192%7D%5Cn%5C%5Cend%7Barray%7D%5Cn%5C%5Cright)%2C%5C%5C%5C%5C%5B6pt%5D%5Cn%5C%5Cwidetilde%7B%5C%5Cmathbf%20q%7D_p%3D%5C%5Cwidehat%20R_p%5C%5Cmathbf%20q_p%2C%5Cn%5C%5Cqquad%5Cn%5C%5Cwidetilde%7B%5C%5Cmathbf%20k%7D_p%3D%5C%5Cwidehat%20R_p%5C%5Cmathbf%20k_p.%5Cn%5C%5Cend%7Bgathered%7D%5Cn%22%7D"></card></div>
+<ul>
+<li>左上角的 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-614%22%2C%22code%22%3A%2264%5C%5Ctimes64%22%7D"></card> 旋转块记为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-615%22%2C%22code%22%3A%22%5C%5Cmathcal%20R_p%22%7D"></card>，通过固定的通道置换与论文的块对角矩阵对应。旋转在 <code>attention</code> 内积之前分别作用于 <code>Q</code> 和 <code>K</code>，只在各自的成对通道内作线性组合，保持向量范数，不含平移项；旋转通道与保留通道之间没有交叉混合</li>
+<li>完整 <code>head</code> 在添加 <code>mask</code> 前的 <code>attention score</code> 因而分解为</li>
+</ul>
+<div class="equation" tabindex="0" role="math" aria-label="s_{mn}=\frac{
+(\mathbf q_m^{\mathrm{rot}})^\top \mathcal R_{n-m}\mathbf k_n^{\mathrm{rot}}
++(\mathbf q_m^{\mathrm{pass}})^\top\mathbf k_n^{\mathrm{pass}}
+}{\sqrt{d_h}}.
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-616%22%2C%22code%22%3A%22s_%7Bmn%7D%3D%5C%5Cfrac%7B%5Cn(%5C%5Cmathbf%20q_m%5E%7B%5C%5Cmathrm%7Brot%7D%7D)%5E%5C%5Ctop%20%5C%5Cmathcal%20R_%7Bn-m%7D%5C%5Cmathbf%20k_n%5E%7B%5C%5Cmathrm%7Brot%7D%7D%5Cn%2B(%5C%5Cmathbf%20q_m%5E%7B%5C%5Cmathrm%7Bpass%7D%7D)%5E%5C%5Ctop%5C%5Cmathbf%20k_n%5E%7B%5C%5Cmathrm%7Bpass%7D%7D%5Cn%7D%7B%5C%5Csqrt%7Bd_h%7D%7D.%5Cn%22%7D"></card></div>
+<ul>
+<li>第一项通过 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-617%22%2C%22code%22%3A%22%5C%5Cmathcal%20R_%7Bn-m%7D%22%7D"></card> 引入相对位置，第二项是保留通道的普通内积；两项共同构成 <code>attention score</code>。完整的 256 维 <code>K</code> 均写入 <code>cache</code></li>
+</ul>
+<p id="implementation">对普通 <code>RoPE</code>，位置张量为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-618%22%2C%22code%22%3A%22P%5C%5Cin%5C%5Cmathbb%20Z%5E%7BB%5C%5Ctimes%20T%7D%22%7D"></card>，其中 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-619%22%2C%22code%22%3A%22P_%7Bb%2Ct%7D%22%7D"></card> 保存第 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-620%22%2C%22code%22%3A%22b%22%7D"></card> 个样本中第 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-621%22%2C%22code%22%3A%22t%22%7D"></card> 个 <code>token</code> 的位置编号。每个位置与 32 个频率分别相乘，得到该 <code>token</code> 的 32 个旋转角</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{gathered}
+\Phi_{b,t,i}=P_{b,t}\omega_i,\qquad
+\Phi\in\mathbb R^{B\times T\times(d_r/2)},\\[6pt]
+C=[\cos\Phi,\cos\Phi],\quad S=[\sin\Phi,\sin\Phi].
+\end{gathered}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-622%22%2C%22code%22%3A%22%5C%5Cbegin%7Bgathered%7D%5Cn%5C%5CPhi_%7Bb%2Ct%2Ci%7D%3DP_%7Bb%2Ct%7D%5C%5Comega_i%2C%5C%5Cqquad%5Cn%5C%5CPhi%5C%5Cin%5C%5Cmathbb%20R%5E%7BB%5C%5Ctimes%20T%5C%5Ctimes(d_r%2F2)%7D%2C%5C%5C%5C%5C%5B6pt%5D%5CnC%3D%5B%5C%5Ccos%5C%5CPhi%2C%5C%5Ccos%5C%5CPhi%5D%2C%5C%5Cquad%20S%3D%5B%5C%5Csin%5C%5CPhi%2C%5C%5Csin%5C%5CPhi%5D.%5Cn%5C%5Cend%7Bgathered%7D%5Cn%22%7D"></card></div>
+<ul>
+<li><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-623%22%2C%22code%22%3A%22%5C%5CPhi%22%7D"></card> 保存旋转角，本例形状为 <code>[B,T,32]</code>；<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-624%22%2C%22code%22%3A%22C%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-625%22%2C%22code%22%3A%22S%22%7D"></card> 保存对应的 <code>cos/sin</code> 系数。方括号表示沿最后一维拼接，使 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-626%22%2C%22code%22%3A%22C%2FS%22%7D"></card> 的形状成为 <code>[B,T,64]</code>：第 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-627%22%2C%22code%22%3A%22i%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-628%22%2C%22code%22%3A%22i%2B32%22%7D"></card> 个通道属于同一旋转对，因而需要相同的系数。<code>unsqueeze(1)</code> 再将系数变为 <code>[B,1,T,64]</code>，供同一 <code>token</code> 的所有 <code>Q/K head</code> 复用</li>
+<li>固定一个 <code>token</code> 和一个 <code>head</code>，记 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-629%22%2C%22code%22%3A%22p%3DP_%7Bb%2Ct%7D%22%7D"></card>。源码将二维旋转矩阵的乘法展开为逐元素乘加，第 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-630%22%2C%22code%22%3A%22i%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-631%22%2C%22code%22%3A%22i%2B32%22%7D"></card> 个通道的输出为</li>
+</ul>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+\widetilde q_i&amp;=q_i\cos(p\omega_i)-q_{i+32}\sin(p\omega_i),\\
+\widetilde q_{i+32}&amp;=q_i\sin(p\omega_i)+q_{i+32}\cos(p\omega_i),
+\qquad i=0,\ldots,31.
+\end{aligned}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-632%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%5C%5Cwidetilde%20q_i%26%3Dq_i%5C%5Ccos(p%5C%5Comega_i)-q_%7Bi%2B32%7D%5C%5Csin(p%5C%5Comega_i)%2C%5C%5C%5C%5C%5Cn%5C%5Cwidetilde%20q_%7Bi%2B32%7D%26%3Dq_i%5C%5Csin(p%5C%5Comega_i)%2Bq_%7Bi%2B32%7D%5C%5Ccos(p%5C%5Comega_i)%2C%5Cn%5C%5Cqquad%20i%3D0%2C%5C%5Cldots%2C31.%5Cn%5C%5Cend%7Baligned%7D%5Cn%22%7D"></card></div>
+<ul>
+<li><code>rotate_half(q_rot)</code> 在这两个位置分别提供 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-633%22%2C%22code%22%3A%22-q_%7Bi%2B32%7D%22%7D"></card> 和 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-634%22%2C%22code%22%3A%22q_i%22%7D"></card>；乘以 <code>sin</code> 后，再加上 <code>q_rot * cos</code>，就得到上式。<code>cos</code>、<code>sin</code> 对应广播后的 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-635%22%2C%22code%22%3A%22C%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-636%22%2C%22code%22%3A%22S%22%7D"></card>，<code>K</code> 的计算相同</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-637%22%2C%22code%22%3A%22def%20rotate_half(x)%3A%5Cn%20%20%20%20x1%20%3D%20x%5B...%2C%20%3A%20x.shape%5B-1%5D%20%2F%2F%202%5D%5Cn%20%20%20%20x2%20%3D%20x%5B...%2C%20x.shape%5B-1%5D%20%2F%2F%202%20%3A%5D%5Cn%20%20%20%20return%20torch.cat((-x2%2C%20x1)%2C%20dim%3D-1)%5Cn%5Cn%5Cndef%20apply_rotary_pos_emb(q%2C%20k%2C%20cos%2C%20sin%2C%20unsqueeze_dim%3D1)%3A%5Cn%20%20%20%20cos%20%3D%20cos.unsqueeze(unsqueeze_dim)%5Cn%20%20%20%20sin%20%3D%20sin.unsqueeze(unsqueeze_dim)%5Cn%5Cn%20%20%20%20%23%20Keep%20half%20or%20full%20tensor%20for%20later%20concatenation%5Cn%20%20%20%20rotary_dim%20%3D%20cos.shape%5B-1%5D%5Cn%20%20%20%20q_rot%2C%20q_pass%20%3D%20q%5B...%2C%20%3Arotary_dim%5D%2C%20q%5B...%2C%20rotary_dim%3A%5D%5Cn%20%20%20%20k_rot%2C%20k_pass%20%3D%20k%5B...%2C%20%3Arotary_dim%5D%2C%20k%5B...%2C%20rotary_dim%3A%5D%5Cn%5Cn%20%20%20%20%23%20Apply%20rotary%20embeddings%20on%20the%20first%20half%20or%20full%20tensor%5Cn%20%20%20%20q_embed%20%3D%20(q_rot%20*%20cos)%20%2B%20(rotate_half(q_rot)%20*%20sin)%5Cn%20%20%20%20k_embed%20%3D%20(k_rot%20*%20cos)%20%2B%20(rotate_half(k_rot)%20*%20sin)%5Cn%5Cn%20%20%20%20%23%20Concatenate%20back%20to%20full%20shape%5Cn%20%20%20%20q_embed%20%3D%20torch.cat(%5Bq_embed%2C%20q_pass%5D%2C%20dim%3D-1)%5Cn%20%20%20%20k_embed%20%3D%20torch.cat(%5Bk_embed%2C%20k_pass%5D%2C%20dim%3D-1)%5Cn%20%20%20%20return%20q_embed%2C%20k_embed%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%97%8B%E8%BD%AC%20Q%2FK%20%E7%89%B9%E5%BE%81%22%2C%22sourceLabel%22%3A%22Transformers%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L666-L709%22%7D%7D"></card>
+</section><section class="lake-revised-section">
+<h1 id="交错多模态旋转位置编码interleaved-mrope流程">交错多模态旋转位置编码（Interleaved MRoPE）流程</h1>
+<ol>
+<li><strong>准备混合序列与 <code>mm_tokens</code></strong>：处理器展开媒体占位，<code>input_ids</code> 记录各槽位的词表编号，<code>mm_token_type_ids</code> 标记模态；对应的媒体特征随后填入占位，与文本嵌入组成内容序列</li>
+<li><strong>生成三轴位置</strong>：<code>get_rope_index()</code> 根据模态类型、视觉网格和有效槽位生成 <code>T/H/W</code> 坐标；位置表的每一列与同一 token 的内容向量对应，提供其旋转所需的位置因子</li>
+<li><strong>计算三轴候选系数</strong>：三轴坐标分别乘共享频率 <code>inv_freq</code>，将位置因子转换为旋转角，再求 <code>cos/sin</code>，为每对通道准备来自三个轴的候选系数</li>
+<li><strong>按通道对交错选轴</strong>：按 <code>mrope_section</code> 规定的数量，沿频率下标将通道对交错分配给 <code>T/H/W</code>；每对只保留对应轴的系数，最终得到 32 组确定的旋转系数</li>
+<li><strong>旋转 Q/K 的成对通道</strong>：将 32 组系数复制到 64 个旋转通道，使 <code>(i,i+32)</code> 共用一个角度；各注意力头据此旋转投影、归一化后的 <code>Q/K</code>，结果用于注意力内积</li>
+</ol>
+<h2 id="mm_tokens混合序列与模态类型">mm_tokens：混合序列与模态类型</h2>
+<ul>
+<li>
+<p><strong>媒体槽位与类型编号</strong>：<code>mm_tokens</code> 指混合序列中的媒体占位 token。用 <code>Qwen3-Omni</code> 的文本、图片、视频、音频四种输入模态举例，可以按 <code>0/1/2/3</code> 标记每个槽位</p>
+<div class="table-scroll" role="region" aria-label="表格" tabindex="0"><table>
+<thead>
+<tr>
+<th>类型编号</th>
+<th>槽位内容</th>
+<th>填入语言模型的向量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td>文本、消息标记、媒体起止标记</td>
+<td>token 的文本嵌入</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td>图片占位</td>
+<td>图片编码器输出的特征</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td>视频占位</td>
+<td>视频帧的视觉特征</td>
+</tr>
+<tr>
+<td><code>3</code></td>
+<td>音频占位</td>
+<td>音频编码器输出的特征</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>input_ids</code> 保存词表编号；类型编号只标记这个槽位属于哪种模态。例如一段文本后接图片区段，再接文本、视频和音频，类型可以写成 <code>0,0,1,1,1,1,0,2,2,0,3,3,3,0</code>；连续的多个 <code>1</code> 表示同一图片区段中的多个特征槽位。<code>Qwen3.5</code> 使用文本、图片、视频三类，类型为 <code>0/1/2</code>，由 <code>mm_token_type_ids: [B,L]</code> 逐槽位传给 <code>get_rope_index()</code></p>
+</li>
+<li>
+<p><strong>类型按占位编号生成</strong>：<code>create_mm_token_type_ids()</code> 先把整条序列设为 <code>0</code>，再按图片、视频、音频占位的词表编号赋值</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-638%22%2C%22code%22%3A%22tokenizer_input%20%3D%20np.array(tokenizer_input)%5Cnmm_token_types%20%3D%20np.zeros_like(tokenizer_input)%5Cnmm_token_types%5Bnp.isin(tokenizer_input%2C%20self.image_token_ids)%5D%20%3D%201%5Cnmm_token_types%5Bnp.isin(tokenizer_input%2C%20self.video_token_ids)%5D%20%3D%202%5Cnmm_token_types%5Bnp.isin(tokenizer_input%2C%20self.audio_token_ids)%5D%20%3D%203%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E7%94%9F%E6%88%90%E5%A4%9A%E6%A8%A1%E6%80%81%20Token%20%E7%B1%BB%E5%9E%8B%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fprocessing_utils.py%23L925-L955%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li>
+<p><strong>处理器准备槽位与类型</strong>：<code>processor.apply_chat_template(messages, tokenize=True, return_dict=True, return_tensors=&quot;pt&quot;)</code> 按消息中的 <code>type</code> 渲染媒体标记，再由 <code>Qwen3VLProcessor</code> 按视觉特征数量展开占位。图片对应连续的 <code>&lt;|image_pad|&gt;</code>；视频按时间片展开，每片带文本时间戳和连续的 <code>&lt;|video_pad|&gt;</code>。<code>B/L/D</code> 分别表示批大小、补齐后的序列长度和隐藏维度</p>
+<div class="table-scroll" role="region" aria-label="表格" tabindex="0"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>结构</th>
+<th>与位置表的关系</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input_ids</code></td>
+<td><code>[B,L]</code></td>
+<td>确定混合序列的槽位顺序</td>
+</tr>
+<tr>
+<td><code>mm_token_type_ids</code></td>
+<td><code>[B,L]</code></td>
+<td>文本 <code>0</code>、图片 <code>1</code>、视频 <code>2</code>，决定每段如何分配坐标</td>
+</tr>
+<tr>
+<td><code>image_grid_thw</code> / <code>video_grid_thw</code></td>
+<td><code>[媒体数量,3]</code></td>
+<td>提供视觉网格的时间、高度、宽度</td>
+</tr>
+<tr>
+<td><code>attention_mask</code></td>
+<td><code>[B,L]</code></td>
+<td>标明有效槽位，排除批处理补齐位置</td>
+</tr>
+<tr>
+<td><code>inputs_embeds</code></td>
+<td><code>[B,L,D]</code></td>
+<td>保存各槽位的文本嵌入或视觉特征</td>
+</tr>
+<tr>
+<td><code>position_ids</code></td>
+<td><code>[3,B,L]</code></td>
+<td>为同一槽位提供 <code>T/H/W</code> 三个坐标</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+<li><strong>区分媒体占位和补齐</strong>：<code>&lt;|image_pad|&gt;</code>、<code>&lt;|video_pad|&gt;</code> 是有效媒体槽位，不是 padding 或 EOS token，<code>attention_mask</code> 为 <code>1</code>。<code>Qwen3.5-27B</code> 的 padding token 是 <code>&lt;|endoftext|&gt;</code>，tokenizer 的 EOS 是 <code>&lt;|im_end|&gt;</code>；生成配置把两者都列为停止 token。时间戳、消息标记和 <code>&lt;|vision_start|&gt;/&lt;|vision_end|&gt;</code> 的媒体类型均为 <code>0</code>，按文本位置规则处理</li>
+</ul>
+<h2 id="get_rope_index生成三维位置表">get_rope_index()：生成三维位置表</h2>
+<ul>
+<li>
+<p><strong>接口与输出</strong>：对 <code>Qwen3_5ForConditionalGeneration</code> 实例 <code>model</code>，调用 <code>model.model.get_rope_index()</code>；返回 <code>position_ids: [3,B,L]</code> 和 <code>rope_deltas: [B,1]</code>。<code>position_ids[:,b,l]</code> 是一个槽位的 <code>T/H/W</code> 三个坐标；函数只读取类型和网格，不读取像素</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-639%22%2C%22code%22%3A%22position_ids%2C%20rope_deltas%20%3D%20model.model.get_rope_index(%5Cn%20%20%20%20input_ids%3Dinput_ids%2C%5Cn%20%20%20%20mm_token_type_ids%3Dmm_token_type_ids%2C%5Cn%20%20%20%20image_grid_thw%3Dimage_grid_thw%2C%5Cn%20%20%20%20video_grid_thw%3Dvideo_grid_thw%2C%5Cn%20%20%20%20attention_mask%3Dattention_mask%2C%5Cn)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%B0%83%E7%94%A8%E4%B8%89%E8%BD%B4%E4%BD%8D%E7%BD%AE%E6%8E%A5%E5%8F%A3%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1378-L1469%22%2C%22sourceLabel%22%3A%22Transformers%20%C2%B7%20%E7%9B%B8%E5%85%B3%E5%AE%9E%E7%8E%B0%22%7D%7D"></card>
+</li>
+<li>
+<p><strong>准备网格与输出</strong>：视频已被时间戳分成多个区段，<code>repeat_interleave()</code> 按每段视频的时间网格长度复制网格，再把每行的时间长度设为 <code>1</code>。图片、视频各有一个由整个批次共用的网格迭代器，按样本及媒体出现顺序消费；输出位置表先初始化为 <code>[3,B,L]</code></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-640%22%2C%22code%22%3A%22if%20video_grid_thw%20is%20not%20None%3A%5Cn%20%20%20%20video_grid_thw%20%3D%20torch.repeat_interleave(%5Cn%20%20%20%20%20%20%20%20video_grid_thw%2C%20video_grid_thw%5B%3A%2C%200%5D%2C%20dim%3D0%5Cn%20%20%20%20)%5Cn%20%20%20%20video_grid_thw%5B%3A%2C%200%5D%20%3D%201%5Cnspatial_merge_size%20%3D%20self.config.vision_config.spatial_merge_size%5Cnmrope_position_deltas%20%3D%20%5B%5D%5Cnposition_ids%20%3D%20torch.zeros(%5Cn%20%20%20%203%2C%5Cn%20%20%20%20input_ids.shape%5B0%5D%2C%5Cn%20%20%20%20input_ids.shape%5B1%5D%2C%5Cn%20%20%20%20dtype%3Dinput_ids.dtype%2C%5Cn%20%20%20%20device%3Dinput_ids.device%2C%5Cn)%5Cngrid_iters%20%3D%20%7B%5Cn%20%20%20%201%3A%20iter(image_grid_thw)%20if%20image_grid_thw%20is%20not%20None%20else%20None%2C%5Cn%20%20%20%202%3A%20iter(video_grid_thw)%20if%20video_grid_thw%20is%20not%20None%20else%20None%2C%5Cn%7D%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%B1%95%E5%BC%80%E8%A7%86%E9%A2%91%E5%B8%A7%E7%BD%91%E6%A0%BC%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1378-L1469%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li>
+<p><strong>过滤补齐并划分区段</strong>：对每个样本，用同一份 <code>attention_mask</code> 同时过滤 <code>input_ids</code> 和 <code>mm_token_type_ids</code>，保持逐位置对应。<code>groupby()</code> 只合并连续相同的类型；两个图片区段即使都是 <code>1</code>，中间的起止标记为 <code>0</code>，仍会分开。<code>start_index/end_index</code> 是过滤后序列的左闭右开区间</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-641%22%2C%22code%22%3A%22for%20batch_idx%2C%20current_input_ids%20in%20enumerate(input_ids)%3A%5Cn%20%20%20%20input_token_type%20%3D%20mm_token_type_ids%5Bbatch_idx%5D%5Cn%20%20%20%20if%20attention_mask%20is%20not%20None%3A%5Cn%20%20%20%20%20%20%20%20current_input_ids%20%3D%20current_input_ids%5Battention_mask%5Bbatch_idx%5D.bool()%5D%5Cn%20%20%20%20%20%20%20%20input_token_type%20%3D%20input_token_type%5Battention_mask%5Bbatch_idx%5D.bool()%5D%5Cn%5Cn%20%20%20%20input_type_group%20%3D%20%5B%5D%5Cn%20%20%20%20for%20key%2C%20group%20in%20itertools.groupby(%5Cn%20%20%20%20%20%20%20%20enumerate(input_token_type.tolist())%2C%20lambda%20x%3A%20x%5B1%5D%5Cn%20%20%20%20)%3A%5Cn%20%20%20%20%20%20%20%20group%20%3D%20list(group)%5Cn%20%20%20%20%20%20%20%20start_index%20%3D%20group%5B0%5D%5B0%5D%5Cn%20%20%20%20%20%20%20%20end_index%20%3D%20group%5B-1%5D%5B0%5D%20%2B%201%5Cn%20%20%20%20%20%20%20%20input_type_group.append((key%2C%20start_index%2C%20end_index))%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%8C%89%E6%A8%A1%E6%80%81%E5%88%86%E7%BB%84%20Token%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1378-L1469%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li>
+<p><strong>推进位置</strong>：在上述批次循环内，为每个样本从 <code>current_pos=0</code> 开始分配位置。<code>start_idx/end_idx</code> 表示序列区间，<code>current_pos</code> 表示旋转位置起点。类型 <code>0</code> 将连续编号复制到三行；类型 <code>1/2</code> 分别取下一个图片网格或视频时间片网格，生成 <code>[3,区段长度]</code> 坐标。视觉区段结束后，按合并网格的最大边长推进，不能用视觉 <code>token</code> 总数代替</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-642%22%2C%22code%22%3A%22current_pos%20%3D%200%5Cnllm_pos_ids_list%20%3D%20%5B%5D%5Cnfor%20modality_type%2C%20start_idx%2C%20end_idx%20in%20input_type_group%3A%5Cn%20%20%20%20if%20modality_type%20%3D%3D%200%3A%5Cn%20%20%20%20%20%20%20%20text_len%20%3D%20end_idx%20-%20start_idx%5Cn%20%20%20%20%20%20%20%20llm_pos_ids_list.append(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20torch.arange(text_len%2C%20device%3Dinput_ids.device)%5Cn%20%20%20%20%20%20%20%20%20%20%20%20.view(1%2C%20-1)%5Cn%20%20%20%20%20%20%20%20%20%20%20%20.expand(3%2C%20-1)%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%2B%20current_pos%5Cn%20%20%20%20%20%20%20%20)%5Cn%20%20%20%20%20%20%20%20current_pos%20%2B%3D%20text_len%5Cn%20%20%20%20else%3A%5Cn%20%20%20%20%20%20%20%20grid_thw%20%3D%20next(grid_iters%5Bmodality_type%5D)%5Cn%20%20%20%20%20%20%20%20vision_position_ids%20%3D%20self.get_vision_position_ids(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20current_pos%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20grid_thw%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%201%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20spatial_merge_size%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20device%3Dinput_ids.device%2C%5Cn%20%20%20%20%20%20%20%20)%5Cn%20%20%20%20%20%20%20%20llm_pos_ids_list.append(vision_position_ids)%5Cn%20%20%20%20%20%20%20%20current_pos%20%2B%3D%20max(grid_thw%5B1%5D%2C%20grid_thw%5B2%5D)%20%2F%2F%20spatial_merge_size%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%9E%84%E9%80%A0%E6%96%87%E6%9C%AC%E4%B8%8E%E8%A7%86%E8%A7%89%E4%BD%8D%E7%BD%AE%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1378-L1469%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li>
+<p><strong>展平视觉网格</strong>：<code>grid_thw</code> 保存 <code>patch embedding</code> 后、空间合并前的网格，<code>H/W</code> 先除以 <code>spatial_merge_size</code>，与语言模型中的视觉槽位数量对齐。<code>get_vision_position_ids()</code> 用 <code>meshgrid()</code> 为每个槽位分配 <code>(t,h,w)</code>，按宽度最快、高度次之、时间最慢的顺序展平；三行的同一列始终对应同一个视觉槽位。<code>start_position</code> 将三个轴平移到当前区段起点</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-643%22%2C%22code%22%3A%22llm_grid_t%2C%20llm_grid_h%2C%20llm_grid_w%20%3D%20(%5Cn%20%20%20%20grid_thw%5B0%5D.item()%20%2F%2F%20temp_merge_size%2C%5Cn%20%20%20%20grid_thw%5B1%5D.item()%20%2F%2F%20spatial_merge_size%2C%5Cn%20%20%20%20grid_thw%5B2%5D.item()%20%2F%2F%20spatial_merge_size%2C%5Cn)%5Cnposition_temporal%20%3D%20(%5Cn%20%20%20%20torch.arange(llm_grid_t%2C%20device%3Ddevice)%20*%20time_interval%5Cn).long()%5Cnposition_height%20%3D%20torch.arange(llm_grid_h%2C%20device%3Ddevice)%20%2B%20start_position%5Cnposition_width%20%3D%20torch.arange(llm_grid_w%2C%20device%3Ddevice)%20%2B%20start_position%5CnT_grid%2C%20H_grid%2C%20W_grid%20%3D%20torch.meshgrid(%5Cn%20%20%20%20position_temporal%2C%20position_height%2C%20position_width%2C%20indexing%3D%5C%22ij%5C%22%5Cn)%5Cnvision_position_ids%20%3D%20torch.stack(%5BT_grid%2C%20H_grid%2C%20W_grid%5D%2C%20dim%3D0).reshape(%5Cn%20%20%20%203%2C%20-1%5Cn)%5Cnvision_position_ids%5B0%5D%20%2B%3D%20start_position%5Cnreturn%20vision_position_ids%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E7%94%9F%E6%88%90%E8%A7%86%E8%A7%89%E7%BD%91%E6%A0%BC%E5%9D%90%E6%A0%87%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1326-L1376%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li><strong>视频时间片的位置</strong>：上述调用的 <code>temp_merge_size=1</code>、<code>time_interval=1.0</code>；单张图片和每个视频时间片的时间轴长度均为 <code>1</code>，所以同一区段的 <code>T</code> 坐标相同。时间戳和起止标记按文本规则推进 <code>current_pos</code>，下一个时间片使用新的起点；实际视频时间由时间戳文本表达</li>
+<li>
+<p><strong>拼回整条序列</strong>：各段沿 <code>dim=1</code> 拼接，得到当前样本去除补齐后的 <code>[3,有效长度]</code> 位置表；再用原始 <code>attention_mask</code> 将各列写回 <code>[3,B,L]</code> 的有效槽位。补齐位置保留初始化的 <code>0</code>，由掩码排除。<code>current_input_ids</code> 已经过滤，因此差值减去的是有效长度，不是补齐后的 <code>L</code></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-644%22%2C%22code%22%3A%22llm_positions%20%3D%20torch.cat(llm_pos_ids_list%2C%20dim%3D1).reshape(3%2C%20-1)%5Cnif%20attention_mask%20is%20not%20None%3A%5Cn%20%20%20%20position_ids%5B%3A%2C%20batch_idx%2C%20attention_mask%5Bbatch_idx%5D.bool()%5D%20%3D%20(%5Cn%20%20%20%20%20%20%20%20llm_positions.to(position_ids.device)%5Cn%20%20%20%20)%5Cnelse%3A%5Cn%20%20%20%20position_ids%5B%3A%2C%20batch_idx%5D%20%3D%20llm_positions.to(position_ids.device)%5Cnmrope_position_deltas.append(llm_positions.max()%20%2B%201%20-%20len(current_input_ids))%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%86%99%E5%9B%9E%E4%B8%89%E8%BD%B4%E4%BD%8D%E7%BD%AE%E4%B8%8E%E5%81%8F%E7%A7%BB%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1378-L1469%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li>
+<p><strong>返回位置与差值</strong>：<code>position_ids: [3,B,L]</code> 提供每个 token 的三轴旋转坐标；<code>rope_deltas: [B,1]</code> 保存下一个旋转位置 − 有效序列长度，用于后续生成时将序列编号对齐到 RoPE 位置，不是 <code>KV cache</code> 的存储索引。每条样本各保存一个差值</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-645%22%2C%22code%22%3A%22mrope_position_deltas%20%3D%20torch.tensor(%5Cn%20%20%20%20mrope_position_deltas%2C%20device%3Dinput_ids.device%5Cn).unsqueeze(1)%5Cnreturn%20position_ids%2C%20mrope_position_deltas%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%BF%94%E5%9B%9E%E4%BD%8D%E7%BD%AE%E8%A1%A8%E4%B8%8E%E5%81%8F%E7%A7%BB%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1378-L1469%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+</ul>
+<h2 id="三维位置表单批次示例">三维位置表：单批次示例</h2>
+<ul>
+<li>
+<p><strong>对齐内容与位置：建立内容张量与三维坐标的对应关系</strong>。设混合序列的内容张量为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-646%22%2C%22code%22%3A%22X%5C%5Cin%5C%5Cmathbb%20R%5E%7BB%5C%5Ctimes%20L%5C%5Ctimes%20D%7D%22%7D"></card>，对应 <code>inputs_embeds</code>；位置张量为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-647%22%2C%22code%22%3A%22P%5C%5Cin%5C%5Cmathbb%20Z%5E%7B3%5C%5Ctimes%20B%5C%5Ctimes%20L%7D%22%7D"></card>，对应 <code>position_ids</code>。<code>X[b,l,:]</code> 保存第 <code>b</code> 个样本、第 <code>l</code> 个 token 的内容向量，<code>P[:,b,l]</code> 保存同一 token 的时间、高度、宽度坐标。视觉特征填入媒体槽位后，序列长度与槽位顺序保持不变；<code>get_rope_index()</code> 根据模态类型和视觉网格，为这些槽位分配坐标。内容张量用于生成 <code>Q/K</code>，位置张量用于生成旋转系数</p>
+<p>取 <code>bs=1</code>、<code>L=10</code>，单张图片的网格为 <code>[1,4,6]</code>，<code>spatial_merge_size=2</code>，空间合并后为 <code>[1,2,3]</code>，对应六个图片槽位。<code>t0/t1</code> 各表示一个文本 token，<code>S/E</code> 表示媒体起止标记，<code>Ihw</code> 表示图片第 <code>h</code> 行、第 <code>w</code> 列的槽位。三轴位置表为</p>
+<div class="table-scroll" role="region" aria-label="表格" tabindex="0"><table>
+<thead>
+<tr>
+<th>槽位 <code>l</code></th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>token</td>
+<td><code>t0</code></td>
+<td><code>S</code></td>
+<td><code>I00</code></td>
+<td><code>I01</code></td>
+<td><code>I02</code></td>
+<td><code>I10</code></td>
+<td><code>I11</code></td>
+<td><code>I12</code></td>
+<td><code>E</code></td>
+<td><code>t1</code></td>
+</tr>
+<tr>
+<td><code>T = P[0,0,l]</code></td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>5</td>
+<td>6</td>
+</tr>
+<tr>
+<td><code>H = P[1,0,l]</code></td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>3</td>
+<td>3</td>
+<td>5</td>
+<td>6</td>
+</tr>
+<tr>
+<td><code>W = P[2,0,l]</code></td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+</tr>
+</tbody>
+</table></div>
+<p>图片区段的起点为 <code>2</code>。单张图片的时间坐标恒为 <code>2</code>，高度、宽度坐标分别为区段起点加行号、列号，按宽度优先的顺序展平。区段结束后，旋转位置按最大网格边长 <code>3</code> 推进，因此 <code>E/t1</code> 的坐标为 <code>5/6</code>。六个图片槽位的词表编号均为 <code>&lt;|image_pad|&gt;</code>，各自对应不同的视觉特征和网格坐标。对 <code>I12</code>，内容向量为 <code>X[0,7,:]</code>，位置列为 <code>P[:,0,7]=[2,3,4]</code>。<strong>位置表中的坐标直接作为相位计算的位置因子</strong></p>
+</li>
+</ul>
+<h2 id="交错-mrope按通道对选择-thw-坐标">交错 MRoPE：按通道对选择 T/H/W 坐标</h2>
+<ul>
+<li>
+<p><strong>计算三轴候选角度：位置坐标与频率向量的外积</strong>。<code>Qwen3.5-27B</code> 的旋转维度为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-648%22%2C%22code%22%3A%22d_r%3D64%22%7D"></card>，对应 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-649%22%2C%22code%22%3A%22F%3Dd_r%2F2%3D32%22%7D"></card> 个二维旋转子空间；频率底数为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-650%22%2C%22code%22%3A%22%5C%5Cbeta%3D10%5E7%22%7D"></card>。轴下标 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-651%22%2C%22code%22%3A%22a%3D0%2C1%2C2%22%7D"></card> 分别表示 <code>T/H/W</code>，频率下标 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-652%22%2C%22code%22%3A%22i%3D0%2C%5C%5Cldots%2C31%22%7D"></card> 对应通道对 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-653%22%2C%22code%22%3A%22(i%2Ci%2B32)%22%7D"></card>，<code>inv_freq[i]</code> 记为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-654%22%2C%22code%22%3A%22%5C%5Comega_i%22%7D"></card>。每个轴的每个位置与全部频率相乘，构造候选相位张量</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+\omega_i&amp;=\beta^{-2i/d_r}=10^{-7i/32},\\
+\Phi_{a,b,l,i}&amp;=P_{a,b,l}\omega_i,\qquad
+\Phi\in\mathbb R^{3\times B\times L\times32},\\
+C^{\mathrm{axis}}_{a,b,l,i}&amp;=\cos\Phi_{a,b,l,i},\\
+S^{\mathrm{axis}}_{a,b,l,i}&amp;=\sin\Phi_{a,b,l,i}.
+\end{aligned}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-655%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%5C%5Comega_i%26%3D%5C%5Cbeta%5E%7B-2i%2Fd_r%7D%3D10%5E%7B-7i%2F32%7D%2C%5C%5C%5C%5C%5Cn%5C%5CPhi_%7Ba%2Cb%2Cl%2Ci%7D%26%3DP_%7Ba%2Cb%2Cl%7D%5C%5Comega_i%2C%5C%5Cqquad%5Cn%5C%5CPhi%5C%5Cin%5C%5Cmathbb%20R%5E%7B3%5C%5Ctimes%20B%5C%5Ctimes%20L%5C%5Ctimes32%7D%2C%5C%5C%5C%5C%5CnC%5E%7B%5C%5Cmathrm%7Baxis%7D%7D_%7Ba%2Cb%2Cl%2Ci%7D%26%3D%5C%5Ccos%5C%5CPhi_%7Ba%2Cb%2Cl%2Ci%7D%2C%5C%5C%5C%5C%5CnS%5E%7B%5C%5Cmathrm%7Baxis%7D%7D_%7Ba%2Cb%2Cl%2Ci%7D%26%3D%5C%5Csin%5C%5CPhi_%7Ba%2Cb%2Cl%2Ci%7D.%5Cn%5C%5Cend%7Baligned%7D%5Cn%22%7D"></card></div>
+<p><code>Qwen3_5TextRotaryEmbedding.forward()</code> 将三轴共享的 <code>inv_freq</code> 扩展为 <code>[3,B,32,1]</code>，位置扩展为 <code>[3,B,1,L]</code>；相乘得到 <code>[3,B,32,L]</code>，交换最后两维得到 <code>freqs: [3,B,L,32]</code>，再求同形状的 <code>cos/sin</code>（默认 <code>attention_scaling=1</code>）。单样本示例中的相位与系数均为 <code>[3,1,10,32]</code>；<code>I12</code> 的坐标 <code>[2,3,4]</code> 对应第 <code>i</code> 个子空间的三个候选角度 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-656%22%2C%22code%22%3A%222%5C%5Comega_i%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-657%22%2C%22code%22%3A%223%5C%5Comega_i%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-658%22%2C%22code%22%3A%224%5C%5Comega_i%22%7D"></card>，分别生成一组余弦、正弦系数</p>
+</li>
+<li>
+<p><strong>位置表提供旋转坐标</strong>：<code>position_ids</code> 是普通 RoPE 中位置 × 频率的位置输入；<code>rope_theta</code> 决定频率底数。<code>Qwen3.5</code> 为每个 token 保存 <code>T/H/W</code> 三个坐标，用同一组 <code>inv_freq</code> 分别计算三个轴的角度。<code>Qwen3_5TextRotaryEmbedding.forward()</code> 中，相位与三角函数的核心语句为</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-659%22%2C%22code%22%3A%22inv_freq_expanded%20%3D%20(%5Cn%20%20%20%20self.inv_freq%5BNone%2C%20None%2C%20%3A%2C%20None%5D%5Cn%20%20%20%20.float()%5Cn%20%20%20%20.expand(3%2C%20position_ids.shape%5B1%5D%2C%20-1%2C%201)%5Cn)%5Cnposition_ids_expanded%20%3D%20position_ids%5B%3A%2C%20%3A%2C%20None%2C%20%3A%5D.float()%5Cnfreqs%20%3D%20(inv_freq_expanded.float()%20%40%20position_ids_expanded.float()).transpose(%5Cn%20%20%20%202%2C%203%5Cn)%5Cncos%20%3D%20freqs.cos()%20*%20self.attention_scaling%5Cnsin%20%3D%20freqs.sin()%20*%20self.attention_scaling%5Cnsin%20%3D%20self.recomposition_frequencies(sin)%5Cncos%20%3D%20self.recomposition_frequencies(cos)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%AE%A1%E7%AE%97%E4%B8%89%E8%BD%B4%E6%97%8B%E8%BD%AC%E7%B3%BB%E6%95%B0%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L188-L202%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li>
+<p><strong>按通道对交错选轴：将三轴候选系数映射到旋转子空间</strong>。<code>mrope_section=[11,11,10]</code> 表示时间、高度、宽度轴分别分配 <code>11/11/10</code> 个旋转子空间。<code>recomposition_frequencies()</code> 在频率下标 <code>0,3,6,…,30</code> 取时间轴，<code>1,4,7,…,31</code> 取高度轴，<code>2,5,8,…,29</code> 取宽度轴。对这组配置，定义轴选择映射 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-660%22%2C%22code%22%3A%22%5C%5Csigma(i)%3Di%5C%5Cbmod3%22%7D"></card>，则每个通道对实际使用的相位与系数为</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+\varphi_{b,l,i}&amp;=P_{\sigma(i),b,l}\omega_i,\\
+\widehat C_{b,l,i}&amp;=C^{\mathrm{axis}}_{\sigma(i),b,l,i}
+=\cos\varphi_{b,l,i},\\
+\widehat S_{b,l,i}&amp;=S^{\mathrm{axis}}_{\sigma(i),b,l,i}
+=\sin\varphi_{b,l,i}.
+\end{aligned}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-661%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%5C%5Cvarphi_%7Bb%2Cl%2Ci%7D%26%3DP_%7B%5C%5Csigma(i)%2Cb%2Cl%7D%5C%5Comega_i%2C%5C%5C%5C%5C%5Cn%5C%5Cwidehat%20C_%7Bb%2Cl%2Ci%7D%26%3DC%5E%7B%5C%5Cmathrm%7Baxis%7D%7D_%7B%5C%5Csigma(i)%2Cb%2Cl%2Ci%7D%5Cn%3D%5C%5Ccos%5C%5Cvarphi_%7Bb%2Cl%2Ci%7D%2C%5C%5C%5C%5C%5Cn%5C%5Cwidehat%20S_%7Bb%2Cl%2Ci%7D%26%3DS%5E%7B%5C%5Cmathrm%7Baxis%7D%7D_%7B%5C%5Csigma(i)%2Cb%2Cl%2Ci%7D%5Cn%3D%5C%5Csin%5C%5Cvarphi_%7Bb%2Cl%2Ci%7D.%5Cn%5C%5Cend%7Baligned%7D%5Cn%22%7D"></card></div>
+<p>选择后的 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-662%22%2C%22code%22%3A%22%5C%5Cwidehat%20C%2F%5C%5Cwidehat%20S%22%7D"></card> 均为 <code>[B,L,32]</code>。轴选择作用于频率维：每个二维子空间只采用一个轴的坐标，所有 token 共享同一轴分配规则。源码先计算三轴 <code>cos/sin</code>，再按上述映射选取系数。对 <code>I12</code>，选轴后最终采用的 32 个旋转角为</p>
+<div class="equation" tabindex="0" role="math" aria-label="\varphi_{0,7,:}=[2\omega_0,\ 3\omega_1,\ 4\omega_2,\ 2\omega_3,\ldots,\ 2\omega_{30},\ 3\omega_{31}].
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-663%22%2C%22code%22%3A%22%5C%5Cvarphi_%7B0%2C7%2C%3A%7D%3D%5B2%5C%5Comega_0%2C%5C%5C%203%5C%5Comega_1%2C%5C%5C%204%5C%5Comega_2%2C%5C%5C%202%5C%5Comega_3%2C%5C%5Cldots%2C%5C%5C%202%5C%5Comega_%7B30%7D%2C%5C%5C%203%5C%5Comega_%7B31%7D%5D.%5Cn%22%7D"></card></div>
+<p><code>2、3、4</code> 是 <code>I12</code> 的三轴位置坐标。在第 <code>i</code> 个二维子空间，选中的坐标充当一维 RoPE 中的位置因子 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-664%22%2C%22code%22%3A%22p_i%22%7D"></card>，与该子空间的频率 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-665%22%2C%22code%22%3A%22%5C%5Comega_i%22%7D"></card> 相乘，得到实际旋转角 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-666%22%2C%22code%22%3A%22%5C%5Cvarphi_%7B0%2C7%2Ci%7D%3Dp_i%5C%5Comega_i%22%7D"></card>。例如频率下标 <code>i=2</code> 读取宽度坐标 <code>4</code>，因此通道对 <code>(2,34)</code> 使用 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-667%22%2C%22code%22%3A%22%5C%5Ccos(4%5C%5Comega_2)%22%7D"></card> 和 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-668%22%2C%22code%22%3A%22%5C%5Csin(4%5C%5Comega_2)%22%7D"></card>。<strong>交错结构由频率索引到坐标轴的映射确定</strong></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-669%22%2C%22code%22%3A%22def%20recomposition_frequencies(self%2C%20freq)%3A%5Cn%20%20%20%20freqs_thw%20%3D%20freq%5B0%5D%5Cn%20%20%20%20for%20dim%2C%20offset%20in%20enumerate((1%2C%202)%2C%20start%3D1)%3A%5Cn%20%20%20%20%20%20%20%20length%20%3D%20self.mrope_section%5Bdim%5D%20*%203%5Cn%20%20%20%20%20%20%20%20idx%20%3D%20slice(offset%2C%20length%2C%203)%5Cn%20%20%20%20%20%20%20%20freqs_thw%5B...%2C%20idx%5D%20%3D%20freq%5Bdim%2C%20...%2C%20idx%5D%5Cn%20%20%20%20return%20torch.cat((freqs_thw%2C%20freqs_thw)%2C%20dim%3D-1)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E4%BA%A4%E9%94%99%E9%80%89%E6%8B%A9%20T%2FH%2FW%20%E9%A2%91%E7%8E%87%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L204-L213%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+<blockquote class="callout callout-important">
+<p><strong>交错 MRoPE 的核心：同一 token 的 T/H/W 坐标沿频率下标交替作为位置因子</strong>。对于 <code>I12</code>，三轴坐标为 <code>[2,3,4]</code>，32 个子空间的位置因子依次为 <code>2、3、4、2、3、4、…</code>；分别乘各自的频率，得到 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-670%22%2C%22code%22%3A%222%5C%5Comega_0%2C%5C%5C%2C3%5C%5Comega_1%2C%5C%5C%2C4%5C%5Comega_2%2C%5C%5C%2C2%5C%5Comega_3%2C%5C%5Cldots%22%7D"></card> 这 32 个旋转角。每个角度生成一组 <code>cos/sin</code>，作用于 <code>Q/K</code> 的一对通道 <code>(i,i+32)</code>，32 对共同完成 64 维特征的旋转</p>
+<p><strong>文本 token 的三个轴共享同一位置因子</strong>。对于第 <code>l</code> 个文本 token，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-671%22%2C%22code%22%3A%22T_l%3DH_l%3DW_l%3Dp_l%22%7D"></card>，因此任意子空间选轴后的旋转角均为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-672%22%2C%22code%22%3A%22%5C%5Cvarphi_%7Bl%2Ci%7D%3Dp_l%5C%5Comega_i%22%7D"></card>。在相同频率与通道配对下，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-673%22%2C%22code%22%3A%22R_%7B%5C%5Cmathrm%7BMRoPE%7D%7D(p_l%2Cp_l%2Cp_l)%3DR_%7B%5C%5Cmathrm%7BRoPE%7D%7D(p_l)%22%7D"></card>，与一维 RoPE 等价。<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-674%22%2C%22code%22%3A%22p_l%22%7D"></card> 随 token 的序列位置变化，<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-675%22%2C%22code%22%3A%22%5C%5Comega_i%22%7D"></card> 随子空间变化</p>
+</blockquote>
+</li>
+<li>
+<p><strong>应用二维旋转：32 个角度作用于 64 个通道</strong>。取 <code>I12</code> 的一个注意力头，通道从 <code>0</code> 编号；<code>Q/K</code> 的 64 维旋转部分按 <code>(0,32)、(1,33)、…、(31,63)</code> 组成 32 对，每对使用一个旋转角。<code>I12</code> 的位置因子按 <code>2、3、4、2、3、4、…</code> 交错排列，分别乘对应频率，得到 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-676%22%2C%22code%22%3A%222%5C%5Comega_0%2C%5C%5C%2C3%5C%5Comega_1%2C%5C%5C%2C4%5C%5Comega_2%2C%5C%5C%2C2%5C%5Comega_3%2C%5C%5Cldots%22%7D"></card> 这 32 个角度。<code>cos/sin</code> 各生成 32 个系数，再复制为 64 个，使配对通道共用同一角度</p>
+<p>具体取 <code>(1,33)</code>、<code>(2,34)</code>、<code>(3,35)</code>：它们分别读取高度坐标 <code>3</code>、宽度坐标 <code>4</code>、时间坐标 <code>2</code>，旋转角依次为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-677%22%2C%22code%22%3A%223%5C%5Comega_1%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-678%22%2C%22code%22%3A%224%5C%5Comega_2%22%7D"></card>、<card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-679%22%2C%22code%22%3A%222%5C%5Comega_3%22%7D"></card>。<code>Qwen3_5Attention.forward()</code> 将投影、归一化后的 <code>Q/K</code> 交给 <code>apply_rotary_pos_emb()</code>；<code>rotate_half()</code> 将前后两半 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-680%22%2C%22code%22%3A%22%5Bx_1%2Cx_2%5D%22%7D"></card> 变为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-681%22%2C%22code%22%3A%22%5B-x_2%2Cx_1%5D%22%7D"></card>，从而完成配对通道的乘加。以 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-682%22%2C%22code%22%3A%22q_j%22%7D"></card> 表示 <code>Q</code> 的第 <code>j</code> 个通道，这三对通道的输出为</p>
+<div class="equation" tabindex="0" role="math" aria-label="\begin{aligned}
+\widetilde q_1&amp;=q_1\cos(3\omega_1)-q_{33}\sin(3\omega_1),\\
+\widetilde q_{33}&amp;=q_1\sin(3\omega_1)+q_{33}\cos(3\omega_1),\\[4pt]
+\widetilde q_2&amp;=q_2\cos(4\omega_2)-q_{34}\sin(4\omega_2),\\
+\widetilde q_{34}&amp;=q_2\sin(4\omega_2)+q_{34}\cos(4\omega_2),\\[4pt]
+\widetilde q_3&amp;=q_3\cos(2\omega_3)-q_{35}\sin(2\omega_3),\\
+\widetilde q_{35}&amp;=q_3\sin(2\omega_3)+q_{35}\cos(2\omega_3).
+\end{aligned}
+"><card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-683%22%2C%22code%22%3A%22%5C%5Cbegin%7Baligned%7D%5Cn%5C%5Cwidetilde%20q_1%26%3Dq_1%5C%5Ccos(3%5C%5Comega_1)-q_%7B33%7D%5C%5Csin(3%5C%5Comega_1)%2C%5C%5C%5C%5C%5Cn%5C%5Cwidetilde%20q_%7B33%7D%26%3Dq_1%5C%5Csin(3%5C%5Comega_1)%2Bq_%7B33%7D%5C%5Ccos(3%5C%5Comega_1)%2C%5C%5C%5C%5C%5B4pt%5D%5Cn%5C%5Cwidetilde%20q_2%26%3Dq_2%5C%5Ccos(4%5C%5Comega_2)-q_%7B34%7D%5C%5Csin(4%5C%5Comega_2)%2C%5C%5C%5C%5C%5Cn%5C%5Cwidetilde%20q_%7B34%7D%26%3Dq_2%5C%5Csin(4%5C%5Comega_2)%2Bq_%7B34%7D%5C%5Ccos(4%5C%5Comega_2)%2C%5C%5C%5C%5C%5B4pt%5D%5Cn%5C%5Cwidetilde%20q_3%26%3Dq_3%5C%5Ccos(2%5C%5Comega_3)-q_%7B35%7D%5C%5Csin(2%5C%5Comega_3)%2C%5C%5C%5C%5C%5Cn%5C%5Cwidetilde%20q_%7B35%7D%26%3Dq_3%5C%5Csin(2%5C%5Comega_3)%2Bq_%7B35%7D%5C%5Ccos(2%5C%5Comega_3).%5Cn%5C%5Cend%7Baligned%7D%5Cn%22%7D"></card></div>
+<p>其余 29 对通道分别代入各自的旋转角，完成整个 64 维部分的旋转；后 <code>192</code> 维原样接回，<code>V</code> 不参与旋转。各注意力头共享这些位置系数，分别处理自身的 <code>Q/K</code>，旋转结果参与注意力内积。文本 token 的三轴坐标相同，例如 <code>t1</code> 为 <code>[6,6,6]</code>，则各子空间的旋转角为 <card type="inline" name="math" value="data:%7B%22id%22%3A%22import-math-684%22%2C%22code%22%3A%226%5C%5Comega_i%22%7D"></card>，与一维 RoPE 一致</p>
+</li>
+<li><strong>交错的是坐标轴分配，配对方式仍是前后半区</strong>：选轴后剩下 <code>[B,L,32]</code>；<code>cat()</code> 将这组系数复制成 <code>[B,L,64]</code>，让通道 <code>i</code> 和 <code>i+32</code> 使用同一个角度，通过 <code>rotate_half()</code> 完成二维旋转。每个 token 都使用同一套坐标轴分配规则。文本的 <code>T/H/W</code> 坐标相同，得到普通一维 RoPE；图片和视频的坐标不同，各通道对分别编码时间、行、列位置</li>
+</ul>
+<h2 id="qwen35mrope-的接口调用">Qwen3.5：MRoPE 的接口调用</h2>
+<ul>
+<li>
+<p><strong>系数接口：<code>Qwen3_5TextModel.forward()</code> → <code>Qwen3_5TextRotaryEmbedding.forward()</code></strong>。文本模型接收三轴位置，通过 <code>self.rotary_emb(hidden_states, position_ids)</code> 返回 <code>position_embeddings=(cos,sin)</code>，两者均为 <code>[B,L,64]</code>，一次计算后传给各层。旋转模块用 <code>hidden_states</code> 确定设备类型与输出 <code>dtype</code>，用 <code>position_ids</code> 和 <code>inv_freq</code> 计算角度。<code>generate()</code> 首次准备位置时，将覆盖全部槽位的一维序列位置与三轴位置拼成 <code>[4,B,L]</code>；文本模型将首行拆为 <code>text_position_ids</code>，用于注意力掩码构造，其余三行用于旋转系数计算。直接传入 <code>[3,B,L]</code> 时，三行均用于旋转，<code>text_position_ids=None</code>。核心传递语句为</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-685%22%2C%22code%22%3A%22if%20position_ids.ndim%20%3D%3D%203%20and%20position_ids.shape%5B0%5D%20%3D%3D%204%3A%5Cn%20%20%20%20text_position_ids%20%3D%20position_ids%5B0%5D%5Cn%20%20%20%20position_ids%20%3D%20position_ids%5B1%3A%5D%5Cnelse%3A%5Cn%20%20%20%20text_position_ids%20%3D%20None%5Cn%5Cnhidden_states%20%3D%20inputs_embeds%5Cnposition_embeddings%20%3D%20self.rotary_emb(hidden_states%2C%20position_ids)%5Cn%5Cnfor%20i%2C%20decoder_layer%20in%20enumerate(self.layers%5B%3A%20self.config.num_hidden_layers%5D)%3A%5Cn%20%20%20%20hidden_states%20%3D%20decoder_layer(%5Cn%20%20%20%20%20%20%20%20hidden_states%2C%5Cn%20%20%20%20%20%20%20%20position_embeddings%3Dposition_embeddings%2C%5Cn%20%20%20%20%20%20%20%20attention_mask%3Dcausal_mask_mapping%5Bself.config.layer_types%5Bi%5D%5D%2C%5Cn%20%20%20%20%20%20%20%20position_ids%3Dtext_position_ids%2C%5Cn%20%20%20%20%20%20%20%20past_key_values%3Dpast_key_values%2C%5Cn%20%20%20%20%20%20%20%20use_cache%3Duse_cache%2C%5Cn%20%20%20%20%20%20%20%20**kwargs%2C%5Cn%20%20%20%20)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E4%BC%A0%E9%80%92%E4%BD%8D%E7%BD%AE%E4%B8%8E%E6%97%8B%E8%BD%AC%E7%B3%BB%E6%95%B0%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1240-L1307%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li>
+<p><strong>旋转接口：<code>Qwen3_5Attention.forward()</code> → <code>apply_rotary_pos_emb()</code></strong>。<code>Qwen3_5DecoderLayer</code> 的 <code>full_attention</code> 分支将 <code>position_embeddings</code> 传给 <code>self.self_attn</code>。注意力层先投影、归一化得到本层的 <code>Q/K</code>，再解包系数并执行旋转；<code>cos/sin</code> 从 <code>[B,L,64]</code> 扩展为 <code>[B,1,L,64]</code>，广播到各个注意力头，旋转后的 <code>Q/K</code> 用于注意力计算。<code>linear_attention</code> 分支使用 Gated DeltaNet，不调用这组旋转接口。实际调用为</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-686%22%2C%22code%22%3A%22cos%2C%20sin%20%3D%20position_embeddings%5Cnquery_states%2C%20key_states%20%3D%20apply_rotary_pos_emb(%5Cn%20%20%20%20query_states%2C%20key_states%2C%20cos%2C%20sin%5Cn)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%97%8B%E8%BD%AC%20Attention%20%E7%9A%84%20Q%2FK%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L776-L821%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+</ul>
+<h2 id="条件生成模型输入与视觉特征填充">条件生成模型：输入与视觉特征填充</h2>
+<ul>
+<li>
+<p><strong>条件生成模型的入口</strong>：<code>Qwen3_5ForConditionalGeneration.forward()</code> 将混合输入和位置参数传给 <code>self.model</code>，即 <code>Qwen3_5Model</code>。该模型由 <code>self.visual</code> 视觉编码器与 <code>self.language_model</code> 文本模型组成，<code>self.rope_deltas</code> 初始化为 <code>None</code>，用于保存各样本的旋转位置差值。一次前向依次完成视觉编码、媒体槽位填充、位置构造与文本模型计算。入口调用为</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-687%22%2C%22code%22%3A%22outputs%20%3D%20self.model(%5Cn%20%20%20%20input_ids%3Dinput_ids%2C%5Cn%20%20%20%20pixel_values%3Dpixel_values%2C%5Cn%20%20%20%20pixel_values_videos%3Dpixel_values_videos%2C%5Cn%20%20%20%20image_grid_thw%3Dimage_grid_thw%2C%5Cn%20%20%20%20video_grid_thw%3Dvideo_grid_thw%2C%5Cn%20%20%20%20position_ids%3Dposition_ids%2C%5Cn%20%20%20%20attention_mask%3Dattention_mask%2C%5Cn%20%20%20%20past_key_values%3Dpast_key_values%2C%5Cn%20%20%20%20inputs_embeds%3Dinputs_embeds%2C%5Cn%20%20%20%20mm_token_type_ids%3Dmm_token_type_ids%2C%5Cn%20%20%20%20**kwargs%2C%5Cn)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%B0%83%E7%94%A8%E6%9D%A1%E4%BB%B6%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1801-L1888%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li>
+<p><strong>视觉编码：得到与媒体槽位等长的特征</strong>。<code>get_image_features()</code> 将像素张量转换为视觉编码器的 <code>dtype</code>，连同 <code>grid_thw</code> 送入 <code>self.visual</code>，取 <code>pooler_output</code> 作为合并后的视觉特征。每张图片对应的特征数为 <code>T×H×W / spatial_merge_size²</code>，据此将特征拆成逐图片的张量。<code>get_video_features()</code> 直接复用这一实现，传入视频像素与视频网格</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-688%22%2C%22code%22%3A%22pixel_values%20%3D%20pixel_values.type(self.visual.dtype)%5Cnvision_output%20%3D%20self.visual(%5Cn%20%20%20%20pixel_values%2C%20grid_thw%3Dimage_grid_thw%2C%20return_dict%3DTrue%2C%20**kwargs%5Cn)%5Cnimage_embeds%20%3D%20vision_output.pooler_output%5Cnsplit_sizes%20%3D%20(%5Cn%20%20%20%20image_grid_thw.prod(-1)%20%2F%2F%20self.visual.spatial_merge_size**2%5Cn).tolist()%5Cnimage_embeds%20%3D%20torch.split(image_embeds%2C%20split_sizes)%5Cnvision_output.pooler_output%20%3D%20image_embeds%5Cnreturn%20vision_output%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%8F%90%E5%8F%96%E5%B9%B6%E6%8B%86%E5%88%86%E8%A7%86%E8%A7%89%E7%89%B9%E5%BE%81%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1486-L1501%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li>
+<p><strong><code>special_*_mask</code> 定位媒体槽位并校验特征数量</strong>：<code>get_placeholder_mask()</code> 在 <code>input_ids</code> 路径中比较特殊 token 编号，先得到 <code>[B,L]</code> 布尔表，再扩展为 <code>[B,L,1]</code>，沿隐藏维广播。仅提供 <code>inputs_embeds</code> 时，则逐位置比较整条嵌入向量是否等于对应占位 token 的词嵌入。返回的两个掩码由调用方接收为 <code>image_mask/video_mask</code>；填充前还会检查占位数 × 隐藏维度是否等于特征元素总数，不匹配即报错。图片分支的核心语句为</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-689%22%2C%22code%22%3A%22special_image_mask%20%3D%20input_ids%20%3D%3D%20self.config.image_token_id%5Cnspecial_video_mask%20%3D%20input_ids%20%3D%3D%20self.config.video_token_id%5Cnn_image_tokens%20%3D%20special_image_mask.sum()%5Cnspecial_image_mask%20%3D%20special_image_mask.unsqueeze(-1).to(inputs_embeds.device)%5Cnspecial_video_mask%20%3D%20special_video_mask.unsqueeze(-1).to(inputs_embeds.device)%5Cn%5Cnif%20image_features%20is%20not%20None%3A%5Cn%20%20%20%20torch_compilable_check(%5Cn%20%20%20%20%20%20%20%20n_image_tokens%20*%20inputs_embeds.shape%5B-1%5D%20%3D%3D%20image_features.numel()%2C%5Cn%20%20%20%20%20%20%20%20f%5C%22Image%20features%20and%20image%20tokens%20do%20not%20match%2C%20%5C%22%5Cn%20%20%20%20%20%20%20%20f%5C%22tokens%3A%20%7Bn_image_tokens%7D%2C%20features%3A%20%7Bimage_features.shape%5B0%5D%7D%5C%22%2C%5Cn%20%20%20%20)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%AE%9A%E4%BD%8D%E4%B8%8E%E6%A0%A1%E9%AA%8C%E8%A7%86%E8%A7%89%E5%8D%A0%E4%BD%8D%E7%AC%A6%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1503-L1542%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li>
+<p><strong>填入内容，保留槽位顺序</strong>：<code>forward()</code> 要求 <code>input_ids</code> 与 <code>inputs_embeds</code> 恰好提供一个；传入 <code>input_ids</code> 时先查词嵌入，再处理视觉分支。图片特征按原顺序拼接，并转换到 <code>inputs_embeds</code> 的设备与 <code>dtype</code>，随后由 <code>masked_scatter()</code> 填入 <code>image_mask</code> 对应的槽位。视频分支同样填充 <code>video_mask</code>；替换后 <code>L</code> 和 token 顺序不变，位置表仍与内容逐列对应</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-690%22%2C%22code%22%3A%22if%20inputs_embeds%20is%20None%3A%5Cn%20%20%20%20inputs_embeds%20%3D%20self.get_input_embeddings()(input_ids)%5Cn%5Cnif%20pixel_values%20is%20not%20None%3A%5Cn%20%20%20%20image_outputs%20%3D%20self.get_image_features(%5Cn%20%20%20%20%20%20%20%20pixel_values%2C%20image_grid_thw%2C%20return_dict%3DTrue%2C%20**kwargs%5Cn%20%20%20%20)%5Cn%20%20%20%20image_embeds%20%3D%20image_outputs.pooler_output%5Cn%20%20%20%20image_embeds%20%3D%20torch.cat(image_embeds%2C%20dim%3D0).to(%5Cn%20%20%20%20%20%20%20%20inputs_embeds.device%2C%20inputs_embeds.dtype%5Cn%20%20%20%20)%5Cn%20%20%20%20image_mask%2C%20_%20%3D%20self.get_placeholder_mask(%5Cn%20%20%20%20%20%20%20%20input_ids%2C%20inputs_embeds%3Dinputs_embeds%2C%20image_features%3Dimage_embeds%5Cn%20%20%20%20)%5Cn%20%20%20%20inputs_embeds%20%3D%20inputs_embeds.masked_scatter(image_mask%2C%20image_embeds)%5Cn%5Cnif%20pixel_values_videos%20is%20not%20None%3A%5Cn%20%20%20%20video_outputs%20%3D%20self.get_video_features(%5Cn%20%20%20%20%20%20%20%20pixel_values_videos%2C%20video_grid_thw%2C%20return_dict%3DTrue%2C%20**kwargs%5Cn%20%20%20%20)%5Cn%20%20%20%20video_embeds%20%3D%20video_outputs.pooler_output%5Cn%20%20%20%20video_embeds%20%3D%20torch.cat(video_embeds%2C%20dim%3D0).to(%5Cn%20%20%20%20%20%20%20%20inputs_embeds.device%2C%20inputs_embeds.dtype%5Cn%20%20%20%20)%5Cn%20%20%20%20_%2C%20video_mask%20%3D%20self.get_placeholder_mask(%5Cn%20%20%20%20%20%20%20%20input_ids%2C%20inputs_embeds%3Dinputs_embeds%2C%20video_features%3Dvideo_embeds%5Cn%20%20%20%20)%5Cn%20%20%20%20inputs_embeds%20%3D%20inputs_embeds.masked_scatter(video_mask%2C%20video_embeds)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%86%99%E5%85%A5%E5%9B%BE%E5%83%8F%E4%B8%8E%E8%A7%86%E9%A2%91%E7%89%B9%E5%BE%81%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1595-L1660%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+<li>
+<p><strong>位置构造：<code>compute_3d_position_ids()</code></strong>。视觉特征填入后，未显式传入 <code>position_ids</code> 才进入位置构造；已有位置表则直接使用。传入 <code>input_ids</code> 与视觉网格时，必须同时提供 <code>mm_token_type_ids</code>，否则抛出异常。调用为</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-691%22%2C%22code%22%3A%22if%20position_ids%20is%20None%3A%5Cn%20%20%20%20position_ids%20%3D%20self.compute_3d_position_ids(%5Cn%20%20%20%20%20%20%20%20input_ids%3Dinput_ids%2C%5Cn%20%20%20%20%20%20%20%20image_grid_thw%3Dimage_grid_thw%2C%5Cn%20%20%20%20%20%20%20%20video_grid_thw%3Dvideo_grid_thw%2C%5Cn%20%20%20%20%20%20%20%20inputs_embeds%3Dinputs_embeds%2C%5Cn%20%20%20%20%20%20%20%20attention_mask%3Dattention_mask%2C%5Cn%20%20%20%20%20%20%20%20past_key_values%3Dpast_key_values%2C%5Cn%20%20%20%20%20%20%20%20mm_token_type_ids%3Dmm_token_type_ids%2C%5Cn%20%20%20%20)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%9E%84%E9%80%A0%E6%B7%B7%E5%90%88%E5%BA%8F%E5%88%97%E4%BD%8D%E7%BD%AE%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1595-L1660%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+<p>方法读取 <code>past_key_values.get_seq_length()</code>，按以下条件选择位置来源</p>
+<div class="table-scroll" role="region" aria-label="表格" tabindex="0"><table>
+<thead>
+<tr>
+<th>条件</th>
+<th>位置处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input_ids</code>、<code>mm_token_type_ids</code>、视觉网格齐全，且缓存长度为 <code>0</code> 或 <code>rope_deltas</code> 尚未保存</td>
+<td>调用 <code>get_rope_index()</code> 生成 <code>[3,B,L]</code>，将返回的差值保存到 <code>self.rope_deltas</code></td>
+</tr>
+<tr>
+<td>已保存 <code>rope_deltas</code>，且缓存长度大于 <code>0</code> 或未提供 <code>input_ids</code></td>
+<td>从序列编号恢复三轴位置，再加各样本的差值</td>
+</tr>
+<tr>
+<td>其余情况</td>
+<td>返回 <code>None</code>，由文本模型生成一维序列位置并扩展到三轴</td>
+</tr>
+</tbody>
+</table></div>
+<p>恢复位置时，有 <code>attention_mask</code> 就用 <code>cumsum(-1)-1</code> 计算有效序列编号，并将补齐位置置 <code>0</code>；否则从缓存长度开始构造 <code>arange</code>。序列编号扩展为三行后，加上按批次对齐的 <code>rope_deltas</code>，三轴继续使用相同的文本位置因子。显式传入位置表的调用会跳过这一方法，也不会在该路径中更新 <code>rope_deltas</code></p>
+</li>
+<li>
+<p><strong>传入文本模型并返回状态</strong>：<code>self.language_model</code> 同时接收 <code>[B,L,D]</code> 内容张量与位置表。内容用于本层的特征投影，位置用于生成旋转系数；输出保留文本模型返回的隐藏状态与缓存，并附带 <code>rope_deltas</code></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-692%22%2C%22code%22%3A%22outputs%20%3D%20self.language_model(%5Cn%20%20%20%20input_ids%3DNone%2C%5Cn%20%20%20%20position_ids%3Dposition_ids%2C%5Cn%20%20%20%20attention_mask%3Dattention_mask%2C%5Cn%20%20%20%20past_key_values%3Dpast_key_values%2C%5Cn%20%20%20%20inputs_embeds%3Dinputs_embeds%2C%5Cn%20%20%20%20**kwargs%2C%5Cn)%5Cnreturn%20Qwen3_5ModelOutputWithPast(%5Cn%20%20%20%20**outputs%2C%5Cn%20%20%20%20rope_deltas%3Dself.rope_deltas%2C%5Cn)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%B0%83%E7%94%A8%E6%96%87%E6%9C%AC%E6%A8%A1%E5%9E%8B%E5%B9%B6%E8%BF%94%E5%9B%9E%E7%8A%B6%E6%80%81%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_5%2Fmodeling_qwen3_5.py%23L1595-L1660%22%2C%22sourceLabel%22%3A%22Transformers%22%7D%7D"></card>
+</li>
+</ul>
+</section>

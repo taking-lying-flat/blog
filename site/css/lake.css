@@ -1,0 +1,211 @@
+/* Article typography for Lake documents. */
+.lake-document {
+  color-scheme: light;
+  background: #fff;
+  color: #262626;
+  margin: 0 -24px;
+  padding: 24px;
+  --lake-font: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Segoe UI";
+  font-family: var(--lake-font);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: var(--article-line-height);
+  letter-spacing: .008em;
+  white-space: break-spaces;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  font-feature-settings: normal;
+  font-variant-ligatures: none;
+  text-autospace: normal;
+}
+.lake-document :is(p, li, blockquote, th, td) { font-family: var(--article-serif); }
+.lake-document :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--article-serif);
+  font-style: normal;
+  font-weight: 700;
+}
+.lake-document :is(h1, h2) {
+  text-align: center;
+  color: inherit;
+  letter-spacing: inherit;
+  scroll-margin-top: 28px;
+}
+.lake-document h1 { margin: 38px 0 19px; font-size: 28px; line-height: 38px; }
+.lake-document h2 { margin: 34px 0 17px; font-size: 24px; line-height: 34px; }
+.lake-document > :first-child { margin-top: 0; }
+.lake-document p { min-height: 24px; margin: 0 0 8.352px; }
+.lake-document :is(ul, ol) { margin: 0; padding-left: 2em; }
+.lake-document ul { list-style-type: disc; }
+.lake-document ol { list-style-type: decimal; }
+.lake-document ul ul { list-style-type: circle; }
+.lake-document ul ul ul { list-style-type: square; }
+/* Lake can export an indented list as a sibling rather than a nested ul. */
+.lake-document ul[data-lake-indent="1"] { margin-left: 2em; list-style-type: circle; }
+.lake-document li::marker { font-family: var(--lake-font); }
+.lake-document li { margin: 0 0 4.176px; padding: 0; }
+/* The frame owns the full gap, including beside section headings. */
+.lake-document .before-code { margin-block-end: 0; }
+.lake-document .after-code { margin-block-start: 0; }
+.lake-document .lake-walkthrough {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+/* Algorithms transcribed from screenshots use the same paper-like layout. */
+.lake-document .paper-algorithm {
+  width: 100%;
+  margin: 18px 0;
+  padding: 0 0 8px;
+  border-block: 1px solid #929292;
+  font-size: 15px;
+  white-space: normal;
+}
+.lake-document .paper-algorithm figcaption {
+  padding: 7px 0;
+  border-bottom: 1px solid #c7c7c7;
+  font-family: var(--article-serif);
+}
+.lake-document .paper-algorithm > p:has(> .lake-math-wide) { text-align: left !important; }
+.lake-document .paper-algorithm .equation { margin: 9px 0 0; font-size: 15px; }
+.lake-document .paper-algorithm .equation mjx-container[display="true"] { min-width: 0; text-align: left; }
+.lake-document .algorithm-body { margin-top: 9px; }
+.lake-document .algorithm-line {
+  display: grid;
+  grid-template-columns: 2em minmax(0, 1fr);
+  column-gap: 1em;
+  align-items: baseline;
+  min-height: 1.9em;
+}
+.lake-document .algorithm-line-number {
+  color: #656d76;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.lake-document .algorithm-line-body { min-width: 0; }
+.lake-document .algorithm-line-body > .lake-math { margin-inline: 0; }
+
+.lake-document .english-term {
+  font-style: normal;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.lake-document strong { font-weight: 700; }
+.lake-document blockquote { margin: 10px 0; padding-left: 10px; position: relative; }
+.lake-document blockquote::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 2px; border-radius: 2px; background: #d9d9d9; }
+.lake-document blockquote[style*="padding-left: 2em"] { padding-left: calc(2em + 10px) !important; }
+.lake-document blockquote[style*="padding-left: 2em"]::before { left: 2em; }
+.lake-document .lake-separator { margin: 12px 0; border: 0; border-top: 1px solid #d9d9d9; }
+.lake-document .lake-math {
+  font-family: var(--lake-font);
+  display: inline-block;
+  max-width: 100%;
+  margin-inline: .25em;
+  vertical-align: baseline;
+  white-space: normal;
+}
+.lake-document .lake-math-adjacent { margin-inline-start: 0; }
+.lake-document .lake-math-punctuation { display: inline-block; white-space: nowrap; }
+.lake-document .lake-math-standalone { margin-inline: 0; }
+.lake-document .lake-math img { display: inline; max-width: none; }
+/* Equations stay visible without creating horizontal scroll containers. */
+.lake-document .lake-math-wide {
+  width: var(--lake-math-width);
+  overflow: visible;
+}
+.lake-document .lake-math-wide img { display: block; }
+/* Center the equation in the text column and keep its number at the right edge. */
+.lake-document .lake-math-numbered {
+  display: block;
+  width: 100%;
+  margin-inline: 0;
+  overflow: visible;
+}
+.lake-document .lake-math-numbered mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  width: 100%;
+  min-width: 0 !important;
+  margin: 0;
+  padding-inline: 0;
+  text-align: center;
+}
+/* MathJax reserves symmetric label gutters in its inline min-width. Let the
+   available column width place the label without changing the SVG glyph scale. */
+.lake-document .lake-math-numbered mjx-container > svg {
+  min-width: 0 !important;
+}
+/* Symmetric gutters keep archived equations centered and their labels flush right. */
+.lake-document .lake-equation-row {
+  display: grid;
+  grid-template-columns: minmax(2.5em, 1fr) minmax(0, max-content) minmax(2.5em, 1fr);
+  align-items: center;
+  width: 100%;
+  margin: 12px 0;
+  white-space: normal;
+}
+[data-post] .lake-document .lake-equation-row > .lake-math {
+  grid-column: 2;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+}
+.lake-document .lake-equation-number {
+  grid-column: 3;
+  justify-self: end;
+  font: 400 16px/1.4 var(--article-serif);
+}
+/* Add labels beside existing formula blocks without affecting their layout. */
+.lake-document .lake-numbered-block { position: relative; }
+.lake-document .lake-block-equation-number {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 400 16px/1.4 var(--article-serif);
+}
+.lake-document .lake-image {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  vertical-align: text-bottom;
+  margin: 18px 0;
+}
+/* Image-only paragraphs need no text baseline beneath the figure. */
+.lake-document :where(p:has(> .lake-image):not(:has(.lake-image-source))) {
+  line-height: 0;
+}
+.lake-document .lake-image-cropped { position: relative; overflow: hidden; }
+.lake-document .lake-image-cropped img { position: absolute; display: block; max-width: none; }
+
+.lake-document .lake-figure { margin: 18px auto; max-width: 100%; white-space: normal; }
+.lake-document .lake-figure img { display: block; width: 100%; height: auto; }
+.lake-document .lake-figure > .lake-image { display: block; margin: 0; }
+
+.lake-document .lake-figure figcaption { margin-top: 8px; color: #656d76; font-size: 13px; text-align: center; }
+
+.lake-document .lake-image-source { display: block; margin: -8px 0 12px; font-size: 13px; line-height: var(--article-line-height); white-space: normal; }
+
+.lake-document .lake-revised-section { white-space: normal; }
+.lake-document .lake-revised-section .equation { margin: 12px 0; padding: 2px 0 4px; }
+.lake-document .equation { text-align: center; font-size: 16px; }
+.lake-document figure .equation { text-align: left; }
+.lake-document .lake-revised-section .equation mjx-container[display="true"] { width: 100%; margin: 0; }
+
+.lake-document .lake-derivation { margin: 10px 0; border: 1px solid var(--line); background: var(--surface); }
+.lake-document .lake-derivation-title { margin: 0 0 8.352px; padding: 8px 12px 0; font-weight: 700; }
+.lake-document .lake-derivation-body { padding: 0 12px 8px; }
+.lake-document .lake-derivation-body > :last-child { margin-bottom: 0; }
+
+.lake-document .lake-theorem { margin: 16px 0; padding: 10px 14px; background: var(--surface); white-space: normal; }
+.lake-document .lake-theorem > p { margin: 0; }
+.lake-document .lake-theorem .equation { margin: 8px 0; padding: 0; }
+.lake-document .lake-theorem-result { display: inline-block; }
+.lake-document .lake-walkthrough > .paper-algorithm { min-width: 0; margin-block: 0; }
+.lake-document p > img:not(.lake-image) { display: block; max-width: 100%; height: auto; margin: 18px auto; }
+
+/* Share one image height across paired diagrams, retaining their proportions. */
+.lake-document .lake-image-pair { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 20px 0; white-space: normal; }
+.lake-document .lake-image-panel { flex: 0 1 calc((100% - 16px) * var(--lake-panel-ratio) / var(--lake-pair-ratio-total)); min-width: 0; }
+.lake-document .lake-image-panel > p { margin: 0; min-height: 0; text-align: center; }
+.lake-document .lake-image-pair .lake-image { display: block; width: 100% !important; max-width: 100%; height: auto; margin: 0; }

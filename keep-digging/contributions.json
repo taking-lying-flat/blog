@@ -1,0 +1,133 @@
+{
+  "author": "taking-lying-flat",
+  "updatedAt": "2026-11-19",
+  "projects": [
+    {
+      "name": "ms-swift",
+      "repo": "modelscope/ms-swift",
+      "count": 62,
+      "icon": "modelscope.png",
+      "updatedAt": "2026-11-16T15:25:32Z"
+    },
+    {
+      "name": "torchtitan",
+      "repo": "pytorch/torchtitan",
+      "count": 39,
+      "icon": "pytorch.jpg",
+      "updatedAt": "2026-11-16T15:25:32Z"
+    },
+    {
+      "name": "unsloth-zoo",
+      "repo": "unslothai/unsloth-zoo",
+      "count": 34,
+      "icon": "unslothai.png",
+      "updatedAt": "2026-11-16T15:28:49Z"
+    },
+    {
+      "name": "unsloth",
+      "repo": "unslothai/unsloth",
+      "count": 31,
+      "icon": "unslothai.png",
+      "updatedAt": "2026-11-16T15:29:34Z"
+    },
+    {
+      "name": "Flash Linear Attention",
+      "repo": "fla-org/flash-linear-attention",
+      "count": 29,
+      "icon": "fla-org.png",
+      "updatedAt": "2026-11-16T15:25:32Z"
+    },
+    {
+      "name": "FreeToken",
+      "repo": "FlashML-org/FreeToken",
+      "count": 10,
+      "icon": "flashml-org.png",
+      "updatedAt": "2026-11-16T15:30:18Z"
+    },
+    {
+      "name": "Liger-Kernel",
+      "repo": "linkedin/Liger-Kernel",
+      "count": 10,
+      "icon": "linkedin.png",
+      "updatedAt": "2026-11-18T10:57:21Z"
+    },
+    {
+      "name": "AIMET",
+      "repo": "qualcomm/aimet",
+      "count": 10,
+      "icon": "qualcomm.jpg",
+      "updatedAt": "2026-11-17T10:33:34Z"
+    },
+    {
+      "name": "Transformers",
+      "repo": "huggingface/transformers",
+      "count": 10,
+      "icon": "huggingface.png",
+      "updatedAt": "2026-11-16T15:49:40Z"
+    },
+    {
+      "name": "mcore-bridge",
+      "repo": "modelscope/mcore-bridge",
+      "count": 4,
+      "icon": "modelscope.png",
+      "updatedAt": "2026-11-16T15:25:32Z"
+    },
+    {
+      "name": "vllm",
+      "repo": "vllm-project/vllm",
+      "count": 4,
+      "icon": "vllm-project.png",
+      "updatedAt": "2026-11-16T15:25:32Z"
+    },
+    {
+      "name": "DeepSpeed",
+      "repo": "deepspeedai/DeepSpeed",
+      "count": 3,
+      "icon": "deepspeedai.png",
+      "updatedAt": "2026-11-16T15:25:32Z"
+    },
+    {
+      "name": "Model Optimizer",
+      "repo": "NVIDIA/Model-Optimizer",
+      "count": 1,
+      "icon": "nvidia.png",
+      "updatedAt": "2026-11-16T15:25:32Z"
+    },
+    {
+      "name": "FlashInfer",
+      "repo": "flashinfer-ai/flashinfer",
+      "count": 1,
+      "icon": "flashinfer-ai.png",
+      "updatedAt": "2026-11-16T15:25:32Z"
+    },
+    {
+      "name": "DiffSynth-Studio",
+      "repo": "modelscope/DiffSynth-Studio",
+      "count": 1,
+      "icon": "modelscope.png",
+      "updatedAt": "2026-11-16T15:25:32Z"
+    },
+    {
+      "name": "VLMEvalKit",
+      "repo": "open-compass/VLMEvalKit",
+      "count": 1,
+      "icon": "open-compass.png",
+      "updatedAt": "2026-11-16T15:25:32Z"
+    },
+    {
+      "name": "llama.cpp",
+      "repo": "ggml-org/llama.cpp",
+      "count": 1,
+      "icon": "ggml-org.jpg",
+      "updatedAt": "2026-11-17T12:39:27Z"
+    },
+    {
+      "name": "TokenRouter",
+      "repo": "thu-nics/TokenRouter",
+      "count": 1,
+      "icon": "thu-nics.png",
+      "updatedAt": "2026-11-16T15:25:32Z"
+    }
+  ],
+  "projectCountSource": "github-contributors"
+}
