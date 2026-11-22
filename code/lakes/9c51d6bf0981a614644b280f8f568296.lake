@@ -1,0 +1,501 @@
+<!doctype lake><title>ms-swift ChatML 渲染</title><meta name="reading-minutes" content="21"><section class="lake-revised-section">
+<h1 id="qwen35-推理模式">Qwen3.5 推理模式</h1>
+<p><code>Qwen3.5</code> 是 <code>hybrid-thinking</code> 模型。同一套模型和 <code>ChatML</code> 模板同时支持 <code>thinking</code> 与 <code>non-thinking</code>；两种模式的区别不是切换模型结构，也不是禁止某些 <code>token</code>，而是模型开始生成前，<code>assistant</code> 位置已经预填哪一种 <code>response prefix</code></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-721%22%2C%22code%22%3A%22thinking%5Cn%3C%7Cim_start%7C%3Eassistant%5Cn%3Cthink%3E%5Cn%E6%A8%A1%E5%9E%8B%E4%BB%8E%E6%80%9D%E8%80%83%E5%8C%BA%E7%BB%A7%E7%BB%AD%E7%94%9F%E6%88%90%5Cn%5Cnnon-thinking%5Cn%3C%7Cim_start%7C%3Eassistant%5Cn%3Cthink%3E%5Cn%5Cn%3C%2Fthink%3E%5Cn%5Cn%E6%A8%A1%E5%9E%8B%E4%BB%8E%E7%AD%94%E6%A1%88%E5%8C%BA%E7%9B%B4%E6%8E%A5%E7%94%9F%E6%88%90%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%80%9D%E8%80%83%E6%A8%A1%E5%BC%8F%E5%89%8D%E7%BC%80%E5%AF%B9%E6%AF%94%22%7D%7D"></card>
+<blockquote class="callout callout-important">
+<p><code>is_thinking</code> 声明模板具备什么能力；<code>enable_thinking</code> 选择本次生成的起始前缀；<code>add_non_thinking_prefix</code> 规范训练数据中已经存在的普通 <code>assistant</code> 回答。三者位于不同阶段，不能视为同一个开关</p>
+</blockquote>
+<h2 id="1-从-templatemeta-到实际-response-prefix">1. 从 TemplateMeta 到实际 response prefix</h2>
+<ul>
+<li><code>Qwen3.5</code> 在 <code>swift/template/templates/qwen.py</code> 中注册为 <code>thinking</code> 模板，并同时提供两种 <code>assistant</code> 前缀</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-722%22%2C%22code%22%3A%22register_template(%5Cn%20%20%20%20QwenTemplateMeta(%5Cn%20%20%20%20%20%20%20%20MLLMTemplateType.qwen3_5%2C%5Cn%20%20%20%20%20%20%20%20template_cls%3DQwen3_5Template%2C%5Cn%20%20%20%20%20%20%20%20default_system%3DNone%2C%5Cn%20%20%20%20%20%20%20%20thinking_prefix%3D'%3Cthink%3E%5C%5Cn'%2C%5Cn%20%20%20%20%20%20%20%20non_thinking_prefix%3D'%3Cthink%3E%5C%5Cn%5C%5Cn%3C%2Fthink%3E%5C%5Cn%5C%5Cn'%2C%5Cn%20%20%20%20%20%20%20%20agent_template%3D'qwen3_5'%2C%5Cn%20%20%20%20%20%20%20%20is_thinking%3DTrue%2C%5Cn%20%20%20%20)%5Cn)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%B3%A8%E5%86%8C%20Qwen3.5%20%E6%A8%A1%E6%9D%BF%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%22%7D%7D"></card>
+<div class="table-scroll" role="region" aria-label="表格" tabindex="0"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th><code>Qwen3.5</code> 的值</th>
+<th>模板语义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>is_thinking</code></td>
+<td><code>True</code></td>
+<td>模板属于 <code>thinking</code> 类型</td>
+</tr>
+<tr>
+<td><code>thinking_prefix</code></td>
+<td><code>&lt;think&gt;\n</code></td>
+<td>思考区已经打开，模型继续生成推理过程</td>
+</tr>
+<tr>
+<td><code>non_thinking_prefix</code></td>
+<td><code>&lt;think&gt;\n\n&lt;/think&gt;\n\n</code></td>
+<td>思考区为空且已经关闭，模型直接生成答案</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="callout callout-important">
+<p><code>is_thinking=True</code> 不表示每次推理都必须思考。<code>Qwen3.5</code> 同时注册非空的 <code>non_thinking_prefix</code>，因此它是 <code>hybrid-thinking</code>，而不是只能进入 <code>thinking</code> 的纯思考模板</p>
+</blockquote>
+<ul>
+<li>未显式传参时，三个参数的默认值在 <code>swift/arguments/base_args/template_args.py</code> 中定义</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-723%22%2C%22code%22%3A%22%40dataclass%5Cnclass%20TemplateArguments%3A%5Cn%20%20%20%20response_prefix%3A%20Optional%5Bstr%5D%20%3D%20None%5Cn%20%20%20%20enable_thinking%3A%20Optional%5Bbool%5D%20%3D%20None%5Cn%20%20%20%20add_non_thinking_prefix%3A%20bool%20%3D%20True%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%A8%A1%E6%9D%BF%E5%8F%82%E6%95%B0%E9%BB%98%E8%AE%A4%E5%80%BC%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Farguments%2Fbase_args%2Ftemplate_args.py%23L146-L149%22%7D%7D"></card>
+<ul>
+<li><code>get_template()</code> 将参数传入 <code>Template.__init__()</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-724%22%2C%22code%22%3A%22class%20Template(ProcessorMixin)%3A%5Cn%20%20%20%20def%20__init__(%5Cn%20%20%20%20%20%20%20%20self%2C%5Cn%20%20%20%20%20%20%20%20processor%3A%20Processor%2C%5Cn%20%20%20%20%20%20%20%20template_meta%3A%20'TemplateMeta'%2C%5Cn%20%20%20%20%20%20%20%20default_system%3A%20Optional%5Bstr%5D%20%3D%20None%2C%5Cn%20%20%20%20%20%20%20%20max_length%3A%20Optional%5Bint%5D%20%3D%20None%2C%5Cn%20%20%20%20%20%20%20%20*%2C%5Cn%20%20%20%20%20%20%20%20%23%20%E7%9C%81%E7%95%A5%E4%B8%8E%20thinking%20%E6%97%A0%E5%85%B3%E7%9A%84%E5%85%B3%E9%94%AE%E5%AD%97%E5%8F%82%E6%95%B0%5Cn%20%20%20%20%20%20%20%20response_prefix%3A%20Optional%5Bstr%5D%20%3D%20None%2C%5Cn%20%20%20%20%20%20%20%20enable_thinking%3A%20Optional%5Bbool%5D%20%3D%20None%2C%5Cn%20%20%20%20%20%20%20%20preserve_thinking%3A%20Optional%5Bbool%5D%20%3D%20None%2C%5Cn%20%20%20%20%20%20%20%20add_non_thinking_prefix%3A%20bool%20%3D%20True%2C%5Cn%20%20%20%20)%20-%3E%20None%3A%20...%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A8%A1%E6%9D%BF%E5%8F%82%E6%95%B0%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L82-L165%22%7D%7D"></card>
+<ul>
+<li><code>template_meta</code> 没有默认值，它是构造模板时必须提供的协议对象。对于 <code>Qwen3.5</code>，该对象就是前面 <code>register_template()</code> 注册的 <code>QwenTemplateMeta</code>；其 <code>is_thinking=True</code>、<code>thinking_prefix</code> 和 <code>non_thinking_prefix</code> 均来自注册代码。构造函数随后复制这份模板元数据，并把尚未解析的 <code>enable_thinking=None</code> 转换成实际布尔值</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-725%22%2C%22code%22%3A%22template_meta%20%3D%20deepcopy(template_meta)%5Cn%5Cnif%20enable_thinking%20is%20None%3A%5Cn%20%20%20%20enable_thinking%20%3D%20(%5Cn%20%20%20%20%20%20%20%20template_meta.is_thinking%20and%20not%20template_meta.non_thinking_prefix%5Cn%20%20%20%20)%5Cn%5Cnself.response_prefix%20%3D%20response_prefix%5Cnself.template_meta%20%3D%20template_meta%5Cnself.enable_thinking%20%3D%20enable_thinking%5Cnself.add_non_thinking_prefix%20%3D%20add_non_thinking_prefix%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%A7%A3%E6%9E%90%E9%BB%98%E8%AE%A4%E6%80%9D%E8%80%83%E6%A8%A1%E5%BC%8F%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L127-L139%22%7D%7D"></card>
+<div class="table-scroll" role="region" aria-label="表格" tabindex="0"><table>
+<thead>
+<tr>
+<th>实例字段</th>
+<th>参数入口默认值</th>
+<th><code>Qwen3.5</code> 的实际初值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>self.response_prefix</code></td>
+<td><code>None</code></td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>self.template_meta</code></td>
+<td>无；构造函数必传</td>
+<td><code>Qwen3.5</code> 注册项的副本</td>
+</tr>
+<tr>
+<td><code>self.enable_thinking</code></td>
+<td><code>None</code></td>
+<td>根据模板元数据解析为 <code>False</code></td>
+</tr>
+<tr>
+<td><code>self.add_non_thinking_prefix</code></td>
+<td><code>True</code></td>
+<td><code>True</code></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>模板支持 <code>thinking</code>，但一次未显式配置的生成默认走 <code>non-thinking</code></strong></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-726%22%2C%22code%22%3A%22template_meta.is_thinking%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3D%20True%5Cnbool(template_meta.non_thinking_prefix)%20%3D%20True%5Cn%5CnTrue%20and%20not%20True%5Cn%20%20%20%20%20%20%20%20%E2%86%93%5Cnenable_thinking%20%3D%20False%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E9%BB%98%E8%AE%A4%E6%A8%A1%E5%BC%8F%E8%AE%A1%E7%AE%97%E7%BB%93%E6%9E%9C%22%7D%7D"></card>
+<blockquote class="callout callout-note">
+<p><code>ms-swift v4.3.0</code> 使用 <code>enable_thinking = template_meta.is_thinking</code>，<code>Qwen3.5</code> 默认开启 <code>thinking</code>；从 <code>v4.3.1</code> 开始改成 <code>is_thinking and not non_thinking_prefix</code>，<code>hybrid-thinking</code> 模型默认关闭 <code>thinking</code>。关键实验应显式设置 <code>--enable_thinking true/false</code>，不要依赖版本默认值</p>
+</blockquote>
+<ul>
+<li>请求到达后，<code>_get_enable_thinking()</code> 先读取单条样本的 <code>chat_template_kwargs</code>，没有提供时才回退到模板实例的全局值；<code>_get_response_prefix()</code> 又在它之前增加一层显式前缀覆盖</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-727%22%2C%22code%22%3A%22def%20_get_enable_thinking(self%2C%20inputs%3DNone)%3A%5Cn%20%20%20%20enable_thinking%20%3D%20(%5Cn%20%20%20%20%20%20%20%20None%5Cn%20%20%20%20%20%20%20%20if%20inputs%20is%20None%5Cn%20%20%20%20%20%20%20%20else%20inputs.chat_template_kwargs.get('enable_thinking')%5Cn%20%20%20%20)%5Cn%20%20%20%20if%20enable_thinking%20is%20None%3A%5Cn%20%20%20%20%20%20%20%20enable_thinking%20%3D%20self.enable_thinking%5Cn%20%20%20%20return%20enable_thinking%5Cn%5Cn%5Cndef%20_get_response_prefix(self%2C%20inputs%3DNone)%3A%5Cn%20%20%20%20response_prefix%20%3D%20(%5Cn%20%20%20%20%20%20%20%20None%5Cn%20%20%20%20%20%20%20%20if%20inputs%20is%20None%5Cn%20%20%20%20%20%20%20%20else%20inputs.chat_template_kwargs.get('response_prefix')%5Cn%20%20%20%20)%5Cn%20%20%20%20if%20response_prefix%20is%20None%3A%5Cn%20%20%20%20%20%20%20%20response_prefix%20%3D%20self.response_prefix%5Cn%20%20%20%20if%20response_prefix%20is%20not%20None%3A%5Cn%20%20%20%20%20%20%20%20return%20response_prefix%5Cn%5Cn%20%20%20%20enable_thinking%20%3D%20self._get_enable_thinking(inputs)%5Cn%20%20%20%20if%20enable_thinking%3A%5Cn%20%20%20%20%20%20%20%20return%20self.template_meta.thinking_prefix%5Cn%20%20%20%20else%3A%5Cn%20%20%20%20%20%20%20%20return%20self.template_meta.non_thinking_prefix%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E9%80%89%E6%8B%A9%E5%93%8D%E5%BA%94%E5%89%8D%E7%BC%80%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%22%7D%7D"></card>
+<ul>
+<li><code>enable_thinking</code> 并不直接拼接字符串；它只在没有显式 <code>response_prefix</code> 时，帮助 <code>_get_response_prefix()</code> 从模板注册的两种前缀中选择一个</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-728%22%2C%22code%22%3A%22%E5%8D%95%E6%9D%A1%E6%A0%B7%E6%9C%AC%20chat_template_kwargs.response_prefix%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20%E6%9C%AA%E8%AE%BE%E7%BD%AE%5Cn%E5%85%A8%E5%B1%80%20response_prefix%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20%E6%9C%AA%E8%AE%BE%E7%BD%AE%5Cn%E5%8D%95%E6%9D%A1%E6%A0%B7%E6%9C%AC%20chat_template_kwargs.enable_thinking%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20%E6%9C%AA%E8%AE%BE%E7%BD%AE%5Cn%E5%85%A8%E5%B1%80%20enable_thinking%5Cn%20%20%20%20%20%20%20%20%E2%86%93%5Cnthinking_prefix%20%2F%20non_thinking_prefix%5Cn%5Cn%E6%9C%89%E6%95%88%20response_prefix%20is%20None%5Cn%20%20%20%20%E2%86%92%20%E6%A0%B7%E6%9C%AC%E7%BA%A7%E4%B8%8E%E5%85%A8%E5%B1%80%E5%9D%87%E6%9C%AA%E6%98%BE%E5%BC%8F%E6%8C%87%E5%AE%9A%E5%89%8D%E7%BC%80%5Cn%20%20%20%20%E2%86%92%20%E6%A0%B9%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%90%8E%E7%9A%84%20enable_thinking%20%E9%80%89%E6%8B%A9%E6%A8%A1%E6%9D%BF%E5%89%8D%E7%BC%80%EF%BC%9A%5Cn%20%20%20%20%20%20%20%20thinking%20%20%20%20%20%E2%86%92%20template_meta.thinking_prefix%5Cn%20%20%20%20%20%20%20%20non-thinking%20%E2%86%92%20template_meta.non_thinking_prefix%5Cn%5Cn%E6%9C%89%E6%95%88%20response_prefix%20is%20not%20None%5Cn%20%20%20%20%E2%86%92%20%E5%B7%B2%E6%98%BE%E5%BC%8F%E6%8C%87%E5%AE%9A%E5%89%8D%E7%BC%80%EF%BC%88%E5%8C%85%E6%8B%AC%E7%A9%BA%E5%AD%97%E7%AC%A6%E4%B8%B2%20''%EF%BC%89%5Cn%20%20%20%20%E2%86%92%20%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8%20response_prefix%5Cn%20%20%20%20%E2%86%92%20%E4%B8%8D%E5%86%8D%E4%BD%BF%E7%94%A8%20template_meta.thinking_prefix%20%2F%20non_thinking_prefix%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%89%8D%E7%BC%80%E9%80%89%E6%8B%A9%E4%BC%98%E5%85%88%E7%BA%A7%22%7D%7D"></card>
+<h2 id="2-推理路径前缀如何进入-chatml">2. 推理路径：前缀如何进入 ChatML</h2>
+<ul>
+<li><code>Qwen3.5</code> 从公开编码入口进入 <code>ChatML</code> 拼接的完整方法解析链是</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-729%22%2C%22code%22%3A%22Template.encode()%5Cn%20%20%20%20%20%20%20%20%E2%86%93%5CnTemplate._encode_truncated()%5Cn%20%20%20%20%20%20%20%20%E2%86%93%5CnQwen3VLTemplate._encode()%20%20%20%20%20%20%20%20%20%20%23%20Qwen3_5Template%20%E7%BB%A7%E6%89%BF%E8%AF%A5%E5%AE%9E%E7%8E%B0%5Cn%20%20%20%20%20%20%20%20%E2%86%93%5CnTemplate._encode(self%2C%20inputs)%20%20%20%20%20%23%20Qwen3VLTemplate%20%E6%98%BE%E5%BC%8F%E8%B0%83%E7%94%A8%E5%9F%BA%E7%A1%80%E5%AE%9E%E7%8E%B0%5Cn%20%20%20%20%20%20%20%20%E2%86%93%5CnQwen3_5Template._swift_prepare_inputs()%5Cn%20%20%20%20%20%20%20%20%E2%86%93%5CnTemplate._swift_encode()%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22ChatML%20%E7%BC%96%E7%A0%81%E8%B0%83%E7%94%A8%E9%93%BE%22%7D%7D"></card>
+<ul>
+<li><code>Qwen3_5Template</code> 先规范消息内容，真正拼接 <code>ChatML</code> 的公共控制流位于基础类 <code>Template._swift_encode()</code>；<code>thinking/non-thinking</code> 的前缀在该方法中写入 <code>prompt</code>。推理请求的最后一轮没有现成的 <code>assistant</code> 回答。在 <code>_swift_encode()</code> 中，只需关注最后一轮的两个分支</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-730%22%2C%22code%22%3A%22response_prefix%20%3D%20self._get_response_prefix(inputs)%5Cn%5Cnif%20response%20is%20not%20None%3A%5Cn%20%20%20%20context_list.append('%7B%7BRESPONSE%7D%7D')%5Cnelif%20response_prefix%3A%5Cn%20%20%20%20context_list.append(response_prefix)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%8B%BC%E6%8E%A5%20Assistant%20%E5%89%8D%E7%BC%80%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L1419-L1454%22%7D%7D"></card>
+<ul>
+<li><code>SFT</code> 样本已经提供 <code>assistant</code> 标签，进入 <code>{{RESPONSE}}</code> 分支；推理请求的 <code>response is None</code>，因此把 <code>_get_response_prefix()</code> 选出的前缀直接写到 <code>ChatML prompt</code> 末尾。<code>enable_thinking</code> 通过前缀选择影响输入 <code>token</code></li>
+<li><code>enable_thinking=True</code>：<code>&lt;think&gt;</code> 尚未闭合，模型从思考区继续生成，随后自行产生 <code>&lt;/think&gt;</code> 和最终答案</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-731%22%2C%22code%22%3A%22%3C%7Cim_start%7C%3Eassistant%5Cn%3Cthink%3E%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%80%9D%E8%80%83%E6%A8%A1%E5%BC%8F%E8%BE%93%E5%87%BA%E7%A4%BA%E4%BE%8B%22%7D%7D"></card>
+<ul>
+<li><code>enable_thinking=False</code>：空思考块已经作为 <code>prompt</code> 写完，模型的生成起点位于 <code>&lt;/think&gt;</code> 之后。<code>non-thinking</code> 因而是一种 <strong><code>prefill protocol</code></strong>，不是模型自己生成空 <code>&lt;think&gt;&lt;/think&gt;</code>，也不是解码器通过 <code>token blacklist</code> 强制关闭思考</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-732%22%2C%22code%22%3A%22%3C%7Cim_start%7C%3Eassistant%5Cn%3Cthink%3E%5Cn%5Cn%3C%2Fthink%3E%5Cn%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E9%9D%9E%E6%80%9D%E8%80%83%E6%A8%A1%E5%BC%8F%E8%BE%93%E5%87%BA%E7%A4%BA%E4%BE%8B%22%7D%7D"></card>
+<h3 id="返回语义为什么-ms-swift-会显示空-thinkthink">返回语义：为什么 ms-swift 会显示空 &lt;think&gt;&lt;/think&gt;</h3>
+<p><code>enable_thinking=False</code> 时，空 <code>&lt;think&gt;&lt;/think&gt;</code> 已经作为 <code>response_prefix</code> 写入 <code>prompt</code>，模型只在它后面生成答案。
+因此，<code>ms-swift</code> 输出空 <code>think</code>，而 <code>Transformers</code> 和 <code>vLLM</code> 不输出的差异不在采样阶段，而在生成完成后的 <code>response</code> 构造阶段</p>
+<p><strong class="backend-label">Transformers · <code>model.generate()</code></strong>：<code>transformers/generation/utils.py</code> 中的标准处理方式是按输入长度截取新增 <code>token</code></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-733%22%2C%22code%22%3A%22outputs%20%3D%20model.generate(**inputs%2C%20return_dict_in_generate%3DTrue)%5Cninput_length%20%3D%20inputs.input_ids.shape%5B1%5D%5Cngenerated_tokens%20%3D%20outputs.sequences%5B%3A%2C%20input_length%3A%5D%5Cnresponse%20%3D%20tokenizer.decode(generated_tokens%5B0%5D)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%88%AA%E5%8F%96%E7%94%9F%E6%88%90%20Token%20%E7%A4%BA%E4%BE%8B%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fgeneration%2Futils.py%23L2395-L2812%22%2C%22sourceLabel%22%3A%22Transformers%20%C2%B7%20%E7%94%9F%E6%88%90%E6%8E%A5%E5%8F%A3%22%7D%7D"></card>
+<ul>
+<li><code>Transformers</code>：对 <code>decoder-only</code> 模型，<code>outputs.sequences</code> 包含 <code>prompt + completion</code>。常见推理代码按照输入长度切片，只解码新增 <code>token</code>；空思考块属于 <code>prompt</code>，因此不会出现在 <code>response</code> 中。严格来说，<code>model.generate()</code> 没有过滤 <code>&lt;think&gt;&lt;/think&gt;</code>：直接解码完整的 <code>outputs.sequences</code> 仍然可以看到它</li>
+</ul>
+<p><strong class="backend-label">原生 vLLM</strong>：<code>vllm/v1/engine/detokenizer.py</code> 将输出缓冲区初始化为空，只追加新生成的 token</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-734%22%2C%22code%22%3A%22for%20new_token_id%20in%20new_token_ids%3A%5Cn%20%20%20%20self.token_ids.append(new_token_id)%5Cn%20%20%20%20self.output_text%20%2B%3D%20self.decode_next(new_token_id)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%A7%A3%E7%A0%81%E6%96%B0%E5%A2%9E%20token%22%2C%22sourceLabel%22%3A%22vLLM%20%C2%B7%20%E8%8A%82%E9%80%89%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fvllm-project%2Fvllm%2Fblob%2Fb21757555ac5f853a8eff02a687d2777437e055b%2Fvllm%2Fv1%2Fengine%2Fdetokenizer.py%23L117-L119%22%7D%7D"></card>
+<p><code>vllm/v1/engine/output_processor.py</code> 随后读取生成文本，作为 <code>CompletionOutput.text</code> 返回</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-735%22%2C%22code%22%3A%22finished%20%3D%20finish_reason%20is%20not%20None%5Cndelta%20%3D%20self.output_kind%20%3D%3D%20RequestOutputKind.DELTA%5Cntext%20%3D%20self.detokenizer.get_next_output_text(finished%2C%20delta)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%AF%BB%E5%8F%96%E7%94%9F%E6%88%90%E6%96%87%E6%9C%AC%22%2C%22sourceLabel%22%3A%22vLLM%20%C2%B7%20%E8%8A%82%E9%80%89%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fvllm-project%2Fvllm%2Fblob%2Fb21757555ac5f853a8eff02a687d2777437e055b%2Fvllm%2Fv1%2Fengine%2Foutput_processor.py%23L419-L450%22%7D%7D"></card>
+<ul>
+<li>原生 <code>vLLM</code>：在 <code>detokenizer</code> 内部，<code>prompt token</code> 只用于初始化前缀状态，保证第一个生成 <code>token</code> 能在正确的文本边界上解码；<code>output_text</code> 本身仍从空字符串开始，并且只接收 <code>new_token_ids</code>。因此，原生 <code>vLLM</code> 的 <code>CompletionOutput.text</code> 只包含模型新生成的答案。空 <code>&lt;think&gt;&lt;/think&gt;</code> 位于 <code>prompt</code> 中，从未写入这个输出缓冲区，所以不会出现在返回文本里</li>
+</ul>
+<p><strong class="backend-label">ms-swift</strong>：<code>swift/template/base.py</code> 先截取新增 <code>token</code>，再在解码阶段恢复模板前缀</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-736%22%2C%22code%22%3A%22def%20get_generate_ids(%5Cn%20%20%20%20self%2C%20generate_ids%3A%20Union%5Btorch.Tensor%2C%20List%5Bint%5D%5D%2C%20num_prompt_tokens%3A%20int%5Cn)%20-%3E%20Union%5Btorch.Tensor%2C%20List%5Bint%5D%5D%3A%5Cn%20%20%20%20if%20self.skip_prompt%3A%5Cn%20%20%20%20%20%20%20%20generate_ids%20%3D%20generate_ids%5B...%2C%20num_prompt_tokens%3A%5D%5Cn%20%20%20%20return%20generate_ids%5Cn%5Cn%5Cndef%20decode_generate_ids(%5Cn%20%20%20%20self%2C%5Cn%20%20%20%20generate_ids%3A%20List%5Bint%5D%2C%5Cn%20%20%20%20*%2C%5Cn%20%20%20%20is_finished%3A%20bool%20%3D%20True%2C%5Cn%20%20%20%20first_token%3DTrue%2C%5Cn%20%20%20%20template_inputs%3DNone%2C%5Cn%20%20%20%20**kwargs%2C%5Cn)%20-%3E%20Any%3A%5Cn%20%20%20%20if%20kwargs.get('spaces_between_special_tokens')%20is%20None%3A%5Cn%20%20%20%20%20%20%20%20kwargs%5B'spaces_between_special_tokens'%5D%20%3D%20False%5Cn%20%20%20%20generate_ids%20%3D%20self.skip_stop_tokens(generate_ids%2C%20is_finished)%5Cn%20%20%20%20response%20%3D%20self.tokenizer.decode(generate_ids%2C%20**kwargs)%5Cn%20%20%20%20response_prefix%20%3D%20self._get_response_prefix(template_inputs)%5Cn%20%20%20%20if%20first_token%20and%20response_prefix%3A%5Cn%20%20%20%20%20%20%20%20response%20%3D%20response_prefix%20%2B%20response%5Cn%20%20%20%20return%20response%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%81%A2%E5%A4%8D%E6%A8%A1%E6%9D%BF%E5%89%8D%E7%BC%80%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E8%8A%82%E9%80%89%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L796-L810%22%2C%22additionalSources%22%3A%5B%7B%22label%22%3A%22get_generate_ids%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L1680-L1684%22%7D%5D%7D%7D"></card>
+<ul>
+<li><code>ms-swift</code>（<code>Transformers</code> 后端）：<code>Qwen3.5</code> 继承基础模板的 <code>skip_prompt=True</code>。因此，<code>ms-swift</code> 的 <code>Transformers backend</code> 先通过 <code>get_generate_ids()</code> 切掉整个 <code>prompt</code>，再由 <code>decode_generate_ids()</code> 解码新增 <code>token</code>；随后 <code>ms-swift</code> 重新调用 <code>_get_response_prefix()</code>，显式执行 <code>response_prefix + response</code>。空 <code>&lt;think&gt;&lt;/think&gt;</code> 正是在这一步被拼回最终 <code>response</code>，而不是模型本轮新生成的 <code>token</code></li>
+</ul>
+<p><strong class="backend-label">ms-swift · vLLM backend</strong>：<code>swift/infer_engine/vllm_engine.py</code> 不直接返回原生 <code>vLLM</code> 的 <code>output.text</code>，而是读取 <code>output.token_ids</code>，再次调用 <code>Swift</code> 模板解码</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-737%22%2C%22code%22%3A%22for%20output%20in%20result.outputs%3A%5Cn%20%20%20%20output.token_ids%20%3D%20list(output.token_ids)%5Cn%20%20%20%20response%20%3D%20self.template.decode_generate_ids(%5Cn%20%20%20%20%20%20%20%20output.token_ids%2C%5Cn%20%20%20%20%20%20%20%20template_inputs%3Dinputs%5B'template_inputs'%5D%2C%5Cn%20%20%20%20)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%A7%A3%E7%A0%81%20vLLM%20%E7%94%9F%E6%88%90%E7%BB%93%E6%9E%9C%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Finfer_engine%2Fvllm_engine.py%23L711-L770%22%7D%7D"></card>
+<ul>
+<li><code>ms-swift</code>（<code>vLLM</code> 后端）：原生 <code>vLLM</code> 返回的是 <code>completion</code>，而 <code>ms-swift</code> 的 <code>vLLM backend</code> 返回的是经过模板重建的 <code>assistant response</code>。底层采样没有改变，变化的只是返回文本是否重新包含 <code>response_prefix</code></li>
+</ul>
+<h2 id="3-sft-路径标签规范化与-loss-mask">3. SFT 路径：标签规范化与 Loss Mask</h2>
+<ul>
+<li><code>SFT</code> 样本已经包含最后一轮 <code>assistant</code> 回答，因此 <code>response is not None</code>，编码器把 <code>{{RESPONSE}}</code> 放入 <code>ChatML</code>，而不会把推理用的 <code>response_prefix</code> 再追加一次。此时模式来自 <code>assistant</code> 标签本身</li>
+<li>进入 <code>_swift_encode()</code> 之前，<code>Qwen3_5Template._swift_prepare_inputs()</code> 先对消息执行与 <code>Qwen3.5 Hugging Face Jinja</code> 模板一致的规范化：<code>user/system/tool</code> 执行 <code>strip()</code>；<code>assistant</code> 若已经包含完整 <code>&lt;think&gt;...&lt;/think&gt;</code>，则被整理成固定换行结构</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-738%22%2C%22code%22%3A%22elif%20role%20%3D%3D%20'assistant'%3A%5Cn%20%20%20%20stripped%20%3D%20content.strip()%5Cn%20%20%20%20if%20'%3C%2Fthink%3E'%20in%20stripped%20and%20'%3Cthink%3E'%20in%20stripped%3A%5Cn%20%20%20%20%20%20%20%20before%2C%20_%2C%20after%20%3D%20stripped.partition('%3C%2Fthink%3E')%5Cn%20%20%20%20%20%20%20%20reasoning%20%3D%20(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20before.rstrip('%5C%5Cn').rsplit('%3Cthink%3E'%2C%201)%5B-1%5D.lstrip('%5C%5Cn').strip()%5Cn%20%20%20%20%20%20%20%20)%5Cn%20%20%20%20%20%20%20%20rest%20%3D%20after.lstrip('%5C%5Cn')%5Cn%20%20%20%20%20%20%20%20message%5B'content'%5D%20%3D%20f'%3Cthink%3E%5C%5Cn%7Breasoning%7D%5C%5Cn%3C%2Fthink%3E%5C%5Cn%5C%5Cn%7Brest%7D'%5Cn%20%20%20%20else%3A%5Cn%20%20%20%20%20%20%20%20message%5B'content'%5D%20%3D%20stripped%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%A7%84%E8%8C%83%20Assistant%20%E6%B6%88%E6%81%AF%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L627-L653%22%7D%7D"></card>
+<ul>
+<li>随后 <code>_add_non_thinking_prefix()</code> 扫描已有 <code>assistant</code> 消息。只要内容既不以 <code>&lt;think&gt;</code> 开头，也不以完整的 <code>non_thinking_prefix</code> 开头，就在原回答前补空思考块</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-739%22%2C%22code%22%3A%22def%20_add_non_thinking_prefix(self%2C%20inputs%2C%20thinking_prefix%3D'%3Cthink%3E')%3A%5Cn%20%20%20%20messages%20%3D%20inputs.messages%5Cn%20%20%20%20non_thinking_prefix%20%3D%20self.template_meta.non_thinking_prefix%5Cn%5Cn%20%20%20%20if%20non_thinking_prefix%3A%5Cn%20%20%20%20%20%20%20%20if%20(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20not%20self.is_training%5Cn%20%20%20%20%20%20%20%20%20%20%20%20or%20self.loss_scale.base_strategy%20%3D%3D%20'last_round'%5Cn%20%20%20%20%20%20%20%20)%20and%20not%20self.template_meta.preserve_thinking%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20start_idx%20%3D%20get_last_user_round(messages)%5Cn%20%20%20%20%20%20%20%20else%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20start_idx%20%3D%20-1%5Cn%5Cn%20%20%20%20%20%20%20%20for%20i%2C%20message%20in%20enumerate(messages)%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20if%20not%20self._is_add_non_thinking_round(messages%2C%20i%2C%20start_idx)%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20continue%5Cn%5Cn%20%20%20%20%20%20%20%20%20%20%20%20content%20%3D%20message%5B'content'%5D%5Cn%20%20%20%20%20%20%20%20%20%20%20%20if%20isinstance(content%2C%20str)%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20not%20content.startswith(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20(thinking_prefix%2C%20non_thinking_prefix)%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20message%5B'content'%5D%20%3D%20non_thinking_prefix%20%2B%20content%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%A1%A5%E5%85%A5%E9%9D%9E%E6%80%9D%E8%80%83%E5%89%8D%E7%BC%80%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L1266-L1290%22%7D%7D"></card>
+<ul>
+<li><code>start_idx</code> 决定规范化覆盖哪些轮次：默认 <code>SFT</code> 的 <code>loss_scale=default</code> 从头处理所有 <code>assistant</code> 回答；<code>last_round</code> 策略只处理最后一个 <code>user</code> 之后的 <code>assistant</code> 回答。这与 <code>loss</code> 的轮次范围保持一致，但不改变普通回答补空思考块、已有 <code>thinking</code> 回答保持不变的判断。两类 <code>SFT</code> 数据经过这一阶段后共享统一外壳</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-740%22%2C%22code%22%3A%22thinking%20%E6%A0%B7%E6%9C%AC%5Cnassistant%3A%20%3Cthink%3E%5Cn%E7%9C%9F%E5%AE%9E%E6%8E%A8%E7%90%86%E8%BF%87%E7%A8%8B%5Cn%3C%2Fthink%3E%5Cn%5Cn%E6%9C%80%E7%BB%88%E7%AD%94%E6%A1%88%5Cn%5Cnnon-thinking%20%E6%A0%B7%E6%9C%AC%5Cnassistant%3A%20%3Cthink%3E%5Cn%5Cn%3C%2Fthink%3E%5Cn%5Cn%E6%9C%80%E7%BB%88%E7%AD%94%E6%A1%88%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%AE%AD%E7%BB%83%E6%A0%B7%E6%9C%AC%E6%A0%BC%E5%BC%8F%E5%AF%B9%E6%AF%94%22%7D%7D"></card>
+<ul>
+<li><code>add_non_thinking_prefix=True</code> 不会从普通答案推导出真实思维链，只把没有推理过程显式编码为空思考区；已有 <code>&lt;think&gt;真实推理&lt;/think&gt;</code> 的样本保持 <code>thinking</code>，普通回答被归一化为 <code>non-thinking</code></li>
+</ul>
+<div class="table-scroll" role="region" aria-label="表格" tabindex="0"><table>
+<thead>
+<tr>
+<th><code>assistant</code> 原始标签</th>
+<th><code>_add_non_thinking_prefix()</code></th>
+<th>编码后的类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;think&gt;真实推理&lt;/think&gt;答案</code></td>
+<td>不修改</td>
+<td><code>thinking</code></td>
+</tr>
+<tr>
+<td>普通答案</td>
+<td>前置空 <code>&lt;think&gt;&lt;/think&gt;</code></td>
+<td><code>non-thinking</code></td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>这也解释为什么 <code>enable_thinking</code> 不是混合 <code>SFT</code> 的数据开关：最后一轮已有 <code>response</code> 时，<code>_swift_encode()</code> 已经进入 <code>{{RESPONSE}}</code> 分支，<code>_get_response_prefix()</code> 的返回值不会被追加到该标签前</li>
+<li>空思考块虽然存在于 <code>input_ids</code>，却不需要模型学习生成。标准参数类 <code>swift/arguments/base_args/template_args.py</code> 会识别 <code>is_thinking=True</code> 且 <code>non_thinking_prefix</code> 非空的 <code>hybrid-thinking</code> 模板，并自动组合 <code>ignore_empty_think</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-741%22%2C%22code%22%3A%22def%20_set_loss_scale(self)%3A%5Cn%20%20%20%20if%20(not%20self.disable_ignore_empty_think%5Cn%20%20%20%20%20%20%20%20%20%20%20%20and%20getattr(self%2C%20'template_meta'%2C%20None)%20is%20not%20None)%3A%5Cn%20%20%20%20%20%20%20%20template_meta%20%3D%20self.template_meta%5Cn%20%20%20%20%20%20%20%20if%20template_meta.is_thinking%20and%20template_meta.non_thinking_prefix%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20if%20self.loss_scale%20and%20'ignore_empty_think'%20not%20in%20self.loss_scale%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20self.loss_scale%20%3D%20self.loss_scale%20%2B%20'%2Bignore_empty_think'%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E9%85%8D%E7%BD%AE%E7%A9%BA%E6%80%9D%E8%80%83%E5%9D%97%20Loss%20Mask%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Farguments%2Fbase_args%2Ftemplate_args.py%23L171-L178%22%7D%7D"></card>
+<ul>
+<li><code>ignore_empty_think</code> 在字符串形式的 <code>ChatML context</code> 中匹配开头的空思考块，将其权重设为 <code>0</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-742%22%2C%22code%22%3A%22%7B%5Cn%20%20%5C%22%5E%3Cthink%3E%5C%5C%5C%5Cs*%3C%2Fthink%3E%5C%5C%5C%5Cs*%5C%22%3A%20%5B0.0%5D%5Cn%7D%5Cn%22%2C%22language%22%3A%22json%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E7%A9%BA%E6%80%9D%E8%80%83%E5%9D%97%E6%AD%A3%E5%88%99%E9%85%8D%E7%BD%AE%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Floss_scale%2Fconfig%2Fignore_empty_think.json%23L1-L7%22%2C%22sourceLabel%22%3A%22ms-swift%22%7D%7D"></card>
+<ul>
+<li><code>_encode_context_list()</code> 随后逐段 <code>tokenize</code>，将权重为 <code>0</code> 的部分转成 <code>labels=-100</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-743%22%2C%22code%22%3A%22for%20context%2C%20loss_weight%20in%20zip(%5Cn%20%20%20%20context_list%2C%5Cn%20%20%20%20loss_scale_list%2C%5Cn)%3A%5Cn%20%20%20%20token_list%20%3D%20self._tokenize(context)%5Cn%20%20%20%20input_ids%20%2B%3D%20token_list%5Cn%5Cn%20%20%20%20if%20loss_weight%20%3E%200.0%3A%5Cn%20%20%20%20%20%20%20%20labels%20%2B%3D%20token_list%5Cn%20%20%20%20else%3A%5Cn%20%20%20%20%20%20%20%20labels%20%2B%3D%20%5B-100%5D%20*%20len(token_list)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%B0%86%E4%B8%8A%E4%B8%8B%E6%96%87%E7%BC%96%E7%A0%81%E4%B8%BA%E6%A0%87%E7%AD%BE%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L1185-L1192%22%7D%7D"></card>
+<ul>
+<li>空思考块保留在 <code>input_ids</code> 中，但不参与监督；答案 <code>token</code> 与模板要求的结束符仍参与训练。下图只展开 <code>assistant response span</code>，模板 <code>suffix</code> 的监督由后续 <code>EOS</code> 逻辑单独处理</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-744%22%2C%22code%22%3A%22%E6%99%AE%E9%80%9A%20assistant%20%E5%9B%9E%E7%AD%94%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20add_non_thinking_prefix%5Cn%3Cthink%3E%3C%2Fthink%3E%20%2B%20%E6%9C%80%E7%BB%88%E7%AD%94%E6%A1%88%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20ignore_empty_think%5Cn%5B%E7%A9%BA%E6%80%9D%E8%80%83%E5%9D%97%2C%20%E6%9C%80%E7%BB%88%E7%AD%94%E6%A1%88%5D%5Cn%5B%E6%9D%83%E9%87%8D%200%2C%20%20%20%20%E6%9D%83%E9%87%8D%201%5D%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20tokenize%20%2F%20_encode_context_list%5Cninput_ids%3A%20%5B%E7%A9%BA%E6%80%9D%E8%80%83%20token%20%7C%20%E7%AD%94%E6%A1%88%20token%5D%5Cnlabels%3A%20%20%20%20%5B-100%20...%20%20%20%20%20%20%7C%20%E7%AD%94%E6%A1%88%20token%5D%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22Loss%20Mask%20%E6%95%B0%E6%8D%AE%E6%B5%81%22%7D%7D"></card>
+<ul>
+<li>标准 <code>CLI</code> 会自动追加 <code>ignore_empty_think</code>；对应配置为</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-745%22%2C%22code%22%3A%22--add_non_thinking_prefix%20true%20%5C%5C%5Cn--loss_scale%20default%2Bignore_empty_think%5Cn%22%2C%22language%22%3A%22bash%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E9%9D%9E%E6%80%9D%E8%80%83%20SFT%20%E5%8F%82%E6%95%B0%E7%A4%BA%E4%BE%8B%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Farguments%2Fbase_args%2Ftemplate_args.py%23L171-L178%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E5%8F%82%E6%95%B0%E5%AE%9E%E7%8E%B0%22%7D%7D"></card>
+<h2 id="4-opd-路径rollout-模式与训练序列对齐">4. OPD 路径：rollout 模式与训练序列对齐</h2>
+<ul>
+<li>普通 <code>SFT</code> 使用已有标签，所以 <code>enable_thinking</code> 不选择数据类型；<code>OPD / on-policy GKD</code> 在训练内部先让学生模型在线生成，因此其中包含一段真正的推理路径</li>
+<li><code>_preprocess_inputs()</code> 在生成前删除样本中已有的 <code>response</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-746%22%2C%22code%22%3A%22def%20_preprocess_inputs(%5Cn%20%20%20%20self%2C%20samples%3A%20List%5BOnPolicySample%5D%5Cn)%20-%3E%20List%5BOnPolicySample%5D%3A%5Cn%20%20%20%20%5C%22%5C%22%5C%22Preprocess%20samples%20before%20inference%5C%22%5C%22%5C%22%5Cn%20%20%20%20samples%20%3D%20self._set_inputs_system(samples)%5Cn%20%20%20%20samples%20%3D%20self._add_prompt_id_to_inputs(samples)%5Cn%20%20%20%20for%20s%20in%20samples%3A%5Cn%20%20%20%20%20%20%20%20remove_response(s.messages)%5Cn%20%20%20%20return%20samples%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%B8%85%E9%99%A4%E5%B7%B2%E6%9C%89%E5%9B%9E%E5%A4%8D%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E8%8A%82%E9%80%89%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Frlhf_trainers%2Frollout_mixin.py%23L1246-L1252%22%7D%7D"></card>
+<ul>
+<li>删除后，最后一轮重新变成等待生成的空 <code>assistant</code>，因此复用第 2 节的推理分支</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-747%22%2C%22code%22%3A%22%E7%A6%BB%E7%BA%BF%E6%A0%B7%E6%9C%AC%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20remove_response%5Cnassistant(content%3DNone)%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20_get_response_prefix%5Cnenable_thinking%3DTrue%20%20%E2%86%92%20thinking%20rollout%5Cnenable_thinking%3DFalse%20%E2%86%92%20non-thinking%20rollout%5Cn%20%20%20%20%20%20%20%20%E2%86%93%5Cn%E5%AD%A6%E7%94%9F%E7%94%9F%E6%88%90%20response_token_ids%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%9C%A8%E7%BA%BF%E7%94%9F%E6%88%90%E5%89%8D%E7%BC%80%E9%80%89%E6%8B%A9%22%7D%7D"></card>
+<ul>
+<li><code>swift/rlhf_trainers/rollout_mixin.py</code> 的 <code>_generate_completions()</code> 先预处理样本，再进入 <code>template.generate_context()</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-748%22%2C%22code%22%3A%22def%20_generate_completions(%5Cn%20%20%20%20self%2C%20samples%3A%20List%5BOnPolicySample%5D%5Cn)%20-%3E%20List%5BOnPolicySample%5D%3A%5Cn%20%20%20%20samples%20%3D%20self._preprocess_inputs(samples)%5Cn%5Cn%20%20%20%20mode%20%3D%20'train'%20if%20self.model.training%20else%20'eval'%5Cn%20%20%20%20if%20self.use_fast_infer%3A%5Cn%20%20%20%20%20%20%20%20samples%20%3D%20self._fast_infer(samples)%5Cn%20%20%20%20else%3A%5Cn%20%20%20%20%20%20%20%20with%20(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20unwrap_model_for_generation(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20self.model_wrapped%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20self.accelerator%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20gather_deepspeed3_params%3Dself.args.ds3_gather_for_generation%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20)%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20self.template.generate_context()%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20self.multi_turn_completion_length_context()%2C%5Cn%20%20%20%20%20%20%20%20)%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20samples%20%3D%20self._infer_single_or_multi_turn(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20samples%2C%20self.request_config%5Cn%20%20%20%20%20%20%20%20%20%20%20%20)%5Cn%20%20%20%20%20%20%20%20%20%20%20%20if%20mode%20%3D%3D%20'train'%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20self.model.train()%5Cn%5Cn%20%20%20%20return%20samples%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E7%94%9F%E6%88%90%E5%9C%A8%E7%BA%BF%E8%AE%AD%E7%BB%83%E6%A0%B7%E6%9C%AC%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E8%8A%82%E9%80%89%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Frlhf_trainers%2Frollout_mixin.py%23L1163-L1180%22%7D%7D"></card>
+<ul>
+<li><code>enable_thinking</code> 只在推理阶段生效与<code>OPD</code> 训练中它会改变样本格式并不矛盾：<code>OPD</code> 训练内部会执行一次学生推理。<code>rollout</code> 完成后还存在一个 <code>token</code> 对齐问题。<code>response prefix</code> 属于 <code>prompt</code>，学生返回的 <code>response_token_ids</code> 通常只包含新增 <code>completion</code>；重新编码训练序列时，必须把生成时使用的前缀补回，否则 <code>rollout</code> 与训练使用的 <code>token</code> 上下文不一致</li>
+<li><code>swift/rlhf_trainers/utils.py</code> 将逐样本模板参数交给 <code>_get_response_prefix()</code>，沿用 rollout 的优先级和模型专用规则，再生成 <code>prefix ids</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-749%22%2C%22code%22%3A%22def%20get_response_prefix_ids(%5Cn%20%20%20%20template%3A%20Template%2C%5Cn%20%20%20%20sample_enable_thinking%3A%20Optional%5Bbool%5D%20%3D%20None%2C%5Cn%20%20%20%20*%2C%5Cn%20%20%20%20chat_template_kwargs%3A%20Optional%5BDict%5Bstr%2C%20Any%5D%5D%20%3D%20None%2C%5Cn)%20-%3E%20Optional%5BList%5Bint%5D%5D%3A%5Cn%20%20%20%20kwargs%20%3D%20dict(chat_template_kwargs%20or%20%7B%7D)%5Cn%20%20%20%20if%20sample_enable_thinking%20is%20not%20None%3A%5Cn%20%20%20%20%20%20%20%20kwargs%5B'enable_thinking'%5D%20%3D%20sample_enable_thinking%5Cn%20%20%20%20inputs%20%3D%20StdTemplateInputs(messages%3D%5B%5D%2C%20chat_template_kwargs%3Dkwargs)%5Cn%20%20%20%20prefix_str%20%3D%20template._get_response_prefix(inputs)%5Cn%20%20%20%20if%20prefix_str%3A%5Cn%20%20%20%20%20%20%20%20return%20template.tokenizer.encode(prefix_str%2C%20add_special_tokens%3DFalse)%5Cn%20%20%20%20return%20None%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%A7%A3%E6%9E%90%E5%93%8D%E5%BA%94%E5%89%8D%E7%BC%80%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E5%8E%9F%E5%87%BD%E6%95%B0%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Frlhf_trainers%2Futils.py%23L692-L704%22%7D%7D"></card>
+<ul>
+<li><code>encode_sample()</code> 传递整组 <code>chat_template_kwargs</code>，并把返回的 <code>prefix ids</code> 与 rollout token 一起交给 <code>replace_assistant_response_with_ids()</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-750%22%2C%22code%22%3A%22def%20encode_sample(%5Cn%20%20%20%20sample%3A%20OnPolicySample%2C%5Cn%20%20%20%20template%3A%20Template%2C%5Cn%20%20%20%20*%2C%5Cn%20%20%20%20encode_prompt_only%3A%20bool%20%3D%20False%2C%5Cn)%20-%3E%20Dict%5Bstr%2C%20Any%5D%3A%5Cn%20%20%20%20data%20%3D%20sample.to_template_dict()%5Cn%20%20%20%20if%20sample.response_token_ids%3A%5Cn%20%20%20%20%20%20%20%20loss_mask%20%3D%20sample.response_loss_mask%20or%20None%5Cn%20%20%20%20%20%20%20%20msgs%20%3D%20data.get('messages')%5Cn%20%20%20%20%20%20%20%20if%20msgs%20is%20not%20None%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20msgs%20%3D%20%5Bm.copy()%20for%20m%20in%20msgs%5D%5Cn%20%20%20%20%20%20%20%20ctk%20%3D%20sample.extra.get('chat_template_kwargs')%20or%20%7B%7D%5Cn%20%20%20%20%20%20%20%20prefix_ids%20%3D%20get_response_prefix_ids(template%2C%20chat_template_kwargs%3Dctk)%5Cn%20%20%20%20%20%20%20%20data%5B'messages'%5D%20%3D%20replace_assistant_response_with_ids(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20msgs%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20sample.response_token_ids%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20loss_mask%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20non_thinking_prefix_ids%3Dprefix_ids%2C%5Cn%20%20%20%20%20%20%20%20)%5Cn%5Cn%20%20%20%20if%20encode_prompt_only%3A%5Cn%20%20%20%20%20%20%20%20messages%20%3D%20data.get('messages'%2C%20%5B%5D)%5Cn%20%20%20%20%20%20%20%20if%20messages%20and%20messages%5B-1%5D.get('role')%20%3D%3D%20'assistant'%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20data%20%3D%20%7B%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20**data%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20'messages'%3A%20messages%5B%3A-1%5D%20%2B%20%5B%7B**messages%5B-1%5D%2C%20'content'%3A%20None%7D%5D%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%7D%5Cn%5Cn%20%20%20%20encoded%20%3D%20template.encode(data%2C%20return_length%3DTrue)%5Cn%20%20%20%20return%20encoded%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%9B%9E%E5%A1%AB%20rollout%20token%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E5%8E%9F%E5%87%BD%E6%95%B0%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Frlhf_trainers%2Futils.py%23L707-L734%22%7D%7D"></card>
+<ul>
+<li>虽然参数名仍叫 <code>non_thinking_prefix_ids</code>，当前调用传入的实际是本条样本所选择的 <code>prefix</code>：<code>thinking</code> 时为 <code>&lt;think&gt;\n</code>，<code>non-thinking</code> 时为空思考块。辅助函数在 <code>completion</code> 尚未包含该前缀时将其补到最后一轮，并把前缀对应的 <code>loss mask</code> 设为 <code>0</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-751%22%2C%22code%22%3A%22if%20non_thinking_prefix_ids%3A%5Cn%20%20%20%20n_prefix%20%3D%20len(non_thinking_prefix_ids)%5Cn%20%20%20%20last_ids%20%3D%20list(completion_ids%5B-1%5D)%5Cn%5Cn%20%20%20%20if%20last_ids%5B%3An_prefix%5D%20!%3D%20list(non_thinking_prefix_ids)%3A%5Cn%20%20%20%20%20%20%20%20if%20loss_mask%20is%20None%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20loss_mask%20%3D%20%5B%5B1%5D%20*%20len(ids)%20for%20ids%20in%20completion_ids%5D%5Cn%20%20%20%20%20%20%20%20completion_ids%5B-1%5D%20%3D%20list(non_thinking_prefix_ids)%20%2B%20last_ids%5Cn%20%20%20%20%20%20%20%20loss_mask%5B-1%5D%20%3D%20%5B0%5D%20*%20n_prefix%20%2B%20list(loss_mask%5B-1%5D)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%AF%B9%E9%BD%90%E5%89%8D%E7%BC%80%E4%B8%8E%E7%94%9F%E6%88%90%E5%BA%8F%E5%88%97%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Frlhf_trainers%2Futils.py%23L796-L800%22%7D%7D"></card>
+<ul>
+<li><strong>上下文一致</strong>：重新编码的 <code>assistant</code> 序列与 <code>rollout</code> 时模型实际看到的 <code>response prefix</code> 一致</li>
+<li><strong>监督一致</strong>：属于 <code>prompt</code> 的 <code>prefix token</code> 被补回序列，但 <code>loss_mask=0</code>，训练只消费学生真正生成的 <code>completion</code></li>
+<li>逐样本设置 <code>chat_template_kwargs.enable_thinking</code> 即可混合 <code>rollout</code>；未设置时回退到全局 <code>--enable_thinking</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-752%22%2C%22code%22%3A%22%7B%5C%22chat_template_kwargs%5C%22%3A%20%7B%5C%22enable_thinking%5C%22%3A%20true%7D%7D%5Cn%7B%5C%22chat_template_kwargs%5C%22%3A%20%7B%5C%22enable_thinking%5C%22%3A%20false%7D%7D%5Cn%22%2C%22language%22%3A%22jsonl%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%B7%B7%E5%90%88%E6%80%9D%E8%80%83%E6%A8%A1%E5%BC%8F%E6%A0%B7%E4%BE%8B%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L167-L171%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E5%8F%82%E6%95%B0%E5%AE%9E%E7%8E%B0%22%7D%7D"></card>
+<ul>
+<li>三类场景最终可以由最后一轮 <code>assistant</code> 是否已经存在统一解释</li>
+</ul>
+<div class="table-scroll" role="region" aria-label="表格" tabindex="0"><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>编码前的最后一轮</th>
+<th>实际分支</th>
+<th>模式来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>普通推理</td>
+<td><code>assistant(content=None)</code></td>
+<td>追加 <code>response_prefix</code></td>
+<td><code>response_prefix / enable_thinking</code></td>
+</tr>
+<tr>
+<td>普通 <code>SFT</code></td>
+<td><code>assistant(content=label)</code></td>
+<td>追加 <code>{{RESPONSE}}</code></td>
+<td>标签内容与 <code>add_non_thinking_prefix</code></td>
+</tr>
+<tr>
+<td><code>OPD rollout</code></td>
+<td>先删除 <code>response</code>，再变成 <code>None</code></td>
+<td>追加 <code>response_prefix</code></td>
+<td>全局或逐样本 <code>enable_thinking</code></td>
+</tr>
+</tbody>
+</table></div>
+<blockquote class="callout callout-important">
+<p><code>Qwen3.5</code> 推理模式的核心不是一个布尔变量，而是一套围绕 <code>assistant</code> 起点建立的 <code>prefix protocol</code>。<code>enable_thinking</code> 只负责在没有 <code>response</code>、需要生成时选择前缀；<code>add_non_thinking_prefix</code> 只负责在已有 <code>response</code>、需要训练时规范标签；<code>OPD</code> 先删除 <code>response</code> 再生成，所以从训练流程重新进入前一条推理分支</p>
+</blockquote>
+</section><section class="lake-revised-section">
+<h1 id="qwen3-omni-多模态编码">Qwen3-Omni 多模态编码</h1>
+<h2 id="1-qwen3-omni-的-chatml-结构">1. Qwen3-Omni 的 ChatML 结构</h2>
+<ul>
+<li><code>Qwen3-Omni</code> 沿用 <code>Qwen</code> 的 <code>ChatML</code> 格式：消息以 <code>&lt;|im_start|&gt;{role}</code> 开始，以 <code>&lt;|im_end|&gt;</code> 结束</li>
+<li>工具定义放在 <code>system</code> 中，工具调用与 <code>thinking</code> 放在 <code>assistant</code> 中；工具结果由 <code>&lt;tool_response&gt;</code> 包装，作为下一条 <code>user</code> 消息</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-753%22%2C%22code%22%3A%22%3C%7Cim_start%7C%3Esystem%5Cn%7BSYSTEM%7D%5Cn%5Cn%23%20Tools%5Cn%3Ctools%3E%5Cn%7BTOOL_DEFINITIONS%7D%5Cn%3C%2Ftools%3E%5Cn%7BTOOL_CALL_INSTRUCTION%7D%3C%7Cim_end%7C%3E%5Cn%3C%7Cim_start%7C%3Euser%5Cn%E5%9B%BE%E5%83%8F%EF%BC%9A%3C%7Cvision_start%7C%3E%3C%7Cimage_pad%7C%3E%3C%7Cvision_end%7C%3E%5Cn%E8%A7%86%E9%A2%91%EF%BC%9A%3C%7Cvision_start%7C%3E%3C%7Cvideo_pad%7C%3E%3C%7Cvision_end%7C%3E%5Cn%E9%9F%B3%E9%A2%91%EF%BC%9A%3C%7Caudio_start%7C%3E%3C%7Caudio_pad%7C%3E%3C%7Caudio_end%7C%3E%5Cn%7BQUERY%7D%3C%7Cim_end%7C%3E%5Cn%3C%7Cim_start%7C%3Eassistant%5Cn%3Cthink%3E%5Cn%7BREASONING%7D%5Cn%3C%2Fthink%3E%5Cn%5Cn%3Ctool_call%3E%5Cn%7B%5C%22name%5C%22%3A%5C%22%7BTOOL_NAME%7D%5C%22%2C%5C%22arguments%5C%22%3A%7BTOOL_ARGUMENTS%7D%7D%5Cn%3C%2Ftool_call%3E%3C%7Cim_end%7C%3E%5Cn%3C%7Cim_start%7C%3Euser%5Cn%3Ctool_response%3E%5Cn%7BTOOL_RESULT%7D%5Cn%3C%2Ftool_response%3E%3C%7Cim_end%7C%3E%5Cn%3C%7Cim_start%7C%3Eassistant%5Cn%3Cthink%3E%5Cn%7BREASONING_AFTER_TOOL%7D%5Cn%3C%2Fthink%3E%5Cn%5Cn%7BRESPONSE%7D%3C%7Cim_end%7C%3E%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22ChatML%20%E5%8D%8F%E8%AE%AE%E7%A4%BA%E4%BE%8B%22%7D%7D"></card>
+<ul>
+<li><code>tools</code>、<code>tool call</code>、<code>tool response</code> 和 <code>thinking</code> 均为可选内容。<code>image</code>、<code>video</code> 和 <code>audio</code> 作为 <code>user</code> 内容中的行内占位区段</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-754%22%2C%22code%22%3A%22image%20%E2%86%92%20%3C%7Cvision_start%7C%3E%3C%7Cimage_pad%7C%3E%3C%7Cvision_end%7C%3E%5Cnvideo%20%E2%86%92%20%3C%7Cvision_start%7C%3E%3C%7Cvideo_pad%7C%3E%3C%7Cvision_end%7C%3E%5Cnaudio%20%E2%86%92%20%3C%7Caudio_start%7C%3E%3C%7Caudio_pad%7C%3E%3C%7Caudio_end%7C%3E%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%AA%92%E4%BD%93%E5%8D%A0%E4%BD%8D%E7%AC%A6%E6%A0%BC%E5%BC%8F%22%7D%7D"></card>
+<ul>
+<li><code>&lt;|image_pad|&gt;</code>、<code>&lt;|video_pad|&gt;</code> 和 <code>&lt;|audio_pad|&gt;</code> <strong>只标识媒体插入位置</strong>。<code>tokenizer</code> 初次编码时，每份媒体仍只对应一个 <code>pad token</code>；实际槽位数量由媒体 <code>processor</code> 的输出决定</li>
+</ul>
+<blockquote class="callout callout-important">
+<p><code>ChatML</code> 中的单个媒体 <code>pad token</code> 只是语义占位符。模型接收的 <code>input_ids</code> 中，该 <code>token</code> 已被扩展为与对应 <code>encoder</code> 输出长度一致的连续 <code>placeholder</code></p>
+</blockquote>
+<ul>
+<li><code>ChatmlTemplateMeta</code> 定义角色骨架，<code>Qwen3OmniTemplate</code> 定义模型使用的媒体占位 <code>token</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-755%22%2C%22code%22%3A%22%40dataclass%5Cnclass%20ChatmlTemplateMeta(TemplateMeta)%3A%5Cn%20%20%20%20prompt%3A%20Prompt%20%3D%20field(%5Cn%20%20%20%20%20%20%20%20default_factory%3Dlambda%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%20%20'%3C%7Cim_start%7C%3Euser%5C%5Cn%7B%7BQUERY%7D%7D%3C%7Cim_end%7C%3E%5C%5Cn'%20'%3C%7Cim_start%7C%3Eassistant%5C%5Cn'%5Cn%20%20%20%20%20%20%20%20%5D%5Cn%20%20%20%20)%5Cn%20%20%20%20chat_sep%3A%20Optional%5BPrompt%5D%20%3D%20field(default_factory%3Dlambda%3A%20%5B'%3C%7Cim_end%7C%3E%5C%5Cn'%5D)%5Cn%20%20%20%20suffix%3A%20Prompt%20%3D%20field(default_factory%3Dlambda%3A%20%5B'%3C%7Cim_end%7C%3E%5C%5Cn'%5D)%5Cn%20%20%20%20system_prefix%3A%20Optional%5BPrompt%5D%20%3D%20field(%5Cn%20%20%20%20%20%20%20%20default_factory%3Dlambda%3A%20%5B'%3C%7Cim_start%7C%3Esystem%5C%5Cn%7B%7BSYSTEM%7D%7D%3C%7Cim_end%7C%3E%5C%5Cn'%5D%5Cn%20%20%20%20)%5Cn%5Cn%5Cnclass%20Qwen3OmniTemplate(Qwen2_5OmniTemplate)%3A%5Cn%20%20%20%20version%20%3D%20'omni_v3'%5Cn%20%20%20%20placeholder_tokens%20%3D%20%5B%5Cn%20%20%20%20%20%20%20%20'%3C%7Cimage_pad%7C%3E'%2C%5Cn%20%20%20%20%20%20%20%20'%3C%7Caudio_pad%7C%3E'%2C%5Cn%20%20%20%20%20%20%20%20'%3C%7Cvideo_pad%7C%3E'%2C%5Cn%20%20%20%20%5D%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%AE%9A%E4%B9%89%E8%A7%92%E8%89%B2%E4%B8%8E%E5%AA%92%E4%BD%93%E6%A0%87%E8%AE%B0%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Futils.py%23L13-L19%22%2C%22additionalSources%22%3A%5B%7B%22label%22%3A%22Qwen%20%E6%A8%A1%E6%9D%BF%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L1225%22%7D%5D%7D%7D"></card>
+<h2 id="2-标准-messages-与内部输入">2. 标准 messages 与内部输入</h2>
+<ul>
+<li><code>ms-swift</code> 的标准多模态样本在 <strong><code>messages.content</code> 中保存媒体占位符</strong>，在 <strong>顶层数组中保存媒体数据</strong></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-756%22%2C%22code%22%3A%22%7B%5Cn%20%20%5C%22messages%5C%22%3A%20%5B%5Cn%20%20%20%20%7B%5C%22role%5C%22%3A%20%5C%22system%5C%22%2C%20%5C%22content%5C%22%3A%20%5C%22%E4%BD%A0%E6%98%AF%E4%B8%AA%E6%9C%89%E7%94%A8%E6%97%A0%E5%AE%B3%E7%9A%84%E5%8A%A9%E6%89%8B%5C%22%7D%2C%5Cn%20%20%20%20%7B%5Cn%20%20%20%20%20%20%5C%22role%5C%22%3A%20%5C%22user%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22content%5C%22%3A%20%5C%22%3Cimage%3E%E5%9B%BE%E7%89%87%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%8C%3Cvideo%3E%E8%A7%86%E9%A2%91%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%8C%3Caudio%3E%E9%9F%B3%E9%A2%91%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%5C%22%5Cn%20%20%20%20%7D%2C%5Cn%20%20%20%20%7B%5Cn%20%20%20%20%20%20%5C%22role%5C%22%3A%20%5C%22assistant%5C%22%2C%5Cn%20%20%20%20%20%20%5C%22content%5C%22%3A%20%5C%22%E5%9B%BE%E7%89%87%E4%B8%AD%E6%98%AF%E4%B8%80%E5%A4%B4%E5%A4%A7%E8%B1%A1%EF%BC%8C%E8%A7%86%E9%A2%91%E4%B8%AD%E6%98%AF%E4%B8%80%E5%8F%AA%E5%B0%8F%E7%8B%97%E5%9C%A8%E8%8D%89%E5%9C%B0%E4%B8%8A%E5%A5%94%E8%B7%91%EF%BC%8C%E9%9F%B3%E9%A2%91%E4%B8%AD%E6%9C%89%E9%B8%9F%E9%B8%A3%E5%A3%B0%5C%22%5Cn%20%20%20%20%7D%5Cn%20%20%5D%2C%5Cn%20%20%5C%22images%5C%22%3A%20%5B%5C%22%2Fxxx%2Fx.jpg%5C%22%5D%2C%5Cn%20%20%5C%22videos%5C%22%3A%20%5B%5C%22%2Fxxx%2Fx.mp4%5C%22%5D%2C%5Cn%20%20%5C%22audios%5C%22%3A%20%5B%5C%22%2Fxxx%2Fx.wav%5C%22%5D%5Cn%7D%5Cn%22%2C%22language%22%3A%22json%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%A0%87%E5%87%86%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A0%B7%E6%9C%AC%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplate_inputs.py%23L110-L159%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E8%BE%93%E5%85%A5%E6%8E%A5%E5%8F%A3%22%7D%7D"></card>
+<ul>
+<li><code>swift/template/template_inputs.py</code> 中的 <code>StdTemplateInputs.from_dict()</code> 将首条 <code>system</code> 消息移出普通对话轮次。媒体数组与 <code>content</code> 中的占位符保持原有顺序，不会在这一阶段加载或编码</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-757%22%2C%22code%22%3A%22StdTemplateInputs(%5Cn%20%20%20%20system%3D%5C%22%E4%BD%A0%E6%98%AF%E4%B8%AA%E6%9C%89%E7%94%A8%E6%97%A0%E5%AE%B3%E7%9A%84%E5%8A%A9%E6%89%8B%5C%22%2C%5Cn%20%20%20%20messages%3D%5B%5Cn%20%20%20%20%20%20%20%20%7B%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%5C%22role%5C%22%3A%20%5C%22user%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%5C%22content%5C%22%3A%20(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5C%22%3Cimage%3E%E5%9B%BE%E7%89%87%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%8C%5C%22%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5C%22%3Cvideo%3E%E8%A7%86%E9%A2%91%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%8C%5C%22%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5C%22%3Caudio%3E%E9%9F%B3%E9%A2%91%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%5C%22%5Cn%20%20%20%20%20%20%20%20%20%20%20%20)%2C%5Cn%20%20%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%20%20%7B%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%5C%22role%5C%22%3A%20%5C%22assistant%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%5C%22content%5C%22%3A%20(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5C%22%E5%9B%BE%E7%89%87%E4%B8%AD%E6%98%AF%E4%B8%80%E5%A4%B4%E5%A4%A7%E8%B1%A1%EF%BC%8C%E8%A7%86%E9%A2%91%E4%B8%AD%E6%98%AF%E4%B8%80%E5%8F%AA%E5%B0%8F%E7%8B%97%E5%9C%A8%E8%8D%89%E5%9C%B0%E4%B8%8A%E5%A5%94%E8%B7%91%EF%BC%8C%5C%22%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5C%22%E9%9F%B3%E9%A2%91%E4%B8%AD%E6%9C%89%E9%B8%9F%E9%B8%A3%E5%A3%B0%5C%22%5Cn%20%20%20%20%20%20%20%20%20%20%20%20)%2C%5Cn%20%20%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%5D%2C%5Cn%20%20%20%20images%3D%5B%5C%22%2Fxxx%2Fx.jpg%5C%22%5D%2C%5Cn%20%20%20%20videos%3D%5B%5C%22%2Fxxx%2Fx.mp4%5C%22%5D%2C%5Cn%20%20%20%20audios%3D%5B%5C%22%2Fxxx%2Fx.wav%5C%22%5D%2C%5Cn)%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%A0%87%E5%87%86%E5%8C%96%E8%BE%93%E5%85%A5%E7%BB%93%E6%9E%9C%22%7D%7D"></card>
+<ul>
+<li><strong>第 <code>i</code> 个媒体占位符与对应数组的第 <code>i</code> 个元素配对</strong>：<code>&lt;image&gt;</code> 对应 <code>images[i]</code>，<code>&lt;video&gt;</code> 对应 <code>videos[i]</code>，<code>&lt;audio&gt;</code> 对应 <code>audios[i]</code>。仅提供顶层媒体数组时，<code>_add_default_tags()</code> 会将缺少的标记补到首条消息开头；显式标记则确定媒体在文本中的位置</li>
+</ul>
+<h2 id="3-replace_tag-将标准标记改写为-omni-标记">3. replace_tag() 将标准标记改写为 Omni 标记</h2>
+<ul>
+<li><code>Template._swift_encode()</code> 先把 <code>system</code>、<code>user</code> 和 <code>assistant</code> 编译为 <code>ChatML context list</code>。此时 <code>user</code> 内容仍保留标准标记</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-758%22%2C%22code%22%3A%22%3C%7Cim_start%7C%3Esystem%5Cn%E4%BD%A0%E6%98%AF%E4%B8%AA%E6%9C%89%E7%94%A8%E6%97%A0%E5%AE%B3%E7%9A%84%E5%8A%A9%E6%89%8B%3C%7Cim_end%7C%3E%5Cn%3C%7Cim_start%7C%3Euser%5Cn%3Cimage%3E%E5%9B%BE%E7%89%87%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%8C%3Cvideo%3E%E8%A7%86%E9%A2%91%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%8C%3Caudio%3E%E9%9F%B3%E9%A2%91%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%3C%7Cim_end%7C%3E%5Cn%3C%7Cim_start%7C%3Eassistant%5Cn%E5%9B%BE%E7%89%87%E4%B8%AD%E6%98%AF%E4%B8%80%E5%A4%B4%E5%A4%A7%E8%B1%A1%EF%BC%8C%E8%A7%86%E9%A2%91%E4%B8%AD%E6%98%AF%E4%B8%80%E5%8F%AA%E5%B0%8F%E7%8B%97%E5%9C%A8%E8%8D%89%E5%9C%B0%E4%B8%8A%E5%A5%94%E8%B7%91%EF%BC%8C%E9%9F%B3%E9%A2%91%E4%B8%AD%E6%9C%89%E9%B8%9F%E9%B8%A3%E5%A3%B0%3C%7Cim_end%7C%3E%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%88%9D%E5%A7%8B%20ChatML%20%E4%B8%8A%E4%B8%8B%E6%96%87%22%7D%7D"></card>
+<ul>
+<li><code>Template._simplify_context_list()</code> 先通过 <code>_split_special_tokens()</code> 把 <code>&lt;image&gt;</code>、<code>&lt;video&gt;</code> 和 <code>&lt;audio&gt;</code> 从相邻文本中分离，再由 <code>_pre_tokenize()</code> 逐个调用模板的 <code>replace_tag()</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-759%22%2C%22code%22%3A%22context_list%2C%20loss_scale_list%20%3D%20self._split_special_tokens(%5Cn%20%20%20%20context_list%2C%20loss_scale_list%5Cn)%5Cncontext_list%2C%20loss_scale_list%20%3D%20self._pre_tokenize(%5Cn%20%20%20%20context_list%2C%20loss_scale_list%2C%20inputs%5Cn)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%8B%86%E5%88%86%E5%AA%92%E4%BD%93%E7%89%B9%E6%AE%8A%E6%A0%87%E8%AE%B0%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E8%8A%82%E9%80%89%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L928-L929%22%7D%7D"></card>
+<ul>
+<li><code>Qwen3-Omni</code> 继承 <code>qwen.py</code> 中的 <code>Qwen2_5OmniTemplate.replace_tag()</code>，使用 <code>omni_v3</code> 分支</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-760%22%2C%22code%22%3A%22def%20replace_tag(self%2C%20media_type%3A%20Literal%5B'image'%2C%20'video'%2C%20'audio'%5D%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20index%3A%20int%2C%20inputs%3A%20StdTemplateInputs)%20-%3E%20List%5BContext%5D%3A%5Cn%20%20%20%20from%20qwen_omni_utils%20import%20fetch_image%2C%20fetch_video%5Cn%20%20%20%20kwargs%20%3D%20(%5Cn%20%20%20%20%20%20%20%20%7B'image_patch_size'%3A%20self.processor.image_processor.patch_size%7D%5Cn%20%20%20%20%20%20%20%20if%20self.version%20%3D%3D%20'omni_v3'%20else%20%7B%7D%5Cn%20%20%20%20)%5Cn%20%20%20%20sampling_rate%20%3D%20inputs.chat_template_kwargs.get('sampling_rate')%5Cn%20%20%20%20if%20sampling_rate%20is%20None%3A%5Cn%20%20%20%20%20%20%20%20sampling_rate%20%3D%20self.sampling_rate%5Cn%20%20%20%20if%20self.mode%20%3D%3D%20'vllm'%3A%5Cn%20%20%20%20%20%20%20%20inputs.mm_processor_kwargs%5B'do_resize'%5D%20%3D%20False%5Cn%20%20%20%20if%20media_type%20%3D%3D%20'image'%3A%5Cn%20%20%20%20%20%20%20%20inputs.images%5Bindex%5D%20%3D%20fetch_image(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%7B'image'%3A%20inputs.images%5Bindex%5D%2C%20**inputs.chat_template_kwargs%7D%2C%5Cn%20%20%20%20%20%20%20%20%20%20%20%20**kwargs%2C%5Cn%20%20%20%20%20%20%20%20)%5Cn%20%20%20%20%20%20%20%20if%20self.version%20%3D%3D%20'omni_v2_5'%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20return%20%5B'%3C%7Cvision_bos%7C%3E%3C%7CIMAGE%7C%3E%3C%7Cvision_eos%7C%3E'%5D%5Cn%20%20%20%20%20%20%20%20elif%20self.version%20%3D%3D%20'omni_v3'%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20return%20%5B'%3C%7Cvision_start%7C%3E%3C%7Cimage_pad%7C%3E%3C%7Cvision_end%7C%3E'%5D%5Cn%20%20%20%20elif%20media_type%20%3D%3D%20'audio'%3A%5Cn%20%20%20%20%20%20%20%20if%20self.mode%20!%3D%20'vllm'%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20inputs.audios%5Bindex%5D%20%3D%20load_audio(inputs.audios%5Bindex%5D%2C%20sampling_rate)%5Cn%20%20%20%20%20%20%20%20if%20self.version%20%3D%3D%20'omni_v2_5'%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20return%20%5B'%3C%7Caudio_bos%7C%3E%3C%7CAUDIO%7C%3E%3C%7Caudio_eos%7C%3E'%5D%5Cn%20%20%20%20%20%20%20%20elif%20self.version%20%3D%3D%20'omni_v3'%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20return%20%5B'%3C%7Caudio_start%7C%3E%3C%7Caudio_pad%7C%3E%3C%7Caudio_end%7C%3E'%5D%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%9B%BF%E6%8D%A2%20Omni%20%E5%9B%BE%E5%83%8F%E4%B8%8E%E9%9F%B3%E9%A2%91%E6%A0%87%E8%AE%B0%20%C2%B7%20%E8%8A%82%E9%80%89%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E8%8A%82%E9%80%89%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L924-L946%22%7D%7D"></card>
+<p>视频分支记录实际采样帧率，并替换视频标记；以下节选 <code>use_audio_in_video=False</code> 的路径</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-761%22%2C%22code%22%3A%22%20%20%20%20elif%20media_type%20%3D%3D%20'video'%3A%5Cn%20%20%20%20%20%20%20%20video%20%3D%20inputs.videos%5Bindex%5D%5Cn%20%20%20%20%20%20%20%20video_inputs%20%3D%20%7B'video'%3A%20video%2C%20**inputs.chat_template_kwargs%7D%5Cn%20%20%20%20%20%20%20%20if%20isinstance(video%2C%20list)%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20from%20qwen_omni_utils%20import%20vision_process%5Cn%20%20%20%20%20%20%20%20%20%20%20%20video_inputs%5B'sample_fps'%5D%20%3D%20vision_process.FPS%5Cn%20%20%20%20%20%20%20%20_video%2C%20sample_fps%20%3D%20fetch_video(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20video_inputs%2C%20return_video_sample_fps%3DTrue%2C%20**kwargs%5Cn%20%20%20%20%20%20%20%20)%5Cn%20%20%20%20%20%20%20%20inputs.mm_processor_kwargs.setdefault('fps'%2C%20%5B%5D).append(sample_fps)%5Cn%20%20%20%20%20%20%20%20if%20isinstance(_video%2C%20torch.Tensor)%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20_video%20%3D%20_video.to(torch.uint8)%5Cn%20%20%20%20%20%20%20%20inputs.videos%5Bindex%5D%20%3D%20_video%5Cn%20%20%20%20%20%20%20%20if%20self.version%20%3D%3D%20'omni_v2_5'%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20return%20%5B'%3C%7Cvision_bos%7C%3E%3C%7CVIDEO%7C%3E%3C%7Cvision_eos%7C%3E'%5D%5Cn%20%20%20%20%20%20%20%20elif%20self.version%20%3D%3D%20'omni_v3'%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20return%20%5B'%3C%7Cvision_start%7C%3E%3C%7Cvideo_pad%7C%3E%3C%7Cvision_end%7C%3E'%5D%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%9B%BF%E6%8D%A2%20Omni%20%E8%A7%86%E9%A2%91%E6%A0%87%E8%AE%B0%20%C2%B7%20%E8%8A%82%E9%80%89%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E8%8A%82%E9%80%89%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L947-L983%22%7D%7D"></card>
+<ul>
+<li><code>replace_tag()</code> 同时完成两项变换：<strong>加载媒体数据</strong>，并将 <strong>标准占位符替换为 <code>Omni</code> 专用标记</strong>。示例中的 <code>user</code> 消息由此变为</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-762%22%2C%22code%22%3A%22%3C%7Cim_start%7C%3Euser%5Cn%3C%7Cvision_start%7C%3E%3C%7Cimage_pad%7C%3E%3C%7Cvision_end%7C%3E%E5%9B%BE%E7%89%87%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%8C%5Cn%3C%7Cvision_start%7C%3E%3C%7Cvideo_pad%7C%3E%3C%7Cvision_end%7C%3E%E8%A7%86%E9%A2%91%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%8C%5Cn%3C%7Caudio_start%7C%3E%3C%7Caudio_pad%7C%3E%3C%7Caudio_end%7C%3E%E9%9F%B3%E9%A2%91%E4%B8%AD%E6%98%AF%E4%BB%80%E4%B9%88%3C%7Cim_end%7C%3E%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%9B%BF%E6%8D%A2%E5%90%8E%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%22%7D%7D"></card>
+<ul>
+<li><code>_encode_context_list()</code> 逐段调用 tokenizer。此时<strong>每份媒体只有一个 <code>pad token</code></strong>，还未按特征长度展开</li>
+</ul>
+<h2 id="4-媒体预处理与占位-token-扩展">4. 媒体预处理与占位 token 扩展</h2>
+<ul>
+<li><code>Qwen2_5OmniTemplate._encode()</code> 先取得包含单个媒体 <code>pad token</code> 的 <code>input_ids</code>，再调用 <code>processor</code> 生成媒体张量</li>
+<li><code>text=''</code> 使 <code>processor</code> 只处理媒体；临时产生的文本 <code>input_ids</code> 与 <code>attention_mask</code> 会被删除</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-763%22%2C%22code%22%3A%22encoded%20%3D%20Template._encode(self%2C%20inputs)%5Cninputs.audios%20%3D%20self._trim_omni_v3_audios(inputs.audios)%5Cn%5Cnmedia_inputs%20%3D%20self.processor(%5Cn%20%20%20%20text%3D''%2C%5Cn%20%20%20%20audio%3Dinputs.audios%20or%20None%2C%5Cn%20%20%20%20images%3Dinputs.images%20or%20None%2C%5Cn%20%20%20%20videos%3Dinputs.videos%20or%20None%2C%5Cn%20%20%20%20do_resize%3DFalse%2C%5Cn%20%20%20%20return_tensors%3D'pt'%2C%5Cn)%5Cnmedia_inputs.pop('input_ids')%5Cnmedia_inputs.pop('attention_mask')%5Cn%5Cninput_ids%20%3D%20encoded%5B'input_ids'%5D%5Cnlabels%20%3D%20encoded%5B'labels'%5D%5Cnloss_scale%20%3D%20encoded.get('loss_scale')%5Cnconfig%20%3D%20self.config.thinker_config%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E9%A2%84%E5%A4%84%E7%90%86%E5%A4%9A%E6%A8%A1%E6%80%81%E6%95%B0%E6%8D%AE%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L1035-L1127%22%7D%7D"></card>
+<ul>
+<li>图片与独立视频的占位长度均为 <code>T × H × W / merge_size²</code>。<code>media_grid_thw</code> 分别取 <code>image_grid_thw</code> 或 <code>video_grid_thw</code>，<code>merge_size</code> 来自 processor</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-764%22%2C%22code%22%3A%22def%20_get_new_tokens(i)%3A%5Cn%20%20%20%20token_len%20%3D%20media_grid_thw%5Bi%5D.prod()%20%2F%2F%20(merge_size**2)%5Cn%20%20%20%20return%20token_id%20*%20token_len%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%AE%A1%E7%AE%97%E5%9B%BE%E7%89%87%E4%B8%8E%E7%8B%AC%E7%AB%8B%E8%A7%86%E9%A2%91%E7%9A%84%E5%8D%A0%E4%BD%8D%E9%95%BF%E5%BA%A6%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E5%8E%9F%E5%87%BD%E6%95%B0%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L1116-L1118%22%7D%7D"></card>
+<ul>
+<li><code>input_lengths</code> 是 <code>feature_attention_mask.sum(dim=1)</code> 得到的有效声学帧数；下面的原函数将它转换为音频 token 数</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-765%22%2C%22code%22%3A%22def%20_get_feat_extract_output_lengths(self%2C%20input_lengths)%3A%5Cn%20%20%20%20if%20self.version%20%3D%3D%20'omni_v2_5'%3A%5Cn%20%20%20%20%20%20%20%20return%20((input_lengths%20-%201)%20%2F%2F%202%20%2B%201%20-%202)%20%2F%2F%202%20%2B%201%5Cn%20%20%20%20elif%20self.version%20%3D%3D%20'omni_v3'%3A%5Cn%20%20%20%20%20%20%20%20input_lengths_leave%20%3D%20input_lengths%20%25%20100%5Cn%20%20%20%20%20%20%20%20feat_lengths%20%3D%20(input_lengths_leave%20-%201)%20%2F%2F%202%20%2B%201%5Cn%20%20%20%20%20%20%20%20return%20(%5Cn%20%20%20%20%20%20%20%20%20%20%20%20((feat_lengths%20-%201)%20%2F%2F%202%20%2B%201%20-%201)%20%2F%2F%202%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%2B%201%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%2B%20(input_lengths%20%2F%2F%20100)%20*%2013%5Cn%20%20%20%20%20%20%20%20)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%AE%A1%E7%AE%97%E9%9F%B3%E9%A2%91%E5%8D%A0%E4%BD%8D%E9%95%BF%E5%BA%A6%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E5%8E%9F%E6%96%B9%E6%B3%95%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L985-L992%22%7D%7D"></card>
+<ul>
+<li><code>processor</code> 已经给出视觉网格和音频有效帧数时，三类 <code>placeholder</code> 的实际数量可以直接由同一段代码得到</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-766%22%2C%22code%22%3A%22merge_size%20%3D%202%5Cn%5Cnimage_grid_thw%20%3D%20torch.tensor(%5B%5B1%2C%2032%2C%2048%5D%5D)%5Cnvideo_grid_thw%20%3D%20torch.tensor(%5B%5B8%2C%2024%2C%2040%5D%5D)%5Cnfeature_attention_mask%20%3D%20torch.ones((1%2C%20300)%2C%20dtype%3Dtorch.long)%5Cn%5Cnimage_placeholder_len%20%3D%20int(image_grid_thw%5B0%5D.prod()%20%2F%2F%20(merge_size**2))%5Cnvideo_placeholder_len%20%3D%20int(video_grid_thw%5B0%5D.prod()%20%2F%2F%20(merge_size**2))%5Cnaudio_placeholder_len%20%3D%20int(%5Cn%20%20%20%20self._get_feat_extract_output_lengths(feature_attention_mask.sum(dim%3D1))%5B0%5D%5Cn)%5Cn%5Cnassert%20image_placeholder_len%20%3D%3D%20384%5Cnassert%20video_placeholder_len%20%3D%3D%201920%5Cnassert%20audio_placeholder_len%20%3D%3D%2039%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%AA%92%E4%BD%93%20Token%20%E6%95%B0%E8%AE%A1%E7%AE%97%E7%A4%BA%E4%BE%8B%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L1035-L1127%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E7%9B%B8%E5%85%B3%E5%AE%9E%E7%8E%B0%22%2C%22additionalSources%22%3A%5B%7B%22label%22%3A%22%E9%9F%B3%E9%A2%91%E9%95%BF%E5%BA%A6%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L985-L991%22%7D%5D%7D%7D"></card>
+<ul>
+<li>扩展前，每份媒体在 <code>ChatML</code> 中只有一个 <code>pad token</code>。<strong><code>_extend_tokens()</code> 只重复中间的媒体 <code>token</code>，两侧边界 <code>token</code> 保持不变</strong></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-767%22%2C%22code%22%3A%22%3C%7Cvision_start%7C%3E%5Cn%3C%7Cimage_pad%7C%3E%20*%20image_placeholder_len%5Cn%3C%7Cvision_end%7C%3E%5Cn%5Cn%3C%7Cvision_start%7C%3E%5Cn%3C%7Cvideo_pad%7C%3E%20*%20video_placeholder_len%5Cn%3C%7Cvision_end%7C%3E%5Cn%5Cn%3C%7Caudio_start%7C%3E%5Cn%3C%7Caudio_pad%7C%3E%20*%20audio_placeholder_len%5Cn%3C%7Caudio_end%7C%3E%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%AA%92%E4%BD%93%20Token%20%E6%89%A9%E5%B1%95%E7%A4%BA%E6%84%8F%22%7D%7D"></card>
+<ul>
+<li>代入该示例的实际长度</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-768%22%2C%22code%22%3A%22%3C%7Cimage_pad%7C%3E%20*%20384%5Cn%3C%7Cvideo_pad%7C%3E%20*%201920%5Cn%3C%7Caudio_pad%7C%3E%20*%2039%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%AA%92%E4%BD%93%20Token%20%E6%95%B0%E7%A4%BA%E4%BE%8B%22%7D%7D"></card>
+<ul>
+<li>其中 <code>*</code> 表示重复相同 <code>token</code>，不是写入 <code>ChatML</code> 的文本字符。<code>token id</code> 层的扩展前结构为</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-769%22%2C%22code%22%3A%22vision_start_id%20%3D%20self._tokenize('%3C%7Cvision_start%7C%3E')%5B0%5D%5Cnvision_end_id%20%3D%20self._tokenize('%3C%7Cvision_end%7C%3E')%5B0%5D%5Cnaudio_start_id%20%3D%20self._tokenize('%3C%7Caudio_start%7C%3E')%5B0%5D%5Cnaudio_end_id%20%3D%20self._tokenize('%3C%7Caudio_end%7C%3E')%5B0%5D%5Cn%5Cnimage_segment%20%3D%20%5B%5Cn%20%20%20%20vision_start_id%2C%5Cn%20%20%20%20config.image_token_id%2C%5Cn%20%20%20%20vision_end_id%2C%5Cn%5D%5Cnvideo_segment%20%3D%20%5B%5Cn%20%20%20%20vision_start_id%2C%5Cn%20%20%20%20config.video_token_id%2C%5Cn%20%20%20%20vision_end_id%2C%5Cn%5D%5Cnaudio_segment%20%3D%20%5B%5Cn%20%20%20%20audio_start_id%2C%5Cn%20%20%20%20config.audio_token_id%2C%5Cn%20%20%20%20audio_end_id%2C%5Cn%5D%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%9E%84%E9%80%A0%E5%AA%92%E4%BD%93%E8%BE%B9%E7%95%8C%20Token%20%E7%A4%BA%E4%BE%8B%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L924-L983%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E7%9B%B8%E5%85%B3%E5%AE%9E%E7%8E%B0%22%7D%7D"></card>
+<ul>
+<li><code>_extend_tokens()</code> 只替换中间的媒体 <code>token</code>，起止标记不变</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-770%22%2C%22code%22%3A%22image_segment%20%3D%20(%5Cn%20%20%20%20%5Bvision_start_id%5D%5Cn%20%20%20%20%2B%20%5Bconfig.image_token_id%5D%20*%20image_placeholder_len%5Cn%20%20%20%20%2B%20%5Bvision_end_id%5D%5Cn)%5Cnvideo_segment%20%3D%20(%5Cn%20%20%20%20%5Bvision_start_id%5D%5Cn%20%20%20%20%2B%20%5Bconfig.video_token_id%5D%20*%20video_placeholder_len%5Cn%20%20%20%20%2B%20%5Bvision_end_id%5D%5Cn)%5Cnaudio_segment%20%3D%20(%5Cn%20%20%20%20%5Baudio_start_id%5D%5Cn%20%20%20%20%2B%20%5Bconfig.audio_token_id%5D%20*%20audio_placeholder_len%5Cn%20%20%20%20%2B%20%5Baudio_end_id%5D%5Cn)%5Cn%5Cnassert%20len(image_segment)%20%3D%3D%20386%5Cnassert%20len(video_segment)%20%3D%3D%201922%5Cnassert%20len(audio_segment)%20%3D%3D%2041%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%8B%BC%E6%8E%A5%E5%AA%92%E4%BD%93%20Token%20%E7%A4%BA%E4%BE%8B%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L508-L534%22%2C%22sourceLabel%22%3A%22ms-swift%20%C2%B7%20%E7%9B%B8%E5%85%B3%E5%AE%9E%E7%8E%B0%22%7D%7D"></card>
+<blockquote class="callout callout-note">
+<p>图像区段的 386 个 <code>token</code> 由 1 个 <code>vision_start</code>、384 个 <code>image_pad</code> 和 1 个 <code>vision_end</code> 构成。<strong><code>placeholder</code> 数只计算中间的媒体 <code>token</code>，不包含两侧边界 <code>token</code></strong>；<code>video</code> 和 <code>audio</code> 区段遵循相同规则</p>
+</blockquote>
+<ul>
+<li><code>feature_attention_mask</code> 决定 <code>audio placeholder</code> 的重复长度；<code>image_grid_thw</code> 与 <code>video_grid_thw</code> 决定 <code>image/video placeholder</code> 的重复长度。三类长度在同一个 <code>_encode()</code> 中计算，并统一交给 <code>_extend_tokens()</code> 改写 <code>input_ids</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-771%22%2C%22code%22%3A%22new_tokens%20%3D%20get_new_tokens(i)%5Cntoken_len%20%3D%20len(new_tokens)%5Cn%5Cninput_ids%20%3D%20(%5Cn%20%20%20%20input_ids%5B%3A%20idx%20%2B%20added_tokens_len%5D%5Cn%20%20%20%20%2B%20new_tokens%5Cn%20%20%20%20%2B%20input_ids%5Badded_tokens_len%20%2B%20idx%20%2B%201%20%3A%5D%5Cn)%5Cnlabels%20%3D%20(%5Cn%20%20%20%20labels%5B%3A%20idx%20%2B%20added_tokens_len%5D%5Cn%20%20%20%20%2B%20%5B-100%5D%20*%20token_len%5Cn%20%20%20%20%2B%20labels%5Badded_tokens_len%20%2B%20idx%20%2B%201%20%3A%5D%5Cn)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%90%8C%E6%AD%A5%E6%89%A9%E5%B1%95%20Token%20%E4%B8%8E%E6%A0%87%E7%AD%BE%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%22%7D%7D"></card>
+<ul>
+<li><code>processor</code> 输出的 <code>pixel_values</code>、<code>pixel_values_videos</code>、<code>input_features</code> 保存在 <code>media_inputs</code>；<code>image_grid_thw</code>、<code>video_grid_thw</code> 与 <code>feature_attention_mask</code> 同时保留，供 <code>collator</code>、<code>MRoPE</code> 和模型 <code>forward</code> 使用。媒体 <code>token</code> 的 <code>label</code> 为 <code>-100</code>，不参与文本交叉熵损失</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-772%22%2C%22code%22%3A%22encoded%5B'input_ids'%5D%20%3D%20input_ids%5Cnencoded%5B'labels'%5D%20%3D%20labels%5Cnencoded%5B'loss_scale'%5D%20%3D%20loss_scale%5Cnencoded.update(media_inputs)%5Cnreturn%20encoded%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%86%99%E5%9B%9E%E7%BC%96%E7%A0%81%E7%BB%93%E6%9E%9C%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L1035-L1127%22%7D%7D"></card>
+<ul>
+<li><code>use_audio_in_video=True</code> 时，<code>_get_new_tokens_use_audio_in_video()</code> 按 <code>video_second_per_grid</code> 将 <code>video token</code> 与视频音轨产生的 <code>audio token</code> 交错排列；普通 <code>image</code>、<code>video</code> 和独立 <code>audio</code> 仍走相同的 <code>_extend_tokens()</code> 路径</li>
+</ul>
+<h2 id="5-batchattention_mask-与多模态-rope">5. Batch、attention_mask 与多模态 RoPE</h2>
+<ul>
+<li>单样本编码完成后，<code>Template._data_collator()</code> 将不同长度的 <code>input_ids</code> 补齐到 <code>batch</code> 内最大长度，并据有效序列长度构造二维 <code>attention_mask</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-773%22%2C%22code%22%3A%22seq_lens%20%3D%20%5Blen(seq)%20for%20seq%20in%20res%5B'input_ids'%5D%5D%5Cnres%5B'attention_mask'%5D%20%3D%20%5B%5Cn%20%20%20%20torch.ones(seq_len%2C%20dtype%3Dtorch.int64)%20for%20seq_len%20in%20seq_lens%5Cn%5D%5Cn%5Cnres%5B'input_ids'%5D%20%3D%20self._pad_sequence(%5Cn%20%20%20%20res%5B'input_ids'%5D%2C%20self.tokenizer.pad_token_id%5Cn)%5Cnres%5B'attention_mask'%5D%20%3D%20self._pad_sequence(res%5B'attention_mask'%5D%2C%200)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E7%94%9F%E6%88%90%20Batch%20%E6%8E%A9%E7%A0%81%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%22%7D%7D"></card>
+<ul>
+<li>扩展后的 <code>image</code>、<code>video</code> 和 <code>audio token</code> 都属于有效序列，其 <code>attention_mask</code> 为 1；只有 <code>batch padding</code> 位置为 0。<strong><code>attention_mask</code> 描述语言序列，<code>feature_attention_mask</code> 描述有效声学帧</strong>，二者不能混用</li>
+<li>视觉数据由基础 <code>collator</code> 沿媒体维拼接</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-774%22%2C%22code%22%3A%22pixel_values%20%3D%20%5B%5Cn%20%20%20%20b%5B'pixel_values'%5D%20for%20b%20in%20batch%20if%20b.get('pixel_values')%20is%20not%20None%5Cn%5D%5Cnres%5B'pixel_values'%5D%20%3D%20torch.concat(pixel_values)%5Cn%5Cnpixel_values_videos%20%3D%20%5B%5Cn%20%20%20%20b%5B'pixel_values_videos'%5D%5Cn%20%20%20%20for%20b%20in%20batch%5Cn%20%20%20%20if%20b.get('pixel_values_videos')%20is%20not%20None%5Cn%5D%5Cnres%5B'pixel_values_videos'%5D%20%3D%20torch.concat(pixel_values_videos)%5Cn%5Cnres%5B'image_grid_thw'%5D%20%3D%20self.concat_tensor(batch%2C%20'image_grid_thw'%2C%200)%5Cnres%5B'video_grid_thw'%5D%20%3D%20self.concat_tensor(batch%2C%20'video_grid_thw'%2C%200)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%8B%BC%E6%8E%A5%E8%A7%86%E8%A7%89%E5%BC%A0%E9%87%8F%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L2125-L2133%22%7D%7D"></card>
+<ul>
+<li>音频特征先按 <code>batch</code> 内最大声学长度补齐，再沿音频样本维拼接</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-775%22%2C%22code%22%3A%22max_length%20%3D%20max(x.shape%5B-1%5D%20for%20x%20in%20input_features)%5Cnfor%20i%2C%20input_feature%20in%20enumerate(input_features)%3A%5Cn%20%20%20%20mask%20%3D%20feature_attention_mask%5Bi%5D%5Cn%20%20%20%20input_features%5Bi%5D%20%3D%20F.pad(%5Cn%20%20%20%20%20%20%20%20input_feature%2C%5Cn%20%20%20%20%20%20%20%20(0%2C%20max_length%20-%20input_feature.shape%5B-1%5D)%2C%5Cn%20%20%20%20)%5Cn%20%20%20%20feature_attention_mask%5Bi%5D%20%3D%20F.pad(%5Cn%20%20%20%20%20%20%20%20mask%2C%5Cn%20%20%20%20%20%20%20%20(0%2C%20max_length%20-%20mask.shape%5B-1%5D)%2C%5Cn%20%20%20%20)%5Cn%5Cnres%5B'input_features'%5D%20%3D%20torch.concat(input_features)%5Cnres%5B'feature_attention_mask'%5D%20%3D%20torch.concat(feature_attention_mask)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%A1%A5%E9%BD%90%E9%9F%B3%E9%A2%91%E7%89%B9%E5%BE%81%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L1196-L1214%22%7D%7D"></card>
+<div class="table-scroll" role="region" aria-label="表格" tabindex="0"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>形状</th>
+<th>坐标含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input_ids</code></td>
+<td><code>[B, L]</code></td>
+<td><code>ChatML</code> 文本 <code>token</code> 与扩展后的媒体 <code>token</code></td>
+</tr>
+<tr>
+<td><code>attention_mask</code></td>
+<td><code>[B, L]</code></td>
+<td>语言序列有效位置</td>
+</tr>
+<tr>
+<td><code>pixel_values</code></td>
+<td><code>[ΣP_image, patch_dim]</code></td>
+<td>展平后的图像 <code>patch</code></td>
+</tr>
+<tr>
+<td><code>image_grid_thw</code></td>
+<td><code>[N_image, 3]</code></td>
+<td>每幅图像的 <code>(T,H,W)</code> <code>patch</code> 网格</td>
+</tr>
+<tr>
+<td><code>pixel_values_videos</code></td>
+<td><code>[ΣP_video, patch_dim]</code></td>
+<td>展平后的视频 <code>patch</code></td>
+</tr>
+<tr>
+<td><code>video_grid_thw</code></td>
+<td><code>[N_video, 3]</code></td>
+<td>每段视频的 <code>(T,H,W)</code> <code>patch</code> 网格</td>
+</tr>
+<tr>
+<td><code>input_features</code></td>
+<td><code>[N_audio, 128, F_max]</code></td>
+<td>补齐后的 <code>mel</code> 特征</td>
+</tr>
+<tr>
+<td><code>feature_attention_mask</code></td>
+<td><code>[N_audio, F_max]</code></td>
+<td>有效声学特征帧</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><code>get_rope_index()</code> 根据 token 序列、视觉网格、音频长度和视频时间间隔，构造 <code>Qwen3-Omni</code> 的多模态位置</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-776%22%2C%22code%22%3A%22feature_attention_mask%20%3D%20inputs.get('feature_attention_mask')%5Cnaudio_feature_lengths%20%3D%20torch.sum(feature_attention_mask%2C%20dim%3D1)%5Cn%5Cnposition_ids%2C%20_%20%3D%20self._get_get_rope_index()(%5Cn%20%20%20%20input_ids%2C%5Cn%20%20%20%20inputs.get('image_grid_thw')%2C%5Cn%20%20%20%20inputs.get('video_grid_thw')%2C%5Cn%20%20%20%20attention_mask%2C%5Cn%20%20%20%20self.use_audio_in_video%2C%5Cn%20%20%20%20audio_feature_lengths%2C%5Cn%20%20%20%20video_second_per_grid%2C%5Cn)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E7%94%9F%E6%88%90%20Omni%20%E5%A4%9A%E6%A8%A1%E6%80%81%E4%BD%8D%E7%BD%AE%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L1168-L1194%22%7D%7D"></card>
+<ul>
+<li>模型返回的 <code>position_ids</code> 形状为 <code>[3, B, L]</code>，三个轴分别表示 <code>temporal</code>、<code>height</code> 和 <code>width</code>。普通文本与音频在三个轴上使用相同的一维递增位置；图像和视频 <code>token</code> 使用各自网格的三维坐标。视频 <code>temporal</code> 坐标还乘以 <code>video_second_per_grid × position_id_per_seconds</code>，从而保留抽帧后每个时间网格的实际间隔。<code>ms-swift</code> 在 <code>collator</code> 内临时增加线性的 <code>text position</code> 轴，形成 <code>[4, B, L]</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-777%22%2C%22code%22%3A%22text_position_ids%20%3D%20torch.arange(seq_len%2C%20device%3Dposition_ids.device).expand(%5Cn%20%20%20%201%2C%20*position_ids.shape%5B1%3A%5D%5Cn)%5Cn%5Cnposition_ids%20%3D%20torch.concat(%5Btext_position_ids%2C%20position_ids%5D%2C%20dim%3D0)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E7%BB%84%E5%90%88%E6%96%87%E6%9C%AC%E4%BD%8D%E7%BD%AE%E4%B8%8E%20M-RoPE%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Fbase.py%23L2389-L2392%22%7D%7D"></card>
+<ul>
+<li>训练输入随后将三维多模态位置保存在 <code>position_ids</code>，并把第一维线性位置单独保存为 <code>text_position_ids</code>，供 <code>causal mask</code>、<code>packing</code> 和 <code>sequence parallel</code> 逻辑使用</li>
+</ul>
+<h2 id="6-post_encode-与-embedding-scatter">6. post_encode 与 embedding scatter</h2>
+<ul>
+<li><code>Qwen2_5OmniTemplate._post_encode()</code> 会在模板侧提前计算多模态 <code>embedding</code>。<code>Qwen3-Omni</code> 明确覆盖该实现</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-778%22%2C%22code%22%3A%22class%20Qwen3OmniTemplate(Qwen2_5OmniTemplate)%3A%5Cn%20%20%20%20version%20%3D%20'omni_v3'%5Cn%20%20%20%20norm_bbox%20%3D%20'norm1000'%5Cn%20%20%20%20placeholder_tokens%20%3D%20%5B%5Cn%20%20%20%20%20%20%20%20'%3C%7Cimage_pad%7C%3E'%2C%5Cn%20%20%20%20%20%20%20%20'%3C%7Caudio_pad%7C%3E'%2C%5Cn%20%20%20%20%20%20%20%20'%3C%7Cvideo_pad%7C%3E'%2C%5Cn%20%20%20%20%5D%5Cn%5Cn%20%20%20%20def%20_post_encode(self%2C%20model%2C%20inputs)%3A%5Cn%20%20%20%20%20%20%20%20return%20inputs%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E9%80%89%E6%8B%A9%E6%A8%A1%E5%9E%8B%E5%86%85%20Embedding%20%E8%B7%AF%E5%BE%84%22%2C%22sourceLabel%22%3A%22ms-swift%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fmodelscope%2Fms-swift%2Fblob%2Fbe11a273f43dcc99f4e5d9b44e556f05dec85b39%2Fswift%2Ftemplate%2Ftemplates%2Fqwen.py%23L1225-L1231%22%7D%7D"></card>
+<blockquote class="callout callout-important">
+<p><code>Qwen3-Omni</code> 的 <strong><code>post_encode</code> 是直通操作</strong>。<code>input_ids</code>、<code>pixel_values</code>、<code>pixel_values_videos</code>、<code>input_features</code> 及其长度元数据保持不变；<strong><code>embedding</code> 计算与替换发生在 <code>Qwen3OmniMoeThinkerForConditionalGeneration.forward()</code> 内部</strong></p>
+</blockquote>
+<ul>
+<li>语言序列首先经过词嵌入层。此时媒体 <code>pad token</code> 与普通文本 <code>token</code> 一样，只对应词表中的占位向量</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-779%22%2C%22code%22%3A%22if%20inputs_embeds%20is%20None%3A%5Cn%20%20%20%20inputs_embeds%20%3D%20self.get_input_embeddings()(input_ids)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%88%9D%E5%A7%8B%E5%8C%96%E8%AF%8D%E5%B5%8C%E5%85%A5%22%2C%22sourceLabel%22%3A%22Transformers%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_omni_moe%2Fmodeling_qwen3_omni_moe.py%22%7D%7D"></card>
+<ul>
+<li>设语言模型隐藏维度为 <code>D</code>，则</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-780%22%2C%22code%22%3A%22input_ids%20%20%20%20%20%3A%20%5BB%2C%20L%5D%5Cninputs_embeds%20%3A%20%5BB%2C%20L%2C%20D%5D%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%AF%8D%E5%B5%8C%E5%85%A5%E5%BC%A0%E9%87%8F%E7%BB%B4%E5%BA%A6%22%7D%7D"></card>
+<ul>
+<li>音频塔将 <code>input_features</code> 编码为 <code>[N_audio, D]</code>。模型在 <code>input_ids</code> 中定位全部 <code>audio_token_id</code>，将布尔 <code>mask</code> 扩展到 <code>embedding</code> 维，再按序写入音频特征</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-781%22%2C%22code%22%3A%22audio_features%20%3D%20self.get_audio_features(%5Cn%20%20%20%20input_features%2C%5Cn%20%20%20%20feature_attention_mask%2C%5Cn%20%20%20%20audio_feature_lengths%2C%5Cn%20%20%20%20return_dict%3DTrue%2C%5Cn).last_hidden_state%5Cn%5Cn_%2C%20_%2C%20audio_mask%20%3D%20self.get_placeholder_mask(%5Cn%20%20%20%20input_ids%2C%5Cn%20%20%20%20inputs_embeds%3Dinputs_embeds%2C%5Cn)%5Cn%5Cninputs_embeds%20%3D%20inputs_embeds.masked_scatter(%5Cn%20%20%20%20audio_mask%2C%5Cn%20%20%20%20audio_features%2C%5Cn)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%86%99%E5%85%A5%E9%9F%B3%E9%A2%91%E7%89%B9%E5%BE%81%22%2C%22sourceLabel%22%3A%22Transformers%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_omni_moe%2Fmodeling_qwen3_omni_moe.py%22%7D%7D"></card>
+<ul>
+<li>图像与视频共享视觉塔。视觉编码器的 <code>pooler_output</code> 已完成 <code>merge_size²</code> 空间下采样，其第一维分别等于 <code>N_image</code> 与 <code>N_video</code></li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-782%22%2C%22code%22%3A%22image_outputs%20%3D%20self.get_image_features(%5Cn%20%20%20%20pixel_values%2C%5Cn%20%20%20%20image_grid_thw%2C%5Cn%20%20%20%20return_dict%3DTrue%2C%5Cn)%5Cnimage_embeds%20%3D%20image_outputs.pooler_output%5Cnimage_mask%2C%20_%2C%20_%20%3D%20self.get_placeholder_mask(%5Cn%20%20%20%20input_ids%2C%5Cn%20%20%20%20inputs_embeds%3Dinputs_embeds%2C%5Cn%20%20%20%20image_features%3Dimage_embeds%2C%5Cn)%5Cninputs_embeds%20%3D%20inputs_embeds.masked_scatter(%5Cn%20%20%20%20image_mask%2C%5Cn%20%20%20%20image_embeds%2C%5Cn)%5Cn%5Cnvideo_outputs%20%3D%20self.get_video_features(%5Cn%20%20%20%20pixel_values_videos%2C%5Cn%20%20%20%20video_grid_thw%2C%5Cn%20%20%20%20return_dict%3DTrue%2C%5Cn)%5Cnvideo_embeds%20%3D%20video_outputs.pooler_output%5Cn_%2C%20video_mask%2C%20_%20%3D%20self.get_placeholder_mask(%5Cn%20%20%20%20input_ids%2C%5Cn%20%20%20%20inputs_embeds%3Dinputs_embeds%2C%5Cn%20%20%20%20video_features%3Dvideo_embeds%2C%5Cn)%5Cninputs_embeds%20%3D%20inputs_embeds.masked_scatter(%5Cn%20%20%20%20video_mask%2C%5Cn%20%20%20%20video_embeds%2C%5Cn)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%86%99%E5%85%A5%E5%9B%BE%E5%83%8F%E7%89%B9%E5%BE%81%22%2C%22sourceLabel%22%3A%22Transformers%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_omni_moe%2Fmodeling_qwen3_omni_moe.py%22%7D%7D"></card>
+<ul>
+<li><code>get_placeholder_mask()</code> 直接由 <code>token id</code> 构造三类位置掩码</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-783%22%2C%22code%22%3A%22special_image_mask%20%3D%20input_ids%20%3D%3D%20self.config.image_token_id%5Cnspecial_video_mask%20%3D%20input_ids%20%3D%3D%20self.config.video_token_id%5Cnspecial_audio_mask%20%3D%20input_ids%20%3D%3D%20self.config.audio_token_id%5Cn%5Cnn_image_tokens%20%3D%20special_image_mask.sum()%5Cnn_video_tokens%20%3D%20special_video_mask.sum()%5Cn%5Cnspecial_image_mask%20%3D%20special_image_mask.unsqueeze(-1)%5Cnspecial_video_mask%20%3D%20special_video_mask.unsqueeze(-1)%5Cnspecial_audio_mask%20%3D%20special_audio_mask.unsqueeze(-1)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%9E%84%E9%80%A0%E5%AA%92%E4%BD%93%E5%8D%A0%E4%BD%8D%E6%8E%A9%E7%A0%81%22%2C%22sourceLabel%22%3A%22Transformers%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_omni_moe%2Fmodeling_qwen3_omni_moe.py%23L1974-L1986%22%7D%7D"></card>
+<ul>
+<li>多模态实现中常说的 <strong><code>scatter_mask</code></strong>，在当前 <code>Qwen3-Omni</code> 源码中对应 <code>special_image_mask</code>、<code>special_video_mask</code>、<code>special_audio_mask</code> 及其返回后的 <code>image_mask</code>、<code>video_mask</code>、<code>audio_mask</code>。这些 <code>mask</code> 共同定义 <code>scatter</code> 的目标位置</li>
+<li>以图像为例，<code>image_mask</code> 的逻辑形状为 <code>[B,L,1]</code>，在 <code>masked_scatter()</code> 中广播为 <code>[B,L,D]</code>。若存在 <code>N_image</code> 个图像 <code>token</code>，则 <code>mask</code> 中参与替换的标量数为 <code>N_image × D</code>；<code>image_embeds</code> 的元素数同样为 <code>N_image × D</code>。<code>Transformers</code> 在写入前检查二者相等</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-784%22%2C%22code%22%3A%22torch_compilable_check(%5Cn%20%20%20%20n_image_tokens%20*%20inputs_embeds.shape%5B-1%5D%20%3D%3D%20image_features.numel()%2C%5Cn%20%20%20%20%5C%22Image%20features%20and%20image%20tokens%20do%20not%20match%5C%22%2C%5Cn)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E6%A3%80%E6%9F%A5%E5%AA%92%E4%BD%93%E7%89%B9%E5%BE%81%E6%95%B0%E9%87%8F%22%2C%22sourceLabel%22%3A%22Transformers%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_omni_moe%2Fmodeling_qwen3_omni_moe.py%22%7D%7D"></card>
+<ul>
+<li><code>video</code> 使用相同检查。<code>audio</code> 的一致性由 <code>ms-swift</code> 与模型共用的卷积输出长度公式保证。<code>masked_scatter()</code> 按 <code>mask</code> 中 <code>True</code> 位置的线性顺序消费 <code>source</code>；<code>processor</code> 输出媒体特征的顺序与 <code>messages</code> 中占位符的顺序一致，因而第一个媒体占位区间接收第一份媒体的 <code>embedding</code>，后续媒体依次对应</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-785%22%2C%22code%22%3A%22scatter%20%E5%89%8D%5Cn%5Btext%20embedding%5D%5Cn%5Bimage_pad%20embedding%20%C3%97%20N_image%5D%5Cn%5Btext%20embedding%5D%5Cn%5Bvideo_pad%20embedding%20%C3%97%20N_video%5D%5Cn%5Btext%20embedding%5D%5Cn%5Baudio_pad%20embedding%20%C3%97%20N_audio%5D%5Cn%5Cnscatter%20%E5%90%8E%5Cn%5Btext%20embedding%5D%5Cn%5Bimage%20encoder%20output%20%C3%97%20N_image%5D%5Cn%5Btext%20embedding%5D%5Cn%5Bvideo%20encoder%20output%20%C3%97%20N_video%5D%5Cn%5Btext%20embedding%5D%5Cn%5Baudio%20encoder%20output%20%C3%97%20N_audio%5D%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%A4%9A%E6%A8%A1%E6%80%81%E7%89%B9%E5%BE%81%E6%9B%BF%E6%8D%A2%E7%A4%BA%E6%84%8F%22%7D%7D"></card>
+<ul>
+<li>视觉编码器还返回 <code>deepstack_features</code>。<code>image_mask | video_mask</code> 构成 <code>visual_pos_masks</code>，文本解码器的前若干层在相同视觉位置继续叠加不同视觉层级的特征</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-786%22%2C%22code%22%3A%22visual_pos_masks%20%3D%20video_mask%20%7C%20image_mask%5Cn%5Cnif%20deepstack_visual_embeds%20is%20not%20None%20and%20layer_idx%20in%20range(%5Cn%20%20%20%20len(deepstack_visual_embeds)%5Cn)%3A%5Cn%20%20%20%20hidden_states%20%3D%20self._deepstack_process(%5Cn%20%20%20%20%20%20%20%20hidden_states%2C%5Cn%20%20%20%20%20%20%20%20visual_pos_masks%2C%5Cn%20%20%20%20%20%20%20%20deepstack_visual_embeds%5Blayer_idx%5D%2C%5Cn%20%20%20%20)%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%9E%8D%E5%90%88%20DeepStack%20%E8%A7%86%E8%A7%89%E7%89%B9%E5%BE%81%22%2C%22sourceLabel%22%3A%22Transformers%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fhuggingface%2Ftransformers%2Fblob%2Fv5.17.0%2Fsrc%2Ftransformers%2Fmodels%2Fqwen3_omni_moe%2Fmodeling_qwen3_omni_moe.py%22%7D%7D"></card>
+<ul>
+<li><code>ms-swift</code> 在 <code>DeepSpeed</code> 路径中通过 <code>_compat_qwen3_omni_mixed_data()</code> 接管部分 <code>forward</code> 逻辑，但保持相同语义：视觉与音频特征仍由各自 <code>token mask</code> 写入 <code>inputs_embeds</code>，<code>DeepStack</code> 特征仍由 <code>visual_pos_masks</code> 定位</li>
+</ul>
+<h2 id="7-输入链路的张量闭合">7. 输入链路的张量闭合</h2>
+<ul>
+<li>三种模态共享同一项对齐条件：<strong>语言序列中的媒体 <code>token</code> 数必须等于对应 <code>encoder</code> 输出的 <code>embedding</code> 数</strong></li>
+<li><code>replace_tag()</code> 确定媒体边界，<code>image_grid_thw</code>、<code>video_grid_thw</code> 与音频长度函数确定槽位数量，<code>_extend_tokens()</code> 在 <code>input_ids</code> 中建立槽位，<code>get_placeholder_mask()</code> 与 <code>masked_scatter()</code> 完成最终的 <code>embedding</code> 写入</li>
+</ul>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-787%22%2C%22code%22%3A%22messages.content%20%E4%B8%AD%E7%9A%84%20%3Cimage%3E%2F%3Cvideo%3E%2F%3Caudio%3E%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20StdTemplateInputs.from_dict%5Cnmessages%20%2B%20images%2Fvideos%2Faudios%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20Template._swift_encode%5Cn%E5%8C%85%E5%90%AB%E6%A0%87%E5%87%86%E5%AA%92%E4%BD%93%E6%A0%87%E8%AE%B0%E7%9A%84%20ChatML%20context%20list%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20_split_special_tokens%20%2B%20replace_tag%5Cn%3C%7Cimage_pad%7C%3E%20%2F%20%3C%7Cvideo_pad%7C%3E%20%2F%20%3C%7Caudio_pad%7C%3E%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20tokenizer%5Cn%E6%AF%8F%E7%A7%8D%E5%AA%92%E4%BD%93%E4%B8%80%E4%B8%AA%E5%88%9D%E5%A7%8B%20placeholder%20token%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20Qwen3-Omni%20processor%5Cnpixel_values%20%2F%20pixel_values_videos%20%2F%20input_features%5Cnimage_grid_thw%20%2F%20video_grid_thw%20%2F%20feature_attention_mask%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20_get_feat_extract_output_lengths%20%2B%20_extend_tokens%5Cn%E4%B8%8E%E4%B8%8B%E9%87%87%E6%A0%B7%E7%89%B9%E5%BE%81%E7%AD%89%E9%95%BF%E7%9A%84%E5%A4%9A%E6%A8%A1%E6%80%81%20input_ids%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20data_collator%5Cninput_ids%20%2B%20attention_mask%20%2B%20position_ids%20%2B%20media%20tensors%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20Qwen3OmniMoeThinker.forward%5Cntext%20embedding%20%2B%20image%2Fvideo%2Faudio%20encoder%20output%5Cn%20%20%20%20%20%20%20%20%E2%86%93%20get_placeholder_mask%20%2B%20masked_scatter%5Cn%E7%BB%9F%E4%B8%80%E7%9A%84%20inputs_embeds%5BB%2C%20L%2C%20D%5D%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%A4%9A%E6%A8%A1%E6%80%81%E8%BE%93%E5%85%A5%E5%AE%8C%E6%95%B4%E9%93%BE%E8%B7%AF%22%7D%7D"></card>
+</section>

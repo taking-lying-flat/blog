@@ -1,0 +1,136 @@
+<!doctype lake><title>Synchronization Failures</title><meta name="reading-minutes" content="24"><section class="lake-revised-section">
+<h1 id="vllm-51593">🐋 <a href="https://github.com/vllm-project/vllm/issues/51593">vLLM #51593</a> — DeepSeek-V4-Flash MTP Hang on SM120</h1>
+<p><strong style="color: var(--fgColor-success)">DeepSeek-V4 在 SM120 上执行 MTP 验证时，FULL CUDA Graph 的填充槽经长度展开后产生负的上下文长度。<code>persistent_topk</code> 将有符号的 −1 转为 <code>uint32_t</code>，得到 <code>UINT_MAX</code>。同组的 peer 按批次上界提前退出，leader 却按异常行长进入多 CTA 的 Radix 分支。leader 在跨块屏障上等不到 peer，主机侧最终报告 <code>shm_broadcast timeout</code> 和 <code>EngineDeadError</code></strong></p>
+<p id="复现配置"><strong>服务在持续负载下正常生成约 12–14 分钟。当批次缩减至最后 3 个请求时，生成停止，四张 GPU 的利用率仍为 100%。API 服务最终超时退出</strong></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-841%22%2C%22code%22%3A%22vllm%20serve%20%3Cpath-to%3E%2FDeepSeek-V4-Flash%20%5C%5C%5Cn%20%20--tensor-parallel-size%204%20%5C%5C%5Cn%20%20--attention-backend%20FLASHINFER_MLA_SPARSE_DSV4%20%5C%5C%5Cn%20%20--moe-backend%20flashinfer_cutlass%20%5C%5C%5Cn%20%20--speculative-config%20'%7B%5C%22method%5C%22%3A%5C%22mtp%5C%22%2C%5C%22num_speculative_tokens%5C%22%3A1%7D'%20%5C%5C%5Cn%20%20--max-num-seqs%2016%20--max-num-batched-tokens%208192%20%5C%5C%5Cn%20%20--max-model-len%2065536%20--kv-cache-dtype%20fp8%20--block-size%20256%20%5C%5C%5Cn%20%20--gpu-memory-utilization%200.9%20--tokenizer-mode%20deepseek_v4%5Cn%22%2C%22language%22%3A%22bash%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%A4%8D%E7%8E%B0%E5%90%AF%E5%8A%A8%E5%91%BD%E4%BB%A4%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fvllm-project%2Fvllm%2Fissues%2F51593%22%2C%22sourceLabel%22%3A%22vLLM%20%C2%B7%20%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95%22%7D%7D"></card>
+<p id="故障链路总览"><strong><code>cuda-gdb</code> 显示，block 12 停在 <code>radix_topk</code> 的初始屏障。</strong><code>wait_ge()</code> 需要两个 CTA 到达，<code>arrival_counter</code> 只有 1，首轮直方图统计尚未开始。主机上的异步输出拷贝线程阻塞于 <code>copy_event.synchronize()</code>，worker 主线程停在 <code>zmq_poll</code>，EngineCore 最终因等待 worker 响应超时而报告 <code>shm_broadcast timeout</code></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-842%22%2C%22code%22%3A%22CUDA%20Graph%20padding%20slot%5Cn%20%20-%3E%20C4%20indexer%20produces%20context%20length%20-1%5Cn%20%20-%3E%20persistent_topk%20converts%20-1%20to%20UINT_MAX%5Cn%20%20-%3E%20CTA1%20exits%20based%20on%20the%20host%20max_seq_len%5Cn%20%20-%3E%20CTA0%20enters%20the%20radix%20path%20based%20on%20UINT_MAX%5Cn%20%20-%3E%20CTA0%20waits%20forever%20for%20two%20CTAs%20at%20the%20barrier%5Cn%20%20-%3E%20the%20GPU%20kernel%20never%20retires%5Cn%20%20-%3E%20the%20output-copy%20CUDA%20event%20never%20completes%5Cn%20%20-%3E%20no%20worker%20response%20is%20enqueued%5Cn%20%20-%3E%20EngineCore%20eventually%20reports%20shm_broadcast%20timeout%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E8%B4%9F%E9%95%BF%E5%BA%A6%E4%BC%A0%E6%92%AD%E9%93%BE%22%7D%7D"></card>
+<h2 id="multi-cta-radix-top-k">🐝 CTA and Radix Top-K</h2>
+<p id="背景cta-协作机制"><strong>CTA（Cooperative Thread Array）是 CUDA 线程块。</strong>一个块的线程驻留在同一个流式多处理器（SM）上，通过块内共享内存交换数据。SM 以 warp 为单位调度指令，每个 warp 包含 32 个线程。vLLM 稀疏注意力索引器的 <code>persistent_topk</code> 内核逐行选择候选 KV 位置。每行存放一个 query 对各候选位置的分数，输出为入选位置的索引。内核启动固定数量的 CTA 组，每组处理完当前行后可继续处理后续行。短行由 leader 独立处理，长行才需要同组 peer 参与</p>
+<ul>
+<li><strong>块内分工。</strong>现场每块有 1024 个线程，共 32 个 warp。各 warp 扫描本块分片中的不同位置，将计数汇入同一份块内直方图。跨块同步时，每个 CTA 只由 0 号线程登记一次到达。因此，调试器中的目标值 2 对应两个 CTA，一个 CTA 的 32 个 warp 合计也只贡献一次计数</li>
+<li><strong>分片大小。</strong>现场输入有 8 行，每行跨度为 16384 个分数。每块有 48 KiB 共享内存，扣除直方图和标量占用的 2080 字节，最多可容纳 11768 个 32 位键。单块容纳不下整行，启动器为每行分配两个 CTA。两块需要协作时，leader 扫描列 0 至 8191，peer 扫描列 8192 至 16383，各自只读取有效行长以内的位置</li>
+<li><strong>实际参与的块数。</strong>每个 query 需要 512 个输出槽。有效位置不超过 512 个时，leader 直接写入全部索引，余下的槽填 −1。行长为 513 至 8192 时，leader 使用 2048 桶直方图。8193 至 32768 时，使用 256 桶直方图。只有行长超过 32768，内核才进入双块 Radix 路径。本批次的有效行长上界为 16384，按此上界，八行都应由各组的 leader 独立完成</li>
+</ul>
+<p id="背景radix-top-k"><strong>长行分支 <code>radix_topk</code> 要求同组的两个 CTA 先在初始屏障汇合。</strong>本次 grid 的 16 个 CTA 分为 8 组，分别处理第 0 至 7 行。每组的偶数编号块是 leader，紧邻的奇数编号块是 peer。在长行路径中，两块各自把分片内的分数转换为保序键，存入块内共享内存，再从高位到低位逐轮计数。每轮合并两个分片的桶计数，确定第 K 大分数所在的桶，下一轮只细分这个桶。四轮后得到整行的入选阈值 <em>pivot</em>，两块据此写回同一行的索引</p>
+<ul>
+<li><strong>结果写回（epilogue）。</strong>各 warp 先统计本分片中分数严格高于 pivot 的位置。本块的 0 号线程通过 <code>output_counter</code> 预留一段连续输出空间，各线程将这些位置在原行中的索引写入其中。同组两块都完成写入后，再从分数等于 pivot 的位置中补足剩余名额</li>
+</ul>
+<p><strong>调试器采样时，只有第 6 组的 block 12 仍在运行。</strong>它与同组的 block 13 分别依据行级长度和批次上界选择分支</p>
+<ul>
+<li><strong>block 13（peer）在入口返回。</strong>它读取主机传入的批次上界 <code>params.max_seq_len</code>。现场值 16384 低于长行阈值 32768，按此上界，批次中的任何一行都无需第二个块。block 13 因而提前退出</li>
+<li><strong>block 12（leader）进入长行分支。</strong>它从设备上的 <code>params.lengths[row_idx]</code> 读取第 6 行的长度。填充值 −1 转成无符号整数后成为 <code>UINT_MAX</code>。block 12 据此将该行判为长行，进入 <code>radix_topk</code>，在初始屏障登记到达后等待 block 13</li>
+</ul>
+<h2 id="from-mtp-padding-to-an-inter-cta-deadlock">🦋 MTP Padding</h2>
+<p id="1-mtp-与-cuda-graph-padding"><strong>本次配置 <code>num_speculative_tokens=1</code>，目标模型为每个请求验证两个位置，即当前位置和一个 MTP 推测位置（<code>next_n=2</code>）。</strong>批次缩减至 3 个真实请求时，实际只有 6 个 query token。<strong style="color: var(--fgColor-success)">FULL CUDA Graph 回放的图固定容纳 8 个 token</strong>，补出的两个位置组成第四个请求槽</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-844%22%2C%22code%22%3A%223%20real%20requests%20%C3%97%202%20MTP%20positions%20%3D%206%20real%20query%20tokens%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%E2%86%93%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20FULL%20CUDA%20Graph%20shape%20%3D%208%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%E2%86%93%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20append%202%20padding%20tokens%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%E2%86%93%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%204%20request%20slots%5Cn%5Cnquery_start_loc%20%3D%20%5B0%2C%202%2C%204%2C%206%2C%206%5D%5Cnseq_lens%20%20%20%20%20%20%20%20%3D%20%5BL0%2C%20L1%2C%20L2%2C%200%5D%5Cndecode_lens%20%20%20%20%20%3D%20%5B2%2C%20%202%2C%20%202%2C%20%200%5D%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%7D"></card>
+<p id="2-合法的-padding-元数据如何变成--1"><strong>请求级元数据。</strong><code>query_start_loc</code> 为 <code>[0,2,4,6,6]</code>，前三个请求各占两个真实 query token。末尾两个边界相同，第四个槽对应空区间 <code>[6,6)</code>。它既没有有效历史序列，也没有待解码的位置，因此 <code>seq_len=0</code> 和 <code>decode_len=0</code> 都是合法值</p>
+<p><strong>位置级长度展开。</strong><code>native MTP path</code> 把请求级的 <code>seq_lens</code> 展开为两个位置各自的上下文长度。真实请求的序列长度为 <code>L</code> 时，两个位置分别对应 <code>[L-1,L]</code>。<code>query_start_loc</code> 和 <code>decode_len</code> 已表明第四个槽为空，但这条路径仍对它使用固定的 <code>max_decode_len=2</code>。<strong style="color: var(--fgColor-success)">空槽本应得到 <code>[0,0]</code>，实际却从长度 0 展开为 <code>[-1,0]</code></strong>。负值首次出现于这一步</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-845%22%2C%22code%22%3A%22if%20use_native%20and%20next_n%20%3E%201%3A%5Cn%20%20%20%20assert%20self.decode_seq_lens_buffer.dim%28%29%20%3D%3D%201%5Cn%20%20%20%20seq_lens_buffer%20%3D%20self.decode_seq_lens_buffer%5B%5Cn%20%20%20%20%20%20%20%20%3A%20num_decodes%20%2A%20max_decode_len%5Cn%20%20%20%20%5D.view%28num_decodes%2C%20max_decode_len%29%5Cn%5Cn%20%20%20%20seq_lens_buffer%5B%3A%5D%20%3D%20%28%5Cn%20%20%20%20%20%20%20%20seq_lens.unsqueeze%281%29%5Cn%20%20%20%20%20%20%20%20-%20max_decode_len%5Cn%20%20%20%20%20%20%20%20%2B%201%5Cn%20%20%20%20%20%20%20%20%2B%20self.offsets_buffer%5B%3Amax_decode_len%5D%5Cn%20%20%20%20%29%5Cn%5Cn%20%20%20%20seq_lens%20%3D%20seq_lens_buffer%5Cn%5Cnreturn%20seq_lens%2C%20block_table%2C%20decode_lens%2C%20num_decodes%2C%20requires_padding%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%B1%95%E5%BC%80%20MTP%20%E5%BA%8F%E5%88%97%E9%95%BF%E5%BA%A6%22%7D%7D"></card>
+<p><strong>解码路径决定空槽是否参与展开。</strong>普通解码的 <code>next_n=1</code> 只生成一个位置，空槽的长度仍为 0。<code>variable-length flatten path</code> 按真实 <code>decode_lens</code> 生成位置，跳过解码长度为 0 的槽，并将剩余缓冲区清零。本次原生 MTP 路径使用固定二维布局，空槽也占两个位置。<code>uniform speculative path</code> 使用相同的展开算式，也需要限制结果的下界</p>
+<p id="3-负长度穿过-c4-indexer"><strong>C4 压缩。</strong>DeepSeek-V4 的 C4 索引器以 <code>compress_ratio=4</code> 把上下文长度映射到压缩后的 KV 空间。配置的 <code>max_model_len=65536</code> 对应 16384 个候选位置，这也是 logits 的行宽。对填充行，<strong style="color: var(--fgColor-success)">Python 整除向下取整，<code>-1 // 4</code> 仍等于 <code>-1</code></strong>。因此，传给 <code>persistent_topk</code> 的批次行宽上界是 16384，设备上的填充行长度却仍为 −1</p>
+<h2 id="inter-cta-deadlock">🐞 Inter-CTA Deadlock</h2>
+<p><strong>SM120 的稀疏索引器跳过 <code>cooperative_topk</code>，调用 <code>persistent_topk_kernel</code>。</strong>候选分数矩阵 <code>input</code> 有 8 行，<code>lengths</code> 给出每行的有效长度，<code>output</code> 为每行预留 512 个索引槽。16 个 CTA 分为 8 组，每组的两个 CTA 按相同的行序处理，共用一份 <code>RadixRowState</code></p>
+<p><strong>在内核入口，peer 根据批次上界 <code>max_seq_len</code> 判断是否退出。处理具体行时，leader 根据设备端的 <code>lengths[row_idx]</code> 选择 Top-K 路径。</strong>长行分支通过 <code>arrival_counter</code> 等待同组 CTA。若批次上界覆盖各行的有效长度，peer 就能据此判断本批次是否需要双块协作</p>
+<p id="4-leader-与-peer-的判断发生分裂"><strong>peer 的入口分支。</strong>主机传入的 <code>params.max_seq_len</code> 为 16384，低于 <code>RADIX_THRESHOLD=32768</code>。<strong style="color: var(--fgColor-success)">peer 执行 <code>early return</code>，跳过后续 Top-K 计算</strong>。只要各行长度均落在这个上界内，leader 就能独立处理所有短行和中等长度行</p>
+<p><strong>leader 的按行分支。</strong>leader 从 <code>params.lengths[row_idx]</code> 读取填充行的长度。<strong style="color: var(--fgColor-success)">有符号的 <code>int32 -1</code> 赋给 <code>uint32_t seq_len</code> 时变为 <code>UINT_MAX</code>（4294967295）</strong>。这个值超过 32768，leader 因而跳过单 CTA 路径，进入需要两块协作的 <code>radix_topk</code>。此时 peer 已退出</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-847%22%2C%22code%22%3A%22non-leader%20CTA%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20leader%20CTA%5Cn%20%20%20%20%20%20%E2%94%82%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%E2%94%82%5Cnparams.max_seq_len%20%3D%2016384%20%20%20%20%20%20%20%20%20%20lengths%5Brow%5D%20%3D%20-1%5Cn%20%20%20%20%20%20%E2%94%82%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%E2%94%82%5Cn16384%20%3C%3D%2032768%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20int32%20%E2%86%92%20uint32%5Cn%20%20%20%20%20%20%E2%94%82%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%E2%94%82%5Cnearly%20return%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20UINT_MAX%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%E2%94%82%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3E%2032768%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%E2%94%82%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20radix_topk%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%E2%94%82%5Cn%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20waits%20for%20peer%20CTA%20forever%5Cn%22%2C%22language%22%3A%22text%22%2C%22caption%22%3A%22%22%7D"></card>
+<p id="5-inter-cta-barrier-永久等待"><strong><code>radix_topk</code> 的初始屏障按 <code>ctas_per_group=2</code> 等待两个 CTA 到达。</strong><code>cuda-gdb</code> 读到 <strong style="color: var(--fgColor-success)"><code>arrival_counter=1</code>、<code>target_val=2</code></strong>。leader 已到达，peer 已退出，计数无法再增加。leader 持续停在 <code>wait_ge()</code>，内核无法结束。此时 GPU 利用率接近 100%，显存活动却很少。主机上的异步输出拷贝线程阻塞于 <code>copy_event.synchronize()</code>，worker 主线程停在 <code>zmq_poll</code>，EngineCore 最终因等不到 worker 响应而超时</p>
+<h2 id="修复建议">🌱 Proposed Fixes</h2>
+<p><strong style="color: var(--fgColor-success)">修复建议同时覆盖长度的生产端和消费端。MTP 在展开时将填充位置的长度限制为非负值，阻止 −1 进入索引器。<code>persistent_topk</code> 先检查有符号长度，再将结果限制在 <code>0 &lt;= seq_len &lt;= min(stride, max_seq_len)</code> 内。同一约束也适用于其他调用方传入的异常长度</strong></p>
+<p><strong>生产端在展开位置级长度时将下界设为 0。</strong><code>native MTP path</code> 与 <code>uniform speculative path</code> 使用相同的展开算式，两条路径均应在写入长度缓冲区前执行 <code>clamp_(min=0)</code>。填充槽的 <code>[−1,0]</code> 由此变为 <code>[0,0]</code>，正常请求仍得到 <code>[L-1,L]</code></p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-848%22%2C%22code%22%3A%22seq_lens_buffer%5B%3A%5D%20%3D%20%28%5Cn%20%20%20%20seq_lens.unsqueeze%281%29%5Cn%20%20%20%20-%20max_decode_len%5Cn%20%20%20%20%2B%201%5Cn%20%20%20%20%2B%20self.offsets_buffer%5B%3Amax_decode_len%5D%5Cn%29.clamp_%28min%3D0%29%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E4%BF%AE%E6%AD%A3%20Padding%20%E9%95%BF%E5%BA%A6%22%7D%7D"></card>
+<p><strong>消费端在 <code>persistent_topk</code> 选择计算路径前校验行长。</strong>行长决定访问范围和参与计算的 CTA 数。内核应先按有符号整数读取长度，将负值截为 0，再转为 <code>uint32_t</code>，并以行宽和批次上界中的较小值为上限。若先将 −1 转成 <code>UINT_MAX</code>，下界检查就无法识别这个负值</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-849%22%2C%22code%22%3A%22const%20int32_t%20raw_len%20%3D%20params.lengths%5Brow_idx%5D%3B%5Cnconst%20uint32_t%20row_bound%20%3D%5Cn%20%20%20%20params.stride%20%3C%20params.max_seq_len%20%3F%20params.stride%20%3A%20params.max_seq_len%3B%5Cnconst%20uint32_t%20non_negative_len%20%3D%5Cn%20%20%20%20raw_len%20%3E%200%20%3F%20static_cast%3Cuint32_t%3E%28raw_len%29%20%3A%200u%3B%5Cnconst%20uint32_t%20seq_len%20%3D%5Cn%20%20%20%20non_negative_len%20%3C%20row_bound%20%3F%20non_negative_len%20%3A%20row_bound%3B%5Cn%22%2C%22language%22%3A%22cpp%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E7%BA%A6%E6%9D%9F%E9%95%BF%E5%BA%A6%E4%B8%8A%E4%B8%8B%E7%95%8C%22%7D%7D"></card>
+</section>
+<section class="lake-revised-section" id="案例一deepspeed-zero-3-梯度归约竞态">
+<h1 id="deepspeed-7898">🐬 <a href="https://github.com/deepspeedai/DeepSpeed/pull/7898">DeepSpeed #7898</a> — ZeRO-3 Gradient Reduction Race</h1>
+<p><strong style="color: var(--fgColor-success)">ZeRO-3 在本卡复制梯度时发生读写竞态。PyTorch 的反向算子是生产者，在计算流上把本轮梯度写入 <code>param.grad</code>。DeepSpeed 的复制操作是消费者，在归约流上读取同一段显存，并把梯度写入通信缓冲区。要取得本轮的值，复制对每个元素的读取都必须排在该元素的写入之后</strong></p>
+<p><strong>旧版 DeepSpeed 让归约流等待默认 CUDA 流。</strong>若反向算子在非默认流上写入，默认流可能先执行到事件，归约流便可开始复制尚未写完的梯度。这份副本随后参与 <code>reduce-scatter</code>。各训练进程（rank）按参数位置合并梯度，各取自己负责的结果分片。过早读出的值由此进入梯度分片，影响负责该分片的 rank 更新参数</p>
+<p><strong>上游在 7 张 H200 上以 BF16 训练 Qwen3-4B，使用 DeepSpeed 0.18.7 和 PyTorch 2.10.0。</strong>修复前，第一次 <code>optimizer.step()</code> 后有 55 层权重出现 <code>NaN</code>，总数超过 15 万。异常可见于注意力投影和 MLP 权重，具体的层和 rank 随运行而变。在相同配置下应用修复后，连续检查至少三步，所有权重层的 <code>NaN</code> 数量均为 0</p>
+<h2 id="zero3-streams-and-buckets">🐝 CUDA Streams and ZeRO-3 Gradient Buckets</h2>
+<p><strong>反向计算流由 PyTorch autograd 选定，归约流由 DeepSpeed 创建。</strong>autograd 将反向 CUDA 算子提交到对应前向算子使用的流，GPU 在这条流上生成并累积 <code>param.grad</code>。主机端的梯度钩子此时可以访问梯度张量，GPU 却可能仍在写入它的底层显存</p>
+<p><strong>DeepSpeed 的梯度钩子调用 <code>__add_grad_to_ipg_bucket(param)</code>，安排复制这份梯度。</strong>上游配置启用 <code>overlap_comm</code>，复制和归约使用独立的 CUDA 流 <code>self.reduce_and_partition_stream</code>。配置同时启用 <code>contiguous_gradients</code>，只要连续缓冲区（bucket）的剩余空间足够，函数就把当前参数的梯度复制到其中</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-829%22%2C%22code%22%3A%22if%20not%20get_accelerator().resolves_data_dependency()%3A%5Cn%20%20%20%20self.reduce_and_partition_stream.wait_stream(get_accelerator().default_stream())%5Cn%5Cnbucket%20%3D%20self.ipg_buckets%5Bself.get_param_comm_dtype(param)%5D%5Cnif%20self.contiguous_gradients%20and%20bucket.elements%20%2B%20param.grad.numel()%20%3C%3D%20self.reduce_bucket_size%3A%5Cn%20%20%20%20with%20get_accelerator().stream(self.reduce_and_partition_stream)%3A%5Cn%20%20%20%20%20%20%20%20%23%20%E5%B8%B8%E8%A7%84%E6%A2%AF%E5%BA%A6%E5%B8%83%E5%B1%80%E5%88%86%E6%94%AF%5Cn%20%20%20%20%20%20%20%20new_grad_tensor%20%3D%20bucket.buffer.narrow(%5Cn%20%20%20%20%20%20%20%20%20%20%20%200%2C%20bucket.elements%2C%20param.grad.numel()%5Cn%20%20%20%20%20%20%20%20).view_as(param.grad)%5Cn%20%20%20%20%20%20%20%20new_grad_tensor.copy_(param.grad%2C%20non_blocking%3DTrue)%5Cn%20%20%20%20%20%20%20%20if%20not%20get_accelerator().is_synchronized_device()%3A%5Cn%20%20%20%20%20%20%20%20%20%20%20%20param.grad.record_stream(get_accelerator().current_stream())%5Cn%20%20%20%20%20%20%20%20param.grad.data%20%3D%20new_grad_tensor%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%BD%92%E7%BA%A6%E6%B5%81%E7%AD%89%E5%BE%85%E9%BB%98%E8%AE%A4%E6%B5%81%E5%B9%B6%E5%A4%8D%E5%88%B6%E6%A2%AF%E5%BA%A6%EF%BC%88%E8%BF%9E%E7%BB%AD%E7%BC%93%E5%86%B2%E5%8C%BA%E5%88%86%E6%94%AF%E8%8A%82%E9%80%89%EF%BC%89%22%2C%22sourceLabel%22%3A%22DeepSpeed%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fdeepspeedai%2FDeepSpeed%2Fblob%2F6c59d5446afd8900218121ecfd00003a6cde2b9e%2Fdeepspeed%2Fruntime%2Fzero%2Fstage3.py%23L1359-L1380%22%7D%7D"></card>
+<ul>
+<li><strong>等待方与被等待方。</strong>DeepSpeed 钩子调用 <code>wait_stream</code>，接收者 <code>self.reduce_and_partition_stream</code> 是等待方，实参 <code>get_accelerator().default_stream()</code> 指定默认流。PyTorch 在默认流上记录事件，让归约流等待。主机随后向归约流提交 <code>copy_</code></li>
+<li><strong>复制的源与目标。</strong>DeepSpeed 进入归约流上下文，提交 <code>new_grad_tensor.copy_(param.grad, non_blocking=True)</code>。源是 <code>param.grad</code> 的原始存储，目标是 <code>bucket.buffer</code> 中的视图 <code>new_grad_tensor</code>。<code>record_stream</code> 让分配器跟踪归约流对原存储的使用期。随后，<code>param.grad.data = new_grad_tensor</code> 将参数的梯度指向 bucket 中的副本</li>
+</ul>
+<h2 id="zero3-gradient-race-and-fix">🐞 Gradient Reduction Race and Fix</h2>
+<p><strong style="color: var(--fgColor-success)">同一显存位置上的写入与复制需要满足写后读依赖（RAW）。旧代码保证默认流上的事件先于归约流的复制。若实际写入发生在另一条流上，该事件无法保证写入先于读取，两次访问之间便缺少所需的先行关系（happens-before）</strong></p>
+<p><strong>默认流执行到事件后，归约流就可以开始复制。此时反向算子可能仍在写梯度。</strong>如果 <code>copy_</code> 先读取某个元素，就会把源地址当时的值复制到 bucket。反向算子随后把本轮梯度写入原地址，但这次写入不会更新 bucket 中已有的副本。如果反向算子先写完该元素，复制就能读到本轮的值。两种时序下归约都能继续，哪一层、哪个 rank 的梯度受影响，取决于哪些元素在写完前被读取</p>
+<p><strong>跨卡归约读取的是 bucket 中的副本。</strong>若下一份梯度放不进当前 bucket，DeepSpeed 先归约已有内容。反向传播收尾时，它再归约余下的梯度。每次归约时，<code>__avg_scatter_grads()</code> 读取各参数指向 bucket 的 <code>grad</code>，调用 <code>reduce_scatter_coalesced()</code> 合并各 rank 在同一位置的梯度。本地副本中的错误值由此进入归约结果。负责该分片的 rank 随后在 <code>optimizer.step()</code> 中使用这个结果更新 Adam 或 AdamW 的一阶矩、二阶矩和本地参数。上游在第一次参数更新后观察到部分权重出现 <code>NaN</code></p>
+<p><strong style="color: var(--fgColor-success)">修复保留等待方 <code>self.reduce_and_partition_stream</code>，把被等待方从 <code>default_stream()</code> 改为 <code>current_stream()</code>。</strong>DeepSpeed 在反向钩子内取得当前流，此时尚未切换到归约流。因此，PyTorch 把事件记录在实际生产梯度的反向流上，排在该流已提交的梯度写入之后。事件完成后，归约流上的 <code>copy_</code> 才能读取 <code>param.grad</code>，本轮写入由此先于首次读取</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-828%22%2C%22code%22%3A%22%20self.reduce_and_partition_stream.wait_stream(%5Cn-%20%20%20%20get_accelerator().default_stream()%5Cn%2B%20%20%20%20get_accelerator().current_stream()%5Cn%20)%5Cn%22%2C%22language%22%3A%22diff%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22CUDA%20Stream%20%E4%BF%AE%E5%A4%8D%E5%B7%AE%E5%BC%82%22%2C%22sourceLabel%22%3A%22DeepSpeed%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fdeepspeedai%2FDeepSpeed%2Fpull%2F7898%2Ffiles%22%7D%7D"></card>
+<p><strong>归约流只需等待生产者在记录事件前提交的工作。</strong>反向算子使用默认流时，新旧代码等待同一条流。反向算子使用非默认流时，新代码等待实际的梯度写入。主机仍可提交后续反向计算，使其与已就绪梯度的通信重叠</p>
+</section><section class="lake-revised-section" id="案例二flashinfer-gdn-pipeline-死锁">
+<h1 id="flashinfer-3565">🦊 <a href="https://github.com/flashinfer-ai/flashinfer/issues/3565">FlashInfer #3565</a> — SM100 GDN Prefill Hang</h1>
+<p id="sync-failure-comparison">两个问题都不是普通的数值精度故障。<strong><code>DeepSpeed</code> 等错梯度的生产 <code>stream</code>；<code>FlashInfer</code> 则让非 <code>owner</code> 参与 <code>pipeline</code> 的终止同步</strong>。前者破坏数据的 <code>happens-before</code> 关系，后者破坏 <code>mbarrier</code> 的 <code>phase/lifetime</code> 状态</p>
+<p id="vllm-deadlock-comparison"><strong>vLLM 与 FlashInfer 的死锁具有不同的同步粒度。vLLM 在两个 CTA 之间同步，FlashInfer 在同一 CTA 内的不同 warp 之间同步。</strong>vLLM 的 leader 在屏障处等待同组的 peer 到达，但 peer 已退出。FlashInfer 的 CG0 则在本块内等待输出槽位进入预期的释放阶段</p>
+<p><strong style="color: var(--fgColor-success)">SM100 的 Gated DeltaNet（GDN）预填充内核将输出写回分为两步。CG1 把输出写入共享内存，warp 11 再将其写回显存并归还槽位。CG0 从未提交输出，退出时却调用 <code>o_store_producer.tail()</code>。若 warp 11 最后一次释放槽位后仍未满足 CG0 的等待条件，CG0 就会停在屏障上</strong></p>
+<p><strong>上游观察到 GDN prefill 内核间歇性无法返回。</strong>现场批次带有初始状态，包含长序列和较短的变长尾部序列，修复记录注明使用 CUTLASS DSL 4.5.2。一个线程块滞留在内核中，就足以阻止本次调用完成。多卡推理时，依赖该 rank 的张量并行操作也会随之等待</p>
+<h2 id="gdn-warps-and-output-pipeline">🐝 Warp Roles and the Output Pipeline</h2>
+<p><strong>这个 SM100 内核按序列和输出 head 分配工作。每个 CUDA 线程块（CTA）每次领取一对序列和 head，沿时间顺序处理其中的所有 chunk。</strong>各 warp 从 <code>cu_seqlens</code> 读取序列的起止位置，再按每个 chunk 最多 64 个 token 遍历该序列。前一 chunk 更新的递归状态是后一 chunk 的输入，由同一 CTA 依次处理可保持状态连续</p>
+<p><strong>内核采用持久化调度，cluster 形状为 <code>(1, 1, 1)</code>，每个 cluster 只有一个 CTA。</strong><code>GDNTileScheduler</code> 根据序列数和输出 head 数确定工作项总数。启动的 CTA 数取工作项数与 GPU 的 SM 数中的较小值。每个 CTA 从 <code>blockIdx.x</code> 对应的工作项开始，处理完后将线性编号增加整个 grid 的 CTA 数，取得下一项。不同 CTA 可以处理独立的序列与 head，各自使用本块的输出槽位和屏障</p>
+<p><strong>每个 CTA 包含 384 个线程，按 warp 编号分别进入六条执行分支。</strong>各分支用相同的块编号和 grid 大小初始化调度器，因而按相同顺序处理同一批序列与 head。warp 8 发起矩阵乘，CG0 处理块内的 QK、KK 分数和三角矩阵求逆，CG1 合并当前 chunk 与递归状态对输出 O 的贡献。输出的提交和写回则由专门的流水线协调</p>
+<div class="table-scroll" role="region" aria-label="表格" tabindex="0"><table>
+<thead>
+<tr>
+<th><code>Warp</code></th>
+<th>名称</th>
+<th>大小</th>
+<th>主要职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>warp 0–3</code></td>
+<td><code>CG0 / Compute Group 0</code></td>
+<td><code>4 warps = 128 threads</code></td>
+<td>前处理、<code>QK/KK</code> 后处理、矩阵求逆等</td>
+</tr>
+<tr>
+<td><code>warp 4–7</code></td>
+<td><code>CG1 / Compute Group 1</code></td>
+<td><code>4 warps = 128 threads</code></td>
+<td><code>recurrent state</code>、<code>value/state</code> 更新、输出 <code>epilogue</code> 计算等</td>
+</tr>
+<tr>
+<td><code>warp 8</code></td>
+<td><code>MMA warp</code></td>
+<td><code>1 warp</code></td>
+<td>发起 7 个 <code>GEMM / Tensor Core MMA</code></td>
+</tr>
+<tr>
+<td><code>warp 9</code></td>
+<td><code>TMA load warp</code></td>
+<td><code>1 warp</code></td>
+<td>从显存加载 <code>Q/K/V</code></td>
+</tr>
+<tr>
+<td><code>warp 10</code></td>
+<td><code>gate/beta load warp</code></td>
+<td><code>1 warp</code></td>
+<td>加载 <code>gate</code>、<code>beta</code></td>
+</tr>
+<tr>
+<td><code>warp 11</code></td>
+<td><code>epilogue warp</code></td>
+<td><code>1 warp</code></td>
+<td>把最终输出 <code>O</code> 写回 <code>global memory</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong><code>PipelineAsync.create()</code> 将 CG1 的 128 个线程指定为输出生产者，将 warp 11 的 32 个线程指定为消费者。</strong>本内核设定 <code>smem_o_stages = 1</code>，相邻 chunk 复用下标为 0 的同一输出槽位。<code>storage.o_store_mbar_ptr</code> 指向 CTA 共享内存中的屏障存储。生产者提交表示本轮数据就绪，消费者释放表示槽位可以复用。因为下标始终相同，双方还需借助 <code>PipelineState</code> 的 <code>phase</code> 区分相邻两轮的使用</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-835%22%2C%22code%22%3A%22o_store_producer%2C%20o_store_consumer%20%3D%20pipeline.PipelineAsync.create(%5Cn%20%20%20%20num_stages%3Dself.smem_o_stages%2C%5Cn%20%20%20%20producer_group%3Dcg_cg1%2C%5Cn%20%20%20%20consumer_group%3Dcg_epi%2C%5Cn%20%20%20%20barrier_storage%3Dstorage.o_store_mbar_ptr.data_ptr()%2C%5Cn%20%20%20%20defer_sync%3DTrue%2C%5Cn).make_participants()%5Cn%22%2C%22language%22%3A%22python%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22%E5%88%9B%E5%BB%BA%E8%BE%93%E5%87%BA%E5%AD%98%E5%82%A8%20Pipeline%22%2C%22sourceLabel%22%3A%22FlashInfer%20%C2%B7%20%E8%8A%82%E9%80%89%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fflashinfer-ai%2Fflashinfer%2Fblob%2F6ce937c62cfb417564db0477531f18e1ae5b2678%2Fflashinfer%2Fgdn_kernels%2Fblackwell%2Fgated_delta_net_chunked.py%23L1135-L1142%22%7D%7D"></card>
+<ul>
+<li><strong>CG1 写共享内存。</strong>CG1 调用 <code>o_store_producer.acquire_and_advance()</code> 取得槽位，将累加结果从 Blackwell 的 Tensor Memory（TMEM）读入寄存器，转换为输出精度，再写入 <code>o_handle.index</code> 对应的共享内存。CG1 执行 <code>fence_view_async_shared()</code> 后调用 <code>o_handle.commit()</code>，通知 warp 11 本轮输出 O 已就绪</li>
+<li><strong>Warp 11 写回显存。</strong>epilogue warp 通过 <code>o_store_consumer.wait_and_advance()</code> 等待本轮输出就绪，再向 TMA 提交从共享内存到显存的复制。warp 11 调用 <code>cp_async_bulk_wait_group(0)</code> 等待写回完成，随后用 <code>o_handle.release()</code> 归还槽位，CG1 才能安全复用它</li>
+</ul>
+<h2 id="gdn-pipeline-deadlock-and-fix">🐞 Pipeline Deadlock and Fix</h2>
+<p><strong>CG0 在 <code>group_order</code> 流水线上是生产者，CG1 是消费者。在输出流水线 <code>o_store</code> 上，生产者是 CG1，消费者是 warp 11。</strong>旧代码在 CG0 的工作循环结束后，先调用 <code>qk_ready_producer.tail()</code>，再调用 <code>o_store_producer.tail()</code> 和 <code>group_order_producer.tail()</code>。三次调用都由 warp 0–3 执行，但输出流水线应由 warp 4–7 收尾。CG1 在自己的循环结束后也会执行这次输出收尾</p>
+<p><strong style="color: var(--fgColor-success)">CG0 调用 <code>tail()</code> 时，用的是自己持有的生产者状态。</strong>CG1 每提交一个输出块就推进一次状态，warp 11 在该块的 TMA 写回完成后调用 <code>o_handle.release()</code> 归还槽位。CG0 从未在 <code>o_store</code> 上取得槽位或提交输出，它所等待的阶段可能与两者的实际进度错开。一旦 warp 11 归还最后一个输出块占用的槽位，就没有后续 <code>release()</code> 可以满足这次等待</p>
+<p id="gdn-cta-completion"><strong>CG0 由同一 CTA 内的四个 warp 组成。只要其中一个 warp 停在 <code>tail()</code>，这个 CTA 就无法结束。</strong>即使 CG1 已算完、warp 11 已写回最后一块 O，受阻 warp 中的线程仍未执行到内核出口。CUDA 要等本次启动的所有 CTA 都结束，才会标记内核完成。其他 CTA 即使全部退出，也无法推进本块的屏障。同一 CUDA 流上排在 GDN 内核之后的操作只能继续等待，推理程序因而等不到这次 prefill 的结果</p>
+<p><strong style="color: var(--fgColor-success)">上游修复 PR #3581 从 CG0 的退出分支删除 <code>o_store_producer.tail()</code>。</strong>CG0 继续为它实际参与生产的流水线收尾。输出流水线由 CG1 执行终止等待，此时生产者持有的状态与 warp 11 实际释放的输出槽位相对应</p>
+<card type="inline" name="codeblock" value="data:%7B%22id%22%3A%22import-code-837%22%2C%22code%22%3A%22%20work%20%3D%20scheduler.get_current_work()%5Cn%20a_inv_ready_producer.tail()%5Cn%20qk_ready_producer.tail()%5Cn-o_store_producer.tail()%5Cn%20group_order_producer.tail()%5Cn%22%2C%22language%22%3A%22diff%22%2C%22caption%22%3A%22%22%2C%22codeDetails%22%3A%7B%22caption%22%3A%22Pipeline%20Owner%20%E4%BF%AE%E5%A4%8D%22%2C%22sourceLabel%22%3A%22FlashInfer%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fflashinfer-ai%2Fflashinfer%2Fpull%2F3581%2Ffiles%22%7D%7D"></card>
+</section>
