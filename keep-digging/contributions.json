@@ -1,6 +1,6 @@
 {
   "author": "taking-lying-flat",
-  "updatedAt": "2026-11-22",
+  "updatedAt": "2026-11-24",
   "projects": [
     {
       "name": "ms-swift",
@@ -26,9 +26,9 @@
     {
       "name": "unsloth",
       "repo": "unslothai/unsloth",
-      "count": 31,
+      "count": 32,
       "icon": "unslothai.png",
-      "updatedAt": "2026-11-16T15:29:34Z"
+      "updatedAt": "2026-11-24T00:16:33Z"
     },
     {
       "name": "Flash Linear Attention",
