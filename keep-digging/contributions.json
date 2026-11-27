@@ -1,7 +1,7 @@
 {
   "author": "taking-lying-flat",
-  "updatedAt": "2026-11-25",
-  "totalContributions": 258,
+  "updatedAt": "2026-11-27",
+  "totalContributions": 260,
   "projects": [
     {
       "name": "ms-swift",
@@ -34,9 +34,9 @@
     {
       "name": "Flash Linear Attention",
       "repo": "fla-org/flash-linear-attention",
-      "count": 32,
+      "count": 33,
       "icon": "fla-org.png",
-      "updatedAt": "2026-11-25T15:10:29Z"
+      "updatedAt": "2026-11-27T09:52:06Z"
     },
     {
       "name": "FreeToken",
@@ -104,9 +104,9 @@
     {
       "name": "DiffSynth-Studio",
       "repo": "modelscope/DiffSynth-Studio",
-      "count": 1,
+      "count": 2,
       "icon": "modelscope.png",
-      "updatedAt": "2026-11-16T15:25:32Z"
+      "updatedAt": "2026-11-27T09:52:06Z"
     },
     {
       "name": "VLMEvalKit",
