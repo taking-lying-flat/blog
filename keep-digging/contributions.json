@@ -1,7 +1,7 @@
 {
   "author": "taking-lying-flat",
-  "updatedAt": "2026-11-27",
-  "totalContributions": 261,
+  "updatedAt": "2026-11-28",
+  "totalContributions": 263,
   "projects": [
     {
       "name": "ms-swift",
@@ -34,9 +34,9 @@
     {
       "name": "Flash Linear Attention",
       "repo": "fla-org/flash-linear-attention",
-      "count": 33,
+      "count": 35,
       "icon": "fla-org.png",
-      "updatedAt": "2026-11-27T09:52:06Z"
+      "updatedAt": "2026-11-28T05:45:43Z"
     },
     {
       "name": "FreeToken",
