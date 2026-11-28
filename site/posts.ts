@@ -144,6 +144,15 @@ const posts: ArticleEntry[] = [
     aliases: ["posts/training-infrastructure/"],
   },
   {
+    file: "../papers/distributed-parallelism/lakes/cfd51850de61b7112a935e69628d9f10.lake",
+    slug: "distributed-parallelism-ii",
+    category: "distributed-parallelism",
+    categoryOrder: 2,
+    date: "2026-11-28",
+    description: "RingAttention 笔记：沿序列维度分布查询块、KV 环形传输、在线 Softmax 与计算通信重叠，以及 FFN 分块计算的调度边界",
+    tags: ["RingAttention", "Context Parallelism", "Blockwise Transformer"],
+  },
+  {
     file: "../papers/positional-encoding/lakes/ff67e54bbd3835c2f55b2407384657da.lake",
     slug: "positional-encoding",
     category: "llm",
