@@ -2,6 +2,7 @@ const categories = [
   { id: 'reports', title: '技术报告' },
   { id: 'llm', title: '大模型' },
   { id: 'token-mixer', title: 'Token Mixer' },
+  { id: 'distributed-parallelism', title: 'Distributed Parallelism' },
   { id: 'infra', title: 'AI Infra' },
   { id: 'policy', title: '策略优化' },
   { id: 'generative', title: '生成模型' },

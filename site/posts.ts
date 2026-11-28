@@ -134,13 +134,14 @@ const posts: ArticleEntry[] = [
     tags: ["ReAct", "Tree of Thoughts", "CoT-Decoding", "CPO"],
   },
   {
-    file: "../papers/training-infrastructure/lakes/0793e9f652374525ebe1a222f45c91e9.lake",
-    slug: "training-infrastructure",
-    category: "infra",
+    file: "../papers/distributed-parallelism/lakes/0793e9f652374525ebe1a222f45c91e9.lake",
+    slug: "distributed-parallelism-i",
+    category: "distributed-parallelism",
     categoryOrder: 1,
     date: "2026-10-02",
-    description: "训练基础设施笔记：梯度检查点的重计算与内存优化、Megatron-LM 的张量并行，以及 DeepSpeed ZeRO 的模型状态分片、显存优化和通信量分析",
+    description: "分布式并行笔记：梯度检查点的重计算与内存优化、Megatron-LM 的张量并行，以及 DeepSpeed ZeRO 的模型状态分片、显存优化和通信量分析",
     tags: ["Gradient Checkpointing", "Megatron-LM", "ZeRO"],
+    aliases: ["posts/training-infrastructure/"],
   },
   {
     file: "../papers/positional-encoding/lakes/ff67e54bbd3835c2f55b2407384657da.lake",
