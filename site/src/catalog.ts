@@ -22,7 +22,6 @@ export type ArticleEntry = {
   downloads?: string[];
 };
 
-export interface SearchRecord { slug: string; text: string }
 export interface CategoryGroup<T> { id: Category; title: string; posts: T[] }
 
 export function orderCategories<T extends ArticleEntry>(posts: T[]) {

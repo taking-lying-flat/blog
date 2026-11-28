@@ -16,7 +16,7 @@ const ambientGutters = (kind: 'day' | 'night') => ['left', 'right'].map((side, s
   return `<span class="home-sky-gutter home-sky-${side}">${particles}${kind === 'night' ? '<b class="home-meteor"></b>' : ''}</span>`;
 }).join('');
 
-export function renderHome(categories: CategoryGroup<PostSummary>[], count: number) {
+export function renderHome(categories: CategoryGroup<PostSummary>[]) {
   return renderPage({
     title: 'Blog · 技术笔记', description: '关于模型、论文与源码的技术笔记。', route: '',
     body: `<div class="home-garden" aria-hidden="true">
@@ -25,20 +25,11 @@ export function renderHome(categories: CategoryGroup<PostSummary>[], count: numb
     <div class="home-atmosphere home-atmosphere-day">${ambientGutters('day')}</div>
     <div class="home-atmosphere home-atmosphere-night">${ambientGutters('night')}</div>
   </div>
-  <section class="garden-articles" aria-labelledby="post-list-title">
-    <div class="post-list-heading"><h1 id="post-list-title" aria-live="polite">全部文章 <span>${String(count).padStart(2, '0')}</span></h1></div>
-    <form class="post-search" role="search" data-index="assets/search-index.json?v=${version}" hidden>
-      <label class="sr-only" for="search-input">搜索文章标题、标签和正文</label>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
-      <input id="search-input" name="q" type="search" placeholder="搜索标题、标签或正文…" autocomplete="off" spellcheck="false" aria-describedby="search-status">
-      <button class="search-clear" type="button" hidden>清除</button>
-    </form>
+  <section class="garden-articles" aria-label="文章目录">
     <nav class="category-nav" aria-label="文章分类">
       <button type="button" data-category="all" aria-pressed="true">全部</button>
       ${categories.map(({ id, title }) =>
       `<button type="button" data-category="${id}" aria-pressed="false">${escape(title)}</button>`).join('')}</nav>
-    <p id="search-status" class="search-status" role="status" hidden></p>
-    <p class="search-empty" hidden>没有找到相关文章，试试其他关键词或切换到「全部」。</p>
     ${categories.map(({ id, title, posts: categoryPosts }) => {
       return `<section class="post-group" data-category="${id}" aria-labelledby="category-${id}">
       <div class="post-group-heading"><h2 id="category-${id}">${escape(title)}</h2><span>${categoryPosts.length} 篇</span></div>

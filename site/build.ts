@@ -4,7 +4,7 @@ import { buildKeepDigging } from '../keep-digging/build.ts';
 import catalog from './posts.ts';
 import { markdownDownload, openArticle, renderArticle, type Post, type PostSummary } from './src/article.ts';
 import { copySiteAssets } from './src/assets.ts';
-import { orderCategories, type CategoryGroup, type SearchRecord } from './src/catalog.ts';
+import { orderCategories, type CategoryGroup } from './src/catalog.ts';
 import { codeStylesheet } from './src/code.ts';
 import { escape, siteUrl, version } from './src/html.ts';
 import { createMathRenderer } from './src/math.ts';
@@ -50,7 +50,6 @@ async function build(output: string) {
     .map((entry, dateIndex) => ({ ...entry, dateIndex }));
   const archives: PostSummary[] = [];
   const categories: CategoryGroup<PostSummary>[] = [];
-  const searchIndex: SearchRecord[] = [];
   for (const { id, title, posts: group } of orderCategories(entries)) {
     const posts = await Promise.all(group.map(entry => openArticle(root, entry)));
     const summaries: PostSummary[] = [];
@@ -59,15 +58,13 @@ async function build(output: string) {
       await writePost(output, post, renderPost(post, posts, i));
       summaries.push(post.info);
       archives[source.dateIndex] = post.info;
-      searchIndex.push({ slug: post.info.slug, text: post.searchText });
     }
     categories.push({ id, title, posts: summaries });
   }
   await copySiteAssets(root, output);
   await writeFile(path.join(output, 'assets/code-theme.css'), codeStylesheet());
   await writeFile(path.join(output, 'assets/math.css'), math.stylesheet());
-  await writeFile(path.join(output, 'assets/search-index.json'), JSON.stringify(searchIndex));
-  await writeFile(path.join(output, 'index.html'), renderHome(categories, archives.length));
+  await writeFile(path.join(output, 'index.html'), renderHome(categories));
   await mkdir(path.join(output, 'archives'), { recursive: true });
   await writeFile(path.join(output, 'archives/index.html'), renderArchives(archives));
   await buildKeepDigging(path.join(root, '../keep-digging'), output);

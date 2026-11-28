@@ -215,7 +215,6 @@ function renderPaperToc(slug: string, sections: TocSection[]) {
   </aside>`;
 }
 
-const textBlocks = new Set(['p', 'div', 'section', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'tr', 'td', 'th', 'br']);
 
 // Lake preserves whitespace. Follow list and section boundaries so source
 // indentation cannot create an extra line between a frame and adjacent prose.
@@ -245,18 +244,14 @@ function normalizeCodeGaps(frame: LiteElement, body: LiteElement) {
   }
 }
 
-// Final pass over the prose before serialization and search indexing.
+// Final pass over the prose before serialization.
 function preparePublication(post: PostInfo, body: LiteElement) {
   const { slug } = post;
   const sections: TocSection[] = [];
   const headingIds = new Set<string>();
-  const text: string[] = [];
   function visit(node: LiteNode, inToc: boolean) {
     const kind = adaptor.kind(node);
-    if (node instanceof LiteText) {
-      if (kind !== '#comment') text.push(adaptor.value(node));
-      return;
-    }
+    if (node instanceof LiteText) return;
     if (['svg', 'style', 'script', 'button'].includes(kind)) return;
     if (adaptor.hasClass(node, 'code-block')) normalizeCodeGaps(node, body);
     // Keep native anchors and discard Lake editor metadata from the reading page.
@@ -278,22 +273,11 @@ function preparePublication(post: PostInfo, body: LiteElement) {
       }
       inToc = false;
     }
-    if (kind === 'img') {
-      text.push(' ', adaptor.getAttribute(node, 'alt') ?? '', ' ');
-      return;
-    }
-    if (adaptor.hasClass(node, 'equation') || adaptor.hasClass(node, 'math-inline')) {
-      text.push(' ', adaptor.getAttribute(node, 'aria-label') ?? '', ' ');
-      return;
-    }
-    const block = textBlocks.has(kind);
-    if (block) text.push(' ');
+    if (kind === 'img' || adaptor.hasClass(node, 'equation') || adaptor.hasClass(node, 'math-inline')) return;
     for (const child of adaptor.childNodes(node)) visit(child, inToc && kind !== 'pre' && kind !== 'code');
-    if (block) text.push(' ');
   }
   visit(body, true);
   return {
     toc: renderPaperToc(slug, sections),
-    searchText: text.join('').normalize('NFKC').replace(/\s+/g, ' ').trim(),
   };
 }
